@@ -1,0 +1,20 @@
+{
+  "experiment": "exp0b-djinni-stability",
+  "n": 200,
+  "selfFlipRate": 0.065,
+  "flipPairs": [
+    [
+      "Lead/Principal<->Senior",
+      1
+    ],
+    [
+      "Mid<->Senior",
+      10
+    ],
+    [
+      "Junior<->Mid",
+      2
+    ]
+  ],
+  "note": "compare to exp6 formatting flip 12.30% and criteria flip 12.45%"
+}

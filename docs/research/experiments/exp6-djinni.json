@@ -1,0 +1,409 @@
+{
+  "experiment": "exp6-djinni",
+  "corpus": "djinni (210,250 English candidate profiles, MIT)",
+  "outputType": "select(4 tiers)",
+  "n": 2000,
+  "seed": 7,
+  "decode": "temperature=0",
+  "results": [
+    {
+      "label": "djinni formatting-only",
+      "n": 2000,
+      "trueFlipRate": 0.123,
+      "sweeps": [
+        {
+          "alpha": 0.05,
+          "oracleCalls": 225,
+          "reused": 0,
+          "falseReused": 0,
+          "realizedFalseReuse": 0,
+          "savings": 0,
+          "strata": [
+            {
+              "stratumId": "v=\"Junior\"|o=0",
+              "size": 743,
+              "sampled": 90,
+              "flips": 6,
+              "empiricalFlipRate": 0.06666666666666667,
+              "upperBound": 0.31527537380480664,
+              "certified": false
+            },
+            {
+              "stratumId": "v=\"Mid\"|o=0",
+              "size": 559,
+              "sampled": 45,
+              "flips": 6,
+              "empiricalFlipRate": 0.13333333333333333,
+              "upperBound": 0.6284612704337946,
+              "certified": false
+            },
+            {
+              "stratumId": "v=\"Senior\"|o=0",
+              "size": 529,
+              "sampled": 45,
+              "flips": 8,
+              "empiricalFlipRate": 0.17777777777777778,
+              "upperBound": 0.6950279056744144,
+              "certified": false
+            },
+            {
+              "stratumId": "v=\"Lead/Principal\"|o=0",
+              "size": 169,
+              "sampled": 45,
+              "flips": 7,
+              "empiricalFlipRate": 0.15555555555555556,
+              "upperBound": 0.6270929961834362,
+              "certified": false
+            }
+          ]
+        },
+        {
+          "alpha": 0.1,
+          "oracleCalls": 855,
+          "reused": 0,
+          "falseReused": 0,
+          "realizedFalseReuse": 0,
+          "savings": 0,
+          "strata": [
+            {
+              "stratumId": "v=\"Junior\"|o=0",
+              "size": 743,
+              "sampled": 720,
+              "flips": 52,
+              "empiricalFlipRate": 0.07222222222222222,
+              "upperBound": 0.12508354917036782,
+              "certified": false
+            },
+            {
+              "stratumId": "v=\"Mid\"|o=0",
+              "size": 559,
+              "sampled": 45,
+              "flips": 6,
+              "empiricalFlipRate": 0.13333333333333333,
+              "upperBound": 0.6284612704337946,
+              "certified": false
+            },
+            {
+              "stratumId": "v=\"Senior\"|o=0",
+              "size": 529,
+              "sampled": 45,
+              "flips": 8,
+              "empiricalFlipRate": 0.17777777777777778,
+              "upperBound": 0.6950279056744144,
+              "certified": false
+            },
+            {
+              "stratumId": "v=\"Lead/Principal\"|o=0",
+              "size": 169,
+              "sampled": 45,
+              "flips": 7,
+              "empiricalFlipRate": 0.15555555555555556,
+              "upperBound": 0.6270929961834362,
+              "certified": false
+            }
+          ]
+        },
+        {
+          "alpha": 0.2,
+          "oracleCalls": 1617,
+          "reused": 383,
+          "falseReused": 25,
+          "realizedFalseReuse": 0.06527415143603134,
+          "savings": 0.1915,
+          "strata": [
+            {
+              "stratumId": "v=\"Junior\"|o=0",
+              "size": 743,
+              "sampled": 360,
+              "flips": 29,
+              "empiricalFlipRate": 0.08055555555555556,
+              "upperBound": 0.1692188557894421,
+              "certified": true
+            },
+            {
+              "stratumId": "v=\"Mid\"|o=0",
+              "size": 559,
+              "sampled": 559,
+              "flips": 91,
+              "empiricalFlipRate": 0.16279069767441862,
+              "upperBound": 0.24194448012860315,
+              "certified": false
+            },
+            {
+              "stratumId": "v=\"Senior\"|o=0",
+              "size": 529,
+              "sampled": 529,
+              "flips": 73,
+              "empiricalFlipRate": 0.13799621928166353,
+              "upperBound": 0.21643168535895704,
+              "certified": false
+            },
+            {
+              "stratumId": "v=\"Lead/Principal\"|o=0",
+              "size": 169,
+              "sampled": 169,
+              "flips": 28,
+              "empiricalFlipRate": 0.16568047337278108,
+              "upperBound": 0.3367685738215355,
+              "certified": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "djinni criteria-change (leadership)",
+      "n": 2000,
+      "trueFlipRate": 0.1245,
+      "sweeps": [
+        {
+          "alpha": 0.05,
+          "oracleCalls": 761,
+          "reused": 0,
+          "falseReused": 0,
+          "realizedFalseReuse": 0,
+          "savings": 0,
+          "strata": [
+            {
+              "stratumId": "v=\"Junior\"|o=1-2",
+              "size": 467,
+              "sampled": 467,
+              "flips": 20,
+              "empiricalFlipRate": 0.042826552462526764,
+              "upperBound": 0.11059094243249382,
+              "certified": false
+            },
+            {
+              "stratumId": "v=\"Mid\"|o=1-2",
+              "size": 360,
+              "sampled": 45,
+              "flips": 5,
+              "empiricalFlipRate": 0.1111111111111111,
+              "upperBound": 0.6240812362170578,
+              "certified": false
+            },
+            {
+              "stratumId": "v=\"Senior\"|o=3+",
+              "size": 291,
+              "sampled": 45,
+              "flips": 8,
+              "empiricalFlipRate": 0.17777777777777778,
+              "upperBound": 0.7276303698811293,
+              "certified": false
+            },
+            {
+              "stratumId": "v=\"Junior\"|o=3+",
+              "size": 271,
+              "sampled": 45,
+              "flips": 5,
+              "empiricalFlipRate": 0.1111111111111111,
+              "upperBound": 0.6240812362170578,
+              "certified": false
+            },
+            {
+              "stratumId": "v=\"Senior\"|o=1-2",
+              "size": 237,
+              "sampled": 45,
+              "flips": 7,
+              "empiricalFlipRate": 0.15555555555555556,
+              "upperBound": 0.6946277518625784,
+              "certified": false
+            },
+            {
+              "stratumId": "v=\"Mid\"|o=3+",
+              "size": 214,
+              "sampled": 45,
+              "flips": 10,
+              "empiricalFlipRate": 0.2222222222222222,
+              "upperBound": 0.7901834020433494,
+              "certified": false
+            },
+            {
+              "stratumId": "v=\"Lead/Principal\"|o=3+",
+              "size": 136,
+              "sampled": 45,
+              "flips": 5,
+              "empiricalFlipRate": 0.1111111111111111,
+              "upperBound": 0.6049907243199603,
+              "certified": false
+            },
+            {
+              "stratumId": "v=\"Lead/Principal\"|o=1-2",
+              "size": 24,
+              "sampled": 24,
+              "flips": 10,
+              "empiricalFlipRate": 0.4166666666666667,
+              "upperBound": 1,
+              "certified": false
+            }
+          ]
+        },
+        {
+          "alpha": 0.1,
+          "oracleCalls": 761,
+          "reused": 0,
+          "falseReused": 0,
+          "realizedFalseReuse": 0,
+          "savings": 0,
+          "strata": [
+            {
+              "stratumId": "v=\"Junior\"|o=1-2",
+              "size": 467,
+              "sampled": 467,
+              "flips": 20,
+              "empiricalFlipRate": 0.042826552462526764,
+              "upperBound": 0.11059094243249382,
+              "certified": false
+            },
+            {
+              "stratumId": "v=\"Mid\"|o=1-2",
+              "size": 360,
+              "sampled": 45,
+              "flips": 5,
+              "empiricalFlipRate": 0.1111111111111111,
+              "upperBound": 0.6240812362170578,
+              "certified": false
+            },
+            {
+              "stratumId": "v=\"Senior\"|o=3+",
+              "size": 291,
+              "sampled": 45,
+              "flips": 8,
+              "empiricalFlipRate": 0.17777777777777778,
+              "upperBound": 0.7276303698811293,
+              "certified": false
+            },
+            {
+              "stratumId": "v=\"Junior\"|o=3+",
+              "size": 271,
+              "sampled": 45,
+              "flips": 5,
+              "empiricalFlipRate": 0.1111111111111111,
+              "upperBound": 0.6240812362170578,
+              "certified": false
+            },
+            {
+              "stratumId": "v=\"Senior\"|o=1-2",
+              "size": 237,
+              "sampled": 45,
+              "flips": 7,
+              "empiricalFlipRate": 0.15555555555555556,
+              "upperBound": 0.6946277518625784,
+              "certified": false
+            },
+            {
+              "stratumId": "v=\"Mid\"|o=3+",
+              "size": 214,
+              "sampled": 45,
+              "flips": 10,
+              "empiricalFlipRate": 0.2222222222222222,
+              "upperBound": 0.7901834020433494,
+              "certified": false
+            },
+            {
+              "stratumId": "v=\"Lead/Principal\"|o=3+",
+              "size": 136,
+              "sampled": 45,
+              "flips": 5,
+              "empiricalFlipRate": 0.1111111111111111,
+              "upperBound": 0.6049907243199603,
+              "certified": false
+            },
+            {
+              "stratumId": "v=\"Lead/Principal\"|o=1-2",
+              "size": 24,
+              "sampled": 24,
+              "flips": 10,
+              "empiricalFlipRate": 0.4166666666666667,
+              "upperBound": 1,
+              "certified": false
+            }
+          ]
+        },
+        {
+          "alpha": 0.2,
+          "oracleCalls": 1544,
+          "reused": 287,
+          "falseReused": 15,
+          "realizedFalseReuse": 0.05226480836236934,
+          "savings": 0.14349999999999996,
+          "strata": [
+            {
+              "stratumId": "v=\"Junior\"|o=1-2",
+              "size": 467,
+              "sampled": 180,
+              "flips": 5,
+              "empiricalFlipRate": 0.027777777777777776,
+              "upperBound": 0.1598257990043599,
+              "certified": true
+            },
+            {
+              "stratumId": "v=\"Mid\"|o=1-2",
+              "size": 360,
+              "sampled": 360,
+              "flips": 46,
+              "empiricalFlipRate": 0.12777777777777777,
+              "upperBound": 0.23311381924037888,
+              "certified": false
+            },
+            {
+              "stratumId": "v=\"Senior\"|o=3+",
+              "size": 291,
+              "sampled": 291,
+              "flips": 57,
+              "empiricalFlipRate": 0.1958762886597938,
+              "upperBound": 0.33164388139336515,
+              "certified": false
+            },
+            {
+              "stratumId": "v=\"Junior\"|o=3+",
+              "size": 271,
+              "sampled": 271,
+              "flips": 26,
+              "empiricalFlipRate": 0.0959409594095941,
+              "upperBound": 0.21621244193789904,
+              "certified": false
+            },
+            {
+              "stratumId": "v=\"Senior\"|o=1-2",
+              "size": 237,
+              "sampled": 237,
+              "flips": 32,
+              "empiricalFlipRate": 0.1350210970464135,
+              "upperBound": 0.2788758680705117,
+              "certified": false
+            },
+            {
+              "stratumId": "v=\"Mid\"|o=3+",
+              "size": 214,
+              "sampled": 45,
+              "flips": 10,
+              "empiricalFlipRate": 0.2222222222222222,
+              "upperBound": 0.7901834020433494,
+              "certified": false
+            },
+            {
+              "stratumId": "v=\"Lead/Principal\"|o=3+",
+              "size": 136,
+              "sampled": 136,
+              "flips": 17,
+              "empiricalFlipRate": 0.125,
+              "upperBound": 0.33172651269657605,
+              "certified": false
+            },
+            {
+              "stratumId": "v=\"Lead/Principal\"|o=1-2",
+              "size": 24,
+              "sampled": 24,
+              "flips": 10,
+              "empiricalFlipRate": 0.4166666666666667,
+              "upperBound": 1,
+              "certified": false
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "wallMs": 18414
+}

@@ -1,0 +1,1987 @@
+{
+  "experiment": "exp9-calibration",
+  "trials": 2000,
+  "perStratumDelta": 0.05,
+  "results": [
+    {
+      "alpha": 0.05,
+      "size": 600,
+      "p": 0,
+      "estimand": "presented",
+      "certificationRate": 1,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 360
+    },
+    {
+      "alpha": 0.05,
+      "size": 600,
+      "p": 0,
+      "estimand": "reuse-set",
+      "certificationRate": 0,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 600
+    },
+    {
+      "alpha": 0.05,
+      "size": 600,
+      "p": 0.005,
+      "estimand": "presented",
+      "certificationRate": 0.4715,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 486.285
+    },
+    {
+      "alpha": 0.05,
+      "size": 600,
+      "p": 0.005,
+      "estimand": "reuse-set",
+      "certificationRate": 0,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 599.445
+    },
+    {
+      "alpha": 0.05,
+      "size": 600,
+      "p": 0.01,
+      "estimand": "presented",
+      "certificationRate": 0.1255,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 563.82
+    },
+    {
+      "alpha": 0.05,
+      "size": 600,
+      "p": 0.01,
+      "estimand": "reuse-set",
+      "certificationRate": 0,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 594.7725
+    },
+    {
+      "alpha": 0.05,
+      "size": 600,
+      "p": 0.02,
+      "estimand": "presented",
+      "certificationRate": 0.0055,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 558.0975
+    },
+    {
+      "alpha": 0.05,
+      "size": 600,
+      "p": 0.02,
+      "estimand": "reuse-set",
+      "certificationRate": 0,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 557.91
+    },
+    {
+      "alpha": 0.05,
+      "size": 600,
+      "p": 0.04,
+      "estimand": "presented",
+      "certificationRate": 0,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 378.9825
+    },
+    {
+      "alpha": 0.05,
+      "size": 600,
+      "p": 0.04,
+      "estimand": "reuse-set",
+      "certificationRate": 0,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 380.5875
+    },
+    {
+      "alpha": 0.05,
+      "size": 600,
+      "p": 0.05,
+      "estimand": "presented",
+      "certificationRate": 0,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 247.98
+    },
+    {
+      "alpha": 0.05,
+      "size": 600,
+      "p": 0.05,
+      "estimand": "reuse-set",
+      "certificationRate": 0,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 250.575
+    },
+    {
+      "alpha": 0.05,
+      "size": 600,
+      "p": 0.0525,
+      "estimand": "presented",
+      "certificationRate": 0,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 224.0925
+    },
+    {
+      "alpha": 0.05,
+      "size": 600,
+      "p": 0.0525,
+      "estimand": "reuse-set",
+      "certificationRate": 0,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 230.325
+    },
+    {
+      "alpha": 0.05,
+      "size": 600,
+      "p": 0.055,
+      "estimand": "presented",
+      "certificationRate": 0,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 201.1275
+    },
+    {
+      "alpha": 0.05,
+      "size": 600,
+      "p": 0.055,
+      "estimand": "reuse-set",
+      "certificationRate": 0,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 194.625
+    },
+    {
+      "alpha": 0.05,
+      "size": 600,
+      "p": 0.0625,
+      "estimand": "presented",
+      "certificationRate": 0,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 145.575
+    },
+    {
+      "alpha": 0.05,
+      "size": 600,
+      "p": 0.0625,
+      "estimand": "reuse-set",
+      "certificationRate": 0,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 145.77
+    },
+    {
+      "alpha": 0.05,
+      "size": 600,
+      "p": 0.08,
+      "estimand": "presented",
+      "certificationRate": 0,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 79.8525
+    },
+    {
+      "alpha": 0.05,
+      "size": 600,
+      "p": 0.08,
+      "estimand": "reuse-set",
+      "certificationRate": 0,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 75.1425
+    },
+    {
+      "alpha": 0.05,
+      "size": 600,
+      "p": 0.15,
+      "estimand": "presented",
+      "certificationRate": 0,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 46.845
+    },
+    {
+      "alpha": 0.05,
+      "size": 600,
+      "p": 0.15,
+      "estimand": "reuse-set",
+      "certificationRate": 0,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 46.5525
+    },
+    {
+      "alpha": 0.05,
+      "size": 1800,
+      "p": 0,
+      "estimand": "presented",
+      "certificationRate": 1,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 360
+    },
+    {
+      "alpha": 0.05,
+      "size": 1800,
+      "p": 0,
+      "estimand": "reuse-set",
+      "certificationRate": 1,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 360
+    },
+    {
+      "alpha": 0.05,
+      "size": 1800,
+      "p": 0.005,
+      "estimand": "presented",
+      "certificationRate": 0.999,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 558.045
+    },
+    {
+      "alpha": 0.05,
+      "size": 1800,
+      "p": 0.005,
+      "estimand": "reuse-set",
+      "certificationRate": 0.5305,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 991.0575
+    },
+    {
+      "alpha": 0.05,
+      "size": 1800,
+      "p": 0.01,
+      "estimand": "presented",
+      "certificationRate": 0.9885,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 708.12
+    },
+    {
+      "alpha": 0.05,
+      "size": 1800,
+      "p": 0.01,
+      "estimand": "reuse-set",
+      "certificationRate": 0.0745,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 1354.6125
+    },
+    {
+      "alpha": 0.05,
+      "size": 1800,
+      "p": 0.02,
+      "estimand": "presented",
+      "certificationRate": 0.884,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 1173.1725
+    },
+    {
+      "alpha": 0.05,
+      "size": 1800,
+      "p": 0.02,
+      "estimand": "reuse-set",
+      "certificationRate": 0.001,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 1329.9075
+    },
+    {
+      "alpha": 0.05,
+      "size": 1800,
+      "p": 0.04,
+      "estimand": "presented",
+      "certificationRate": 0.0045,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0.3333333333333333,
+      "avgSampled": 825.48
+    },
+    {
+      "alpha": 0.05,
+      "size": 1800,
+      "p": 0.04,
+      "estimand": "reuse-set",
+      "certificationRate": 0,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 838.0575
+    },
+    {
+      "alpha": 0.05,
+      "size": 1800,
+      "p": 0.05,
+      "estimand": "presented",
+      "certificationRate": 0,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 484.335
+    },
+    {
+      "alpha": 0.05,
+      "size": 1800,
+      "p": 0.05,
+      "estimand": "reuse-set",
+      "certificationRate": 0,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 461.4975
+    },
+    {
+      "alpha": 0.05,
+      "size": 1800,
+      "p": 0.0525,
+      "estimand": "presented",
+      "certificationRate": 0,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 403.3125
+    },
+    {
+      "alpha": 0.05,
+      "size": 1800,
+      "p": 0.0525,
+      "estimand": "reuse-set",
+      "certificationRate": 0,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 380.5875
+    },
+    {
+      "alpha": 0.05,
+      "size": 1800,
+      "p": 0.055,
+      "estimand": "presented",
+      "certificationRate": 0,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 330.3225
+    },
+    {
+      "alpha": 0.05,
+      "size": 1800,
+      "p": 0.055,
+      "estimand": "reuse-set",
+      "certificationRate": 0,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 308.9925
+    },
+    {
+      "alpha": 0.05,
+      "size": 1800,
+      "p": 0.0625,
+      "estimand": "presented",
+      "certificationRate": 0,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 188.64
+    },
+    {
+      "alpha": 0.05,
+      "size": 1800,
+      "p": 0.0625,
+      "estimand": "reuse-set",
+      "certificationRate": 0,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 175.455
+    },
+    {
+      "alpha": 0.05,
+      "size": 1800,
+      "p": 0.08,
+      "estimand": "presented",
+      "certificationRate": 0,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 76.41
+    },
+    {
+      "alpha": 0.05,
+      "size": 1800,
+      "p": 0.08,
+      "estimand": "reuse-set",
+      "certificationRate": 0,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 79.5375
+    },
+    {
+      "alpha": 0.05,
+      "size": 1800,
+      "p": 0.15,
+      "estimand": "presented",
+      "certificationRate": 0,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 46.5975
+    },
+    {
+      "alpha": 0.05,
+      "size": 1800,
+      "p": 0.15,
+      "estimand": "reuse-set",
+      "certificationRate": 0,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 46.305
+    },
+    {
+      "alpha": 0.05,
+      "size": 5000,
+      "p": 0,
+      "estimand": "presented",
+      "certificationRate": 1,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 360
+    },
+    {
+      "alpha": 0.05,
+      "size": 5000,
+      "p": 0,
+      "estimand": "reuse-set",
+      "certificationRate": 1,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 360
+    },
+    {
+      "alpha": 0.05,
+      "size": 5000,
+      "p": 0.005,
+      "estimand": "presented",
+      "certificationRate": 0.9975,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 547.8525
+    },
+    {
+      "alpha": 0.05,
+      "size": 5000,
+      "p": 0.005,
+      "estimand": "reuse-set",
+      "certificationRate": 0.996,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 672.345
+    },
+    {
+      "alpha": 0.05,
+      "size": 5000,
+      "p": 0.01,
+      "estimand": "presented",
+      "certificationRate": 0.9885,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 709.245
+    },
+    {
+      "alpha": 0.05,
+      "size": 5000,
+      "p": 0.01,
+      "estimand": "reuse-set",
+      "certificationRate": 0.9665,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 917.775
+    },
+    {
+      "alpha": 0.05,
+      "size": 5000,
+      "p": 0.02,
+      "estimand": "presented",
+      "certificationRate": 0.8955,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 1178.2125
+    },
+    {
+      "alpha": 0.05,
+      "size": 5000,
+      "p": 0.02,
+      "estimand": "reuse-set",
+      "certificationRate": 0.1255,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 1293.525
+    },
+    {
+      "alpha": 0.05,
+      "size": 5000,
+      "p": 0.04,
+      "estimand": "presented",
+      "certificationRate": 0.0045,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 825.39
+    },
+    {
+      "alpha": 0.05,
+      "size": 5000,
+      "p": 0.04,
+      "estimand": "reuse-set",
+      "certificationRate": 0,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 831.96
+    },
+    {
+      "alpha": 0.05,
+      "size": 5000,
+      "p": 0.05,
+      "estimand": "presented",
+      "certificationRate": 0,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 464.5575
+    },
+    {
+      "alpha": 0.05,
+      "size": 5000,
+      "p": 0.05,
+      "estimand": "reuse-set",
+      "certificationRate": 0,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 461.25
+    },
+    {
+      "alpha": 0.05,
+      "size": 5000,
+      "p": 0.0525,
+      "estimand": "presented",
+      "certificationRate": 0,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 381.6
+    },
+    {
+      "alpha": 0.05,
+      "size": 5000,
+      "p": 0.0525,
+      "estimand": "reuse-set",
+      "certificationRate": 0,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 389.745
+    },
+    {
+      "alpha": 0.05,
+      "size": 5000,
+      "p": 0.055,
+      "estimand": "presented",
+      "certificationRate": 0,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 299.7225
+    },
+    {
+      "alpha": 0.05,
+      "size": 5000,
+      "p": 0.055,
+      "estimand": "reuse-set",
+      "certificationRate": 0,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 332.9325
+    },
+    {
+      "alpha": 0.05,
+      "size": 5000,
+      "p": 0.0625,
+      "estimand": "presented",
+      "certificationRate": 0,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 176.1075
+    },
+    {
+      "alpha": 0.05,
+      "size": 5000,
+      "p": 0.0625,
+      "estimand": "reuse-set",
+      "certificationRate": 0,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 192.96
+    },
+    {
+      "alpha": 0.05,
+      "size": 5000,
+      "p": 0.08,
+      "estimand": "presented",
+      "certificationRate": 0,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 81.135
+    },
+    {
+      "alpha": 0.05,
+      "size": 5000,
+      "p": 0.08,
+      "estimand": "reuse-set",
+      "certificationRate": 0,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 82.3725
+    },
+    {
+      "alpha": 0.05,
+      "size": 5000,
+      "p": 0.15,
+      "estimand": "presented",
+      "certificationRate": 0,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 45.9225
+    },
+    {
+      "alpha": 0.05,
+      "size": 5000,
+      "p": 0.15,
+      "estimand": "reuse-set",
+      "certificationRate": 0,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 46.3725
+    },
+    {
+      "alpha": 0.1,
+      "size": 600,
+      "p": 0,
+      "estimand": "presented",
+      "certificationRate": 1,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 180
+    },
+    {
+      "alpha": 0.1,
+      "size": 600,
+      "p": 0,
+      "estimand": "reuse-set",
+      "certificationRate": 1,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 180
+    },
+    {
+      "alpha": 0.1,
+      "size": 600,
+      "p": 0.005,
+      "estimand": "presented",
+      "certificationRate": 1,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 220.32
+    },
+    {
+      "alpha": 0.1,
+      "size": 600,
+      "p": 0.005,
+      "estimand": "reuse-set",
+      "certificationRate": 0.4035,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 430.53
+    },
+    {
+      "alpha": 0.1,
+      "size": 600,
+      "p": 0.01,
+      "estimand": "presented",
+      "certificationRate": 1,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 276.48
+    },
+    {
+      "alpha": 0.1,
+      "size": 600,
+      "p": 0.01,
+      "estimand": "reuse-set",
+      "certificationRate": 0.156,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 534.48
+    },
+    {
+      "alpha": 0.1,
+      "size": 600,
+      "p": 0.02,
+      "estimand": "presented",
+      "certificationRate": 0.9675,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 344.9925
+    },
+    {
+      "alpha": 0.1,
+      "size": 600,
+      "p": 0.02,
+      "estimand": "reuse-set",
+      "certificationRate": 0.0245,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 588.6
+    },
+    {
+      "alpha": 0.1,
+      "size": 600,
+      "p": 0.04,
+      "estimand": "presented",
+      "certificationRate": 0.303,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 506.3175
+    },
+    {
+      "alpha": 0.1,
+      "size": 600,
+      "p": 0.04,
+      "estimand": "reuse-set",
+      "certificationRate": 0.0005,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 582.3525
+    },
+    {
+      "alpha": 0.1,
+      "size": 600,
+      "p": 0.05,
+      "estimand": "presented",
+      "certificationRate": 0.0715,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 536.1075
+    },
+    {
+      "alpha": 0.1,
+      "size": 600,
+      "p": 0.05,
+      "estimand": "reuse-set",
+      "certificationRate": 0,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 556.2825
+    },
+    {
+      "alpha": 0.1,
+      "size": 600,
+      "p": 0.08,
+      "estimand": "presented",
+      "certificationRate": 0,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 401.9025
+    },
+    {
+      "alpha": 0.1,
+      "size": 600,
+      "p": 0.08,
+      "estimand": "reuse-set",
+      "certificationRate": 0,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 408.48
+    },
+    {
+      "alpha": 0.1,
+      "size": 600,
+      "p": 0.105,
+      "estimand": "presented",
+      "certificationRate": 0,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 207.4875
+    },
+    {
+      "alpha": 0.1,
+      "size": 600,
+      "p": 0.105,
+      "estimand": "reuse-set",
+      "certificationRate": 0,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 203.1975
+    },
+    {
+      "alpha": 0.1,
+      "size": 600,
+      "p": 0.11,
+      "estimand": "presented",
+      "certificationRate": 0,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 168.0975
+    },
+    {
+      "alpha": 0.1,
+      "size": 600,
+      "p": 0.11,
+      "estimand": "reuse-set",
+      "certificationRate": 0,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 165.7425
+    },
+    {
+      "alpha": 0.1,
+      "size": 600,
+      "p": 0.125,
+      "estimand": "presented",
+      "certificationRate": 0,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 102.5175
+    },
+    {
+      "alpha": 0.1,
+      "size": 600,
+      "p": 0.125,
+      "estimand": "reuse-set",
+      "certificationRate": 0,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 106.8075
+    },
+    {
+      "alpha": 0.1,
+      "size": 600,
+      "p": 0.15,
+      "estimand": "presented",
+      "certificationRate": 0,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 62.58
+    },
+    {
+      "alpha": 0.1,
+      "size": 600,
+      "p": 0.15,
+      "estimand": "reuse-set",
+      "certificationRate": 0,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 62.19
+    },
+    {
+      "alpha": 0.1,
+      "size": 1800,
+      "p": 0,
+      "estimand": "presented",
+      "certificationRate": 1,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 180
+    },
+    {
+      "alpha": 0.1,
+      "size": 1800,
+      "p": 0,
+      "estimand": "reuse-set",
+      "certificationRate": 1,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 180
+    },
+    {
+      "alpha": 0.1,
+      "size": 1800,
+      "p": 0.005,
+      "estimand": "presented",
+      "certificationRate": 1,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 223.47
+    },
+    {
+      "alpha": 0.1,
+      "size": 1800,
+      "p": 0.005,
+      "estimand": "reuse-set",
+      "certificationRate": 1,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 286.83
+    },
+    {
+      "alpha": 0.1,
+      "size": 1800,
+      "p": 0.01,
+      "estimand": "presented",
+      "certificationRate": 0.999,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 275.355
+    },
+    {
+      "alpha": 0.1,
+      "size": 1800,
+      "p": 0.01,
+      "estimand": "reuse-set",
+      "certificationRate": 0.999,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 342.27
+    },
+    {
+      "alpha": 0.1,
+      "size": 1800,
+      "p": 0.02,
+      "estimand": "presented",
+      "certificationRate": 0.997,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 356.085
+    },
+    {
+      "alpha": 0.1,
+      "size": 1800,
+      "p": 0.02,
+      "estimand": "reuse-set",
+      "certificationRate": 0.779,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 659.97
+    },
+    {
+      "alpha": 0.1,
+      "size": 1800,
+      "p": 0.04,
+      "estimand": "presented",
+      "certificationRate": 0.967,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 636.7275
+    },
+    {
+      "alpha": 0.1,
+      "size": 1800,
+      "p": 0.04,
+      "estimand": "reuse-set",
+      "certificationRate": 0.0245,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 1370.115
+    },
+    {
+      "alpha": 0.1,
+      "size": 1800,
+      "p": 0.05,
+      "estimand": "presented",
+      "certificationRate": 0.933,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0.0005359056806002144,
+      "avgSampled": 834.4125
+    },
+    {
+      "alpha": 0.1,
+      "size": 1800,
+      "p": 0.05,
+      "estimand": "reuse-set",
+      "certificationRate": 0.0015,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 1326.285
+    },
+    {
+      "alpha": 0.1,
+      "size": 1800,
+      "p": 0.08,
+      "estimand": "presented",
+      "certificationRate": 0.057,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0.03508771929824561,
+      "avgSampled": 910.755
+    },
+    {
+      "alpha": 0.1,
+      "size": 1800,
+      "p": 0.08,
+      "estimand": "reuse-set",
+      "certificationRate": 0,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 904.3875
+    },
+    {
+      "alpha": 0.1,
+      "size": 1800,
+      "p": 0.105,
+      "estimand": "presented",
+      "certificationRate": 0,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 318.69
+    },
+    {
+      "alpha": 0.1,
+      "size": 1800,
+      "p": 0.105,
+      "estimand": "reuse-set",
+      "certificationRate": 0,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 313.5825
+    },
+    {
+      "alpha": 0.1,
+      "size": 1800,
+      "p": 0.11,
+      "estimand": "presented",
+      "certificationRate": 0,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 235.7325
+    },
+    {
+      "alpha": 0.1,
+      "size": 1800,
+      "p": 0.11,
+      "estimand": "reuse-set",
+      "certificationRate": 0,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 242.7075
+    },
+    {
+      "alpha": 0.1,
+      "size": 1800,
+      "p": 0.125,
+      "estimand": "presented",
+      "certificationRate": 0,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 117.7875
+    },
+    {
+      "alpha": 0.1,
+      "size": 1800,
+      "p": 0.125,
+      "estimand": "reuse-set",
+      "certificationRate": 0,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 108.99
+    },
+    {
+      "alpha": 0.1,
+      "size": 1800,
+      "p": 0.15,
+      "estimand": "presented",
+      "certificationRate": 0,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 63.585
+    },
+    {
+      "alpha": 0.1,
+      "size": 1800,
+      "p": 0.15,
+      "estimand": "reuse-set",
+      "certificationRate": 0,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 63.855
+    },
+    {
+      "alpha": 0.1,
+      "size": 5000,
+      "p": 0,
+      "estimand": "presented",
+      "certificationRate": 1,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 180
+    },
+    {
+      "alpha": 0.1,
+      "size": 5000,
+      "p": 0,
+      "estimand": "reuse-set",
+      "certificationRate": 1,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 180
+    },
+    {
+      "alpha": 0.1,
+      "size": 5000,
+      "p": 0.005,
+      "estimand": "presented",
+      "certificationRate": 1,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 222.3
+    },
+    {
+      "alpha": 0.1,
+      "size": 5000,
+      "p": 0.005,
+      "estimand": "reuse-set",
+      "certificationRate": 1,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 219.78
+    },
+    {
+      "alpha": 0.1,
+      "size": 5000,
+      "p": 0.01,
+      "estimand": "presented",
+      "certificationRate": 1,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 276.3
+    },
+    {
+      "alpha": 0.1,
+      "size": 5000,
+      "p": 0.01,
+      "estimand": "reuse-set",
+      "certificationRate": 1,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 277.83
+    },
+    {
+      "alpha": 0.1,
+      "size": 5000,
+      "p": 0.02,
+      "estimand": "presented",
+      "certificationRate": 0.9955,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 361.1925
+    },
+    {
+      "alpha": 0.1,
+      "size": 5000,
+      "p": 0.02,
+      "estimand": "reuse-set",
+      "certificationRate": 0.9975,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 378.3825
+    },
+    {
+      "alpha": 0.1,
+      "size": 5000,
+      "p": 0.04,
+      "estimand": "presented",
+      "certificationRate": 0.9645,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 628.155
+    },
+    {
+      "alpha": 0.1,
+      "size": 5000,
+      "p": 0.04,
+      "estimand": "reuse-set",
+      "certificationRate": 0.809,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 900.18
+    },
+    {
+      "alpha": 0.1,
+      "size": 5000,
+      "p": 0.05,
+      "estimand": "presented",
+      "certificationRate": 0.916,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 827.91
+    },
+    {
+      "alpha": 0.1,
+      "size": 5000,
+      "p": 0.05,
+      "estimand": "reuse-set",
+      "certificationRate": 0.2255,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 1212.2325
+    },
+    {
+      "alpha": 0.1,
+      "size": 5000,
+      "p": 0.08,
+      "estimand": "presented",
+      "certificationRate": 0.0595,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 911.5425
+    },
+    {
+      "alpha": 0.1,
+      "size": 5000,
+      "p": 0.08,
+      "estimand": "reuse-set",
+      "certificationRate": 0.0005,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 913.86
+    },
+    {
+      "alpha": 0.1,
+      "size": 5000,
+      "p": 0.105,
+      "estimand": "presented",
+      "certificationRate": 0,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 328.68
+    },
+    {
+      "alpha": 0.1,
+      "size": 5000,
+      "p": 0.105,
+      "estimand": "reuse-set",
+      "certificationRate": 0,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 314.955
+    },
+    {
+      "alpha": 0.1,
+      "size": 5000,
+      "p": 0.11,
+      "estimand": "presented",
+      "certificationRate": 0,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 243.99
+    },
+    {
+      "alpha": 0.1,
+      "size": 5000,
+      "p": 0.11,
+      "estimand": "reuse-set",
+      "certificationRate": 0,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 253.4625
+    },
+    {
+      "alpha": 0.1,
+      "size": 5000,
+      "p": 0.125,
+      "estimand": "presented",
+      "certificationRate": 0,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 118.17
+    },
+    {
+      "alpha": 0.1,
+      "size": 5000,
+      "p": 0.125,
+      "estimand": "reuse-set",
+      "certificationRate": 0,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 110.115
+    },
+    {
+      "alpha": 0.1,
+      "size": 5000,
+      "p": 0.15,
+      "estimand": "presented",
+      "certificationRate": 0,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 64.35
+    },
+    {
+      "alpha": 0.1,
+      "size": 5000,
+      "p": 0.15,
+      "estimand": "reuse-set",
+      "certificationRate": 0,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 61.6725
+    },
+    {
+      "alpha": 0.2,
+      "size": 600,
+      "p": 0,
+      "estimand": "presented",
+      "certificationRate": 1,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 90
+    },
+    {
+      "alpha": 0.2,
+      "size": 600,
+      "p": 0,
+      "estimand": "reuse-set",
+      "certificationRate": 1,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 90
+    },
+    {
+      "alpha": 0.2,
+      "size": 600,
+      "p": 0.005,
+      "estimand": "presented",
+      "certificationRate": 1,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 96.435
+    },
+    {
+      "alpha": 0.2,
+      "size": 600,
+      "p": 0.005,
+      "estimand": "reuse-set",
+      "certificationRate": 1,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 122.355
+    },
+    {
+      "alpha": 0.2,
+      "size": 600,
+      "p": 0.01,
+      "estimand": "presented",
+      "certificationRate": 1,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 110.025
+    },
+    {
+      "alpha": 0.2,
+      "size": 600,
+      "p": 0.01,
+      "estimand": "reuse-set",
+      "certificationRate": 0.9945,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 147.57
+    },
+    {
+      "alpha": 0.2,
+      "size": 600,
+      "p": 0.02,
+      "estimand": "presented",
+      "certificationRate": 1,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 138.42
+    },
+    {
+      "alpha": 0.2,
+      "size": 600,
+      "p": 0.02,
+      "estimand": "reuse-set",
+      "certificationRate": 0.8655,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 223.935
+    },
+    {
+      "alpha": 0.2,
+      "size": 600,
+      "p": 0.04,
+      "estimand": "presented",
+      "certificationRate": 1,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 174.825
+    },
+    {
+      "alpha": 0.2,
+      "size": 600,
+      "p": 0.04,
+      "estimand": "reuse-set",
+      "certificationRate": 0.278,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 481.53
+    },
+    {
+      "alpha": 0.2,
+      "size": 600,
+      "p": 0.05,
+      "estimand": "presented",
+      "certificationRate": 1,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 195.12
+    },
+    {
+      "alpha": 0.2,
+      "size": 600,
+      "p": 0.05,
+      "estimand": "reuse-set",
+      "certificationRate": 0.1205,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 548.58
+    },
+    {
+      "alpha": 0.2,
+      "size": 600,
+      "p": 0.08,
+      "estimand": "presented",
+      "certificationRate": 0.9845,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 304.2525
+    },
+    {
+      "alpha": 0.2,
+      "size": 600,
+      "p": 0.08,
+      "estimand": "reuse-set",
+      "certificationRate": 0.003,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 597.075
+    },
+    {
+      "alpha": 0.2,
+      "size": 600,
+      "p": 0.15,
+      "estimand": "presented",
+      "certificationRate": 0.021,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 507.93
+    },
+    {
+      "alpha": 0.2,
+      "size": 600,
+      "p": 0.15,
+      "estimand": "reuse-set",
+      "certificationRate": 0,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 513.6525
+    },
+    {
+      "alpha": 0.2,
+      "size": 600,
+      "p": 0.21,
+      "estimand": "presented",
+      "certificationRate": 0,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 186.75
+    },
+    {
+      "alpha": 0.2,
+      "size": 600,
+      "p": 0.21,
+      "estimand": "reuse-set",
+      "certificationRate": 0,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 186.6825
+    },
+    {
+      "alpha": 0.2,
+      "size": 600,
+      "p": 0.22,
+      "estimand": "presented",
+      "certificationRate": 0,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 141.0375
+    },
+    {
+      "alpha": 0.2,
+      "size": 600,
+      "p": 0.22,
+      "estimand": "reuse-set",
+      "certificationRate": 0,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 145.6725
+    },
+    {
+      "alpha": 0.2,
+      "size": 600,
+      "p": 0.25,
+      "estimand": "presented",
+      "certificationRate": 0,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 75.315
+    },
+    {
+      "alpha": 0.2,
+      "size": 600,
+      "p": 0.25,
+      "estimand": "reuse-set",
+      "certificationRate": 0,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 77.6025
+    },
+    {
+      "alpha": 0.2,
+      "size": 1800,
+      "p": 0,
+      "estimand": "presented",
+      "certificationRate": 1,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 90
+    },
+    {
+      "alpha": 0.2,
+      "size": 1800,
+      "p": 0,
+      "estimand": "reuse-set",
+      "certificationRate": 1,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 90
+    },
+    {
+      "alpha": 0.2,
+      "size": 1800,
+      "p": 0.005,
+      "estimand": "presented",
+      "certificationRate": 1,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 96.435
+    },
+    {
+      "alpha": 0.2,
+      "size": 1800,
+      "p": 0.005,
+      "estimand": "reuse-set",
+      "certificationRate": 1,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 121.725
+    },
+    {
+      "alpha": 0.2,
+      "size": 1800,
+      "p": 0.01,
+      "estimand": "presented",
+      "certificationRate": 1,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 111.42
+    },
+    {
+      "alpha": 0.2,
+      "size": 1800,
+      "p": 0.01,
+      "estimand": "reuse-set",
+      "certificationRate": 1,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 143.55
+    },
+    {
+      "alpha": 0.2,
+      "size": 1800,
+      "p": 0.02,
+      "estimand": "presented",
+      "certificationRate": 1,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 137.61
+    },
+    {
+      "alpha": 0.2,
+      "size": 1800,
+      "p": 0.02,
+      "estimand": "reuse-set",
+      "certificationRate": 1,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 166.77
+    },
+    {
+      "alpha": 0.2,
+      "size": 1800,
+      "p": 0.04,
+      "estimand": "presented",
+      "certificationRate": 1,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 175.41
+    },
+    {
+      "alpha": 0.2,
+      "size": 1800,
+      "p": 0.04,
+      "estimand": "reuse-set",
+      "certificationRate": 1,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 209.385
+    },
+    {
+      "alpha": 0.2,
+      "size": 1800,
+      "p": 0.05,
+      "estimand": "presented",
+      "certificationRate": 1,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 195.66
+    },
+    {
+      "alpha": 0.2,
+      "size": 1800,
+      "p": 0.05,
+      "estimand": "reuse-set",
+      "certificationRate": 0.997,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 259.11
+    },
+    {
+      "alpha": 0.2,
+      "size": 1800,
+      "p": 0.08,
+      "estimand": "presented",
+      "certificationRate": 0.9985,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 315.8325
+    },
+    {
+      "alpha": 0.2,
+      "size": 1800,
+      "p": 0.08,
+      "estimand": "reuse-set",
+      "certificationRate": 0.457,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 932.04
+    },
+    {
+      "alpha": 0.2,
+      "size": 1800,
+      "p": 0.15,
+      "estimand": "presented",
+      "certificationRate": 0.722,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0.002077562326869806,
+      "avgSampled": 1052.145
+    },
+    {
+      "alpha": 0.2,
+      "size": 1800,
+      "p": 0.15,
+      "estimand": "reuse-set",
+      "certificationRate": 0,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 1195.8975
+    },
+    {
+      "alpha": 0.2,
+      "size": 1800,
+      "p": 0.21,
+      "estimand": "presented",
+      "certificationRate": 0,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 291.42
+    },
+    {
+      "alpha": 0.2,
+      "size": 1800,
+      "p": 0.21,
+      "estimand": "reuse-set",
+      "certificationRate": 0,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 292.5
+    },
+    {
+      "alpha": 0.2,
+      "size": 1800,
+      "p": 0.22,
+      "estimand": "presented",
+      "certificationRate": 0,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 181.7775
+    },
+    {
+      "alpha": 0.2,
+      "size": 1800,
+      "p": 0.22,
+      "estimand": "reuse-set",
+      "certificationRate": 0,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 191.925
+    },
+    {
+      "alpha": 0.2,
+      "size": 1800,
+      "p": 0.25,
+      "estimand": "presented",
+      "certificationRate": 0,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 77.58
+    },
+    {
+      "alpha": 0.2,
+      "size": 1800,
+      "p": 0.25,
+      "estimand": "reuse-set",
+      "certificationRate": 0,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 77.175
+    },
+    {
+      "alpha": 0.2,
+      "size": 5000,
+      "p": 0,
+      "estimand": "presented",
+      "certificationRate": 1,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 90
+    },
+    {
+      "alpha": 0.2,
+      "size": 5000,
+      "p": 0,
+      "estimand": "reuse-set",
+      "certificationRate": 1,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 90
+    },
+    {
+      "alpha": 0.2,
+      "size": 5000,
+      "p": 0.005,
+      "estimand": "presented",
+      "certificationRate": 1,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 97.245
+    },
+    {
+      "alpha": 0.2,
+      "size": 5000,
+      "p": 0.005,
+      "estimand": "reuse-set",
+      "certificationRate": 1,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 97.2
+    },
+    {
+      "alpha": 0.2,
+      "size": 5000,
+      "p": 0.01,
+      "estimand": "presented",
+      "certificationRate": 1,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 110.16
+    },
+    {
+      "alpha": 0.2,
+      "size": 5000,
+      "p": 0.01,
+      "estimand": "reuse-set",
+      "certificationRate": 1,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 110.745
+    },
+    {
+      "alpha": 0.2,
+      "size": 5000,
+      "p": 0.02,
+      "estimand": "presented",
+      "certificationRate": 1,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 139.275
+    },
+    {
+      "alpha": 0.2,
+      "size": 5000,
+      "p": 0.02,
+      "estimand": "reuse-set",
+      "certificationRate": 1,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 138.15
+    },
+    {
+      "alpha": 0.2,
+      "size": 5000,
+      "p": 0.04,
+      "estimand": "presented",
+      "certificationRate": 1,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 174.015
+    },
+    {
+      "alpha": 0.2,
+      "size": 5000,
+      "p": 0.04,
+      "estimand": "reuse-set",
+      "certificationRate": 1,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 182.34
+    },
+    {
+      "alpha": 0.2,
+      "size": 5000,
+      "p": 0.05,
+      "estimand": "presented",
+      "certificationRate": 1,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 196.065
+    },
+    {
+      "alpha": 0.2,
+      "size": 5000,
+      "p": 0.05,
+      "estimand": "reuse-set",
+      "certificationRate": 1,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 209.925
+    },
+    {
+      "alpha": 0.2,
+      "size": 5000,
+      "p": 0.08,
+      "estimand": "presented",
+      "certificationRate": 0.997,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 310.995
+    },
+    {
+      "alpha": 0.2,
+      "size": 5000,
+      "p": 0.08,
+      "estimand": "reuse-set",
+      "certificationRate": 0.9985,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 356.5575
+    },
+    {
+      "alpha": 0.2,
+      "size": 5000,
+      "p": 0.15,
+      "estimand": "presented",
+      "certificationRate": 0.7085,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 1058.8725
+    },
+    {
+      "alpha": 0.2,
+      "size": 5000,
+      "p": 0.15,
+      "estimand": "reuse-set",
+      "certificationRate": 0.0025,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 1208.9475
+    },
+    {
+      "alpha": 0.2,
+      "size": 5000,
+      "p": 0.21,
+      "estimand": "presented",
+      "certificationRate": 0,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 299.8575
+    },
+    {
+      "alpha": 0.2,
+      "size": 5000,
+      "p": 0.21,
+      "estimand": "reuse-set",
+      "certificationRate": 0,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 297.495
+    },
+    {
+      "alpha": 0.2,
+      "size": 5000,
+      "p": 0.22,
+      "estimand": "presented",
+      "certificationRate": 0,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 173.9025
+    },
+    {
+      "alpha": 0.2,
+      "size": 5000,
+      "p": 0.22,
+      "estimand": "reuse-set",
+      "certificationRate": 0,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 177.795
+    },
+    {
+      "alpha": 0.2,
+      "size": 5000,
+      "p": 0.25,
+      "estimand": "presented",
+      "certificationRate": 0,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 79.425
+    },
+    {
+      "alpha": 0.2,
+      "size": 5000,
+      "p": 0.25,
+      "estimand": "reuse-set",
+      "certificationRate": 0,
+      "violationRatePresented": 0,
+      "violationRateReuseSet": 0,
+      "avgSampled": 82.4175
+    }
+  ]
+}

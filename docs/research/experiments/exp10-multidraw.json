@@ -1,0 +1,10 @@
+{
+  "experiment": "exp10-multidraw",
+  "pair": "SO formatting (lab v1->v2)",
+  "draws": 3,
+  "n": 2000,
+  "singleDrawFlipRate": 0.06,
+  "vote3FlipRate": 0.063,
+  "labelDisagreementRate": 0.048,
+  "wallMs": 2059748
+}

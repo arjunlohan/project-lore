@@ -1,0 +1,1107 @@
+{
+  "experiment": "exp15-betting-calibration",
+  "note": "validity of the WSR betting bound as implemented, against the same pinned procedure; nulls planted just above each budget. Compared head to head with Maurer-Pontil on identical planted data.",
+  "trials": 2000,
+  "perStratumDelta": 0.05,
+  "summary": {
+    "eb": {
+      "worstNullCertificationRate": 0,
+      "nullsExceedingDelta": 0,
+      "nullConfigurations": 18,
+      "worstViolationRate": 0,
+      "certRateAtCleanBig": 1,
+      "avgSampledAtCleanBig": 360
+    },
+    "betting": {
+      "worstNullCertificationRate": 0.025,
+      "nullsExceedingDelta": 0,
+      "nullConfigurations": 18,
+      "worstViolationRate": 1,
+      "certRateAtCleanBig": 1,
+      "avgSampledAtCleanBig": 180
+    }
+  },
+  "results": [
+    {
+      "bound": "eb",
+      "alpha": 0.05,
+      "size": 600,
+      "p": 0,
+      "isNull": false,
+      "certificationRate": 1,
+      "certificationCi": [
+        0.9980828823994872,
+        1
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "avgSampled": 360
+    },
+    {
+      "bound": "eb",
+      "alpha": 0.05,
+      "size": 600,
+      "p": 0.02,
+      "isNull": false,
+      "certificationRate": 0.0045,
+      "certificationCi": [
+        0.0023692536086107156,
+        0.008530609933497604
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "avgSampled": 559.515
+    },
+    {
+      "bound": "eb",
+      "alpha": 0.05,
+      "size": 600,
+      "p": 0.04,
+      "isNull": false,
+      "certificationRate": 0,
+      "certificationCi": [
+        0,
+        0.0019171176005129348
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "avgSampled": 367.6125
+    },
+    {
+      "bound": "eb",
+      "alpha": 0.05,
+      "size": 600,
+      "p": 0.0525,
+      "isNull": true,
+      "certificationRate": 0,
+      "certificationCi": [
+        0,
+        0.0019171176005129348
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "avgSampled": 221.8125
+    },
+    {
+      "bound": "eb",
+      "alpha": 0.05,
+      "size": 600,
+      "p": 0.0625,
+      "isNull": true,
+      "certificationRate": 0,
+      "certificationCi": [
+        0,
+        0.0019171176005129348
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "avgSampled": 145.86
+    },
+    {
+      "bound": "eb",
+      "alpha": 0.05,
+      "size": 600,
+      "p": 0.1,
+      "isNull": true,
+      "certificationRate": 0,
+      "certificationCi": [
+        0,
+        0.0019171176005129348
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "avgSampled": 56.67
+    },
+    {
+      "bound": "eb",
+      "alpha": 0.05,
+      "size": 1800,
+      "p": 0,
+      "isNull": false,
+      "certificationRate": 1,
+      "certificationCi": [
+        0.9980828823994872,
+        1
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "avgSampled": 360
+    },
+    {
+      "bound": "eb",
+      "alpha": 0.05,
+      "size": 1800,
+      "p": 0.02,
+      "isNull": false,
+      "certificationRate": 0.887,
+      "certificationCi": [
+        0.8723762504573735,
+        0.9001399005198295
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "avgSampled": 1161.4275
+    },
+    {
+      "bound": "eb",
+      "alpha": 0.05,
+      "size": 1800,
+      "p": 0.04,
+      "isNull": false,
+      "certificationRate": 0.0005,
+      "certificationCi": [
+        0.00008826546015058273,
+        0.0028269350227618393
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "avgSampled": 833.1975
+    },
+    {
+      "bound": "eb",
+      "alpha": 0.05,
+      "size": 1800,
+      "p": 0.0525,
+      "isNull": true,
+      "certificationRate": 0,
+      "certificationCi": [
+        0,
+        0.0019171176005129348
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "avgSampled": 395.82
+    },
+    {
+      "bound": "eb",
+      "alpha": 0.05,
+      "size": 1800,
+      "p": 0.0625,
+      "isNull": true,
+      "certificationRate": 0,
+      "certificationCi": [
+        0,
+        0.0019171176005129348
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "avgSampled": 170.9775
+    },
+    {
+      "bound": "eb",
+      "alpha": 0.05,
+      "size": 1800,
+      "p": 0.1,
+      "isNull": true,
+      "certificationRate": 0,
+      "certificationCi": [
+        0,
+        0.0019171176005129348
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "avgSampled": 55.8675
+    },
+    {
+      "bound": "eb",
+      "alpha": 0.1,
+      "size": 600,
+      "p": 0,
+      "isNull": false,
+      "certificationRate": 1,
+      "certificationCi": [
+        0.9980828823994872,
+        1
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "avgSampled": 180
+    },
+    {
+      "bound": "eb",
+      "alpha": 0.1,
+      "size": 600,
+      "p": 0.04,
+      "isNull": false,
+      "certificationRate": 0.3065,
+      "certificationCi": [
+        0.28668096927289755,
+        0.32706095523850093
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "avgSampled": 509.7825
+    },
+    {
+      "bound": "eb",
+      "alpha": 0.1,
+      "size": 600,
+      "p": 0.08,
+      "isNull": false,
+      "certificationRate": 0,
+      "certificationCi": [
+        0,
+        0.0019171176005129348
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "avgSampled": 398.04
+    },
+    {
+      "bound": "eb",
+      "alpha": 0.1,
+      "size": 600,
+      "p": 0.105,
+      "isNull": true,
+      "certificationRate": 0,
+      "certificationCi": [
+        0,
+        0.0019171176005129348
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "avgSampled": 200.1225
+    },
+    {
+      "bound": "eb",
+      "alpha": 0.1,
+      "size": 600,
+      "p": 0.125,
+      "isNull": true,
+      "certificationRate": 0,
+      "certificationCi": [
+        0,
+        0.0019171176005129348
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "avgSampled": 105.765
+    },
+    {
+      "bound": "eb",
+      "alpha": 0.1,
+      "size": 600,
+      "p": 0.2,
+      "isNull": true,
+      "certificationRate": 0,
+      "certificationCi": [
+        0,
+        0.0019171176005129348
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "avgSampled": 46.9575
+    },
+    {
+      "bound": "eb",
+      "alpha": 0.1,
+      "size": 1800,
+      "p": 0,
+      "isNull": false,
+      "certificationRate": 1,
+      "certificationCi": [
+        0.9980828823994872,
+        1
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "avgSampled": 180
+    },
+    {
+      "bound": "eb",
+      "alpha": 0.1,
+      "size": 1800,
+      "p": 0.04,
+      "isNull": false,
+      "certificationRate": 0.9675,
+      "certificationCi": [
+        0.9587880815196924,
+        0.9744194135238281
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "avgSampled": 638.7075
+    },
+    {
+      "bound": "eb",
+      "alpha": 0.1,
+      "size": 1800,
+      "p": 0.08,
+      "isNull": false,
+      "certificationRate": 0.046,
+      "certificationCi": [
+        0.03765688480093504,
+        0.056083857980330706
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "avgSampled": 901.53
+    },
+    {
+      "bound": "eb",
+      "alpha": 0.1,
+      "size": 1800,
+      "p": 0.105,
+      "isNull": true,
+      "certificationRate": 0,
+      "certificationCi": [
+        0,
+        0.0019171176005129348
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "avgSampled": 319.275
+    },
+    {
+      "bound": "eb",
+      "alpha": 0.1,
+      "size": 1800,
+      "p": 0.125,
+      "isNull": true,
+      "certificationRate": 0,
+      "certificationCi": [
+        0,
+        0.0019171176005129348
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "avgSampled": 112.5
+    },
+    {
+      "bound": "eb",
+      "alpha": 0.1,
+      "size": 1800,
+      "p": 0.2,
+      "isNull": true,
+      "certificationRate": 0,
+      "certificationCi": [
+        0,
+        0.0019171176005129348
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "avgSampled": 47.115
+    },
+    {
+      "bound": "eb",
+      "alpha": 0.2,
+      "size": 600,
+      "p": 0,
+      "isNull": false,
+      "certificationRate": 1,
+      "certificationCi": [
+        0.9980828823994872,
+        1
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "avgSampled": 90
+    },
+    {
+      "bound": "eb",
+      "alpha": 0.2,
+      "size": 600,
+      "p": 0.08,
+      "isNull": false,
+      "certificationRate": 0.9895,
+      "certificationCi": [
+        0.9840009764885571,
+        0.9931221653805409
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "avgSampled": 310.1175
+    },
+    {
+      "bound": "eb",
+      "alpha": 0.2,
+      "size": 600,
+      "p": 0.16,
+      "isNull": false,
+      "certificationRate": 0.0045,
+      "certificationCi": [
+        0.0023692536086107156,
+        0.008530609933497604
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "avgSampled": 469.11
+    },
+    {
+      "bound": "eb",
+      "alpha": 0.2,
+      "size": 600,
+      "p": 0.21,
+      "isNull": true,
+      "certificationRate": 0,
+      "certificationCi": [
+        0,
+        0.0019171176005129348
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "avgSampled": 194.295
+    },
+    {
+      "bound": "eb",
+      "alpha": 0.2,
+      "size": 600,
+      "p": 0.25,
+      "isNull": true,
+      "certificationRate": 0,
+      "certificationCi": [
+        0,
+        0.0019171176005129348
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "avgSampled": 78.69
+    },
+    {
+      "bound": "eb",
+      "alpha": 0.2,
+      "size": 600,
+      "p": 0.4,
+      "isNull": true,
+      "certificationRate": 0,
+      "certificationCi": [
+        0,
+        0.0019171176005129348
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "avgSampled": 45.18
+    },
+    {
+      "bound": "eb",
+      "alpha": 0.2,
+      "size": 1800,
+      "p": 0,
+      "isNull": false,
+      "certificationRate": 1,
+      "certificationCi": [
+        0.9980828823994872,
+        1
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "avgSampled": 90
+    },
+    {
+      "bound": "eb",
+      "alpha": 0.2,
+      "size": 1800,
+      "p": 0.08,
+      "isNull": false,
+      "certificationRate": 0.9955,
+      "certificationCi": [
+        0.9914693900665025,
+        0.9976307463913894
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "avgSampled": 309.9825
+    },
+    {
+      "bound": "eb",
+      "alpha": 0.2,
+      "size": 1800,
+      "p": 0.16,
+      "isNull": false,
+      "certificationRate": 0.419,
+      "certificationCi": [
+        0.3975514603493293,
+        0.4407591127019538
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "avgSampled": 1080.045
+    },
+    {
+      "bound": "eb",
+      "alpha": 0.2,
+      "size": 1800,
+      "p": 0.21,
+      "isNull": true,
+      "certificationRate": 0,
+      "certificationCi": [
+        0,
+        0.0019171176005129348
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "avgSampled": 272.3625
+    },
+    {
+      "bound": "eb",
+      "alpha": 0.2,
+      "size": 1800,
+      "p": 0.25,
+      "isNull": true,
+      "certificationRate": 0,
+      "certificationCi": [
+        0,
+        0.0019171176005129348
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "avgSampled": 80.82
+    },
+    {
+      "bound": "eb",
+      "alpha": 0.2,
+      "size": 1800,
+      "p": 0.4,
+      "isNull": true,
+      "certificationRate": 0,
+      "certificationCi": [
+        0,
+        0.0019171176005129348
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "avgSampled": 45.18
+    },
+    {
+      "bound": "betting",
+      "alpha": 0.05,
+      "size": 600,
+      "p": 0,
+      "isNull": false,
+      "certificationRate": 1,
+      "certificationCi": [
+        0.9980828823994872,
+        1
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "avgSampled": 180
+    },
+    {
+      "bound": "betting",
+      "alpha": 0.05,
+      "size": 600,
+      "p": 0.02,
+      "isNull": false,
+      "certificationRate": 0.7425,
+      "certificationCi": [
+        0.7228841972749136,
+        0.7611860006888377
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "avgSampled": 311.28
+    },
+    {
+      "bound": "betting",
+      "alpha": 0.05,
+      "size": 600,
+      "p": 0.04,
+      "isNull": false,
+      "certificationRate": 0.113,
+      "certificationCi": [
+        0.0998600994801706,
+        0.12762374954262642
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "avgSampled": 336.975
+    },
+    {
+      "bound": "betting",
+      "alpha": 0.05,
+      "size": 600,
+      "p": 0.0525,
+      "isNull": true,
+      "certificationRate": 0.012,
+      "certificationCi": [
+        0.008077096183779808,
+        0.017794010594320817
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0.041666666666666664,
+      "avgSampled": 216.195
+    },
+    {
+      "bound": "betting",
+      "alpha": 0.05,
+      "size": 600,
+      "p": 0.0625,
+      "isNull": true,
+      "certificationRate": 0.0045,
+      "certificationCi": [
+        0.0023692536086107156,
+        0.008530609933497604
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0.2222222222222222,
+      "avgSampled": 144.375
+    },
+    {
+      "bound": "betting",
+      "alpha": 0.05,
+      "size": 600,
+      "p": 0.1,
+      "isNull": true,
+      "certificationRate": 0,
+      "certificationCi": [
+        0,
+        0.0019171176005129348
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "avgSampled": 55.3725
+    },
+    {
+      "bound": "betting",
+      "alpha": 0.05,
+      "size": 1800,
+      "p": 0,
+      "isNull": false,
+      "certificationRate": 1,
+      "certificationCi": [
+        0.9980828823994872,
+        1
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "avgSampled": 180
+    },
+    {
+      "bound": "betting",
+      "alpha": 0.05,
+      "size": 1800,
+      "p": 0.02,
+      "isNull": false,
+      "certificationRate": 0.924,
+      "certificationCi": [
+        0.911555787775863,
+        0.9348184964989021
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "avgSampled": 343.8
+    },
+    {
+      "bound": "betting",
+      "alpha": 0.05,
+      "size": 1800,
+      "p": 0.04,
+      "isNull": false,
+      "certificationRate": 0.2275,
+      "certificationCi": [
+        0.20965956201002323,
+        0.24638526708225636
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "avgSampled": 674.7975
+    },
+    {
+      "bound": "betting",
+      "alpha": 0.05,
+      "size": 1800,
+      "p": 0.0525,
+      "isNull": true,
+      "certificationRate": 0.019,
+      "certificationCi": [
+        0.013873705235344511,
+        0.025970561896348936
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0.13157894736842105,
+      "avgSampled": 383.445
+    },
+    {
+      "bound": "betting",
+      "alpha": 0.05,
+      "size": 1800,
+      "p": 0.0625,
+      "isNull": true,
+      "certificationRate": 0.0045,
+      "certificationCi": [
+        0.0023692536086107156,
+        0.008530609933497604
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0.7777777777777778,
+      "avgSampled": 170.4825
+    },
+    {
+      "bound": "betting",
+      "alpha": 0.05,
+      "size": 1800,
+      "p": 0.1,
+      "isNull": true,
+      "certificationRate": 0,
+      "certificationCi": [
+        0,
+        0.0019171176005129348
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "avgSampled": 56.475
+    },
+    {
+      "bound": "betting",
+      "alpha": 0.1,
+      "size": 600,
+      "p": 0,
+      "isNull": false,
+      "certificationRate": 1,
+      "certificationCi": [
+        0.9980828823994872,
+        1
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "avgSampled": 90
+    },
+    {
+      "bound": "betting",
+      "alpha": 0.1,
+      "size": 600,
+      "p": 0.04,
+      "isNull": false,
+      "certificationRate": 0.9345,
+      "certificationCi": [
+        0.9228023836751214,
+        0.944531641130033
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "avgSampled": 187.4925
+    },
+    {
+      "bound": "betting",
+      "alpha": 0.1,
+      "size": 600,
+      "p": 0.08,
+      "isNull": false,
+      "certificationRate": 0.1595,
+      "certificationCi": [
+        0.1441080153452353,
+        0.17619754174071403
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "avgSampled": 329.4825
+    },
+    {
+      "bound": "betting",
+      "alpha": 0.1,
+      "size": 600,
+      "p": 0.105,
+      "isNull": true,
+      "certificationRate": 0.0205,
+      "certificationCi": [
+        0.01514707507911523,
+        0.027691440699776682
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0.04878048780487805,
+      "avgSampled": 193.905
+    },
+    {
+      "bound": "betting",
+      "alpha": 0.1,
+      "size": 600,
+      "p": 0.125,
+      "isNull": true,
+      "certificationRate": 0.002,
+      "certificationCi": [
+        0.0007780147254709095,
+        0.005131434404639974
+      ],
+      "exceedsDelta": false,
+      "violationRate": 1,
+      "avgSampled": 101.0625
+    },
+    {
+      "bound": "betting",
+      "alpha": 0.1,
+      "size": 600,
+      "p": 0.2,
+      "isNull": true,
+      "certificationRate": 0,
+      "certificationCi": [
+        0,
+        0.0019171176005129348
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "avgSampled": 47.07
+    },
+    {
+      "bound": "betting",
+      "alpha": 0.1,
+      "size": 1800,
+      "p": 0,
+      "isNull": false,
+      "certificationRate": 1,
+      "certificationCi": [
+        0.9980828823994872,
+        1
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "avgSampled": 90
+    },
+    {
+      "bound": "betting",
+      "alpha": 0.1,
+      "size": 1800,
+      "p": 0.04,
+      "isNull": false,
+      "certificationRate": 0.967,
+      "certificationCi": [
+        0.9582320514487254,
+        0.9739773607123955
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "avgSampled": 188.145
+    },
+    {
+      "bound": "betting",
+      "alpha": 0.1,
+      "size": 1800,
+      "p": 0.08,
+      "isNull": false,
+      "certificationRate": 0.322,
+      "certificationCi": [
+        0.3018802133435833,
+        0.3428022805221993
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "avgSampled": 695.565
+    },
+    {
+      "bound": "betting",
+      "alpha": 0.1,
+      "size": 1800,
+      "p": 0.105,
+      "isNull": true,
+      "certificationRate": 0.025,
+      "certificationCi": [
+        0.019014328222153373,
+        0.032806933498333926
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0.38,
+      "avgSampled": 284.3325
+    },
+    {
+      "bound": "betting",
+      "alpha": 0.1,
+      "size": 1800,
+      "p": 0.125,
+      "isNull": true,
+      "certificationRate": 0.0045,
+      "certificationCi": [
+        0.0023692536086107156,
+        0.008530609933497604
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0.8888888888888888,
+      "avgSampled": 108.4275
+    },
+    {
+      "bound": "betting",
+      "alpha": 0.1,
+      "size": 1800,
+      "p": 0.2,
+      "isNull": true,
+      "certificationRate": 0,
+      "certificationCi": [
+        0,
+        0.0019171176005129348
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "avgSampled": 47.205
+    },
+    {
+      "bound": "betting",
+      "alpha": 0.2,
+      "size": 600,
+      "p": 0,
+      "isNull": false,
+      "certificationRate": 1,
+      "certificationCi": [
+        0.9980828823994872,
+        1
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "avgSampled": 45
+    },
+    {
+      "bound": "betting",
+      "alpha": 0.2,
+      "size": 600,
+      "p": 0.08,
+      "isNull": false,
+      "certificationRate": 0.997,
+      "certificationCi": [
+        0.9934699962513177,
+        0.9986243888537725
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "avgSampled": 93.42
+    },
+    {
+      "bound": "betting",
+      "alpha": 0.2,
+      "size": 600,
+      "p": 0.16,
+      "isNull": false,
+      "certificationRate": 0.2975,
+      "certificationCi": [
+        0.27786781900464125,
+        0.3179086136235664
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "avgSampled": 349.7325
+    },
+    {
+      "bound": "betting",
+      "alpha": 0.2,
+      "size": 600,
+      "p": 0.21,
+      "isNull": true,
+      "certificationRate": 0.0215,
+      "certificationCi": [
+        0.01600069407034465,
+        0.02883398747334623
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0.27906976744186046,
+      "avgSampled": 176.715
+    },
+    {
+      "bound": "betting",
+      "alpha": 0.2,
+      "size": 600,
+      "p": 0.25,
+      "isNull": true,
+      "certificationRate": 0.002,
+      "certificationCi": [
+        0.0007780147254709095,
+        0.005131434404639974
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0.75,
+      "avgSampled": 74.1525
+    },
+    {
+      "bound": "betting",
+      "alpha": 0.2,
+      "size": 600,
+      "p": 0.4,
+      "isNull": true,
+      "certificationRate": 0,
+      "certificationCi": [
+        0,
+        0.0019171176005129348
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "avgSampled": 45.135
+    },
+    {
+      "bound": "betting",
+      "alpha": 0.2,
+      "size": 1800,
+      "p": 0,
+      "isNull": false,
+      "certificationRate": 1,
+      "certificationCi": [
+        0.9980828823994872,
+        1
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "avgSampled": 45
+    },
+    {
+      "bound": "betting",
+      "alpha": 0.2,
+      "size": 1800,
+      "p": 0.08,
+      "isNull": false,
+      "certificationRate": 0.998,
+      "certificationCi": [
+        0.9948685655953601,
+        0.9992219852745291
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "avgSampled": 90.72
+    },
+    {
+      "bound": "betting",
+      "alpha": 0.2,
+      "size": 1800,
+      "p": 0.16,
+      "isNull": false,
+      "certificationRate": 0.645,
+      "certificationCi": [
+        0.6237685152192952,
+        0.6656755206765561
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "avgSampled": 638.235
+    },
+    {
+      "bound": "betting",
+      "alpha": 0.2,
+      "size": 1800,
+      "p": 0.21,
+      "isNull": true,
+      "certificationRate": 0.0185,
+      "certificationCi": [
+        0.013451271532792346,
+        0.025394912716501614
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0.5675675675675675,
+      "avgSampled": 271.0125
+    },
+    {
+      "bound": "betting",
+      "alpha": 0.2,
+      "size": 1800,
+      "p": 0.25,
+      "isNull": true,
+      "certificationRate": 0.002,
+      "certificationCi": [
+        0.0007780147254709095,
+        0.005131434404639974
+      ],
+      "exceedsDelta": false,
+      "violationRate": 1,
+      "avgSampled": 73.7325
+    },
+    {
+      "bound": "betting",
+      "alpha": 0.2,
+      "size": 1800,
+      "p": 0.4,
+      "isNull": true,
+      "certificationRate": 0,
+      "certificationCi": [
+        0,
+        0.0019171176005129348
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "avgSampled": 45.1575
+    }
+  ],
+  "wallMs": 21464
+}

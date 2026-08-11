@@ -1,0 +1,407 @@
+{
+  "experiment": "exp5-embed-stratifier",
+  "alphas": [
+    0.05,
+    0.1,
+    0.2
+  ],
+  "delta": 0.1,
+  "results": [
+    {
+      "label": "synonym-rewording (embed)",
+      "n": 2000,
+      "sweeps": [
+        {
+          "alpha": 0.05,
+          "oracleCalls": 377,
+          "reused": 0,
+          "falseReused": 0,
+          "realizedFalseReuse": 0,
+          "savings": 0,
+          "strata": [
+            {
+              "stratumId": "v=false|e=high",
+              "size": 649,
+              "sampled": 45,
+              "flips": 3,
+              "empiricalFlipRate": 0.06666666666666667,
+              "upperBound": 0.5404055031032178,
+              "certified": false
+            },
+            {
+              "stratumId": "v=false|e=mid",
+              "size": 615,
+              "sampled": 45,
+              "flips": 3,
+              "empiricalFlipRate": 0.06666666666666667,
+              "upperBound": 0.5404055031032178,
+              "certified": false
+            },
+            {
+              "stratumId": "v=false|e=low",
+              "size": 568,
+              "sampled": 180,
+              "flips": 12,
+              "empiricalFlipRate": 0.06666666666666667,
+              "upperBound": 0.21674098474049572,
+              "certified": false
+            },
+            {
+              "stratumId": "v=true|e=low",
+              "size": 99,
+              "sampled": 45,
+              "flips": 13,
+              "empiricalFlipRate": 0.28888888888888886,
+              "upperBound": 0.8354735036522516,
+              "certified": false
+            },
+            {
+              "stratumId": "v=true|e=mid",
+              "size": 52,
+              "sampled": 45,
+              "flips": 17,
+              "empiricalFlipRate": 0.37777777777777777,
+              "upperBound": 0.9104064937154321,
+              "certified": false
+            },
+            {
+              "stratumId": "v=true|e=high",
+              "size": 17,
+              "sampled": 17,
+              "flips": 9,
+              "empiricalFlipRate": 0.5294117647058824,
+              "upperBound": 1,
+              "certified": false
+            }
+          ]
+        },
+        {
+          "alpha": 0.1,
+          "oracleCalls": 1939,
+          "reused": 0,
+          "falseReused": 0,
+          "realizedFalseReuse": 0,
+          "savings": 0,
+          "strata": [
+            {
+              "stratumId": "v=false|e=high",
+              "size": 649,
+              "sampled": 649,
+              "flips": 32,
+              "empiricalFlipRate": 0.04930662557781202,
+              "upperBound": 0.1027627248532278,
+              "certified": false
+            },
+            {
+              "stratumId": "v=false|e=mid",
+              "size": 615,
+              "sampled": 615,
+              "flips": 51,
+              "empiricalFlipRate": 0.08292682926829269,
+              "upperBound": 0.14704416293176745,
+              "certified": false
+            },
+            {
+              "stratumId": "v=false|e=low",
+              "size": 568,
+              "sampled": 568,
+              "flips": 40,
+              "empiricalFlipRate": 0.07042253521126761,
+              "upperBound": 0.1351806664104331,
+              "certified": false
+            },
+            {
+              "stratumId": "v=true|e=low",
+              "size": 99,
+              "sampled": 45,
+              "flips": 13,
+              "empiricalFlipRate": 0.28888888888888886,
+              "upperBound": 0.8354735036522516,
+              "certified": false
+            },
+            {
+              "stratumId": "v=true|e=mid",
+              "size": 52,
+              "sampled": 45,
+              "flips": 17,
+              "empiricalFlipRate": 0.37777777777777777,
+              "upperBound": 0.9104064937154321,
+              "certified": false
+            },
+            {
+              "stratumId": "v=true|e=high",
+              "size": 17,
+              "sampled": 17,
+              "flips": 9,
+              "empiricalFlipRate": 0.5294117647058824,
+              "upperBound": 1,
+              "certified": false
+            }
+          ]
+        },
+        {
+          "alpha": 0.2,
+          "oracleCalls": 1187,
+          "reused": 752,
+          "falseReused": 52,
+          "realizedFalseReuse": 0.06914893617021277,
+          "savings": 0.376,
+          "strata": [
+            {
+              "stratumId": "v=false|e=high",
+              "size": 649,
+              "sampled": 360,
+              "flips": 17,
+              "empiricalFlipRate": 0.04722222222222222,
+              "upperBound": 0.1288419239694422,
+              "certified": true
+            },
+            {
+              "stratumId": "v=false|e=mid",
+              "size": 615,
+              "sampled": 360,
+              "flips": 31,
+              "empiricalFlipRate": 0.08611111111111111,
+              "upperBound": 0.1806459744488674,
+              "certified": true
+            },
+            {
+              "stratumId": "v=false|e=low",
+              "size": 568,
+              "sampled": 360,
+              "flips": 23,
+              "empiricalFlipRate": 0.06388888888888888,
+              "upperBound": 0.1516327784126099,
+              "certified": true
+            },
+            {
+              "stratumId": "v=true|e=low",
+              "size": 99,
+              "sampled": 45,
+              "flips": 13,
+              "empiricalFlipRate": 0.28888888888888886,
+              "upperBound": 0.8354735036522516,
+              "certified": false
+            },
+            {
+              "stratumId": "v=true|e=mid",
+              "size": 52,
+              "sampled": 45,
+              "flips": 17,
+              "empiricalFlipRate": 0.37777777777777777,
+              "upperBound": 0.9104064937154321,
+              "certified": false
+            },
+            {
+              "stratumId": "v=true|e=high",
+              "size": 17,
+              "sampled": 17,
+              "flips": 9,
+              "empiricalFlipRate": 0.5294117647058824,
+              "upperBound": 1,
+              "certified": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "scope-widening (embed)",
+      "n": 2000,
+      "sweeps": [
+        {
+          "alpha": 0.05,
+          "oracleCalls": 1424,
+          "reused": 0,
+          "falseReused": 0,
+          "realizedFalseReuse": 0,
+          "savings": 0,
+          "strata": [
+            {
+              "stratumId": "v=false|e=low",
+              "size": 642,
+              "sampled": 642,
+              "flips": 22,
+              "empiricalFlipRate": 0.03426791277258567,
+              "upperBound": 0.08325430751647475,
+              "certified": false
+            },
+            {
+              "stratumId": "v=false|e=mid",
+              "size": 639,
+              "sampled": 639,
+              "flips": 21,
+              "empiricalFlipRate": 0.03286384976525822,
+              "upperBound": 0.08150515130521438,
+              "certified": false
+            },
+            {
+              "stratumId": "v=false|e=high",
+              "size": 520,
+              "sampled": 45,
+              "flips": 3,
+              "empiricalFlipRate": 0.06666666666666667,
+              "upperBound": 0.5404055031032177,
+              "certified": false
+            },
+            {
+              "stratumId": "v=true|e=high",
+              "size": 146,
+              "sampled": 45,
+              "flips": 15,
+              "empiricalFlipRate": 0.3333333333333333,
+              "upperBound": 0.8893103963966082,
+              "certified": false
+            },
+            {
+              "stratumId": "v=true|e=mid",
+              "size": 28,
+              "sampled": 28,
+              "flips": 15,
+              "empiricalFlipRate": 0.5357142857142857,
+              "upperBound": 1,
+              "certified": false
+            },
+            {
+              "stratumId": "v=true|e=low",
+              "size": 25,
+              "sampled": 25,
+              "flips": 16,
+              "empiricalFlipRate": 0.64,
+              "upperBound": 1,
+              "certified": false
+            }
+          ]
+        },
+        {
+          "alpha": 0.1,
+          "oracleCalls": 1457,
+          "reused": 282,
+          "falseReused": 14,
+          "realizedFalseReuse": 0.04964539007092199,
+          "savings": 0.14100000000000001,
+          "strata": [
+            {
+              "stratumId": "v=false|e=low",
+              "size": 642,
+              "sampled": 360,
+              "flips": 8,
+              "empiricalFlipRate": 0.022222222222222223,
+              "upperBound": 0.09162635910223557,
+              "certified": true
+            },
+            {
+              "stratumId": "v=false|e=mid",
+              "size": 639,
+              "sampled": 639,
+              "flips": 21,
+              "empiricalFlipRate": 0.03286384976525822,
+              "upperBound": 0.08150515130521438,
+              "certified": true
+            },
+            {
+              "stratumId": "v=false|e=high",
+              "size": 520,
+              "sampled": 360,
+              "flips": 40,
+              "empiricalFlipRate": 0.1111111111111111,
+              "upperBound": 0.21201568368028145,
+              "certified": false
+            },
+            {
+              "stratumId": "v=true|e=high",
+              "size": 146,
+              "sampled": 45,
+              "flips": 15,
+              "empiricalFlipRate": 0.3333333333333333,
+              "upperBound": 0.8893103963966082,
+              "certified": false
+            },
+            {
+              "stratumId": "v=true|e=mid",
+              "size": 28,
+              "sampled": 28,
+              "flips": 15,
+              "empiricalFlipRate": 0.5357142857142857,
+              "upperBound": 1,
+              "certified": false
+            },
+            {
+              "stratumId": "v=true|e=low",
+              "size": 25,
+              "sampled": 25,
+              "flips": 16,
+              "empiricalFlipRate": 0.64,
+              "upperBound": 1,
+              "certified": false
+            }
+          ]
+        },
+        {
+          "alpha": 0.2,
+          "oracleCalls": 978,
+          "reused": 921,
+          "falseReused": 30,
+          "realizedFalseReuse": 0.03257328990228013,
+          "savings": 0.4605,
+          "strata": [
+            {
+              "stratumId": "v=false|e=low",
+              "size": 642,
+              "sampled": 180,
+              "flips": 6,
+              "empiricalFlipRate": 0.03333333333333333,
+              "upperBound": 0.1647098931067039,
+              "certified": true
+            },
+            {
+              "stratumId": "v=false|e=mid",
+              "size": 639,
+              "sampled": 180,
+              "flips": 7,
+              "empiricalFlipRate": 0.03888888888888889,
+              "upperBound": 0.17396141763828687,
+              "certified": true
+            },
+            {
+              "stratumId": "v=false|e=high",
+              "size": 520,
+              "sampled": 520,
+              "flips": 55,
+              "empiricalFlipRate": 0.10576923076923077,
+              "upperBound": 0.18281474833542738,
+              "certified": true
+            },
+            {
+              "stratumId": "v=true|e=high",
+              "size": 146,
+              "sampled": 45,
+              "flips": 15,
+              "empiricalFlipRate": 0.3333333333333333,
+              "upperBound": 0.8893103963966082,
+              "certified": false
+            },
+            {
+              "stratumId": "v=true|e=mid",
+              "size": 28,
+              "sampled": 28,
+              "flips": 15,
+              "empiricalFlipRate": 0.5357142857142857,
+              "upperBound": 1,
+              "certified": false
+            },
+            {
+              "stratumId": "v=true|e=low",
+              "size": 25,
+              "sampled": 25,
+              "flips": 16,
+              "empiricalFlipRate": 0.64,
+              "upperBound": 1,
+              "certified": false
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

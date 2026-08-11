@@ -1,0 +1,165 @@
+{
+  "experiment": "exp7-baselines",
+  "results": [
+    {
+      "label": "formatting-only",
+      "flipRate": 0.06,
+      "aucInteraction": 0.40756648936170214,
+      "aucVcache": 0.4676595744680851,
+      "vcacheSimRange": [
+        0.9608828945475721,
+        0.9859162553031959
+      ],
+      "aggregate": {
+        "alpha0.05": {
+          "certified": false,
+          "sampled": 90,
+          "reused": 0,
+          "realized": 0,
+          "realizedTrueSubgroup": null,
+          "savings": 0
+        },
+        "alpha0.1": {
+          "certified": true,
+          "sampled": 1440,
+          "reused": 560,
+          "realized": 0.060714285714285714,
+          "realizedTrueSubgroup": 0.4523809523809524,
+          "savings": 0.28
+        },
+        "alpha0.2": {
+          "certified": true,
+          "sampled": 180,
+          "reused": 1820,
+          "realized": 0.05989010989010989,
+          "realizedTrueSubgroup": 0.3609467455621302,
+          "savings": 0.91
+        }
+      },
+      "b3": {
+        "meanPromptSimilarity": 0.9751592562997002,
+        "simRange": [
+          0.9608828945475721,
+          0.9859162553031959
+        ],
+        "tauSweep": [
+          {
+            "tau": 0.9,
+            "reusedFraction": 1,
+            "realizedErrorAmongReused": 0.06
+          },
+          {
+            "tau": 0.94,
+            "reusedFraction": 1,
+            "realizedErrorAmongReused": 0.06
+          },
+          {
+            "tau": 0.95,
+            "reusedFraction": 1,
+            "realizedErrorAmongReused": 0.06
+          },
+          {
+            "tau": 0.96,
+            "reusedFraction": 1,
+            "realizedErrorAmongReused": 0.06
+          },
+          {
+            "tau": 0.97,
+            "reusedFraction": 0.9105,
+            "realizedErrorAmongReused": 0.06315211422295441
+          },
+          {
+            "tau": 0.98,
+            "reusedFraction": 0.104,
+            "realizedErrorAmongReused": 0.04807692307692308
+          },
+          {
+            "tau": 0.99,
+            "reusedFraction": 0,
+            "realizedErrorAmongReused": 0
+          }
+        ]
+      }
+    },
+    {
+      "label": "scope-widening",
+      "flipRate": 0.0945,
+      "aucInteraction": 0.6690711378729048,
+      "aucVcache": 0.4986925870415655,
+      "vcacheSimRange": [
+        0.9396043481227191,
+        0.9666858942839621
+      ],
+      "aggregate": {
+        "alpha0.05": {
+          "certified": false,
+          "sampled": 45,
+          "reused": 0,
+          "realized": 0,
+          "realizedTrueSubgroup": null,
+          "savings": 0
+        },
+        "alpha0.1": {
+          "certified": false,
+          "sampled": 45,
+          "reused": 0,
+          "realized": 0,
+          "realizedTrueSubgroup": null,
+          "savings": 0
+        },
+        "alpha0.2": {
+          "certified": true,
+          "sampled": 720,
+          "reused": 1280,
+          "realized": 0.09453125,
+          "realizedTrueSubgroup": 0.4411764705882353,
+          "savings": 0.64
+        }
+      },
+      "b3": {
+        "meanPromptSimilarity": 0.9540923437561764,
+        "simRange": [
+          0.9396043481227191,
+          0.9666858942839621
+        ],
+        "tauSweep": [
+          {
+            "tau": 0.9,
+            "reusedFraction": 1,
+            "realizedErrorAmongReused": 0.0945
+          },
+          {
+            "tau": 0.94,
+            "reusedFraction": 0.999,
+            "realizedErrorAmongReused": 0.0945945945945946
+          },
+          {
+            "tau": 0.95,
+            "reusedFraction": 0.8415,
+            "realizedErrorAmongReused": 0.09863339275103981
+          },
+          {
+            "tau": 0.96,
+            "reusedFraction": 0.0815,
+            "realizedErrorAmongReused": 0.07975460122699386
+          },
+          {
+            "tau": 0.97,
+            "reusedFraction": 0,
+            "realizedErrorAmongReused": 0
+          },
+          {
+            "tau": 0.98,
+            "reusedFraction": 0,
+            "realizedErrorAmongReused": 0
+          },
+          {
+            "tau": 0.99,
+            "reusedFraction": 0,
+            "realizedErrorAmongReused": 0
+          }
+        ]
+      }
+    }
+  ]
+}

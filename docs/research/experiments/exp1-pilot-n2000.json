@@ -1,0 +1,114 @@
+{
+  "experiment": "exp1-pilot",
+  "column": "Data-platform specialist?",
+  "edit": "v1 strict -> v2 scope-widening (analytics-engineering evidence)",
+  "n": 2000,
+  "trueFlipRate": 0.0945,
+  "trueFlips": 189,
+  "model": "deepseek/deepseek-v4-flash-0731",
+  "delta": 0.1,
+  "seed": 42,
+  "baselines": {
+    "fullRecompute": {
+      "cost": 2000,
+      "error": 0
+    },
+    "blindReuse": {
+      "cost": 0,
+      "error": 0.0945
+    }
+  },
+  "sweeps": [
+    {
+      "alpha": 0.05,
+      "delta": 0.1,
+      "sampled": 348,
+      "reused": 0,
+      "recompute": 1652,
+      "falseReused": 0,
+      "realizedFalseReuse": 0,
+      "savings": 0,
+      "strata": [
+        {
+          "stratumId": "v=false|o=3+",
+          "size": 1801,
+          "sampled": 174,
+          "flips": 13,
+          "empiricalFlipRate": 0.07471264367816093,
+          "upperBound": 0.1787631550834047,
+          "certified": false
+        },
+        {
+          "stratumId": "v=true|o=3+",
+          "size": 199,
+          "sampled": 174,
+          "flips": 76,
+          "empiricalFlipRate": 0.4367816091954023,
+          "upperBound": 0.5889611760920198,
+          "certified": false
+        }
+      ]
+    },
+    {
+      "alpha": 0.1,
+      "delta": 0.1,
+      "sampled": 176,
+      "reused": 0,
+      "recompute": 1824,
+      "falseReused": 0,
+      "realizedFalseReuse": 0,
+      "savings": 0,
+      "strata": [
+        {
+          "stratumId": "v=false|o=3+",
+          "size": 1801,
+          "sampled": 88,
+          "flips": 7,
+          "empiricalFlipRate": 0.07954545454545454,
+          "upperBound": 0.2572782413274609,
+          "certified": false
+        },
+        {
+          "stratumId": "v=true|o=3+",
+          "size": 199,
+          "sampled": 88,
+          "flips": 34,
+          "empiricalFlipRate": 0.38636363636363635,
+          "upperBound": 0.6270925833076286,
+          "certified": false
+        }
+      ]
+    },
+    {
+      "alpha": 0.2,
+      "delta": 0.1,
+      "sampled": 90,
+      "reused": 0,
+      "recompute": 1910,
+      "falseReused": 0,
+      "realizedFalseReuse": 0,
+      "savings": 0,
+      "strata": [
+        {
+          "stratumId": "v=false|o=3+",
+          "size": 1801,
+          "sampled": 45,
+          "flips": 3,
+          "empiricalFlipRate": 0.06666666666666667,
+          "upperBound": 0.36443207158765784,
+          "certified": false
+        },
+        {
+          "stratumId": "v=true|o=3+",
+          "size": 199,
+          "sampled": 45,
+          "flips": 15,
+          "empiricalFlipRate": 0.3333333333333333,
+          "upperBound": 0.7219878726536144,
+          "certified": false
+        }
+      ]
+    }
+  ],
+  "wallMs": 1720886
+}

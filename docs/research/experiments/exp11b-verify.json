@@ -1,0 +1,32 @@
+{
+  "experiment": "exp11b-verify",
+  "note": "reproducible audit of deployment realized error; labels restricted to the released n=2000 vector and to oracle-computed v2 cells (status done/cached), excluding certificate copies",
+  "labelVectorSize": 2000,
+  "excludedCertificateCopies": 78603,
+  "sweeps": [
+    {
+      "alpha": 0.2,
+      "auditedRowsAll": 2159,
+      "flipsAll": 65,
+      "realizedErrorAll": 0.030106530801296896,
+      "auditedRows": 1807,
+      "flips": 58,
+      "realizedError": 0.032097399003873824,
+      "certifiedStrata": [
+        "v=false|o=0"
+      ]
+    },
+    {
+      "alpha": 0.1,
+      "auditedRowsAll": 2146,
+      "flipsAll": 65,
+      "realizedErrorAll": 0.030288909599254427,
+      "auditedRows": 1794,
+      "flips": 58,
+      "realizedError": 0.032329988851727984,
+      "certifiedStrata": [
+        "v=false|o=0"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "experiment": "exp4-vote3",
+  "column": "lab formatting pair v1->v2",
+  "stratum": "cached TRUE",
+  "n": 186,
+  "validPairs": 186,
+  "singleShotFlipRate": 0.3709677419354839,
+  "vote3FlipRate": 0.24731182795698925,
+  "vote3ConfirmsStoredTrue": 0.7956989247311828,
+  "ebUpperAtDelta05": 0.3799983673278349,
+  "certifiableAt": {
+    "alpha01": false,
+    "alpha02": false
+  },
+  "approxCalls": 1116,
+  "wallMs": 379385
+}

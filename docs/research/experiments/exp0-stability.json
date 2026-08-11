@@ -1,0 +1,24 @@
+{
+  "experiment": "exp0-stability",
+  "model": "deepseek/deepseek-v4-flash-0731",
+  "prompt": "v2",
+  "n": 200,
+  "seed": 43,
+  "regimes": {
+    "default-T": {
+      "valid": 200,
+      "selfFlipRate": 0.095,
+      "positiveInvolvedPairs": 29,
+      "positivePairFlipRate": 0.6551724137931034
+    },
+    "T0": {
+      "valid": 200,
+      "selfFlipRate": 0.03,
+      "positiveInvolvedPairs": 18,
+      "positivePairFlipRate": 0.3333333333333333
+    }
+  },
+  "approxCalls": 800,
+  "approxCostUsd": 0.07728,
+  "wallMs": 378483
+}

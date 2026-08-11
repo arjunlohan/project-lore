@@ -1,0 +1,750 @@
+{
+  "experiment": "exp14-bounds",
+  "note": "Maurer-Pontil vs WSR betting confidence sequence vs Bardenet-Maillard WoR, swapped inside the pinned procedure over identical stored labels; tests the proof sketch's un-measured claim that betting/WoR are not uniformly tighter here",
+  "delta": 0.1,
+  "schedule": {
+    "n0": 45,
+    "maxLooks": 6
+  },
+  "cleanSampleAtN90": {
+    "n": 90,
+    "perLookDelta": 0.008333333333333333,
+    "eb": 0.14368716278424695,
+    "betting": 0.065,
+    "wor": 0.16584632439449268
+  },
+  "summaryByBound": {
+    "eb": {
+      "configurationsCertifying": 7,
+      "totalConfigurations": 20,
+      "meanSavings": 0.18465,
+      "totalOracle": 11515
+    },
+    "betting": {
+      "configurationsCertifying": 9,
+      "totalConfigurations": 20,
+      "meanSavings": 0.29147500000000004,
+      "totalOracle": 7616
+    },
+    "wor": {
+      "configurationsCertifying": 8,
+      "totalConfigurations": 20,
+      "meanSavings": 0.19410000000000002,
+      "totalOracle": 11137
+    }
+  },
+  "results": [
+    {
+      "pair": "so-formatting",
+      "alpha": 0.02,
+      "bound": "eb",
+      "n": 2000,
+      "oracle": 225,
+      "reused": 0,
+      "certifiedStrata": [],
+      "savings": 0,
+      "realizedPresented": null
+    },
+    {
+      "pair": "so-formatting",
+      "alpha": 0.02,
+      "bound": "betting",
+      "n": 2000,
+      "oracle": 225,
+      "reused": 0,
+      "certifiedStrata": [],
+      "savings": 0,
+      "realizedPresented": null
+    },
+    {
+      "pair": "so-formatting",
+      "alpha": 0.02,
+      "bound": "wor",
+      "n": 2000,
+      "oracle": 225,
+      "reused": 0,
+      "certifiedStrata": [],
+      "savings": 0,
+      "realizedPresented": null
+    },
+    {
+      "pair": "so-formatting",
+      "alpha": 0.05,
+      "bound": "eb",
+      "n": 2000,
+      "oracle": 1485,
+      "reused": 0,
+      "certifiedStrata": [],
+      "savings": 0,
+      "realizedPresented": null
+    },
+    {
+      "pair": "so-formatting",
+      "alpha": 0.05,
+      "bound": "betting",
+      "n": 2000,
+      "oracle": 1485,
+      "reused": 374,
+      "certifiedStrata": [
+        "v=false|all"
+      ],
+      "savings": 0.187,
+      "realizedPresented": 0.005512679162072767
+    },
+    {
+      "pair": "so-formatting",
+      "alpha": 0.05,
+      "bound": "wor",
+      "n": 2000,
+      "oracle": 1485,
+      "reused": 0,
+      "certifiedStrata": [],
+      "savings": 0,
+      "realizedPresented": null
+    },
+    {
+      "pair": "so-formatting",
+      "alpha": 0.1,
+      "bound": "eb",
+      "n": 2000,
+      "oracle": 765,
+      "reused": 1094,
+      "certifiedStrata": [
+        "v=false|all"
+      ],
+      "savings": 0.547,
+      "realizedPresented": 0.016538037486218304
+    },
+    {
+      "pair": "so-formatting",
+      "alpha": 0.1,
+      "bound": "betting",
+      "n": 2000,
+      "oracle": 135,
+      "reused": 1724,
+      "certifiedStrata": [
+        "v=false|all"
+      ],
+      "savings": 0.862,
+      "realizedPresented": 0.03197353914002205
+    },
+    {
+      "pair": "so-formatting",
+      "alpha": 0.1,
+      "bound": "wor",
+      "n": 2000,
+      "oracle": 765,
+      "reused": 1094,
+      "certifiedStrata": [
+        "v=false|all"
+      ],
+      "savings": 0.547,
+      "realizedPresented": 0.016538037486218304
+    },
+    {
+      "pair": "so-formatting",
+      "alpha": 0.2,
+      "bound": "eb",
+      "n": 2000,
+      "oracle": 135,
+      "reused": 1724,
+      "certifiedStrata": [
+        "v=false|all"
+      ],
+      "savings": 0.862,
+      "realizedPresented": 0.03197353914002205
+    },
+    {
+      "pair": "so-formatting",
+      "alpha": 0.2,
+      "bound": "betting",
+      "n": 2000,
+      "oracle": 90,
+      "reused": 1769,
+      "certifiedStrata": [
+        "v=false|all"
+      ],
+      "savings": 0.8845,
+      "realizedPresented": 0.03197353914002205
+    },
+    {
+      "pair": "so-formatting",
+      "alpha": 0.2,
+      "bound": "wor",
+      "n": 2000,
+      "oracle": 135,
+      "reused": 1724,
+      "certifiedStrata": [
+        "v=false|all"
+      ],
+      "savings": 0.862,
+      "realizedPresented": 0.03197353914002205
+    },
+    {
+      "pair": "so-synonym",
+      "alpha": 0.02,
+      "bound": "eb",
+      "n": 2000,
+      "oracle": 90,
+      "reused": 0,
+      "certifiedStrata": [],
+      "savings": 0,
+      "realizedPresented": null
+    },
+    {
+      "pair": "so-synonym",
+      "alpha": 0.02,
+      "bound": "betting",
+      "n": 2000,
+      "oracle": 90,
+      "reused": 0,
+      "certifiedStrata": [],
+      "savings": 0,
+      "realizedPresented": null
+    },
+    {
+      "pair": "so-synonym",
+      "alpha": 0.02,
+      "bound": "wor",
+      "n": 2000,
+      "oracle": 90,
+      "reused": 0,
+      "certifiedStrata": [],
+      "savings": 0,
+      "realizedPresented": null
+    },
+    {
+      "pair": "so-synonym",
+      "alpha": 0.05,
+      "bound": "eb",
+      "n": 2000,
+      "oracle": 90,
+      "reused": 0,
+      "certifiedStrata": [],
+      "savings": 0,
+      "realizedPresented": null
+    },
+    {
+      "pair": "so-synonym",
+      "alpha": 0.05,
+      "bound": "betting",
+      "n": 2000,
+      "oracle": 90,
+      "reused": 0,
+      "certifiedStrata": [],
+      "savings": 0,
+      "realizedPresented": null
+    },
+    {
+      "pair": "so-synonym",
+      "alpha": 0.05,
+      "bound": "wor",
+      "n": 2000,
+      "oracle": 90,
+      "reused": 0,
+      "certifiedStrata": [],
+      "savings": 0,
+      "realizedPresented": null
+    },
+    {
+      "pair": "so-synonym",
+      "alpha": 0.1,
+      "bound": "eb",
+      "n": 2000,
+      "oracle": 90,
+      "reused": 0,
+      "certifiedStrata": [],
+      "savings": 0,
+      "realizedPresented": null
+    },
+    {
+      "pair": "so-synonym",
+      "alpha": 0.1,
+      "bound": "betting",
+      "n": 2000,
+      "oracle": 90,
+      "reused": 0,
+      "certifiedStrata": [],
+      "savings": 0,
+      "realizedPresented": null
+    },
+    {
+      "pair": "so-synonym",
+      "alpha": 0.1,
+      "bound": "wor",
+      "n": 2000,
+      "oracle": 90,
+      "reused": 0,
+      "certifiedStrata": [],
+      "savings": 0,
+      "realizedPresented": null
+    },
+    {
+      "pair": "so-synonym",
+      "alpha": 0.2,
+      "bound": "eb",
+      "n": 2000,
+      "oracle": 225,
+      "reused": 1645,
+      "certifiedStrata": [
+        "v=false|all"
+      ],
+      "savings": 0.8225,
+      "realizedPresented": 0.05808219178082192
+    },
+    {
+      "pair": "so-synonym",
+      "alpha": 0.2,
+      "bound": "betting",
+      "n": 2000,
+      "oracle": 225,
+      "reused": 1645,
+      "certifiedStrata": [
+        "v=false|all"
+      ],
+      "savings": 0.8225,
+      "realizedPresented": 0.05808219178082192
+    },
+    {
+      "pair": "so-synonym",
+      "alpha": 0.2,
+      "bound": "wor",
+      "n": 2000,
+      "oracle": 405,
+      "reused": 1465,
+      "certifiedStrata": [
+        "v=false|all"
+      ],
+      "savings": 0.7325,
+      "realizedPresented": 0.05041095890410959
+    },
+    {
+      "pair": "so-widening",
+      "alpha": 0.02,
+      "bound": "eb",
+      "n": 2000,
+      "oracle": 90,
+      "reused": 0,
+      "certifiedStrata": [],
+      "savings": 0,
+      "realizedPresented": null
+    },
+    {
+      "pair": "so-widening",
+      "alpha": 0.02,
+      "bound": "betting",
+      "n": 2000,
+      "oracle": 90,
+      "reused": 0,
+      "certifiedStrata": [],
+      "savings": 0,
+      "realizedPresented": null
+    },
+    {
+      "pair": "so-widening",
+      "alpha": 0.02,
+      "bound": "wor",
+      "n": 2000,
+      "oracle": 90,
+      "reused": 0,
+      "certifiedStrata": [],
+      "savings": 0,
+      "realizedPresented": null
+    },
+    {
+      "pair": "so-widening",
+      "alpha": 0.05,
+      "bound": "eb",
+      "n": 2000,
+      "oracle": 765,
+      "reused": 0,
+      "certifiedStrata": [],
+      "savings": 0,
+      "realizedPresented": null
+    },
+    {
+      "pair": "so-widening",
+      "alpha": 0.05,
+      "bound": "betting",
+      "n": 2000,
+      "oracle": 765,
+      "reused": 0,
+      "certifiedStrata": [],
+      "savings": 0,
+      "realizedPresented": null
+    },
+    {
+      "pair": "so-widening",
+      "alpha": 0.05,
+      "bound": "wor",
+      "n": 2000,
+      "oracle": 765,
+      "reused": 0,
+      "certifiedStrata": [],
+      "savings": 0,
+      "realizedPresented": null
+    },
+    {
+      "pair": "so-widening",
+      "alpha": 0.1,
+      "bound": "eb",
+      "n": 2000,
+      "oracle": 1485,
+      "reused": 361,
+      "certifiedStrata": [
+        "v=false|all"
+      ],
+      "savings": 0.1805,
+      "realizedPresented": 0.010549694614103275
+    },
+    {
+      "pair": "so-widening",
+      "alpha": 0.1,
+      "bound": "betting",
+      "n": 2000,
+      "oracle": 405,
+      "reused": 1441,
+      "certifiedStrata": [
+        "v=false|all"
+      ],
+      "savings": 0.7205,
+      "realizedPresented": 0.044975013881177126
+    },
+    {
+      "pair": "so-widening",
+      "alpha": 0.1,
+      "bound": "wor",
+      "n": 2000,
+      "oracle": 765,
+      "reused": 1081,
+      "certifiedStrata": [
+        "v=false|all"
+      ],
+      "savings": 0.5405,
+      "realizedPresented": 0.03220433092726263
+    },
+    {
+      "pair": "so-widening",
+      "alpha": 0.2,
+      "bound": "eb",
+      "n": 2000,
+      "oracle": 225,
+      "reused": 1621,
+      "certifiedStrata": [
+        "v=false|all"
+      ],
+      "savings": 0.8105,
+      "realizedPresented": 0.049416990560799554
+    },
+    {
+      "pair": "so-widening",
+      "alpha": 0.2,
+      "bound": "betting",
+      "n": 2000,
+      "oracle": 90,
+      "reused": 1756,
+      "certifiedStrata": [
+        "v=false|all"
+      ],
+      "savings": 0.878,
+      "realizedPresented": 0.053303720155469185
+    },
+    {
+      "pair": "so-widening",
+      "alpha": 0.2,
+      "bound": "wor",
+      "n": 2000,
+      "oracle": 225,
+      "reused": 1621,
+      "certifiedStrata": [
+        "v=false|all"
+      ],
+      "savings": 0.8105,
+      "realizedPresented": 0.049416990560799554
+    },
+    {
+      "pair": "dj-formatting",
+      "alpha": 0.02,
+      "bound": "eb",
+      "n": 2000,
+      "oracle": 180,
+      "reused": 0,
+      "certifiedStrata": [],
+      "savings": 0,
+      "realizedPresented": null
+    },
+    {
+      "pair": "dj-formatting",
+      "alpha": 0.02,
+      "bound": "betting",
+      "n": 2000,
+      "oracle": 180,
+      "reused": 0,
+      "certifiedStrata": [],
+      "savings": 0,
+      "realizedPresented": null
+    },
+    {
+      "pair": "dj-formatting",
+      "alpha": 0.02,
+      "bound": "wor",
+      "n": 2000,
+      "oracle": 180,
+      "reused": 0,
+      "certifiedStrata": [],
+      "savings": 0,
+      "realizedPresented": null
+    },
+    {
+      "pair": "dj-formatting",
+      "alpha": 0.05,
+      "bound": "eb",
+      "n": 2000,
+      "oracle": 315,
+      "reused": 0,
+      "certifiedStrata": [],
+      "savings": 0,
+      "realizedPresented": null
+    },
+    {
+      "pair": "dj-formatting",
+      "alpha": 0.05,
+      "bound": "betting",
+      "n": 2000,
+      "oracle": 315,
+      "reused": 0,
+      "certifiedStrata": [],
+      "savings": 0,
+      "realizedPresented": null
+    },
+    {
+      "pair": "dj-formatting",
+      "alpha": 0.05,
+      "bound": "wor",
+      "n": 2000,
+      "oracle": 315,
+      "reused": 0,
+      "certifiedStrata": [],
+      "savings": 0,
+      "realizedPresented": null
+    },
+    {
+      "pair": "dj-formatting",
+      "alpha": 0.1,
+      "bound": "eb",
+      "n": 2000,
+      "oracle": 878,
+      "reused": 0,
+      "certifiedStrata": [],
+      "savings": 0,
+      "realizedPresented": null
+    },
+    {
+      "pair": "dj-formatting",
+      "alpha": 0.1,
+      "bound": "betting",
+      "n": 2000,
+      "oracle": 878,
+      "reused": 0,
+      "certifiedStrata": [],
+      "savings": 0,
+      "realizedPresented": null
+    },
+    {
+      "pair": "dj-formatting",
+      "alpha": 0.1,
+      "bound": "wor",
+      "n": 2000,
+      "oracle": 878,
+      "reused": 0,
+      "certifiedStrata": [],
+      "savings": 0,
+      "realizedPresented": null
+    },
+    {
+      "pair": "dj-formatting",
+      "alpha": 0.2,
+      "bound": "eb",
+      "n": 2000,
+      "oracle": 1617,
+      "reused": 383,
+      "certifiedStrata": [
+        "v=\"Junior\"|all"
+      ],
+      "savings": 0.1915,
+      "realizedPresented": 0.04172274562584118
+    },
+    {
+      "pair": "dj-formatting",
+      "alpha": 0.2,
+      "bound": "betting",
+      "n": 2000,
+      "oracle": 953,
+      "reused": 1047,
+      "certifiedStrata": [
+        "v=\"Junior\"|all",
+        "v=\"Senior\"|all"
+      ],
+      "savings": 0.5235,
+      "realizedPresented": 0.08333333333333333
+    },
+    {
+      "pair": "dj-formatting",
+      "alpha": 0.2,
+      "bound": "wor",
+      "n": 2000,
+      "oracle": 1617,
+      "reused": 383,
+      "certifiedStrata": [
+        "v=\"Junior\"|all"
+      ],
+      "savings": 0.1915,
+      "realizedPresented": 0.04172274562584118
+    },
+    {
+      "pair": "dj-criteria",
+      "alpha": 0.02,
+      "bound": "eb",
+      "n": 2000,
+      "oracle": 180,
+      "reused": 0,
+      "certifiedStrata": [],
+      "savings": 0,
+      "realizedPresented": null
+    },
+    {
+      "pair": "dj-criteria",
+      "alpha": 0.02,
+      "bound": "betting",
+      "n": 2000,
+      "oracle": 180,
+      "reused": 0,
+      "certifiedStrata": [],
+      "savings": 0,
+      "realizedPresented": null
+    },
+    {
+      "pair": "dj-criteria",
+      "alpha": 0.02,
+      "bound": "wor",
+      "n": 2000,
+      "oracle": 180,
+      "reused": 0,
+      "certifiedStrata": [],
+      "savings": 0,
+      "realizedPresented": null
+    },
+    {
+      "pair": "dj-criteria",
+      "alpha": 0.05,
+      "bound": "eb",
+      "n": 2000,
+      "oracle": 315,
+      "reused": 0,
+      "certifiedStrata": [],
+      "savings": 0,
+      "realizedPresented": null
+    },
+    {
+      "pair": "dj-criteria",
+      "alpha": 0.05,
+      "bound": "betting",
+      "n": 2000,
+      "oracle": 315,
+      "reused": 0,
+      "certifiedStrata": [],
+      "savings": 0,
+      "realizedPresented": null
+    },
+    {
+      "pair": "dj-criteria",
+      "alpha": 0.05,
+      "bound": "wor",
+      "n": 2000,
+      "oracle": 315,
+      "reused": 0,
+      "certifiedStrata": [],
+      "savings": 0,
+      "realizedPresented": null
+    },
+    {
+      "pair": "dj-criteria",
+      "alpha": 0.1,
+      "bound": "eb",
+      "n": 2000,
+      "oracle": 918,
+      "reused": 0,
+      "certifiedStrata": [],
+      "savings": 0,
+      "realizedPresented": null
+    },
+    {
+      "pair": "dj-criteria",
+      "alpha": 0.1,
+      "bound": "betting",
+      "n": 2000,
+      "oracle": 540,
+      "reused": 378,
+      "certifiedStrata": [
+        "v=\"Junior\"|all"
+      ],
+      "savings": 0.189,
+      "realizedPresented": 0.03523035230352303
+    },
+    {
+      "pair": "dj-criteria",
+      "alpha": 0.1,
+      "bound": "wor",
+      "n": 2000,
+      "oracle": 900,
+      "reused": 18,
+      "certifiedStrata": [
+        "v=\"Junior\"|all"
+      ],
+      "savings": 0.009,
+      "realizedPresented": 0
+    },
+    {
+      "pair": "dj-criteria",
+      "alpha": 0.2,
+      "bound": "eb",
+      "n": 2000,
+      "oracle": 1442,
+      "reused": 558,
+      "certifiedStrata": [
+        "v=\"Junior\"|all"
+      ],
+      "savings": 0.279,
+      "realizedPresented": 0.04878048780487805
+    },
+    {
+      "pair": "dj-criteria",
+      "alpha": 0.2,
+      "bound": "betting",
+      "n": 2000,
+      "oracle": 475,
+      "reused": 1525,
+      "certifiedStrata": [
+        "v=\"Junior\"|all",
+        "v=\"Mid\"|all",
+        "v=\"Senior\"|all"
+      ],
+      "savings": 0.7625,
+      "realizedPresented": 0.10108695652173913
+    },
+    {
+      "pair": "dj-criteria",
+      "alpha": 0.2,
+      "bound": "wor",
+      "n": 2000,
+      "oracle": 1622,
+      "reused": 378,
+      "certifiedStrata": [
+        "v=\"Junior\"|all"
+      ],
+      "savings": 0.189,
+      "realizedPresented": 0.03523035230352303
+    }
+  ],
+  "wallMs": 149517
+}
