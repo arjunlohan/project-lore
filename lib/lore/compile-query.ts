@@ -11,7 +11,7 @@ import type { FilterPredicate, FilterSpec } from "@lore/core";
 import { esAdapter } from "./adapters";
 import { buildChips } from "./chips";
 import { PROFILE_FIELDS } from "./fields";
-import { DEFAULT_MODEL } from "./models";
+import { CELL_DECODE, DEFAULT_MODEL } from "./models";
 
 const KEYWORD_FIELDS = PROFILE_FIELDS.filter((f) => f.type === "keyword").map(
   (f) => f.name,
@@ -150,6 +150,11 @@ export async function compileQuery(query: string): Promise<CompiledQuery> {
   const res = await generateObject({
     model: DEFAULT_MODEL,
     schema: CompileOutput,
+    // Pinned like CELL_DECODE: at default sampling temperature this model
+    // self-disagrees on 9.5% of draws vs 5.0% at T=0 (measured in the
+    // paper), and an unpinned compile occasionally emits degenerate specs
+    // (e.g. "NOT 38 languages" instead of "languages = Rust").
+    ...CELL_DECODE,
     system: `${SYSTEM}\n\nFIELD CATALOG AND VOCABULARY:\n${vocab}`,
     prompt: `Query: ${JSON.stringify(query)}`,
   });
