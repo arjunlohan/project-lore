@@ -1,147 +1,167 @@
-# eve Chat Template
+# project lore
 
-A Next.js chat template for [eve](https://eve.dev) that starts with password access and browser-persisted chats, then upgrades to Sign in with Vercel, Neon, and Upstash when you need a production multi-user application.
+An AI-native table you can talk to, and the statistics that let it edit
+prompts without recomputing the world.
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?project-name=eve-chat-template&repository-name=eve-chat-template&repository-url=https%3A%2F%2Fgithub.com%2Fvercel-labs%2Feve-chat-template%2Ftree%2Fmain&env=EVE_CHAT_PASSWORD&envDescription=Choose+a+strong+password+to+protect+your+agent+%2816%2B+characters+recommended%29.&envLink=https%3A%2F%2Fgithub.com%2Fvercel-labs%2Feve-chat-template%2Fblob%2Fmain%2Fdocs%2Fsetup-and-deploy.md)
+lore is two tightly-coupled things:
 
-## Quick Start
+1. **A framework + reference app** for Juicebox/Clay-style tabular search:
+   natural-language queries compile to a versioned, deterministic filter
+   spec executed identically on MySQL and Elasticsearch; AI columns run as
+   cached, cost-gated per-cell jobs with typed outputs and full provenance.
+2. **A research system, sIVM** (semantic incremental view maintenance):
+   when a column's prompt is edited, statistically certify which cached
+   cells can be reused instead of recomputed, with the expected false-reuse
+   rate bounded by a user budget. Paper: ["Reuse, but Verify: Certified
+   Maintenance of LLM-Computed Table Cells under Prompt
+   Edits"](https://doi.org/10.5281/zenodo.21833641) (preprint), source in
+   [`paper/`](paper/), measured results in
+   [`docs/research/`](docs/research/).
 
-Deploy the starter without provisioning a database or other Marketplace products:
+## The product loop
 
-1. Click **Deploy with Vercel**.
-2. Enter a strong `EVE_CHAT_PASSWORD` (16+ characters recommended).
-3. Open the deployed app and enter that password.
+- **Search**: type "senior Rust developers in Germany or France making over
+  $100k". One structured-output LLM call compiles it to a `FilterSpec`;
+  execution is deterministic, replayable, and backend-agnostic. Filters
+  render as editable chips; edits re-execute with zero LLM involvement.
+- **Backends**: `@lore/adapter-elasticsearch` and `@lore/adapter-mysql`
+  implement one `DataSourceAdapter` SPI with conformance-tested parity
+  (identical counts, pages, sort orders incl. NULL placement, facet
+  aggregations, and hydrated rows), plus a hybrid mode (ES search + SQL
+  hydration). Switch live in the UI.
+- **AI columns**: define a column in natural language with a typed output
+  (boolean/select/number/text). Each cell is a per-row job: content-hash
+  cached on exactly the fields the template binds, budget-guarded,
+  cost-ledgered, Clay-style pre-run estimates, rationale tooltips.
+- **Prompt edits create versions, not cache wipes**: the sIVM certifier
+  samples a few fresh cells per stratum, bounds each stratum's flip rate,
+  reuses what clears your error budget (shield-marked in the UI), and
+  recomputes the rest.
 
-Chats and eve session cursors are stored in that browser. They are not shared across browsers or users.
-Starter mode is intended for one trusted operator: anyone with the password
-shares the same agent identity and connection grants.
-
-## Deployment Modes
-
-| Mode | Selected when | Authentication | Chat persistence |
-| --- | --- | --- | --- |
-| Starter | `EVE_CHAT_PASSWORD` is configured | Shared password and secure session cookie | Browser localStorage |
-| Production | Neon, Upstash, and all Sign in with Vercel variables are configured | Sign in with Vercel | Neon |
-| Local development | Neither mode is configured and `next dev` is running locally | Local development identity | Browser localStorage |
-
-Production mode takes precedence when its complete environment is present. The app fails closed in a production deployment when neither mode is configured. See [Setup and Deployment](docs/setup-and-deploy.md) for the upgrade path.
-
-## Getting Started
-
-For the starter and production setup flows, see [Setup and Deployment](docs/setup-and-deploy.md). For the runtime architecture, streaming model, persistence flow, and extension points, see [How the Chatbot Works](docs/how-the-chatbot-works.md).
-
-Install dependencies with pnpm:
+## Quickstart (local, no Docker)
 
 ```bash
 pnpm install
+
+# services: MySQL (brew) + Elasticsearch (tarball in .local-infra/)
+brew services start mysql
+.local-infra/elasticsearch/bin/elasticsearch -d -p .local-infra/es.pid
+
+# corpora: Stack Overflow Survey 2023 (89,184 rows, ODbL) into both stores
+pnpm tsx scripts/ingest/so2023.ts
+# optional free-text corpus: Djinni CVs (210,250 rows, MIT)
+pnpm tsx scripts/ingest/djinni.ts
+# AI-column metadata tables
+pnpm tsx scripts/migrate-lore-meta.ts
+
+# env: put your Vercel AI Gateway key in .env.local
+#   AI_GATEWAY_API_KEY=...
+
+pnpm dev   # open http://localhost:3000/lore
 ```
 
-Run locally without additional services:
+Verify the deterministic core anytime:
 
 ```bash
-pnpm dev
+pnpm tsx scripts/conformance.ts     # adapter parity battery
+pnpm tsx scripts/test-sivm-math.ts  # certification validity (synthetic)
 ```
 
-To require the same password locally, put this in `.env.local`:
+## Adopting the framework in your own environment
+
+The packages are deliberately headless and app-independent:
+
+- `@lore/core`: the SPI (`FilterSpec`, `DataSourceAdapter`, `ColumnDef`,
+  `CellRecord`, certificates) and the sIVM math
+  (`packages/core/src/sivm.ts`: diffing, stratification, adaptive
+  empirical-Bernstein certification, both estimand modes).
+- `@lore/adapter-elasticsearch`, `@lore/adapter-mysql`: reference
+  adapters. To support your store, implement `DataSourceAdapter`
+  (count/search/aggregate/hydrate over a `FilterSpec`) and run the
+  conformance battery against a reference adapter on your data.
+- App-layer pieces you can copy or replace: the NL compiler
+  (`lib/lore/compile-query.ts`, one `generateObject` call against your
+  field catalog), the cell runner (`lib/lore/run-column.ts`), the
+  certification worker (`lib/lore/certify.ts`), and the API routes under
+  `app/api/lore/`.
+
+Model access goes through the Vercel AI Gateway; default model and pinned
+decode parameters live in `lib/lore/models.ts`.
+
+## The research in one paragraph
+
+An AI column is a materialized view of a versioned prompt. Cells are
+stochastic even at temperature zero (the same prompt disagrees with itself
+on ~5% of rows on our boolean workload), so "did the edit change this
+cell?" is only meaningful statistically. sIVM freezes cached-value strata,
+samples each on a doubling look schedule, bounds flip rates with
+empirical-Bernstein confidence bounds (validity under peeking by budget
+splitting), and reuses only strata that clear the user's error budget,
+with two guarantee targets (all presented cells, or the strict reuse set).
+Measured across two corpora, five edit classes, ~30,000 labeled cells,
+500-replication bootstraps, and 192,000 known-rate calibration trials:
+zero unsafe certifications, up to 82.9% ± 2.0 certified call savings on
+benign edits, and honest refusals everywhere else. Full report:
+`docs/research/lore-research-report.html`; every number regenerates from
+`scripts/experiments/`.
+
+## Repository map
+
+| Path | What |
+| --- | --- |
+| `packages/core` | SPI types + sIVM math (framework heart) |
+| `packages/adapter-*` | Elasticsearch / MySQL adapters |
+| `lib/lore/` | NL compiler, cell runner, certifier, stores |
+| `app/lore/`, `app/api/lore/` | table UI + API |
+| `scripts/ingest/` | corpus ingestion (reproducible) |
+| `scripts/experiments/` | exp0–exp13 + asset/report generation |
+| `docs/research/` | report, review memos, result JSONs |
+| `paper/` | PVLDB-target draft (tectonic-compilable) |
+| `patent/` | provisional draft (attorney review pending) |
+
+## Reproducing the paper
+
+Every quantitative claim in the paper and in the research report is emitted
+from the result artifacts by one generator and cited through a macro, never
+typed inline, so re-running an experiment regenerates the sentences that cite
+it. Four commands rebuild the whole thing:
 
 ```bash
-EVE_CHAT_PASSWORD=<at-least-16-characters>
+pnpm gen:paper && pnpm gen:report && pnpm check:paper && pnpm build:paper
 ```
 
-To upgrade the linked project to production mode, run the setup script. It provisions Neon and Upstash, registers Sign in with Vercel, pulls environment variables, and runs migrations:
+`gen:paper` writes `paper/{macros,table1,figdata}.tex` from
+`docs/research/experiments/*.json` plus the system's cost ledger, and dumps
+every database read it makes to `db-derived-inputs.json` so the numbers are
+recomputable without our instance. `gen:report` emits
+`docs/research/lore-research-report.html` from the same macros. `check:paper`
+is the enforcement pass and fails on six conditions: a hand-typed quantity in
+the prose, a quantity hardcoded in the generator, a macro defined but never
+cited, a macro that swallows its trailing space, a sentence asserting two
+quantities differ while citing two macros of equal value, and a spelled-out
+multiplier the macro ratio does not support. Each guard exists because the
+corresponding defect shipped at least once.
 
-```bash
-./scripts/setup.sh
-# Or: ./scripts/setup.sh --scope <team-slug>
-```
+Reproducing the statistical results needs no model endpoint: the ground-truth
+flip labels are released. Recomputing the labels themselves does, and costs
+about the ledgered spend reported in the paper.
 
-Production mode requires:
+Data licenses: SO Survey 2023 under ODbL 1.0/DbCL 1.0; Djinni profiles
+under MIT (lang-uk). The chat scaffold this app began from is the eve
+chat template; eve docs live in `node_modules/eve/docs` and the original
+template docs in [`docs/`](docs/).
 
-```bash
-DATABASE_URL=
-BETTER_AUTH_SECRET=
-NEXT_PUBLIC_VERCEL_APP_CLIENT_ID=
-VERCEL_APP_CLIENT_SECRET=
-UPSTASH_REDIS_REST_URL=
-UPSTASH_REDIS_REST_TOKEN=
-KV_REST_API_URL=
-KV_REST_API_TOKEN=
-```
+## License
 
-Other optional environment variables:
+This repository is **source-available, not open source**. The code is
+licensed under the [PolyForm Noncommercial License 1.0.0](LICENSE.md):
+personal, research, educational, and other noncommercial use is free,
+and reproducing the paper's results is expressly welcome. **Commercial
+or production use of any kind requires prior written permission from the
+copyright holder**; permissions are granted individually and are
+revocable on the terms of each grant. See [COMMERCIAL.md](COMMERCIAL.md)
+for how to ask. The underlying datasets keep their own licenses (ODbL
+1.0/DbCL 1.0 and MIT) and are fetched from their original sources, not
+redistributed here.
 
-```bash
-# Override the app origin for custom production domains.
-BETTER_AUTH_URL=
-
-# Enable hosted Vercel Connect integrations.
-SLACK_CONNECTOR=
-LINEAR_CONNECTOR=
-NOTION_CONNECTOR=
-SENTRY_CONNECTOR=
-```
-
-Create optional Vercel Connect integrations:
-
-```bash
-# Slack channel
-vercel connect create slack --name eve-chat-template --triggers
-vercel connect attach <slack-connector-uid> --triggers --trigger-path /eve/v1/slack --yes
-
-# MCP connections
-vercel connect create mcp.notion.com --name notion
-vercel connect create https://mcp.linear.app/mcp --name linear
-vercel connect create https://mcp.sentry.dev/mcp --name sentry
-```
-
-The deploy button does not require these integrations. For manual setup, put the returned connector UIDs in `SLACK_CONNECTOR`, `NOTION_CONNECTOR`, `LINEAR_CONNECTOR`, and `SENTRY_CONNECTOR`. Local development falls back to `slack/eve-chat-template`, `notion`, `linear`, and `sentry`, so connectors created with the names above work without editing `agent/`.
-
-If the connector is not attached to the linked project, run:
-
-```bash
-vercel connect attach <connector-uid> --yes
-vercel env pull .env.local
-```
-
-Production mode only: create the database tables:
-
-```bash
-pnpm db:migrate
-```
-
-For production, run migrations with Vercel production env vars:
-
-```bash
-vercel env run -e production -- pnpm db:migrate
-```
-
-Start the development server:
-
-```bash
-pnpm dev
-```
-
-## What Is Included
-
-- Text chat with an eve agent through same-origin `/eve/v1/*` routes
-- Password access with browser-backed chat history by default
-- Optional Better Auth sign-in with Vercel
-- Optional Neon-backed cross-device chat history
-- Optional Upstash Redis rate limiting in production mode
-- Drizzle schema and migrations for production mode under `lib/db`
-- Saved eve session cursors and event snapshots in either storage mode
-- Sidebar history with delete and new-chat actions
-- Vercel Connect-backed Notion, Linear, and Sentry MCP connections
-- Vercel Connect-backed Slack channel route at `/eve/v1/slack`
-- Composer-level connections menu
-- First-message chat titles derived locally from the user's prompt
-- Streamdown markdown rendering for assistant text and reasoning
-- shadcn/Tailwind components for messages, tools, HITL prompts, and composer
-
-This template intentionally does not include file uploads, Vercel Blob, guest mode, NextAuth/Auth.js, or AI Elements.
-
-## Agent Code
-
-Edit the agent in `agent/agent.ts`. Its behavior is defined in `agent/instructions.md`, and tools live in `agent/tools/`.
-
-The browser talks to eve with `useEveAgent()` from `eve/react`; the app stores eve stream events and session state so `/chat/[id]` can resume the same durable conversation after refresh.
+Copyright &copy; 2026 Arjun Lohan.
