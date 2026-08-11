@@ -1,0 +1,284 @@
+% Bibliography for the sIVM paper.
+% Every entry is drawn from the citation audit in
+% docs/research/verification-verdict.md (39 items checked against primary
+% sources on 2026-08-04; only CONFIRMED rows appear here, with the
+% corrections that audit mandated applied).
+%
+% 2026-08-05, on converting to the PVLDB template: every entry with an
+% arXiv id or DOI was re-resolved against the arXiv API / Crossref rather
+% than expanded from the initials the audit recorded. That pass caught
+% four defects worth naming, because each would have been visible to a
+% reviewer:
+%   - 2603.08907 was cited as LLM cache-serving trust; it is actually a
+%     bound ablation for selective prediction. Recharacterized and moved
+%     out of the caching paragraph (key: boundablation).
+%   - 2604.26180 (Evergreen) and 2607.04281 (FreshCache) were cited by
+%     paraphrase rather than by title. Real titles now used.
+%   - retain and vectraflow carried author names invented by expanding
+%     initials. Real author lists now used.
+% Entries still marked "and others" are ones whose full list was not
+% resolved; "and others" renders as "et al." rather than inventing names.
+% Remaining entries trace to the citation audit in
+% docs/research/verification-verdict.md.
+
+@article{lotus,
+  author    = {Patel, Liana and Jha, Siddharth and Pan, Melissa and
+               Gupta, Harshit and Asawa, Parth and Guestrin, Carlos and
+               Zaharia, Matei},
+  title     = {Semantic Operators and Their Optimization: Enabling {LLM}-Based
+               Data Processing with Accuracy Guarantees in {LOTUS}},
+  journal   = {Proc. {VLDB} Endow.},
+  volume    = {18},
+  number    = {11},
+  pages     = {4171--4184},
+  year      = {2025},
+  doi       = {10.14778/3749646.3749685}
+}
+
+@article{supg,
+  author    = {Kang, Daniel and Gan, Edward and Bailis, Peter and
+               Hashimoto, Tatsunori and Zaharia, Matei},
+  title     = {Approximate Selection with Guarantees Using Proxies},
+  journal   = {Proc. {VLDB} Endow.},
+  volume    = {13},
+  number    = {11},
+  pages     = {1990--2003},
+  year      = {2020}
+}
+
+@article{bargain,
+  author    = {Zeighami, Sepanta and Shankar, Shreya and
+               Parameswaran, Aditya},
+  title     = {Cut Costs, Not Accuracy: {LLM}-Powered Data Processing with
+               Guarantees},
+  journal   = {Proc. {ACM} Manag. Data},
+  year      = {2026},
+  note      = {{SIGMOD} 2026},
+  doi       = {10.1145/3769776}
+}
+
+@article{thalamusdb,
+  author    = {Jo, Saehan and Trummer, Immanuel},
+  title     = {{ThalamusDB}: Approximate Query Processing on Multi-Modal Data},
+  journal   = {Proc. {ACM} Manag. Data},
+  volume    = {2},
+  number    = {3},
+  pages     = {1--26},
+  year      = {2024},
+  doi       = {10.1145/3654989}
+}
+
+@article{taskcascades,
+  author    = {Shankar, Shreya and Zeighami, Sepanta and
+               Parameswaran, Aditya},
+  title     = {Task Cascades for Efficient Unstructured Data Processing},
+  journal   = {Proc. {ACM} Manag. Data},
+  year      = {2026},
+  note      = {{SIGMOD} 2026},
+  doi       = {10.1145/3786702}
+}
+
+@inproceedings{vcache,
+  author    = {Schroeder, Luis Gaspar and Desai, Aditya and
+               Cuadron, Alejandro and Chu, Kyle and Liu, Shu and
+               Zhao, Mark and Krusche, Stephan and Kemper, Alfons and
+               Zaharia, Matei and Gonzalez, Joseph E.},
+  title     = {{vCache}: Verified Semantic Prompt Caching},
+  booktitle = {Proc. Int. Conf. on Learning Representations ({ICLR})},
+  year      = {2026},
+  note      = {arXiv:2502.03771}
+}
+
+@misc{evergreen,
+  author       = {Lee, Alexander W. and Han, Benjamin and Sen, Shayak and
+                  Yeom, Sam and Cetintemel, Ugur and Datta, Anupam},
+  title        = {Evergreen: Efficient Claim Verification for Semantic
+                  Aggregates},
+  year         = {2026},
+  eprint       = {2604.26180},
+  archivePrefix = {arXiv}
+}
+
+@misc{boundablation,
+  author       = {Basu, Abhinaba},
+  title        = {Cross-Domain Uncertainty Quantification for Selective
+                  Prediction: A Comprehensive Bound Ablation with
+                  Transfer-Informed Betting},
+  year         = {2026},
+  eprint       = {2603.08907},
+  archivePrefix = {arXiv}
+}
+
+@misc{freshcache,
+  author       = {Mansoor, Muhammad and Ahmad, Tahir and Yoon, Yeo-Chan},
+  title        = {Risk-Constrained Freshness-Aware Semantic Caching for
+                  Open-Web Retrieval-Augmented {LLMs}},
+  year         = {2026},
+  eprint       = {2607.04281},
+  archivePrefix = {arXiv}
+}
+
+@article{svc,
+  author    = {Krishnan, Sanjay and Wang, Jiannan and Franklin, Michael J. and
+               Goldberg, Ken and Kraska, Tim},
+  title     = {Stale View Cleaning: Getting Fresh Answers from Stale
+               Materialized Views},
+  journal   = {Proc. {VLDB} Endow.},
+  volume    = {8},
+  number    = {12},
+  pages     = {1370--1381},
+  year      = {2015}
+}
+
+@inproceedings{gupta95,
+  author    = {Gupta, Ashish and Mumick, Inderpal Singh and Ross, Kenneth A.},
+  title     = {Adapting Materialized Views after Redefinitions},
+  booktitle = {Proc. {ACM} {SIGMOD} Int. Conf. on Management of Data},
+  year      = {1995}
+}
+
+@article{dbsp,
+  author    = {Budiu, Mihai and McSherry, Frank and Ryzhyk, Leonid and
+               Tannen, Val},
+  title     = {{DBSP}: Automatic Incremental View Maintenance for Rich Query
+               Languages},
+  journal   = {Proc. {VLDB} Endow.},
+  volume    = {16},
+  number    = {7},
+  pages     = {1601--1614},
+  year      = {2023}
+}
+
+@misc{contprompts,
+  author       = {Chen, Shu and Raghavan, Deepti and
+                  {\c{C}}etintemel, U{\u{g}}ur},
+  title        = {Continuous Prompts: {LLM}-Augmented Pipeline Processing over
+                  Unstructured Streams},
+  year         = {2025},
+  eprint       = {2512.03389},
+  archivePrefix = {arXiv}
+}
+
+@misc{vectraflow,
+  author       = {Chen, Shu and Liu, Junhan and Raghavan, Deepti and
+                  {\c{C}}etintemel, U{\u{g}}ur},
+  title        = {{VectraFlow}: Long-Horizon Semantic Processing over Data and
+                  Event Streams with {LLMs}},
+  year         = {2026},
+  eprint       = {2604.03855},
+  archivePrefix = {arXiv}
+}
+
+@inproceedings{spear,
+  author    = {{\c{C}}etintemel, U{\u{g}}ur and Chen, Shu and
+               Lee, Alexander W. and Raghavan, Deepti and Lu, Duo and
+               Crotty, Andrew},
+  title     = {Making Prompts First-Class Citizens for Adaptive {LLM}
+               Pipelines},
+  booktitle = {Conf. on Innovative Data Systems Research ({CIDR})},
+  year      = {2026},
+  note      = {arXiv:2508.05012}
+}
+
+@misc{stepcache,
+  author       = {Nouri, Azam},
+  title        = {{StepCache}: Step-Level Reuse with Lightweight Verification
+                  and Selective Patching for {LLM} Serving},
+  year         = {2026},
+  eprint       = {2603.28795},
+  archivePrefix = {arXiv}
+}
+
+@misc{promptdb,
+  author       = {Martins, Denis Mayr Lima and Vossen, Gottfried},
+  title        = {Prompt as a Data Type: In-Database {LLM} Prompt Management
+                  and Rewriting},
+  year         = {2026},
+  eprint       = {2607.21756},
+  archivePrefix = {arXiv}
+}
+
+@misc{streamcascades,
+  author       = {Liskowski, Pawe{\l} and Schmaus, Kyle},
+  title        = {Streaming Model Cascades for Semantic {SQL}},
+  year         = {2026},
+  eprint       = {2604.00660},
+  archivePrefix = {arXiv}
+}
+
+@misc{sembench,
+  author       = {Lao, Jiale and others},
+  title        = {{SemBench}: A Benchmark for Semantic Query Processing
+                  Engines},
+  year         = {2026},
+  note         = {{VLDB} 2026},
+  eprint       = {2511.01716},
+  archivePrefix = {arXiv}
+}
+
+@article{ebh,
+  author    = {Wang, Ruodu and Ramdas, Aaditya},
+  title     = {False Discovery Rate Control with E-values},
+  journal   = {J. R. Stat. Soc. Series B},
+  volume    = {84},
+  number    = {3},
+  year      = {2022}
+}
+
+@misc{spade,
+  author       = {Shankar, Shreya and Li, Haotian and Asawa, Parth and
+                  Hulsebos, Madelon and Lin, Yiming and
+                  Zamfirescu-Pereira, J. D. and Chase, Harrison and
+                  Fu-Hinthorn, Will and Parameswaran, Aditya G. and
+                  Wu, Eugene},
+  title        = {{SPADE}: Synthesizing Data Quality Assertions for Large
+                  Language Model Pipelines},
+  year         = {2024},
+  eprint       = {2401.03038},
+  archivePrefix = {arXiv}
+}
+
+@inproceedings{retain,
+  author    = {Dixit, Tanay and Lee, Daniel and Fang, Sally and
+               Harsha, Sai Sree and Sureshan, Anirudh and Maharaj, Akash and
+               Li, Yunyao},
+  title     = {{RETAIN}: Interactive Tool for Regression Testing Guided
+               {LLM} Migration},
+  booktitle = {Proc. Conf. on Empirical Methods in Natural Language
+               Processing ({EMNLP}): System Demonstrations},
+  pages     = {301--310},
+  year      = {2024},
+  note      = {arXiv:2409.03928}
+}
+
+@inproceedings{maurer,
+  author    = {Maurer, Andreas and Pontil, Massimiliano},
+  title     = {Empirical {B}ernstein Bounds and Sample-Variance Penalization},
+  booktitle = {Proc. Conf. on Learning Theory ({COLT})},
+  year      = {2009}
+}
+
+@article{bardenet,
+  author    = {Bardenet, R{\'e}mi and Maillard, Odalric-Ambrym},
+  title     = {Concentration Inequalities for Sampling without Replacement},
+  journal   = {Bernoulli},
+  volume    = {21},
+  number    = {3},
+  year      = {2015}
+}
+
+@article{wsr,
+  author    = {Waudby-Smith, Ian and Ramdas, Aaditya},
+  title     = {Estimating Means of Bounded Random Variables by Betting},
+  journal   = {J. R. Stat. Soc. Series B},
+  year      = {2024}
+}
+
+@inproceedings{gptcache,
+  author    = {Bang, Fu},
+  title     = {{GPTCache}: An Open-Source Semantic Cache for {LLM}
+               Applications},
+  booktitle = {Proc. Workshop for Natural Language Processing Open Source
+               Software ({NLP-OSS}) at {EMNLP}},
+  year      = {2023}
+}

@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Cost per paper, not cost per token</title>
+<style>
+  :root {
+    --bg: #14140f; --surface: #1c1c17; --ink: #f0eee8; --ink-2: #c4c0b6;
+    --ink-3: #8d887d; --rule: #302f28; --accent: #6fbfa3;
+    --accent-soft: rgba(111, 191, 163, 0.14); --neutral: #7d776b;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    width: 1600px; height: 1000px; background: var(--bg); color: var(--ink);
+    font: 400 22px/1.45 ui-sans-serif, -apple-system, "Helvetica Neue", sans-serif;
+    padding: 78px 84px 60px; display: flex; flex-direction: column;
+  }
+  h1 { font-size: 56px; font-weight: 700; letter-spacing: -0.022em; }
+  .sub { margin-top: 14px; font-size: 23px; color: var(--ink-3); }
+  .chart { margin-top: 58px; flex: 1; display: flex; flex-direction: column; gap: 34px; }
+  .row { display: grid; grid-template-columns: 330px 1fr; align-items: center; }
+  .name { font-size: 28px; font-weight: 600; letter-spacing: -0.01em; }
+  .track { display: flex; align-items: center; gap: 22px; }
+  .bar { height: 46px; border-radius: 4px; background: var(--neutral); }
+  .hero .bar { background: var(--accent); }
+  .val { font-size: 32px; font-weight: 650; font-variant-numeric: tabular-nums;
+         white-space: nowrap; }
+  .hero .val { color: var(--accent); }
+  .tag { font-size: 18px; color: var(--ink-3); font-weight: 400; margin-left: 8px; }
+  .chip { margin-left: 6px; font-size: 20px; font-weight: 600; color: var(--accent);
+          background: var(--accent-soft); border: 1px solid rgba(111,191,163,0.35);
+          border-radius: 999px; padding: 7px 18px; white-space: nowrap; }
+  .kicker { margin-top: 52px; padding: 26px 30px; background: var(--surface);
+            border-left: 4px solid var(--accent); border-radius: 6px;
+            font-size: 24px; line-height: 1.5; color: var(--ink-2); }
+  .kicker b { color: var(--ink); font-variant-numeric: tabular-nums; }
+  .fine { margin-top: 34px; font-size: 16px; line-height: 1.55; color: var(--ink-3); }
+  .foot { margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--rule);
+          font-size: 18px; color: var(--ink-2); display: flex;
+          justify-content: space-between; font-variant-numeric: tabular-nums; }
+</style>
+</head>
+<body>
+  <h1>Cost per paper, not cost per token</h1>
+  <div class="sub">Total model cost to run the sIVM evaluation &middot; 31.7M input + 25.4M output tokens &middot; list rates, Aug 2026</div>
+
+  <div class="chart">
+    <div class="row hero">
+      <div class="name">DeepSeek V4 Flash</div>
+      <div class="track">
+        <div class="bar" style="width: 0.73%;"></div>
+        <div class="val">$11.56<span class="tag">billed</span></div>
+        <div class="chip">what we actually paid &middot; 137&times; cheaper than Fable&nbsp;5</div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="name">Opus 5</div>
+      <div class="track">
+        <div class="bar" style="width: 50.0%;"></div>
+        <div class="val">$794<span class="tag">est.</span></div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="name">GPT-5.6 Sol</div>
+      <div class="track">
+        <div class="bar" style="width: 58.0%;"></div>
+        <div class="val">$922<span class="tag">est.</span></div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="name">Fable 5</div>
+      <div class="track">
+        <div class="bar" style="width: 100%;"></div>
+        <div class="val">$1,589<span class="tag">est.</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="kicker">
+    The paper compounds it: after a prompt edit, <b>225 model calls</b> certified
+    <b>81,289 of 89,184</b> cached cells safe to keep, so maintaining the column cost
+    <b>$0.93</b> against <b>$9.31</b> to recompute it. That gap multiplies at frontier prices.
+  </div>
+
+  <div class="fine">
+    Same measured token volume, repriced: 31,743,746 input + 25,426,403 output tokens across
+    98,496 billed cells, from the paper&rsquo;s cost ledger. DeepSeek V4 Flash as billed;
+    Opus 5 at $5/$25, GPT-5.6 Sol at $5/$30, Fable 5 at $10/$50 per million input/output
+    tokens. Tokenizers and reasoning-token volumes differ across model families, so repriced
+    figures are arithmetic, not benchmarks.
+  </div>
+
+  <div class="foot">
+    <span>Reuse, but Verify: Certified Maintenance of LLM-Computed Table Cells under Prompt Edits</span>
+    <span>doi.org/10.5281/zenodo.21833641</span>
+  </div>
+</body>
+</html>

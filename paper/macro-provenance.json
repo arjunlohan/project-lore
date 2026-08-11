@@ -1,0 +1,40 @@
+{
+  "note": "which materialized column and corpus each flip-rate macro is measured on; consumed by scripts/check-paper-numbers.ts",
+  "macros": {
+    "flipSoFormatting": {
+      "pair": "so-formatting",
+      "corpus": "profiles",
+      "column": "so-lab",
+      "columnType": "boolean",
+      "versions": "v1->v2"
+    },
+    "flipSoSynonym": {
+      "pair": "so-synonym",
+      "corpus": "profiles",
+      "column": "so-lab",
+      "columnType": "boolean",
+      "versions": "v2->v3"
+    },
+    "flipSoWidening": {
+      "pair": "so-widening",
+      "corpus": "profiles",
+      "column": "so-demo",
+      "columnType": "boolean",
+      "versions": "v1->v2"
+    },
+    "flipDjFormatting": {
+      "pair": "dj-formatting",
+      "corpus": "djinni",
+      "column": "dj-lab",
+      "columnType": "select",
+      "versions": "v1->v2"
+    },
+    "flipDjCriteria": {
+      "pair": "dj-criteria",
+      "corpus": "djinni",
+      "column": "dj-lab",
+      "columnType": "select",
+      "versions": "v2->v3"
+    }
+  }
+}
