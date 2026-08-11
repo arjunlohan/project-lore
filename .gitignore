@@ -12,3 +12,19 @@ dist
 .DS_Store
 *.tsbuildinfo
 .env*.local
+.local-infra/
+
+# LaTeX build intermediates
+paper/*.aux
+paper/*.log
+paper/*.blg
+paper/*.bbl
+paper/*.out
+
+# Not part of the public release: unfiled patent draft and internal
+# project management. Remove these lines only after the filing decision.
+patent/
+tasks/
+
+# Claude Code worktrees (the directory this repo's agent sessions use)
+.claude/worktrees/

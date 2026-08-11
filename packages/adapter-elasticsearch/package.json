@@ -1,0 +1,20 @@
+{
+  "name": "@lore/adapter-elasticsearch",
+  "version": "0.0.1",
+  "description": "Elasticsearch/OpenSearch DataSourceAdapter for @lore/core: deterministic FilterSpec-to-bool-query compilation, live count aggregations, hybrid BM25+kNN.",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@elastic/elasticsearch": "^9.1.0",
+    "@lore/core": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "5.9.3"
+  },
+  "license": "PolyForm-Noncommercial-1.0.0"
+}
