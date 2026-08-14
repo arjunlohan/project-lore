@@ -28,3 +28,10 @@ tasks/
 
 # Claude Code worktrees (the directory this repo's agent sessions use)
 .claude/worktrees/
+paper/ieee/*.aux
+paper/ieee/*.log
+paper/ieee/*.blg
+paper/ieee/*.bbl
+paper/ieee/*.out
+paper/ieee/*.fls
+paper/ieee/*.fdb_latexmk

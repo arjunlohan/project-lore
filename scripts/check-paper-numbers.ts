@@ -11,7 +11,13 @@
  */
 import { readFileSync } from "node:fs";
 
-const tex = readFileSync("paper/main.tex", "utf8");
+// The prose is single-sourced in paper/body.tex and included by two venue
+// shells (acmart for arXiv/PVLDB; ieeeaccess for IEEE Access). Scan all
+// three so every guard covers every manuscript that can be built, not just
+// the one at the historical path.
+const tex = ["paper/main.tex", "paper/body.tex", "paper/ieee/main.tex"]
+  .map((f) => readFileSync(f, "utf8"))
+  .join("\n");
 const macroSrc = readFileSync("paper/macros.tex", "utf8");
 
 // Strip comments and the parts that legitimately carry numbers.
@@ -23,7 +29,12 @@ const body = tex
   .replace(/\\input\{[^}]*\}/g, "")
   .replace(/\\(documentclass|usepackage|pgfplotsset|newtheorem|newcommand|label|ref|cite)\{[^}]*\}/g, "")
   .replace(/\\begin\{axis\}\[[\s\S]*?\]/g, "")
-  .replace(/\\(width|height|xmin|xmax|ymin|ymax|xtick)=[^,\]]*/g, "");
+  .replace(/\\(width|height|xmin|xmax|ymin|ymax|xtick)=[^,\]]*/g, "")
+  // IEEE shell topmatter: production placeholders and the mailing address
+  // legitimately carry digits (dates "xxxx 00, 0000", the DOI, a zip code).
+  .replace(/\\(history|doi|corresp|tfootnote)\{[^}]*\}/g, "")
+  .replace(/\\markboth\s*\{[^}]*\}\s*\{[^}]*\}/g, "")
+  .replace(/\\address\[[^\]]*\]\{[^}]*\}/g, "");
 
 /** Quantities the paper may state literally, with the reason. */
 const ALLOWED: Array<[RegExp, string]> = [
@@ -49,7 +60,7 @@ const ALLOWED: Array<[RegExp, string]> = [
   [/\d+pt|\d+cm|\d+em/g, "typesetting"],
   [/\$\\delta\/\(?K/g, "notation"],
   [/90 oracle calls/g, "schedule first look"],
-  [/95\\%\s*(percentile interval|CI|PI)|\(95\\%|with 95\\%/g, "nominal interval coverage, a protocol constant"],
+  [/95\\%\s*(percentile interval|confidence interval|CI|PI)|\(95\\%|with 95\\%/g, "nominal interval coverage, a protocol constant"],
   [/2023|2026|17 USC/g, "years and statutes"],
 ];
 
@@ -262,8 +273,13 @@ if (badRange.length > 0) {
 // are where those land, and they are the two things a reviewer reads hardest.
 // Each one must be enumerated below with a reason, so writing a NEW absolute
 // claim there fails the check until somebody justifies it.
-const abstractBlock =
-  tex.match(/\\begin\{abstract\}([\s\S]*?)\\end\{abstract\}/)?.[1] ?? "";
+// Two shells carry two abstracts (venue abstract rules differ); guard both,
+// not just the first match.
+const abstractBlock = [
+  ...tex.matchAll(/\\begin\{abstract\}([\s\S]*?)\\end\{abstract\}/g),
+]
+  .map((m) => m[1]!)
+  .join("\n");
 const contribBlock =
   tex.match(/\\subsection\{Contributions\}([\s\S]*?)\\section/)?.[1] ?? "";
 /** Absolute claims allowed in the abstract / contributions, with why. */

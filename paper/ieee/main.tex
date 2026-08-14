@@ -1,0 +1,171 @@
+%% IEEE Access shell. The manuscript prose lives in ../body.tex, shared with
+%% the acmart shell (../main.tex, arXiv/PVLDB modes); everything above
+%% \section{Introduction} is venue-owned and lives here.
+%%
+%% Template: ACCESS_latex_template_20260513 from
+%% https://ieeeaccess.ieee.org/authors/preparing-your-article/, vendored
+%% unmodified in this directory (class, bst, Type1 fonts, logos), matching
+%% the repo convention for acmart.cls/pvldb.sty: submissions not built from
+%% the required template are returned to draft at intake, so the template is
+%% pinned here rather than taken from a TeX install.
+%%
+%% Build: pnpm build:paper:ieee (pdfTeX via latexmk; the class's
+%% spotcolor.sty uses pdfTeX primitives that tectonic's XeTeX engine lacks,
+%% so this target uses TeX Live while the acmart shell keeps tectonic).
+%% refs.bib in this directory is GENERATED from ../refs.bib by
+%% scripts/gen-ieee-refs.ts (IEEEtran.bst drops eprint fields; the generator
+%% copies arXiv identifiers into howpublished so no reference loses its
+%% locator).
+\documentclass{ieeeaccess}
+\usepackage{cite}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{textcomp}
+\usepackage{amsthm}
+\usepackage{booktabs}
+%% ieeeaccess.cls:512 redefines the TeX primitive \year as a one-argument
+%% text macro for \history dates, which detonates pgfmath's random-seed
+%% init (\multiply ... by\year) when pgfplots loads. Feed the seed a
+%% constant during the load (also making the build's PRNG seed
+%% deterministic, which this repo prefers anyway), then restore the class's
+%% macro for \history.
+\let\ieeeaccessclassyear\year
+\def\year{2026}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, calc}
+\let\year\ieeeaccessclassyear
+%% Second class/pgf clash: ieeeaccess.cls registers its PANTONE Separation
+%% colorspace (the title, section heads, and ABSTRACT/INDEX TERMS labels
+%% are painted with it) by appending to \pdfpageresources; pgf's pdftex
+%% driver then replaces \pdfpageresources wholesale, so every spot-colored
+%% element silently paints in an undefined colorspace and vanishes from the
+%% page. Re-register the class's colorspace inside pgf's own colorspace
+%% resource object, which is what \pdfpageresources now points at.
+\makeatletter
+\pgfutil@addpdfresource@colorspaces{\the\PANTONE}
+\makeatother
+\input{../figdata}
+\input{../macros}
+
+%% Two-column measure is narrow and the prose carries long \texttt{} paths
+%% and identifiers; let TeX stretch the line rather than run into the gutter.
+\setlength{\emergencystretch}{2em}
+
+%% acmart provides theorem/proof and the acmdefinition style natively; under
+%% IEEEtran we supply the same environments via amsthm in the matching
+%% upright style.
+\theoremstyle{definition}
+\newtheorem{theorem}{Theorem}
+\newtheorem{assumption}{Assumption}
+
+\newcommand{\sivm}{\textsc{sIVM}}
+%% Venue dialect hooks consumed by ../body.tex.
+\newcommand{\secref}[1]{Section~\ref{#1}}
+\newcommand{\paperroot}{..}
+%% acmart's accessibility descriptions have no IEEEtran equivalent; drop.
+\newcommand{\Description}[2][]{}
+%% Roadmap paragraph closing the introduction: IEEE Access house furniture
+%% (present in four of five surveyed Access papers). The acmart shell
+%% defines this empty to hold PVLDB's page budget.
+\newcommand{\venueroadmap}{The remainder of this article is organized as
+follows. \secref{sec:problem} formalizes certified reuse and its two
+guarantee targets. \secref{sec:system} presents the \sivm{} procedure and
+its validity theorem. \secref{sec:impl} describes the production system it
+maintains. \secref{sec:experiments} reports the evaluation.
+\secref{sec:benchmark} describes the released benchmark of versioned
+prompt-edit pairs. \secref{sec:related} positions the work against prior
+art. \secref{sec:limits} states limitations, and \secref{sec:conclusion}
+concludes.}
+
+\begin{document}
+\history{Date of publication xxxx 00, 0000, date of current version xxxx 00, 0000.}
+\doi{10.1109/ACCESS.2026.DOI}
+
+\title{Reuse, but Verify: Certified Maintenance of LLM-Computed Table
+Cells under Prompt Edits}
+
+\author{\uppercase{Arjun Lohan}\authorrefmark{1}}
+
+%% TODO(author): confirm department line and campus address (submission
+%% question on affiliation).
+\address[1]{University of Southern California, Los Angeles, CA 90089 USA
+(e-mail: lohan@usc.edu)}
+
+%% TODO(author): confirm funding wording (submission question on funding).
+\tfootnote{This work received no external funding.}
+
+\markboth
+{Lohan: Reuse, but Verify: Certified Maintenance of LLM-Computed Table Cells}
+{Lohan: Reuse, but Verify: Certified Maintenance of LLM-Computed Table Cells}
+
+\corresp{Corresponding author: Arjun Lohan (e-mail: lohan@usc.edu).}
+
+%% IEEE Access abstract rules: one paragraph, 150-250 words, self-contained,
+%% no abbreviations, footnotes, references, displayed equations, or tabular
+%% material. Differs from the acmart abstract only where those rules bind
+%% (symbols worded out; "CVs" expanded); every quantity is still macro-cited.
+\begin{abstract}
+Modern data tables let users define columns in natural language: each cell
+is computed by a language model from a versioned prompt over its row. When
+the prompt is edited, deployed systems face a choice: recompute every
+cell, which is expensive and rate-limited, or silently reuse stale ones,
+which incurs unbounded error. We present \sivm{}, a maintenance layer that
+certifies which cached cells may be reused after a prompt edit, bounding
+the expected false-reuse rate of each certified stratum by a user-chosen
+error budget at a stated confidence level. \sivm{} freezes cached-value
+strata, samples adaptively on a doubling look schedule, and bounds each
+stratum's flip rate with empirical-Bernstein confidence bounds; a strict
+mode certifies at a deflated threshold to bound the error of the reused
+cells alone. We also establish an impossibility floor: a model's rate of
+disagreement with itself under the unedited prompt limits the certifiable
+budget. On two public corpora (\corpusSO\ Stack Overflow developer
+profiles; \corpusDjinni\ Djinni candidate profiles) with \labeledCells+
+labeled cells and a production table system, a formatting-only edit
+certifies \benchSavings\ call savings at the loosest budget on a measured
+savings--budget frontier, and at deployment scale \deployOracle\ oracle
+calls certify reuse of \deployReused\ of \deployN\ cells (\deploySavings\
+fewer model calls). Across every seeded sweep and sampling replication,
+and \calTrials\ known-rate calibration trials, no certified stratum's true
+flip rate exceeded its budget. We release the system, the labels, and a
+benchmark of versioned prompt-edit pairs.
+\end{abstract}
+
+\begin{keywords}
+Caching, confidence bounds, incremental view maintenance, large language
+models, materialized views, prompt engineering, query processing.
+\end{keywords}
+
+\titlepgskip=-21pt
+
+\maketitle
+
+\input{../body}
+
+\section*{Acknowledgment}
+%% IEEE policy: AI-generated text must be disclosed in the acknowledgments
+%% and the system cited where used.
+%% TODO(author): confirm wording (submission question on the disclosure).
+The author used Claude (Anthropic) as a drafting and editing assistant for
+the manuscript text and as a coding assistant for the system and
+experiment harness. All technical content, experimental designs,
+measurements, and conclusions were specified, reviewed, and verified by
+the author.
+
+\bibliographystyle{IEEEtran}
+\bibliography{refs}
+
+%% Biographies for all authors are required at initial submission (photo
+%% optional at every stage).
+%% TODO(author): degrees with institutions and years (submission question
+%% on biography facts).
+\begin{IEEEbiographynophoto}{Arjun Lohan}
+is a student at the University of Southern California, Los Angeles, CA,
+USA, where this work was carried out. Research interests include data
+systems for language-model pipelines, semantic caching and
+materialized-view maintenance, and statistical guarantees for
+machine-computed data.
+\end{IEEEbiographynophoto}
+
+\EOD
+
+\end{document}
