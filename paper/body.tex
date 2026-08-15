@@ -23,7 +23,7 @@ bound on how wrong they are.
 
 \paragraph{Running example.} One column from our evaluation recurs
 throughout. Over \corpusSO\ Stack Overflow developer profiles, a
-boolean AI column asks \emph{``Is this person a data-platform
+Boolean AI column asks \emph{``Is this person a data-platform
 specialist?''}, judged from each profile's role, databases, platforms,
 and tools. Its owner edits the prompt to insert two paragraph breaks
 and lowercase one word, changing no content word (the
@@ -51,7 +51,7 @@ Three measurements reframe the problem (\secref{sec:experiments}).
 First, large language model (LLM) cells are stochastic even at
 temperature zero~\cite{ouyang,atil}: the same
 prompt on the same row disagrees with itself \floorBool\ of the time on
-our boolean workload (within-version draw pairs on $n{=}\benchN$; an
+our Boolean workload (within-version draw pairs on $n{=}\benchN$; an
 earlier $n{=}200$ two-draw probe read \floorTzeroProbe) and
 \floorDefaultT\ at default temperature, so ``did the edit change this
 cell?'' is only meaningful relative to a noise floor. Second, edit
@@ -139,7 +139,7 @@ indicator
 $F_i \;=\; \mathbb{1}\!\left[\, c_i \not\equiv X_i' \,\right]$,
 where $X_i' \sim f_{V'}(r_i)$ is a fresh draw under the new definition
 and $\equiv$ is the column's equivalence relation (exact match for the
-boolean and select columns studied here). $F_i$ is Bernoulli with
+Boolean and select columns studied here). $F_i$ is Bernoulli with
 unknown mean $p_i = \Pr[c_i \not\equiv X_i']$. $p_i$ deliberately
 folds together the edit's semantic effect and decode noise
 on both sides: it answers the operational question of whether
@@ -160,7 +160,7 @@ that are stale-and-wrong (sampled cells are fresh and contribute zero).
 That zero is a convention of the single-draw estimand, not a property
 of recomputed cells: a recomputed cell is itself one draw, and a
 further draw disagrees with it at the stratum's self-flip rate
-(\floorTrueStratum\ and \floorFalseStratum\ on our boolean column,
+(\floorTrueStratum\ and \floorFalseStratum\ on our Boolean column,
 \secref{sec:experiments}). The estimand charges reuse for exactly what
 the user would see change on recomputation, which is the operational
 question, and the floor of \secref{sec:problem} is the price of that
@@ -255,7 +255,7 @@ state edit-independence as an empirical regularity on our workloads,
 not as a bound.
 
 The floors are unequal, and the column-level average describes
-neither stratum. On our boolean column the
+neither stratum. On our Boolean column the
 cached-FALSE stratum has $s{=}$\floorFalseStratum\ (95\% row-cluster
 bootstrap \floorFalseCi) while the cached-TRUE stratum has
 $s{=}$\floorTrueStratum\ (\floorTrueCi), against a pooled \floorBool\
@@ -557,7 +557,7 @@ reported as ablations, not headline numbers.}
 
 \paragraph{Workloads.} All measurements use two public corpora and
 three prompt-defined columns (Table~\ref{tab:pairs}). On the Stack
-Overflow Developer Survey (\corpusSO\ respondent rows) a boolean column
+Overflow Developer Survey (\corpusSO\ respondent rows) a Boolean column
 asks whether the respondent is a data-platform specialist, judged from
 structured facets of the row (role, databases, platforms, tools); it
 exists twice, as the production column and as a lab replica seeded
@@ -736,19 +736,19 @@ B2$'$ SUPG-style, matched & aggregate & \hhSupgReusedFrac & \hhSupgErr & \hhSupg
 \end{table*}
 
 \paragraph{Noise floors and the stability law.} Replicate self-runs give
-the two columns' intrinsic self-flip rates. The boolean column's floor
+the two columns' intrinsic self-flip rates. The Boolean column's floor
 is \floorBool, measured from within-version draw pairs over $n{=}\benchN$
 rows (an initial $n{=}200$ two-draw probe read \floorTzeroProbe\ and is
 superseded); the
 4-way select's floor is \floorSelect\ ($n{=}200$ probe, a smaller
-sample than the boolean floor's and stated as such; every observed
-self-flip was between adjacent tiers). At default temperature the boolean
+sample than the Boolean floor's and stated as such; every observed
+self-flip was between adjacent tiers). At default temperature the Boolean
 floor rises to \floorDefaultT\ on that same $n{=}200$ probe, whose
 $T{=}0$ arm read \floorTzeroProbe: the claim rests on the
 within-instrument contrast, and the default-temperature floor alone
 exceeds a $5\%$ budget, which motivates decode pinning. Formatting-only
 edit flip rates sit above each floor (\flipSoFormatting\ over
-\floorBool; \flipDjFormatting\ over \floorSelect): on the boolean
+\floorBool; \flipDjFormatting\ over \floorSelect): on the Boolean
 column formatting flips are floor-dominated, and on both columns
 instability scales with task hardness, not edit semantics
 (the Djinni criteria change lands at \flipDjCriteria,
@@ -823,7 +823,7 @@ Table~\ref{tab:main} (whose savings are replication means); the
 \end{table*}
 
 \paragraph{Main results.} Table~\ref{tab:main} reads as follows. On the
-stable boolean column, the certifier reuses aggressively where safe
+stable Boolean column, the certifier reuses aggressively where safe
 (formatting at $\alpha{\ge}0.1$; \benchSavings\ savings, interval
 \benchSavingsPi, at $\alpha{=}0.2$ with realized presented-error
 \benchRealized\ and a reuse-set rate whose Wilson interval is
@@ -922,7 +922,7 @@ and near-frontier certifications escalate sampling only while the data
 stays consistent with certifiability.
 
 \paragraph{Deployment scale.} To test the claim that sample cost is
-table-size-independent, we materialized the boolean column across the
+table-size-independent, we materialized the Boolean column across the
 \emph{entire} \deployN-row corpus: \deployMatCells\ billed cells in a
 single ledgered run costing \deployMatCost\ at \perCellCost\ per cell
 (the remaining \deployFreeRows\ rows cost nothing, served by
@@ -1050,7 +1050,7 @@ power is not, and on these columns within-value risk is homogeneous
 enough that the $\delta/K$ split is never repaid.
 
 \paragraph{Minority-stratum anatomy.} The cached-TRUE stratum of the
-boolean column flips \minoritySingle\ under a formatting edit; vote-of-3 on
+Boolean column flips \minoritySingle\ under a formatting edit; vote-of-3 on
 both sides reduces this to \minorityVote\ and shows that \minorityNoise\ of cached TRUE
 values were single-draw noise; the flips that survive vote-3 are
 genuine boundary volatility. Quarantine-and-recompute is therefore the correct systemic
@@ -1154,7 +1154,7 @@ which needs a different artifact: version pairs plus per-cell flip labels
 against the new version. Ours comprises: two redistributable corpora (Stack Overflow Developer
 Survey, \corpusSO\ rows, ODbL~1.0/DbCL~1.0; Djinni English candidate
 profiles, \corpusDjinni\ rows, MIT); three materialized columns of two
-types (two boolean columns over structured facets, one of them the
+types (two Boolean columns over structured facets, one of them the
 production column and one a lab replica seeded from its second version;
 one 4-way ordinal select over long free text); five realistic edit
 pairs spanning formatting-only, synonym rewording, scope widening, and
@@ -1181,9 +1181,9 @@ formatting version's cells (v2$\to$v3), as the benchmark defines it.}
 \toprule
 Pair & Column (corpus; contract; bound fields) & Exact delta & flip \\
 \midrule
-SO formatting-only (v1$\to$v2) & Data-platform specialist, lab replica (SO; boolean; role, databases, platforms, tools, other tech) & Two paragraph breaks inserted after the question and before the ``Judge from'' sentence; ``OR heavy analytics engineering'' lowercased to ``or heavy analytics engineering''; no content word changed & \flipSoFormatting \\
+SO formatting-only (v1$\to$v2) & Data-platform specialist, lab replica (SO; Boolean; role, databases, platforms, tools, other tech) & Two paragraph breaks inserted after the question and before the ``Judge from'' sentence; ``OR heavy analytics engineering'' lowercased to ``or heavy analytics engineering''; no content word changed & \flipSoFormatting \\
 SO synonym rewording (v2$\to$v3) & same & ``this person'' $\to$ ``this individual''; ``works primarily on'' $\to$ ``chiefly builds and maintains''; ``heavy analytics engineering'' $\to$ ``intensive analytics engineering''; ``Judge from role \ldots and other tech'' $\to$ ``Decide using their role \ldots and other technologies''; ``Working with multiple \ldots counts as evidence'' $\to$ ``Experience with several \ldots is supporting evidence'' & \flipSoSynonym \\
-SO scope widening (v1$\to$v2) & Data-platform specialist, production column (SO; boolean; same fields) & Definition extended from ``warehouses, lakes, pipelines, distributed data stores, or ML data tooling'' by ``OR heavy analytics engineering''; the exclusion ``Merely using one relational database for app work does not qualify'' replaced by the inclusion ``Working with multiple analytical/distributed databases (BigQuery, Snowflake, Spark, Kafka, Elasticsearch) counts as evidence'' & \flipSoWidening \\
+SO scope widening (v1$\to$v2) & Data-platform specialist, production column (SO; Boolean; same fields) & Definition extended from ``warehouses, lakes, pipelines, distributed data stores, or ML data tooling'' by ``OR heavy analytics engineering''; the exclusion ``Merely using one relational database for app work does not qualify'' replaced by the inclusion ``Working with multiple analytical/distributed databases (BigQuery, Snowflake, Spark, Kafka, Elasticsearch) counts as evidence'' & \flipSoWidening \\
 Djinni formatting-only (v1$\to$v2) & Seniority tier, lab (Djinni; 4-way ordinal select; position, years of experience, CV text) & The one-line template broken into a question line, three labeled input lines (Position, Years of experience, CV), and the instruction sentence, with no word changed & \flipDjFormatting \\
 Djinni criteria change (v2$\to$v3) & same & Sentence appended: ``Evidence of team or people leadership (leading engineers, owning hiring, running a team) moves the candidate up one tier'' & \flipDjCriteria \\
 \bottomrule
