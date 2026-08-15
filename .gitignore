@@ -35,3 +35,4 @@ paper/ieee/*.bbl
 paper/ieee/*.out
 paper/ieee/*.fls
 paper/ieee/*.fdb_latexmk
+paper/ieee/submission/

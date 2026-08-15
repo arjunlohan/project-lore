@@ -29,7 +29,8 @@
     "gen:report": "tsx scripts/experiments/gen-report-html.ts",
     "exp:bounds": "tsx scripts/experiments/exp14-bounds.ts",
     "exp:betting-cal": "tsx scripts/experiments/exp15-betting-calibration.ts",
-    "build:paper": "cd paper && tectonic -X compile main.tex"
+    "build:paper": "cd paper && tectonic -X compile main.tex",
+    "pack:paper:ieee": "bash scripts/pack-ieee-submission.sh"
   },
   "dependencies": {
     "@base-ui/react": "^1.6.0",
