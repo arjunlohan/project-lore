@@ -11,7 +11,7 @@ I am submitting the manuscript "Reuse, but Verify: Certified Maintenance of Tabl
 **Related disclosures.**
 - The manuscript is not under consideration elsewhere and has never been submitted to another venue.
 - Single author; no co-authors, no funding, no conflicts of interest to declare.
-- Text drafting and editing, and the coding of the system and experiment harness, were assisted by Claude (Anthropic); this is disclosed in the Acknowledgment as IEEE policy requires. All technical content, experimental design, measurements, and conclusions are my own and were verified by me.
+- Editing of the manuscript text, and the coding of the system and experiment harness, were assisted by Claude (Anthropic); this is disclosed in the Acknowledgment as IEEE policy requires. All technical content, experimental design, measurements, and conclusions are my own and were verified by me.
 - Datasets: Stack Overflow Developer Survey 2023 (ODbL 1.0 / DbCL 1.0) and the Djinni candidate-profile corpus (MIT), both public and used as distributed; no new human-subject data were collected.
 
 Suggested subject areas: artificial intelligence, computational and artificial intelligence, databases, data engineering, machine learning.

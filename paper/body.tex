@@ -42,7 +42,7 @@ Recent semantic data systems bound the error of \emph{one-shot} query
 execution against a gold model (cascades, semantic operators, approximate
 processing with guarantees), and verified semantic caches bound reuse
 under a \emph{fixed} definition. Neither answers the maintenance
-question an interactive table actually poses: \emph{after this specific
+question an interactive table poses: \emph{after this specific
 edit $\pi \to \pi'$, which cached cells are still valid, and with what
 guarantee?}
 
@@ -74,9 +74,9 @@ across model families. Both comparisons hold the column fixed
 deliberately: across columns, the column's own stability dominates the
 edit.
 
-Consequently, sound reuse cannot be rule-based. It must be
-\emph{measured}: sample a few fresh cells, statistically bound the flip
-rate of the rest, and reuse only what clears the user's error budget.
+Sound reuse therefore has to be \emph{measured}: sample a few fresh
+cells, statistically bound the flip rate of the rest, and reuse only
+what clears the user's error budget.
 
 \subsection{Contributions}
 \begin{enumerate}
@@ -140,8 +140,8 @@ $F_i \;=\; \mathbb{1}\!\left[\, c_i \not\equiv X_i' \,\right]$,
 where $X_i' \sim f_{V'}(r_i)$ is a fresh draw under the new definition
 and $\equiv$ is the column's equivalence relation (exact match for the
 boolean and select columns studied here). $F_i$ is Bernoulli with
-unknown mean $p_i = \Pr[c_i \not\equiv X_i']$. Note that $p_i$
-deliberately folds together the edit's semantic effect and decode noise
+unknown mean $p_i = \Pr[c_i \not\equiv X_i']$. $p_i$ deliberately
+folds together the edit's semantic effect and decode noise
 on both sides: it answers the operational question of whether
 recomputing cell $i$ now would return a value different from the one
 shown.
@@ -466,7 +466,7 @@ bound beats a range-only Hoeffding bound~\cite{hoeffding}), e.g.,
 \minZeroFlipSample\ at $\alpha{=}0.05$ under the pinned
 procedure ($K{=}2$, six looks). That is the \emph{fixed-plan} minimum,
 and the doubling schedule cannot stop on it: the first look at or above
-$n^{*}$ is the one it takes, so a clean stratum actually pays
+$n^{*}$ is the one it takes, so a clean stratum pays
 \minZeroFlipRealized\ draws in calibration. Either way, savings require
 strata much larger than $n^{*}$, i.e., large tables, which is precisely
 the deployment regime. Near the frontier, certifying a stratum with true
@@ -498,7 +498,7 @@ Assumption~\ref{as:pin}.
 (column, row, prompt version), so versions of a column \emph{coexist}
 instead of replacing one another, and a secondary index on
 (column, version, model, content hash) serves the cache. This is the one
-design decision \sivm{} actually depends on. Systems that key a cell by
+design decision \sivm{} depends on. Systems that key a cell by
 row alone, or that hash the prompt into the cache key, destroy the old
 materialization at the moment of the edit, and the question this paper
 asks cannot then be posed: there is nothing left to certify. Keeping
@@ -760,8 +760,8 @@ budget-class families from different providers, and keep the weaker
 probe of an earlier draft (\texttt{\altModelName}, formatting pair only,
 $n{=}\altModelN$) beside them: same seeded rows as the primary
 evaluation vector, same prompts, $T{=}0$, one fresh draw per cell, the
-pinned procedure (Table~\ref{tab:fam}). Three things transfer and one
-does not. First, every family has a measurable self-flip floor, from
+pinned procedure (Table~\ref{tab:fam}). Three properties transfer
+across families; one does not. First, every family has a measurable self-flip floor, from
 \famFloorLo\ to \famFloorHi\ across the four and \altModelFloor\ on the
 probe, and the floor bounds certifiability as \secref{sec:problem}
 predicts: the probe's floor is above any budget a user would set, its
