@@ -22,7 +22,15 @@
  * gpt-5-nano artifact and its macros are untouched:
  *   EXP_SYNONYM=1  also draws v3 (synonym rewording) so the second family
  *                  replicates the edit-class comparison, not only the
- *                  formatting pair;
+ *                  formatting pair. The synonym pair is v2 -> v3, as in the
+ *                  benchmark (pairs.ts): its cache is the v2 draw and its
+ *                  strata are v2's cached values;
+ *   EXP_REPLAY_FROM=<artifact.json>  skip the database and the model: reload
+ *                  the per-row draws dumped by an earlier run and recompute
+ *                  every derived quantity (used to correct the synonym-pair
+ *                  definition on artifacts produced before that fix, with
+ *                  zero new model calls; the certifier is deterministic on
+ *                  the labels);
  *   EXP_DECOMPOSE=1 also draws the two components of the formatting edit
  *                  separately (case-only: v1 with "OR" lowercased;
  *                  whitespace-only: v2 with "OR" restored), so a family that
@@ -32,7 +40,7 @@
  *                  for any model other than the original gpt-5-nano, so a
  *                  rerun can never overwrite the artifact the paper cites.
  */
-import { mkdirSync, writeFileSync } from "node:fs";
+import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { generateObject } from "ai";
 import mysql from "mysql2/promise";
 import { z } from "zod";
@@ -44,6 +52,7 @@ const MODEL = process.env.EXP_MODEL ?? "openai/gpt-5-nano";
 const N = Number(process.env.EXP_ROWS ?? 500);
 const WITH_SYNONYM = process.env.EXP_SYNONYM === "1";
 const DECOMPOSE = process.env.EXP_DECOMPOSE === "1";
+const REPLAY_FROM = process.env.EXP_REPLAY_FROM;
 const OUT =
   process.env.EXP_OUT ??
   (MODEL === "openai/gpt-5-nano"
@@ -97,8 +106,28 @@ async function judge(prompt: string): Promise<boolean | null> {
   }
 }
 
+type Draw = { id: unknown; a1: boolean | null; b1: boolean | null; a2: boolean | null; a3?: boolean | null; a4?: boolean | null; a5?: boolean | null };
+
 async function main() {
   const started = Date.now();
+  if (REPLAY_FROM) {
+    const prior = JSON.parse(readFileSync(REPLAY_FROM, "utf8")) as { model: string; draws: Draw[] };
+    const d = prior.draws;
+    const has = (k: keyof Draw) => d.some((r) => r[k] !== undefined);
+    await finish({
+      model: prior.model,
+      ids: d.map((r) => r.id),
+      a1: d.map((r) => r.a1),
+      b1: d.map((r) => r.b1),
+      a2: d.map((r) => r.a2),
+      a3: has("a3") ? d.map((r) => r.a3 ?? null) : null,
+      a4: has("a4") ? d.map((r) => r.a4 ?? null) : null,
+      a5: has("a5") ? d.map((r) => r.a5 ?? null) : null,
+      started,
+      out: process.env.EXP_OUT ?? REPLAY_FROM,
+    });
+    return;
+  }
   const lab = (await listColumns("profiles")).find((c) =>
     c.name.includes("(lab)"),
   )!;
@@ -151,6 +180,37 @@ async function main() {
     a5 = await mapLimit(rows.map((r) => bindTemplate(spaceOnly, r).text), CONCURRENCY, judge);
   }
 
+  await finish({
+    model: MODEL,
+    ids: rows.map((r, i) => (r as { response_id?: unknown }).response_id ?? i),
+    a1, b1, a2,
+    a3: v3 ? a3 : null,
+    a4: DECOMPOSE ? a4 : null,
+    a5: DECOMPOSE ? a5 : null,
+    started,
+    out: OUT,
+  });
+}
+
+async function finish(x: {
+  model: string;
+  ids: unknown[];
+  a1: Array<boolean | null>;
+  b1: Array<boolean | null>;
+  a2: Array<boolean | null>;
+  a3: Array<boolean | null> | null;
+  a4: Array<boolean | null> | null;
+  a5: Array<boolean | null> | null;
+  started: number;
+  out: string;
+}) {
+  const { a1, b1, a2, started } = x;
+  const a3 = x.a3 ?? [];
+  const a4 = x.a4 ?? [];
+  const a5 = x.a5 ?? [];
+  const rows = x.ids;
+  const v3 = x.a3 !== null;
+  const DECOMPOSE_ = x.a4 !== null;
   let floorN = 0;
   let floorFlips = 0;
   let editN = 0;
@@ -171,14 +231,14 @@ async function main() {
   const editFlip = editFlips / editN;
 
   // Pinned procedure: value strata, adaptive 6 looks. Runs per edit pair.
-  const certify = async (fresh: Array<boolean | null>) => {
+  const certify = async (fresh: Array<boolean | null>, cacheOf: Array<boolean | null> = cache) => {
   const strata = [true, false].map((val) => {
     const ids = rows
       .map((_, i) => i)
-      .filter((i) => cache[i] === val && fresh[i] !== null);
+      .filter((i) => cacheOf[i] === val && fresh[i] !== null);
     return {
       id: `v=${val}`,
-      flips: ids.map((i) => (cache[i] !== fresh[i] ? 1 : 0)),
+      flips: ids.map((i) => (cacheOf[i] !== fresh[i] ? 1 : 0)),
     };
   });
   const sweeps = [];
@@ -230,19 +290,19 @@ async function main() {
   return sweeps;
   };
   const sweeps = await certify(a2);
-  const flipRate = (fresh: Array<boolean | null>) => {
+  const flipRate = (fresh: Array<boolean | null>, cacheOf: Array<boolean | null> = a1) => {
     let n = 0;
     let flips = 0;
     for (let i = 0; i < rows.length; i++) {
-      if (a1[i] !== null && fresh[i] !== null) {
+      if (cacheOf[i] !== null && fresh[i] !== null) {
         n++;
-        if (a1[i] !== fresh[i]) flips++;
+        if (cacheOf[i] !== fresh[i]) flips++;
       }
     }
     return { usableEdit: n, flip: n > 0 ? flips / n : null };
   };
   let decomposition: Record<string, unknown> | null = null;
-  if (DECOMPOSE) {
+  if (DECOMPOSE_) {
     const c = flipRate(a4);
     const w = flipRate(a5);
     decomposition = {
@@ -252,24 +312,19 @@ async function main() {
   }
   let synonym: Record<string, unknown> | null = null;
   if (v3) {
-    let n = 0;
-    let flips = 0;
-    for (let i = 0; i < rows.length; i++) {
-      if (a1[i] !== null && a3[i] !== null) {
-        n++;
-        if (a1[i] !== a3[i]) flips++;
-      }
-    }
+    // The benchmark's synonym pair is v2 -> v3: cache is the v2 draw.
+    const r = flipRate(a3, a2);
     synonym = {
-      usableEdit: n,
-      synonymEditFlip: flips / n,
-      sweeps: await certify(a3),
+      pair: "v2->v3",
+      usableEdit: r.usableEdit,
+      synonymEditFlip: r.flip,
+      sweeps: await certify(a3, a2),
     };
   }
 
   const out = {
     experiment: "exp12-secondmodel",
-    model: MODEL,
+    model: x.model,
     n: rows.length,
     usableFloor: floorN,
     usableEdit: editN,
@@ -282,18 +337,18 @@ async function main() {
     // Per-row draws (v1 draw 1, v1 draw 2, v2, v3), so flip DIRECTION is
     // analyzable after the fact: a formatting edit that shifts the model's
     // decision threshold flips one way; noise flips both ways.
-    draws: rows.map((r, i) => ({
-      id: (r as { response_id?: unknown }).response_id ?? i,
+    draws: rows.map((id, i) => ({
+      id,
       a1: a1[i],
       b1: b1[i],
       a2: a2[i],
       ...(v3 ? { a3: a3[i] } : {}),
-      ...(DECOMPOSE ? { a4: a4[i], a5: a5[i] } : {}),
+      ...(DECOMPOSE_ ? { a4: a4[i], a5: a5[i] } : {}),
     })),
     wallMs: Date.now() - started,
   };
   mkdirSync("docs/research/experiments", { recursive: true });
-  writeFileSync(OUT, JSON.stringify(out, null, 2));
+  writeFileSync(x.out, JSON.stringify(out, null, 2));
   console.log(JSON.stringify(out, null, 2));
   console.log("EXP12_DONE");
   process.exit(0);

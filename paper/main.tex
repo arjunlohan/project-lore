@@ -53,6 +53,7 @@
 \newcommand{\sivm}{\textsc{sIVM}}
 %% Venue dialect hooks shared with body.tex (the IEEE shell defines its own).
 \newcommand{\secref}[1]{\S\ref{#1}}
+\newcommand{\figref}[1]{Figure~\ref{#1}}
 \newcommand{\paperroot}{.}
 \newcommand{\venueroadmap}{}
 
@@ -94,10 +95,12 @@ and a production table system, a formatting-only edit certifies
 \benchSavings\ call savings at $\alpha{=}0.2$, the loose end of a
 measured savings--budget frontier, and at deployment scale
 \deployOracle\ oracle calls certify reuse of \deployReused\ of
-\deployN\ cells (\deploySavings\ fewer model calls). In every seeded
-sweep and sampling replication, and in \calTrials\ known-rate
-calibration trials, no certified stratum's true flip rate exceeded its
-budget. We
+\deployN\ cells (\deploySavings\ fewer model calls). Every certified
+stratum in every seeded sweep, sampling replication, and known-rate
+calibration trial (\calTrials\ runs) held its budget, as the bound's
+conservatism guarantees. On \famCount\ further model families
+certification reproduces on \famCertifying, while which edits are
+benign varies by family. We
 release the system, the labels, and a benchmark of versioned
 prompt-edit pairs.
 \end{abstract}

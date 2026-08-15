@@ -62,8 +62,9 @@ const ALLOWED: Array<[RegExp, string]> = [
   [/\d+pt|\d+cm|\d+em/g, "typesetting"],
   [/\$\\delta\/\(?K/g, "notation"],
   [/90 oracle calls/g, "schedule first look"],
-  [/95\\%\s*(percentile interval|confidence interval|CI|PI)|\(95\\%|with 95\\%/g, "nominal interval coverage, a protocol constant"],
+  [/95\\%\s*(percentile interval|confidence interval|Wilson confidence interval|CI|PI)|\(95\\%|with 95\\%/g, "nominal interval coverage, a protocol constant"],
   [/2023|2026|17 USC/g, "years and statutes"],
+  [/main seed 42, sampling\s+replications 1000 to 1999/g, "PRNG seed protocol constants (also in table1's generated header)"],
 ];
 
 let scrubbed = body;
@@ -80,7 +81,7 @@ const suspects = [
 
 // The generated files must themselves be free of hand-authored numbers:
 // they are emitted, so any literal there is a generator hardcode.
-const genFiles = ["paper/table1.tex", "paper/figdata.tex"];
+const genFiles = ["paper/table1.tex", "paper/figdata.tex", "paper/tablefam.tex"];
 for (const f of genFiles) {
   const txt = readFileSync(f, "utf8");
   if (!/^% GENERATED/m.test(txt)) {

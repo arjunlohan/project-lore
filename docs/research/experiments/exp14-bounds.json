@@ -11,7 +11,7 @@
     "perLookDelta": 0.008333333333333333,
     "eb": 0.14368716278424695,
     "betting": 0.065,
-    "wor": 0.16584632439449268
+    "wor": 0.31662340232704805
   },
   "summaryByBound": {
     "eb": {
@@ -27,10 +27,10 @@
       "totalOracle": 7616
     },
     "wor": {
-      "configurationsCertifying": 8,
+      "configurationsCertifying": 7,
       "totalConfigurations": 20,
-      "meanSavings": 0.19410000000000002,
-      "totalOracle": 11137
+      "meanSavings": 0.1644,
+      "totalOracle": 12325
     }
   },
   "results": [
@@ -172,13 +172,13 @@
       "alpha": 0.2,
       "bound": "wor",
       "n": 2000,
-      "oracle": 135,
-      "reused": 1724,
+      "oracle": 405,
+      "reused": 1454,
       "certifiedStrata": [
         "v=false|all"
       ],
-      "savings": 0.862,
-      "realizedPresented": 0.03197353914002205
+      "savings": 0.727,
+      "realizedPresented": 0.025358324145534728
     },
     {
       "pair": "so-synonym",
@@ -415,13 +415,13 @@
       "alpha": 0.1,
       "bound": "wor",
       "n": 2000,
-      "oracle": 765,
-      "reused": 1081,
+      "oracle": 1485,
+      "reused": 361,
       "certifiedStrata": [
         "v=false|all"
       ],
-      "savings": 0.5405,
-      "realizedPresented": 0.03220433092726263
+      "savings": 0.1805,
+      "realizedPresented": 0.010549694614103275
     },
     {
       "pair": "so-widening",
@@ -454,13 +454,13 @@
       "alpha": 0.2,
       "bound": "wor",
       "n": 2000,
-      "oracle": 225,
-      "reused": 1621,
+      "oracle": 405,
+      "reused": 1441,
       "certifiedStrata": [
         "v=false|all"
       ],
-      "savings": 0.8105,
-      "realizedPresented": 0.049416990560799554
+      "savings": 0.7205,
+      "realizedPresented": 0.044975013881177126
     },
     {
       "pair": "dj-formatting",
@@ -696,13 +696,11 @@
       "alpha": 0.1,
       "bound": "wor",
       "n": 2000,
-      "oracle": 900,
-      "reused": 18,
-      "certifiedStrata": [
-        "v=\"Junior\"|all"
-      ],
-      "savings": 0.009,
-      "realizedPresented": 0
+      "oracle": 918,
+      "reused": 0,
+      "certifiedStrata": [],
+      "savings": 0,
+      "realizedPresented": null
     },
     {
       "pair": "dj-criteria",
@@ -746,5 +744,5 @@
       "realizedPresented": 0.03523035230352303
     }
   ],
-  "wallMs": 149517
+  "wallMs": 22298
 }

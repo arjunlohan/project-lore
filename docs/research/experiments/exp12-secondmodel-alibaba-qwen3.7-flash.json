@@ -1,0 +1,29 @@
+{
+  "experiment": "exp12-secondmodel",
+  "model": "alibaba/qwen3.7-flash",
+  "n": 500,
+  "usableFloor": 500,
+  "usableEdit": 500,
+  "selfFlipFloor": 0.058,
+  "formattingEditFlip": 0.146,
+  "floorDominated": false,
+  "sweeps": [
+    {
+      "alpha": 0.1,
+      "certifiedStrata": [],
+      "sampled": 90,
+      "reused": 0,
+      "realizedPresented": null,
+      "savings": 0
+    },
+    {
+      "alpha": 0.2,
+      "certifiedStrata": [],
+      "sampled": 257,
+      "reused": 0,
+      "realizedPresented": null,
+      "savings": 0
+    }
+  ],
+  "wallMs": 1019137
+}

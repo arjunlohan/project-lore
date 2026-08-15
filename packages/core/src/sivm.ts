@@ -289,18 +289,26 @@ export function bettingUpperBound(
  * without-replacement analogue of Maurer-Pontil, and the bound Assumption 3
  * says we do not prove we can skip.
  *
- * Stated as in their Theorem 2.4: with probability at least 1 - delta,
- *   |mean_n - mu| <= sigma_n sqrt(2 rho_n log(5/delta) / n)
- *                    + kappa log(5/delta) / n,
- * with kappa = 7/3 and the Serfling factor
+ * Stated as in their Theorem 4.3 (the empirical Bernstein-Serfling
+ * inequality; the delta below is their delta/5, hence log(5/delta)): with
+ * probability at least 1 - delta,
+ *   mu - mean_n <= sigma_n sqrt(2 rho_n log(5/delta) / n)
+ *                  + kappa (b - a) log(5/delta) / n,
+ * with kappa = 7/3 + 3/sqrt(2) and the Serfling factor
  *   rho_n = 1 - (n-1)/N            for n <= N/2,
  *   rho_n = (1 - n/N)(1 + 1/n)     otherwise.
+ * Their sigma_n is the biased (1/n) empirical standard deviation; the
+ * (1/(n-1)) estimator used here is never smaller, so the bound below is
+ * conservative relative to the theorem, never anti-conservative.
  *
- * The log(5/delta) and the 1/n linear term are the published constants and
- * are NOT interchangeable with Maurer-Pontil's log(2/delta) and 1/(n-1): an
- * earlier draft of this function used the latter, which makes the bound
- * tighter than the theorem licenses. Any power gain measured against that
- * version would have been an artifact of an unsound constant.
+ * Constants matter here and have been wrong twice. An early draft used
+ * Maurer-Pontil's log(2/delta) and 1/(n-1); a later one used
+ * Maurer-Pontil's kappa = 7/3 inside this formula (their Remark 4.4
+ * explicitly relates the two constants; they are not equal). Both errors
+ * make the bound tighter than the theorem licenses, and any power gain
+ * measured against such a version is an artifact of an unsound constant.
+ * The 2026-08-15 IEEE Access review round caught the second, and the bound
+ * ablation (exp14) was re-run with the published constant.
  */
 export function worUpperBound(
   flips: number[],
@@ -316,8 +324,9 @@ export function worUpperBound(
     flips.reduce((a, b) => a + (b - mean) * (b - mean), 0) / (n - 1);
   const L = Math.log(5 / delta);
   const rho = n <= N / 2 ? 1 - (n - 1) / N : (1 - n / N) * (1 + 1 / n);
+  const KAPPA = 7 / 3 + 3 / Math.SQRT2; // Bardenet-Maillard Theorem 4.3
   const bound =
-    mean + Math.sqrt((2 * variance * rho * L) / n) + (7 * L) / (3 * n);
+    mean + Math.sqrt((2 * variance * rho * L) / n) + (KAPPA * L) / n;
   return Math.min(1, bound);
 }
 

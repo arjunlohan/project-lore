@@ -1,0 +1,33 @@
+{
+  "experiment": "exp12-secondmodel",
+  "model": "google/gemini-3-flash",
+  "n": 500,
+  "usableFloor": 499,
+  "usableEdit": 500,
+  "selfFlipFloor": 0.004008016032064128,
+  "formattingEditFlip": 0.058,
+  "floorDominated": false,
+  "sweeps": [
+    {
+      "alpha": 0.1,
+      "certifiedStrata": [
+        "v=false"
+      ],
+      "sampled": 405,
+      "reused": 64,
+      "realizedPresented": 0.0023584905660377358,
+      "savings": 0.128
+    },
+    {
+      "alpha": 0.2,
+      "certifiedStrata": [
+        "v=false"
+      ],
+      "sampled": 135,
+      "reused": 334,
+      "realizedPresented": 0.009433962264150943,
+      "savings": 0.668
+    }
+  ],
+  "wallMs": 1494378
+}

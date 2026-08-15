@@ -42,5 +42,6 @@ ORCID: 0009-0003-3605-1221
 | Under review elsewhere | No |
 | Opposed reviewers | None |
 | Supplementary files / video | None |
+| Graphical abstract | Not requested at submission. IEEE Access asks for it with the final files after acceptance (a figure from the article, 660x295 px JPG under 45 KB, plus a caption of at most 60 words). Plan: Figure 1 (the procedure) exported from the accepted PDF. If the portal shows an optional slot, uploading that export is harmless. |
 | License (at acceptance) | CC BY |
 | APC | Personal payment at acceptance ($2,160 + applicable tax; no discount applies to student members) |

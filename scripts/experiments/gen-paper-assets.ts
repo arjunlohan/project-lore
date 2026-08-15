@@ -11,12 +11,20 @@
  * Run: pnpm tsx scripts/experiments/gen-paper-assets.ts
  */
 import { readFileSync, writeFileSync } from "node:fs";
-import { mulberry32 } from "@lore/core/sivm";
+import { mulberry32, worUpperBound } from "@lore/core/sivm";
 import mysql from "mysql2/promise";
 import { PAIRS } from "./pairs";
 
 const J = (f: string) =>
   JSON.parse(readFileSync(`docs/research/experiments/${f}`, "utf8"));
+// exp12 reruns on further model families (see the model-family block below
+// and the off-ledger cell count).
+const FAMILY_FILES = [
+  "exp12-secondmodel-google-gemini-2.5-flash-lite.json",
+  "exp12-secondmodel-google-gemini-3-flash.json",
+  "exp12-secondmodel-zai-glm-4.7-flash.json",
+  "exp12-secondmodel-alibaba-qwen3.7-flash.json",
+];
 const exp0 = J("exp0-stability.json");
 const exp0b = J("exp0b-djinni-stability.json");
 const exp2 = J("exp2-editclass.json");
@@ -724,6 +732,33 @@ const selFrac = (pair: string) => {
 def("hhSupgSelFrac", selFrac("so-formatting"));
 def("hhSupgSelFracW", selFrac("so-widening"));
 
+// Deployment certificates under the without-replacement bound: recomputed
+// from the certificate's own persisted evidence (sampled, flips, stratum
+// size) at the pinned procedure's per-look level (delta / K strata / 6
+// looks). This is what "discharging Assumption 3" costs at deployment
+// scale, and it needs no new oracle calls.
+{
+  type S11 = { stratumId: string; size: number; sampled: number; flips: number; certified: boolean };
+  type W11 = { alpha: number; strata: S11[] };
+  const sw = exp11.sweeps as W11[];
+  const perLook = 0.1 / 2 / 6;
+  const worOf = (st: S11) =>
+    worUpperBound(
+      Array.from({ length: st.sampled }, (_, i) => (i < st.flips ? 1 : 0)),
+      perLook,
+      st.size,
+    );
+  for (const [tag, alpha] of [["Loose", 0.2], ["Tight", 0.1]] as const) {
+    const w = sw.find((x) => Math.abs(x.alpha - alpha) < 1e-9)!;
+    const st = w.strata.find((x) => x.certified)!;
+    def(`deployWor${tag}`, worOf(st).toFixed(3));
+    def(`deploy${tag}Sampled`, String(st.sampled));
+    def(`deploy${tag}Flips`, String(st.flips));
+    def(`deployWor${tag}Clears`, worOf(st) <= alpha ? "clears" : "does not clear");
+  }
+  def("deployFalseStratum", num(sw[0]!.strata.find((x) => x.certified)!.size));
+}
+
 // exp12: second model family.
 const exp12 = J("exp12-secondmodel.json");
 def("altModelName", String(exp12.model).replace(/_/g, "\\_"));
@@ -801,6 +836,9 @@ const db = await mysql.createConnection({ uri: MYSQL_URL });
 const [[led]] = (await db.query(
   `SELECT COALESCE(SUM(cost_usd),0) AS s, COALESCE(SUM(cells),0) AS c FROM cost_ledger`,
 )) as unknown as [[{ s: number; c: number }]];
+const [[ledgerWindow]] = (await db.query(
+  `SELECT DATE_FORMAT(MIN(at), '%e %M %Y') AS s, DATE_FORMAT(MAX(at), '%e %M %Y') AS e FROM cost_ledger`,
+)) as unknown as [[{ s: string; e: string }]];
 await db.end();
 // r10: the proof sketch ASSERTED that betting/without-replacement bounds are
 // not tighter here and would refuse certificates this procedure issues.
@@ -823,6 +861,36 @@ await db.end();
   def("boundEbAtN", at90.eb.toFixed(3));
   def("boundBetAtN", at90.betting.toFixed(3));
   def("boundWorAtN", at90.wor.toFixed(3));
+  // IEEE Access review round: with the published Bardenet-Maillard constant
+  // (kappa = 7/3 + 3/sqrt2; an earlier draft used Maurer-Pontil's 7/3 and
+  // overstated this bound's power), does the without-replacement bound
+  // certify what the pinned Maurer-Pontil procedure certifies, and at what
+  // sample cost? Per (pair, alpha) over the eb-certifying configurations.
+  {
+    type R14 = { bound: string; pair: string; alpha: number; oracle: number; certifiedStrata: string[]; savings: number };
+    const rows14 = exp14.results as R14[];
+    const key = (r: R14) => `${r.pair}@${r.alpha}`;
+    const worBy = new Map(rows14.filter((r) => r.bound === "wor").map((r) => [key(r), r]));
+    let same = 0, earlier = 0, later = 0, lost = 0, extra = 0;
+    for (const e of rows14.filter((r) => r.bound === "eb")) {
+      const w = worBy.get(key(e))!;
+      const ec = e.certifiedStrata.length > 0;
+      const wc = w.certifiedStrata.length > 0;
+      if (ec && !wc) lost++;
+      else if (!ec && wc) extra++;
+      else if (ec && wc) {
+        if (w.oracle === e.oracle) same++;
+        else if (w.oracle < e.oracle) earlier++;
+        else later++;
+      }
+    }
+    def("boundWorSameLook", String(same));
+    def("boundWorLater", String(later));
+    def("boundWorLost", String(lost));
+    def("boundWorExtra", String(extra));
+    def("boundWorOracle", num(sum.wor!.totalOracle));
+    def("boundWorSavings", pct(sum.wor!.meanSavings, 1));
+  }
   // The widest single gap, which is the one worth naming in prose.
   const cell = (b: string, pair: string, alpha: number) =>
     (exp14.results as Array<{ bound: string; pair: string; alpha: number; savings: number; oracle: number }>)
@@ -851,6 +919,13 @@ await db.end();
   def("boundBetCleanSample", String(Math.round(cal.betting!.avgSampledAtCleanBig)));
 }
 def("totalSpend", `\\$${Number(led.s).toFixed(2)}`);
+{
+  def("ledgerStart", ledgerWindow.s);
+  def("ledgerEnd", ledgerWindow.e);
+  // Off-ledger family runs: date from the artifacts' own clock is not
+  // recorded, so the run date is the one constant typed here, as a date.
+  def("famRunDate", "15 August 2026");
+}
 def("totalCells", num(Number(led.c)));
 // r8/M9: the ledger only sees cells written through the column runner. The
 // probe scripts call the model directly, so the ledgered figure is a lower
@@ -860,6 +935,12 @@ const offLedgerCells =
     rawLabels as Record<string, { d1: unknown[]; d2: unknown[] }>,
   ).reduce((a, r) => a + r.d1.length + r.d2.length, 0) +
   Number(exp12.n) * 3 +
+  // Model-family runs (IEEE Access revision): 3 draws for floor+formatting,
+  // +1 for the synonym pair, +2 for the decomposition where run.
+  FAMILY_FILES.reduce((acc, f) => {
+    const d = J(f) as { n: number; synonym?: unknown; decomposition?: unknown };
+    return acc + Number(d.n) * (3 + (d.synonym ? 1 : 0) + (d.decomposition ? 2 : 0));
+  }, 0) +
   Number(exp0.n) * 2 +
   Number(exp0b.n) * 2 +
   Number(exp4.validPairs) * 6;
@@ -881,7 +962,7 @@ writeFileSync(
       storedV1Cells: (storedRows as Array<{ row_id: string; value: unknown }>)
         .map((r) => ({ row_id: r.row_id, value: r.value })),
       materializationLedgerRun: { costUsd: Number(colLed.s), cells: Number(colLed.c) },
-      ledgerTotal: { costUsd: Number(led.s), cells: Number(led.c) },
+      ledgerTotal: { costUsd: Number(led.s), cells: Number(led.c), window: ledgerWindow },
       materializationLatency: { sumMs: Number(lat.ms), cells: Number(lat.c) },
       deploymentCertificate: {
         id: cert.id,
@@ -925,6 +1006,99 @@ writeFileSync(
     null,
     2,
   ),
+);
+
+// ---------------------------------------------------------------------------
+// Model families (IEEE Access revision): exp12 rerun on further families,
+// positive direction. One row per family in paper/tablefam.tex; per-family
+// macros for the prose. Every artifact must exist: a missing family is a
+// release defect, not something to paper over with a smaller table.
+// ---------------------------------------------------------------------------
+interface Exp12 {
+  model: string;
+  n: number;
+  selfFlipFloor: number;
+  formattingEditFlip: number;
+  sweeps: Array<{ alpha: number; certifiedStrata: string[]; sampled: number; reused: number; realizedPresented: number | null; savings: number }>;
+  synonym?: { usableEdit: number; synonymEditFlip: number; sweeps: Exp12["sweeps"] };
+  decomposition?: {
+    caseOnly: { flip: number | null; sweeps: Exp12["sweeps"] };
+    whitespaceOnly: { flip: number | null; sweeps: Exp12["sweeps"] };
+  };
+  draws?: Array<{ a1: boolean | null; b1: boolean | null; a2: boolean | null; a3?: boolean | null }>;
+}
+const FAMILIES: Array<{ key: string; file: string; label: string }> = [
+  { key: "Gemini", file: FAMILY_FILES[0]!, label: "Gemini 2.5 Flash-Lite" },
+  { key: "GeminiThree", file: FAMILY_FILES[1]!, label: "Gemini 3 Flash" },
+  { key: "Glm", file: FAMILY_FILES[2]!, label: "GLM-4.7-Flash" },
+  { key: "Qwen", file: FAMILY_FILES[3]!, label: "Qwen3.7-Flash" },
+];
+const famRows: string[] = [];
+const cellOutcome = (sw: Exp12["sweeps"]) => {
+  const at = (a: number) => sw.find((x) => Math.abs(x.alpha - a) < 1e-9);
+  const s1 = at(0.1);
+  const s2 = at(0.2);
+  const fmt = (x: typeof s1) =>
+    !x ? "--" : x.certifiedStrata.length === 0 ? `refused (${x.sampled})` : `${pct(x.savings, 1)} @ ${x.sampled}`;
+  return { c1: fmt(s1), c2: fmt(s2), s2 };
+};
+let famCertifying = 0;
+const famFloors: number[] = [];
+for (const f of FAMILIES) {
+  const d = J(f.file) as Exp12;
+  const o = cellOutcome(d.sweeps);
+  const syn = d.synonym ? pct(d.synonym.synonymEditFlip, 1) : "--";
+  const realized = o.s2 && o.s2.realizedPresented !== null ? pct(o.s2.realizedPresented, 2) : "--";
+  famRows.push(
+    `${f.label} & ${num(d.n)} & ${pct(d.selfFlipFloor, 1)} & ${pct(d.formattingEditFlip, 1)} & ${syn} & ${o.c1} & ${o.c2} & ${realized} \\\\`,
+  );
+  def(`fam${f.key}Floor`, pct(d.selfFlipFloor, 1));
+  def(`fam${f.key}Fmt`, pct(d.formattingEditFlip, 1));
+  if (d.synonym) def(`fam${f.key}Syn`, pct(d.synonym.synonymEditFlip, 1));
+  def(`fam${f.key}N`, num(d.n));
+  famFloors.push(d.selfFlipFloor);
+  const anyCert = d.sweeps.some((x) => x.certifiedStrata.length > 0) ||
+    (d.synonym?.sweeps ?? []).some((x) => x.certifiedStrata.length > 0);
+  if (anyCert) famCertifying++;
+  // Flip anatomy from the per-row draws: which stratum flips, and which way.
+  if (d.draws && d.draws.length > 0) {
+    let tN = 0, tF = 0, fN = 0, fF = 0, toFalse = 0, flips = 0;
+    for (const r of d.draws) {
+      if (r.a1 === null || r.a2 === null) continue;
+      if (r.a1) { tN++; if (r.a2 !== r.a1) tF++; } else { fN++; if (r.a2 !== r.a1) fF++; }
+      if (r.a2 !== r.a1) { flips++; if (r.a1 && !r.a2) toFalse++; }
+    }
+    if (tN > 0) def(`fam${f.key}FmtTrueStratum`, pct(tF / tN, 1));
+    if (fN > 0) def(`fam${f.key}FmtFalseStratum`, pct(fF / fN, 1));
+    if (flips > 0) def(`fam${f.key}FmtToFalseShare`, pct(toFalse / flips, 1));
+    def(`fam${f.key}CachedTrueShare`, pct(tN / (tN + fN), 1));
+  }
+  if (d.decomposition) {
+    const c = d.decomposition.caseOnly;
+    const w = d.decomposition.whitespaceOnly;
+    if (c.flip !== null) def(`fam${f.key}CaseOnlyFlip`, pct(c.flip, 1));
+    if (w.flip !== null) def(`fam${f.key}SpaceOnlyFlip`, pct(w.flip, 1));
+    def(`fam${f.key}CaseOnlyCert`, cellOutcome(c.sweeps).c2);
+    def(`fam${f.key}SpaceOnlyCert`, cellOutcome(w.sweeps).c2);
+  }
+}
+def("famCount", String(FAMILIES.length));
+def("famCertifying", String(famCertifying));
+def("famFloorLo", pct(Math.min(...famFloors), 1));
+def("famFloorHi", pct(Math.max(...famFloors), 1));
+writeFileSync(
+  "paper/tablefam.tex",
+  `% GENERATED by scripts/experiments/gen-paper-assets.ts from the
+% exp12-secondmodel-*.json artifacts (same lab column, same seeded rows as
+% the primary evaluation vector, T=0, pinned procedure). Do not edit by hand.
+\\begin{tabular}{lrrrrllr}
+\\toprule
+Family & $n$ & floor & fmt. flip & syn. flip & $\\alpha{=}0.1$ & $\\alpha{=}0.2$ & FR$_{\\text{pres}}$ \\\\
+\\midrule
+${famRows.join("\n")}
+\\bottomrule
+\\end{tabular}
+`,
 );
 
 writeFileSync(

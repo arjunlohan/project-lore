@@ -4,7 +4,8 @@
 %%
 %% Template: ACCESS_latex_template_20260513 from
 %% https://ieeeaccess.ieee.org/authors/preparing-your-article/, vendored
-%% unmodified in this directory (class, bst, Type1 fonts, logos), matching
+%% unmodified in this directory (class, bst, Type1 fonts with their .fd
+%% font-definition files and .map files, logos), matching
 %% the repo convention for acmart.cls/pvldb.sty: submissions not built from
 %% the required template are returned to draft at intake, so the template is
 %% pinned here rather than taken from a TeX install.
@@ -66,6 +67,7 @@
 \newcommand{\sivm}{\textsc{sIVM}}
 %% Venue dialect hooks consumed by ../body.tex.
 \newcommand{\secref}[1]{Section~\ref{#1}}
+\newcommand{\figref}[1]{Fig.~\ref{#1}}
 \newcommand{\paperroot}{..}
 %% acmart's accessibility descriptions have no IEEEtran equivalent; drop.
 \newcommand{\Description}[2][]{}
@@ -109,28 +111,29 @@ by Large Language Models under Prompt Edits}
 \begin{abstract}
 Modern data tables let users define columns in natural language: each cell
 is computed by a language model from a versioned prompt over its row. When
-the prompt is edited, deployed systems face a choice: recompute every
-cell, which is expensive and rate-limited, or silently reuse stale ones,
-which incurs unbounded error. We present semantic incremental view
+the prompt is edited, systems face a choice: recompute every cell,
+expensive and rate-limited, or silently reuse stale ones, with unbounded
+error. We present semantic incremental view
 maintenance (\sivm{}), a layer that certifies which cached cells may be
-reused after a prompt edit, bounding
-the expected false-reuse rate of each certified stratum by a user-chosen
-error budget at a stated confidence level. \sivm{} freezes cached-value
-strata, samples adaptively on a doubling look schedule, and bounds each
-stratum's flip rate with empirical-Bernstein confidence bounds; a strict
-mode certifies at a deflated threshold to bound the error of the reused
-cells alone. We also establish an impossibility floor: a model's rate of
-disagreement with itself under the unedited prompt limits the certifiable
-budget. On two public corpora (\corpusSO\ Stack Overflow developer
-profiles; \corpusDjinni\ Djinni candidate profiles) with \labeledCells+
-labeled cells and a production table system, a formatting-only edit
-certifies \benchSavings\ call savings at the loosest budget on a measured
-savings--budget frontier, and at deployment scale \deployOracle\ oracle
-calls certify reuse of \deployReused\ of \deployN\ cells (\deploySavings\
-fewer model calls). Across every seeded sweep and sampling replication,
-and \calTrials\ known-rate calibration trials, no certified stratum's true
-flip rate exceeded its budget. We release the system, the labels, and a
-benchmark of versioned prompt-edit pairs.
+reused after a prompt edit, bounding the expected false-reuse rate of
+each certified stratum by a user-chosen error budget with stated
+confidence. \sivm{} freezes cached-value strata, samples adaptively
+on a doubling look schedule, and bounds each stratum's flip rate with
+empirical-Bernstein bounds; a strict mode certifies at a
+deflated threshold to bound the error of the reused cells alone. An
+impossibility floor follows: a model's rate of disagreement with itself
+under the unedited prompt limits the certifiable budget. On two
+public corpora (\corpusSO\ Stack Overflow developer profiles;
+\corpusDjinni\ Djinni candidate profiles) with \labeledCells+ labeled
+cells, a formatting-only edit certifies \benchSavings\ call savings at an
+error budget of 0.2 with \benchRealized\ realized false-reuse, and at
+deployment scale \deployOracle\ oracle calls certify reuse of
+\deployReused\ of \deployN\ cells (\deploySavings\ fewer calls). Every certified stratum in every seeded sweep, sampling
+replication, and known-rate calibration trial (\calTrials\ runs) held its
+budget, as the bound's conservatism guarantees. On \famCount\ further
+model families certification reproduces on \famCertifying, while which
+edits are benign varies by family. We release the system, the labels, and a benchmark of
+versioned prompt-edit pairs.
 \end{abstract}
 
 \begin{keywords}
