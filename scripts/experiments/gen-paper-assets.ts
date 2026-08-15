@@ -198,7 +198,8 @@ for (const r of Object.values(rawLabels)) {
   }
   for (let k = 0; k < r.d1.length; k++) across.push([r.d1[k]!, r.d2[k]!]);
 }
-def("floorBool", pct(pairRate(within), 1));
+const floorBoolValue = pairRate(within);
+def("floorBool", pct(floorBoolValue, 1));
 def("editFlipFreshBoth", pct(pairRate(across), 1));
 // F11: the floor is a PER-STRATUM quantity. The column-level average is a
 // mixture and bounds neither stratum; the stratum floors explain the
@@ -1027,41 +1028,62 @@ interface Exp12 {
   };
   draws?: Array<{ a1: boolean | null; b1: boolean | null; a2: boolean | null; a3?: boolean | null }>;
 }
-const FAMILIES: Array<{ key: string; file: string; label: string }> = [
-  { key: "Gemini", file: FAMILY_FILES[0]!, label: "Gemini 2.5 Flash-Lite" },
-  { key: "GeminiThree", file: FAMILY_FILES[1]!, label: "Gemini 3 Flash" },
-  { key: "Glm", file: FAMILY_FILES[2]!, label: "GLM-4.7-Flash" },
-  { key: "Qwen", file: FAMILY_FILES[3]!, label: "Qwen3.7-Flash" },
+// anatomy: emit per-stratum flip and direction macros (the prose discusses
+// the flip anatomy of the two families whose formatting edit is not benign).
+const FAMILIES: Array<{ key: string; file: string; label: string; anatomy: boolean }> = [
+  { key: "Gemini", file: FAMILY_FILES[0]!, label: "Gemini 2.5 Flash-Lite", anatomy: true },
+  { key: "GeminiThree", file: FAMILY_FILES[1]!, label: "Gemini 3 Flash", anatomy: false },
+  { key: "Glm", file: FAMILY_FILES[2]!, label: "GLM-4.7-Flash", anatomy: true },
+  { key: "Qwen", file: FAMILY_FILES[3]!, label: "Qwen3.7-Flash", anatomy: false },
 ];
 const famRows: string[] = [];
-const cellOutcome = (sw: Exp12["sweeps"]) => {
-  const at = (a: number) => sw.find((x) => Math.abs(x.alpha - a) < 1e-9);
-  const s1 = at(0.1);
-  const s2 = at(0.2);
-  const fmt = (x: typeof s1) =>
-    !x ? "--" : x.certifiedStrata.length === 0 ? `refused (${x.sampled})` : `${pct(x.savings, 1)} @ ${x.sampled}`;
-  return { c1: fmt(s1), c2: fmt(s2), s2 };
+// One cell per (pair, alpha): "refused (calls)" or "savings (realized)".
+const outcome = (sw: Exp12["sweeps"] | undefined, alpha: number) => {
+  const x = sw?.find((y) => Math.abs(y.alpha - alpha) < 1e-9);
+  if (!x) return "--";
+  if (x.certifiedStrata.length === 0) return `refused (${x.sampled})`;
+  const err = x.realizedPresented === null ? "--" : pct(x.realizedPresented, 2);
+  return `${pct(x.savings, 1)} (${err})`;
 };
+// Primary model row from the main-seed benchmark artifact (exp8), same
+// pairs, same evaluation vector, so the table compares like with like.
+{
+  type R8 = { pair: string; alpha: number; estimand: string; trueFlipRate: number; main: { certifiedStrata: number; sampled: number; realizedPresented: number; savings: number } };
+  const r8 = (exp8.results as R8[]).filter((r) => r.estimand === "presented");
+  const cell = (pair: string, alpha: number) => {
+    const r = r8.find((x) => x.pair === pair && Math.abs(x.alpha - alpha) < 1e-9)!;
+    return r.main.certifiedStrata === 0
+      ? `refused (${r.main.sampled})`
+      : `${pct(r.main.savings, 1)} (${pct(r.main.realizedPresented, 2)})`;
+  };
+  const fmtFlip = r8.find((x) => x.pair === "so-formatting")!.trueFlipRate;
+  const synFlip = r8.find((x) => x.pair === "so-synonym")!.trueFlipRate;
+  famRows.push(
+    `DeepSeek V4 Flash (primary; main seed) & ${num(r8[0]!.n)} & ${pct(floorBoolValue, 1)} & ${pct(fmtFlip, 1)} & ${cell("so-formatting", 0.1)} & ${cell("so-formatting", 0.2)} & ${pct(synFlip, 1)} & ${cell("so-synonym", 0.1)} & ${cell("so-synonym", 0.2)} \\\\`,
+  );
+}
+{
+  // The weaker-family probe (formatting pair only, n=500).
+  famRows.push(
+    `\\texttt{${String(exp12.model).replace(/_/g, "\\_")}} & ${num(exp12.n)} & ${pct(exp12.selfFlipFloor, 1)} & ${pct(exp12.formattingEditFlip, 1)} & ${outcome(exp12.sweeps, 0.1)} & ${outcome(exp12.sweeps, 0.2)} & -- & -- & -- \\\\`,
+  );
+}
 let famCertifying = 0;
 const famFloors: number[] = [];
 for (const f of FAMILIES) {
   const d = J(f.file) as Exp12;
-  const o = cellOutcome(d.sweeps);
-  const syn = d.synonym ? pct(d.synonym.synonymEditFlip, 1) : "--";
-  const realized = o.s2 && o.s2.realizedPresented !== null ? pct(o.s2.realizedPresented, 2) : "--";
+  const syn = d.synonym;
   famRows.push(
-    `${f.label} & ${num(d.n)} & ${pct(d.selfFlipFloor, 1)} & ${pct(d.formattingEditFlip, 1)} & ${syn} & ${o.c1} & ${o.c2} & ${realized} \\\\`,
+    `${f.label} & ${num(d.n)} & ${pct(d.selfFlipFloor, 1)} & ${pct(d.formattingEditFlip, 1)} & ${outcome(d.sweeps, 0.1)} & ${outcome(d.sweeps, 0.2)} & ${syn ? pct(syn.synonymEditFlip, 1) : "--"} & ${outcome(syn?.sweeps, 0.1)} & ${outcome(syn?.sweeps, 0.2)} \\\\`,
   );
   def(`fam${f.key}Floor`, pct(d.selfFlipFloor, 1));
   def(`fam${f.key}Fmt`, pct(d.formattingEditFlip, 1));
-  if (d.synonym) def(`fam${f.key}Syn`, pct(d.synonym.synonymEditFlip, 1));
-  def(`fam${f.key}N`, num(d.n));
   famFloors.push(d.selfFlipFloor);
   const anyCert = d.sweeps.some((x) => x.certifiedStrata.length > 0) ||
-    (d.synonym?.sweeps ?? []).some((x) => x.certifiedStrata.length > 0);
+    (syn?.sweeps ?? []).some((x) => x.certifiedStrata.length > 0);
   if (anyCert) famCertifying++;
   // Flip anatomy from the per-row draws: which stratum flips, and which way.
-  if (d.draws && d.draws.length > 0) {
+  if (f.anatomy && d.draws && d.draws.length > 0) {
     let tN = 0, tF = 0, fN = 0, fF = 0, toFalse = 0, flips = 0;
     for (const r of d.draws) {
       if (r.a1 === null || r.a2 === null) continue;
@@ -1071,15 +1093,12 @@ for (const f of FAMILIES) {
     if (tN > 0) def(`fam${f.key}FmtTrueStratum`, pct(tF / tN, 1));
     if (fN > 0) def(`fam${f.key}FmtFalseStratum`, pct(fF / fN, 1));
     if (flips > 0) def(`fam${f.key}FmtToFalseShare`, pct(toFalse / flips, 1));
-    def(`fam${f.key}CachedTrueShare`, pct(tN / (tN + fN), 1));
   }
   if (d.decomposition) {
     const c = d.decomposition.caseOnly;
     const w = d.decomposition.whitespaceOnly;
     if (c.flip !== null) def(`fam${f.key}CaseOnlyFlip`, pct(c.flip, 1));
     if (w.flip !== null) def(`fam${f.key}SpaceOnlyFlip`, pct(w.flip, 1));
-    def(`fam${f.key}CaseOnlyCert`, cellOutcome(c.sweeps).c2);
-    def(`fam${f.key}SpaceOnlyCert`, cellOutcome(w.sweeps).c2);
   }
 }
 def("famCount", String(FAMILIES.length));
@@ -1091,9 +1110,11 @@ writeFileSync(
   `% GENERATED by scripts/experiments/gen-paper-assets.ts from the
 % exp12-secondmodel-*.json artifacts (same lab column, same seeded rows as
 % the primary evaluation vector, T=0, pinned procedure). Do not edit by hand.
-\\begin{tabular}{lrrrrllr}
+\\begin{tabular}{lrrrllrll}
 \\toprule
-Family & $n$ & floor & fmt. flip & syn. flip & $\\alpha{=}0.1$ & $\\alpha{=}0.2$ & FR$_{\\text{pres}}$ \\\\
+ & & & \\multicolumn{3}{c}{formatting-only (v1$\\to$v2)} & \\multicolumn{3}{c}{synonym rewording (v2$\\to$v3)} \\\\
+\\cmidrule(lr){4-6}\\cmidrule(lr){7-9}
+Family & $n$ & floor & flip & $\\alpha{=}0.1$ & $\\alpha{=}0.2$ & flip & $\\alpha{=}0.1$ & $\\alpha{=}0.2$ \\\\
 \\midrule
 ${famRows.join("\n")}
 \\bottomrule

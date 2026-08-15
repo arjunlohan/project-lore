@@ -18,7 +18,7 @@ const src = readFileSync("paper/refs.bib", "utf8");
 // Entries never contain '@' internally, so a lazy [^@] scan cannot cross
 // into the next entry. Only arXiv @misc entries (eprint present; no other
 // locator field) need the howpublished line.
-const out = src.replace(/@misc\{[^@]*?\n\}/g, (entry) => {
+let out = src.replace(/@misc\{[^@]*?\n\}/g, (entry) => {
   if (/howpublished|\burl\s*=|\bdoi\s*=/.test(entry)) return entry;
   const ep = entry.match(/eprint\s*=\s*\{([^}]+)\}/);
   if (!ep) return entry;
@@ -27,6 +27,19 @@ const out = src.replace(/@misc\{[^@]*?\n\}/g, (entry) => {
     `\n  howpublished = {arXiv:${ep[1]}},$1`,
   );
 });
+// IEEEtran.bst also has no doi field. IEEE reference style prints DOIs, so
+// carry each entry's DOI in its note (appended when a note exists).
+let doisAdded = 0;
+out = out.replace(/@\w+\{[^@]*?\n\}/g, (entry) => {
+  const doi = entry.match(/\n\s*doi\s*=\s*\{([^}]+)\}/);
+  if (!doi) return entry;
+  doisAdded++;
+  const note = entry.match(/\n(\s*)note\s*=\s*\{([^}]*)\}/);
+  if (note) {
+    return entry.replace(note[0], `\n${note[1]}note = {${note[2]}; doi:${doi[1]}}`);
+  }
+  return entry.replace(/\n\}$/, `,\n  note = {doi:${doi[1]}}\n}`);
+});
 
 const header = `% GENERATED from paper/refs.bib by scripts/gen-ieee-refs.ts; do not edit.
 % IEEEtran.bst drops eprint fields, so arXiv identifiers are copied into
@@ -34,4 +47,4 @@ const header = `% GENERATED from paper/refs.bib by scripts/gen-ieee-refs.ts; do 
 `;
 writeFileSync("paper/ieee/refs.bib", header + out);
 const added = out.match(/howpublished = \{arXiv:/g)?.length ?? 0;
-console.log(`paper/ieee/refs.bib written; arXiv locators added: ${added}`);
+console.log(`paper/ieee/refs.bib written; arXiv locators added: ${added}; DOIs carried into notes: ${doisAdded}`);

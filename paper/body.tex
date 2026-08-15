@@ -48,7 +48,8 @@ guarantee?}
 
 \subsection{Why intuition fails here}
 Three measurements reframe the problem (\secref{sec:experiments}).
-First, large language model (LLM) cells are stochastic even at temperature zero: the same
+First, large language model (LLM) cells are stochastic even at
+temperature zero~\cite{ouyang,atil}: the same
 prompt on the same row disagrees with itself \floorBool\ of the time on
 our boolean workload (within-version draw pairs on $n{=}\benchN$; an
 earlier $n{=}200$ two-draw probe read \floorTzeroProbe) and
@@ -126,8 +127,11 @@ pinned decode parameters $\theta$. For row $r_i$, the bound prompt
 $\pi(r_i)$ interpolates only the fields $\beta(\pi)$ that $\pi$
 references; the stored cell $c_i$ is \emph{one draw} from the output
 distribution $f_V(r_i)$. Even at temperature zero this distribution is
-not degenerate: providers are nondeterministic across calls, so every
-quantity below is defined over draw randomness.
+not degenerate: providers are nondeterministic across calls, as prior
+measurements of hosted models document~\cite{ouyang,atil}, in part
+because the floating-point reduction order inside serving kernels
+changes with the co-batched load~\cite{yuan,tml}, so every quantity
+below is defined over draw randomness.
 
 \paragraph{The maintenance event.} The user edits the definition,
 $V \to V' = (\pi', M, \theta)$. For each cached cell define the flip
@@ -206,7 +210,8 @@ becomes impossible.
 $M$ and $\theta$ are fixed during certification; cell draws are
 distributed as $f_{V'}(r_i)$ throughout the window and are independent
 \emph{across rows} (provider-side batching that correlates concurrent
-responses would violate this; our runner issues independent requests).
+responses~\cite{yuan,tml} would violate this; our runner issues
+independent requests).
 Certificates are scoped to the snapshot; a provider-side model change
 invalidates them (change-of-world maintenance is complementary work).
 \end{assumption}
@@ -410,7 +415,10 @@ $p_j > \alpha(n_j{-}m_j)/n_j$ at every look, in reuse-set mode).
 Certifying requires some look $t$ whose empirical-Bernstein upper bound
 falls below the true rate, an event of probability at most
 $\delta_j/|L_j|$ per look; union bounds over the $|L_j|$ looks and $K$
-strata give $\delta$. The futility rule only stops sampling, never
+strata give $\delta$; this is the Bonferroni instance of Learn then
+Test~\cite{ltt}, each (stratum, look) pair testing the null
+$p_j > \alpha$ at level $\delta_j/|L_j|$ with a certificate as the
+rejection. The futility rule only stops sampling, never
 certifies, so it cannot increase the error probability. On the good
 event: the expected presented-cells error of stratum $j$ is at most its
 whole-stratum rate $p_j \le \alpha$, and any size-weighted union of
@@ -445,14 +453,14 @@ unspent. A betting confidence sequence~\cite{wsr} is tighter on this
 workload and certifies more configurations (\boundBetConfigs\ against
 \boundEbConfigs\ in the main seeded run); our betting construction is
 the i.i.d.\ hedged capital process, so it purchases power, not
-without-replacement validity. A recent ablation of nine bound families
-for selective prediction under risk control catalogs the same kind of
-regime dependence~\cite{boundablation}.
+without-replacement validity.
 \end{proof}
 
 \paragraph{Power.} A clean stratum certifies at the zero-flip minimum
 $n^{*}(\alpha,\delta') = \lceil 7\ln(2/\delta')/(3\alpha)\rceil + 1$
-(the variance term vanishes), e.g., \minZeroFlipSample\ at $\alpha{=}0.05$ under the pinned
+(the variance term vanishes, which is where an empirical-Bernstein
+bound beats a range-only Hoeffding bound~\cite{hoeffding}), e.g.,
+\minZeroFlipSample\ at $\alpha{=}0.05$ under the pinned
 procedure ($K{=}2$, six looks). That is the \emph{fixed-plan} minimum,
 and the doubling schedule cannot stop on it: the first look at or above
 $n^{*}$ is the one it takes, so a clean stratum actually pays
@@ -743,23 +751,67 @@ instability scales with task hardness, not edit semantics
 (the Djinni criteria change lands at \flipDjCriteria,
 indistinguishable from its formatting edit).
 
-\paragraph{A second model family.} Every measurement above uses one
-model, so we replicated the three load-bearing quantities on a second,
-weaker model from a different family (\texttt{\altModelName},
-$n{=}\altModelN$ rows of the same evaluation vector, same prompts, same
-$T{=}0$). Its self-flip floor is \altModelFloor: seven times
-our primary model's \floorBool, and above every error budget a
-user would plausibly set. The formatting edit flips \altModelEditFlip\
-of its cells, again barely above its own floor, and the certifier
-refuses every stratum at $\alpha{\in}\{0.1, 0.2\}$ after
-90 oracle calls. This is the floor prediction of \secref{sec:problem}
-operating as specified: a model that cannot reproduce its own answers
-cannot support certified reuse at any budget, and the procedure detects
-that cheaply instead of certifying something unsafe. \sivm{}'s value is
-therefore a function of the
-model's self-consistency, which is measurable before any edit is made,
-and the same futility machinery that refuses semantic edits refuses
-unstable models.
+\paragraph{Other model families.} Every measurement above uses one
+model, so we ran the lab column's two pairs on \famCount\ further
+budget-class families from different providers, and keep the weaker
+probe of an earlier draft (\texttt{\altModelName}, formatting pair only,
+$n{=}\altModelN$) beside them: same seeded rows as the primary
+evaluation vector, same prompts, $T{=}0$, one fresh draw per cell, the
+pinned procedure (Table~\ref{tab:fam}). Three things transfer and one
+does not. First, every family has a measurable self-flip floor, from
+\famFloorLo\ to \famFloorHi\ across the four and \altModelFloor\ on the
+probe, and the floor bounds certifiability as \secref{sec:problem}
+predicts: the probe's floor is above any budget a user would set, its
+formatting edit flips \altModelEditFlip\ of cells, barely above that
+floor, and the certifier refuses every stratum after 90 oracle calls.
+Second, certified reuse is not a property of the primary model:
+certification reproduces on \famCertifying\ of the \famCount\ families,
+and in every certified cell of Table~\ref{tab:fam} the realized
+presented-cells error is inside the budget. Third, refusals stay
+conservative: a refused stratum is never reused, and where a family
+refuses a stratum whose flip rate is below the budget (GLM-4.7-Flash's
+cached-FALSE stratum on the formatting edit, \famGlmFmtFalseStratum\
+against $\alpha{=}0.2$), the futility rule stopped at the first look
+because the sample rate exceeded the budget, a power miss the frontier
+of \figref{fig:frontier} predicts near the budget, not a validity
+failure. What does not transfer is which edits are benign. The
+formatting-only edit that is floor-dominated on the primary model
+(\flipSoFormatting\ over \floorBool) flips \famGeminiFmt\ of cells on
+Gemini~2.5 Flash-Lite (floor \famGeminiFloor) and \famGlmFmt\ on
+GLM-4.7-Flash (floor \famGlmFloor), in both cached-value strata
+(cached-TRUE and cached-FALSE flip \famGeminiFmtTrueStratum\ and
+\famGeminiFmtFalseStratum\ on the former, \famGlmFmtTrueStratum\ and
+\famGlmFmtFalseStratum\ on the latter). Decomposed on Gemini~2.5
+Flash-Lite, the two paragraph breaks alone flip \famGeminiSpaceOnlyFlip\
+and the one-word case change alone \famGeminiCaseOnlyFlip, and the
+flips run one way (\famGeminiFmtToFalseShare\ of them TRUE$\to$FALSE on
+Gemini~2.5 Flash-Lite, \famGlmFmtToFalseShare\ on GLM-4.7-Flash): a
+shift of the model's decision threshold, in opposite directions on the
+two families, not noise. On both of those families it is the synonym
+rewording, semantically a tightening of the definition, that certifies
+a stratum, because its flips concentrate in one cached value and leave
+the other reusable. The label ordering that intuition suggests
+(formatting benign, semantic edits not) therefore inverts on some
+families and holds on others; benignness is a property of the (edit,
+model) pair, and the certifier measures it per stratum without ever
+consulting the label. \sivm{}'s value is a function of the model's
+self-consistency and of the edit's effect on that model, both of which
+it measures before reusing anything.
+
+\begin{table*}[t]
+\caption{Model families on the lab column's two edit pairs under the
+pinned procedure (presented-cells estimand, $\delta{=}0.1$; the same
+seeded rows as the primary evaluation vector, one fresh draw per cell,
+$T{=}0$). Cells give certified savings with the realized presented-cells
+error in parentheses, or ``refused'' with the oracle calls spent before
+the futility stop. The primary row is the main seed of
+Table~\ref{tab:main} (whose savings are replication means); the
+\texttt{\altModelName} probe ran the formatting pair only.}
+\label{tab:fam}
+\centering\footnotesize
+\setlength{\tabcolsep}{4pt}
+\input{\paperroot/tablefam}
+\end{table*}
 
 \paragraph{Main results.} Table~\ref{tab:main} reads as follows. On the
 stable boolean column, the certifier reuses aggressively where safe
@@ -1028,7 +1080,8 @@ On a clean sample at $n{=}90$ the Maurer--Pontil bound reads
 \boundEbAtN; a Waudby-Smith--Ramdas betting confidence sequence, which
 is anytime-valid and therefore spends the stratum's budget without
 splitting it across the six looks, reads \boundBetAtN; the
-empirical-Bernstein--Serfling without-replacement bound reads
+empirical-Bernstein--Serfling without-replacement
+bound~\cite{serfling,bardenet} reads
 \boundWorAtN. End to end across the \boundConfigsTotal\ configurations
 of Table~\ref{tab:main}, the betting sequence certifies
 \boundBetConfigs\ of them against \boundEbConfigs\ in the main seeded
@@ -1135,13 +1188,28 @@ Djinni criteria change (v2$\to$v3) & same & Sentence appended: ``Evidence of tea
 systems bound the error of \emph{one-shot} execution against a gold
 model: LOTUS's optimized operators with accuracy targets~\cite{lotus},
 SUPG's proxy-based selection with precision/recall
-guarantees~\cite{supg}, BARGAIN's adaptive cascade
+guarantees~\cite{supg} and its aggregation counterpart ABae, which
+stratifies by proxy before spending an expensive predicate~\cite{abae},
+BARGAIN's adaptive cascade
 thresholds~\cite{bargain}, ThalamusDB's approximate natural-language predicates with
 error bounds~\cite{thalamusdb}, and pipeline-level accuracy budgeting
 in Task Cascades~\cite{taskcascades}. All certify a \emph{fixed}
 definition per query; none transfers evidence across a definition
 change. We reuse their statistical machinery (sampling, empirical-Bernstein bounds,
-cascade framing) in a maintenance loop those systems do not model.
+cascade framing) in a maintenance loop those systems do not model. The
+certificate itself is distribution-free risk control in the sense of
+risk-controlling prediction sets~\cite{rcps} and Learn then
+Test~\cite{ltt}: an upper confidence bound on a risk that must clear a
+user-set $\alpha$ with probability $1-\delta$, here evaluated per
+stratum and per look with the multiple-testing accounting those
+frameworks make explicit. The declarative LLM data systems that
+optimize cost and quality without a statistical target, Palimpzest's
+AI-powered analytics~\cite{palimpzest}, DocETL's agentic pipeline
+rewriting~\cite{docetl}, Evaporate's structured views over data
+lakes~\cite{evaporate}, and UQE's sampling-driven queries over
+unstructured collections~\cite{uqe}, compute the same kind of
+prompt-defined per-record outputs, and none certifies which of its
+outputs survive a redefinition.
 
 \paragraph{Verified caching.} vCache certifies that a \emph{new query}
 may reuse a cached answer under one fixed definition, with learned
@@ -1171,7 +1239,10 @@ it~\cite{svc} is the closest classical relative of what we do, and the
 difference is what goes stale: there the data drifts under a fixed view
 definition, here the definition itself changes over fixed data, which is
 why their staleness estimators condition on updates and ours condition
-on a prompt delta. Classical incremental view maintenance (IVM) and view adaptation after
+on a prompt delta, and the look schedule itself is online aggregation's
+template~\cite{ola}, a running estimate whose interval tightens as
+sampling proceeds, repurposed to certify a stratum rather than to answer
+an aggregate. Classical incremental view maintenance (IVM) and view adaptation after
 redefinition~\cite{gupta95,dbsp} assume
 deterministic operators, where a rewrite either preserves a
 subexpression or does not. Stochastic LLM cells break the premise: our
@@ -1231,11 +1302,15 @@ are an open lever with guaranteed validity
 (Assumption~\ref{as:frozen}). Equivalence is exact-match; free-text
 columns need a judge whose own error must be calibrated and folded
 into $\alpha$. Measurements use one budget-class
-reasoning model for the full experimental program and a second, weaker
-family only for the floor and refusal check; the quantitative frontier
-(where savings sit for a given $\alpha$) is therefore
-model-specific, even though the qualitative structure, a measurable
-floor that bounds certifiability, held on both. Certificates are scoped to pinned
+reasoning model for the full experimental program; \famCount\ further
+families were run on the lab column's formatting and synonym pairs
+(\secref{sec:experiments}), where certification reproduced on
+\famCertifying\ of them and the same edit's flip rate ranged widely, so
+the quantitative frontier (where savings sit for a given $\alpha$, and
+which edits are benign at all) is specific to the (edit, model) pair,
+even though the qualitative structure, a measurable floor that bounds
+certifiability and a certifier whose refusals track the measured flip
+rate, held on every family. Certificates are scoped to pinned
 snapshots and say nothing about provider drift; composing \sivm{} with
 change-of-world invalidation~\cite{evergreen,freshcache} is natural
 future work. Finally, the economic frame that matters in production is
