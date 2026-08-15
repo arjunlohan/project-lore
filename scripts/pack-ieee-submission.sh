@@ -47,4 +47,10 @@ cp "$OUT/src/main.pdf" "$OUT/manuscript.pdf"
 ( cd "$OUT/src" && latexmk -c main.tex >/dev/null 2>&1 )   # keeps main.bbl; -c never removes .bbl/.pdf? it removes .pdf, so restore:
 cp "$OUT/manuscript.pdf" "$OUT/src/main.pdf"
 ( cd "$OUT/src" && rm -f source.zip && zip -q source.zip * -x '*.DS_Store' && mv source.zip .. )
+# 6. Cover letter (source tracked at paper/ieee/cover-letter.tex; the
+#    portal's "Cover letter / Comments" slot takes a PDF).
+mkdir -p "$OUT/cover" && cp paper/ieee/cover-letter.tex "$OUT/cover/" \
+  && ( cd "$OUT/cover" && pdflatex -interaction=nonstopmode cover-letter.tex >/dev/null 2>&1 && pdflatex -interaction=nonstopmode cover-letter.tex >/dev/null 2>&1 ) \
+  && cp "$OUT/cover/cover-letter.pdf" "$OUT/cover-letter.pdf"
+echo "cover letter: $OUT/cover-letter.pdf ($(/usr/bin/grep -o 'Output written on cover-letter.pdf ([0-9]* pages' "$OUT/cover/cover-letter.log" | /usr/bin/grep -o '[0-9]* pages'))"
 echo "packed: $OUT/manuscript.pdf ($PAGES_FLAT), $OUT/source.zip ($(du -h "$OUT/source.zip" | cut -f1); flat, with main.bbl and main.pdf)"
