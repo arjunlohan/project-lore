@@ -377,7 +377,10 @@ error budget $\delta_j = \delta/K$ evenly across looks.
 \item \textbf{Sample and test.} Draw the stratum's seeded shuffle once.
 At each look $t$, reveal fresh draws for the prefix, compute the
 Maurer--Pontil~\cite{maurer} empirical-Bernstein upper confidence bound
-$u_{j,t}$ on the stratum flip rate at level $\delta_j/|L_j|$;
+$u_{j,t}$ on the stratum flip rate at level $\delta_j/|L_j|$ (or, for
+the variant Theorem~\ref{thm:valid} proves for the sampling actually
+performed, the Bardenet--Maillard bound~\cite{bardenet}; the system
+exposes both);
 \emph{certify and stop} if $u_{j,t} \le \alpha$; \emph{stop for
 futility} if the empirical rate alone exceeds $\alpha$.
 \item \textbf{Apply.} Reuse all unsampled rows of certified strata
