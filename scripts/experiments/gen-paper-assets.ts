@@ -923,9 +923,13 @@ def("totalSpend", `\\$${Number(led.s).toFixed(2)}`);
 {
   def("ledgerStart", ledgerWindow.s);
   def("ledgerEnd", ledgerWindow.e);
-  // Off-ledger family runs: date from the artifacts' own clock is not
-  // recorded, so the run date is the one constant typed here, as a date.
-  def("famRunDate", "15 August 2026");
+  // Off-ledger family runs: date range from the artifacts' own ranAt stamps.
+  const fmtDate = (iso: string) =>
+    new Date(iso).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" });
+  const stamps = FAMILY_FILES.map((f) => String((J(f) as { ranAt: string }).ranAt)).sort();
+  const first = fmtDate(stamps[0]!);
+  const last = fmtDate(stamps[stamps.length - 1]!);
+  def("famRunDate", first === last ? first : `${first} to ${last}`);
 }
 def("totalCells", num(Number(led.c)));
 // r8/M9: the ledger only sees cells written through the column runner. The
@@ -939,8 +943,9 @@ const offLedgerCells =
   // Model-family runs (IEEE Access revision): 3 draws for floor+formatting,
   // +1 for the synonym pair, +2 for the decomposition where run.
   FAMILY_FILES.reduce((acc, f) => {
-    const d = J(f) as { n: number; synonym?: unknown; decomposition?: unknown };
-    return acc + Number(d.n) * (3 + (d.synonym ? 1 : 0) + (d.decomposition ? 2 : 0));
+    const d = J(f) as { draws: Array<Record<string, unknown>> };
+    return acc + d.draws.reduce((a, r) =>
+      a + ["a1", "b1", "a2", "a3", "a4", "a5"].filter((k) => r[k] !== undefined && r[k] !== null).length, 0);
   }, 0) +
   Number(exp0.n) * 2 +
   Number(exp0b.n) * 2 +
@@ -1048,7 +1053,7 @@ const outcome = (sw: Exp12["sweeps"] | undefined, alpha: number) => {
 // Primary model row from the main-seed benchmark artifact (exp8), same
 // pairs, same evaluation vector, so the table compares like with like.
 {
-  type R8 = { pair: string; alpha: number; estimand: string; trueFlipRate: number; main: { certifiedStrata: number; sampled: number; realizedPresented: number; savings: number } };
+  type R8 = { pair: string; alpha: number; estimand: string; n: number; trueFlipRate: number; main: { certifiedStrata: number; sampled: number; realizedPresented: number; savings: number } };
   const r8 = (exp8.results as R8[]).filter((r) => r.estimand === "presented");
   const cell = (pair: string, alpha: number) => {
     const r = r8.find((x) => x.pair === pair && Math.abs(x.alpha - alpha) < 1e-9)!;
@@ -1072,7 +1077,11 @@ let famCertifying = 0;
 const famFloors: number[] = [];
 for (const f of FAMILIES) {
   const d = J(f.file) as Exp12;
-  const syn = d.synonym;
+  // Report the synonym pair only if it completed: a run cut off mid-batch
+  // (gateway budget cap) leaves a random prefix, unbiased but under-sized,
+  // and the table must not silently mix sample sizes.
+  const syn = d.synonym && d.synonym.usableEdit >= 0.95 * d.n ? d.synonym : undefined;
+  if (d.synonym && !syn) console.log(`NOTE: ${f.file} synonym pair partial (${d.synonym.usableEdit}/${d.n}); reported as --`);
   famRows.push(
     `${f.label} & ${num(d.n)} & ${pct(d.selfFlipFloor, 1)} & ${pct(d.formattingEditFlip, 1)} & ${outcome(d.sweeps, 0.1)} & ${outcome(d.sweeps, 0.2)} & ${syn ? pct(syn.synonymEditFlip, 1) : "--"} & ${outcome(syn?.sweeps, 0.1)} & ${outcome(syn?.sweeps, 0.2)} \\\\`,
   );
@@ -1102,7 +1111,7 @@ for (const f of FAMILIES) {
   }
 }
 def("famCount", String(FAMILIES.length));
-def("famCertifying", String(famCertifying));
+def("famCertifyingOf", famCertifying === FAMILIES.length ? `all ${FAMILIES.length}` : `${famCertifying} of the ${FAMILIES.length}`);
 def("famFloorLo", pct(Math.min(...famFloors), 1));
 def("famFloorHi", pct(Math.max(...famFloors), 1));
 writeFileSync(

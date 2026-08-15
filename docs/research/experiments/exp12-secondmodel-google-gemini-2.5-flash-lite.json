@@ -1,6 +1,7 @@
 {
   "experiment": "exp12-secondmodel",
   "model": "google/gemini-2.5-flash-lite",
+  "ranAt": "2026-08-15T00:00:00.000Z",
   "n": 2000,
   "usableFloor": 2000,
   "usableEdit": 2000,

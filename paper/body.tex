@@ -767,10 +767,16 @@ probe, and the floor bounds certifiability as \secref{sec:problem}
 predicts: the probe's floor is above any budget a user would set, its
 formatting edit flips \altModelEditFlip\ of cells, barely above that
 floor, and the certifier refuses every stratum after 90 oracle calls.
-Second, certified reuse is not a property of the primary model:
-certification reproduces on \famCertifying\ of the \famCount\ families,
-and in every certified cell of Table~\ref{tab:fam} the realized
-presented-cells error is inside the budget. Third, refusals stay
+Second, certified reuse is not a property of the primary model. On
+Gemini~3 Flash (floor \famGeminiThreeFloor, formatting flip
+\famGeminiThreeFmt) the formatting edit certifies the cached-FALSE
+stratum at both budgets; on Qwen3.7-Flash (floor \famQwenFloor, flip
+\famQwenFmt) it certifies at the loose budget after most of the
+schedule; and on the two families whose formatting edit is not benign,
+the synonym pair certifies instead. Certification reproduces on
+\famCertifyingOf\ families, and in every certified cell of
+Table~\ref{tab:fam} the realized presented-cells error is inside the
+budget. Third, refusals stay
 conservative: a refused stratum is never reused, and where a family
 refuses a stratum whose flip rate is below the budget (GLM-4.7-Flash's
 cached-FALSE stratum on the formatting edit, \famGlmFmtFalseStratum\
@@ -1308,7 +1314,7 @@ into $\alpha$. Measurements use one budget-class
 reasoning model for the full experimental program; \famCount\ further
 families were run on the lab column's formatting and synonym pairs
 (\secref{sec:experiments}), where certification reproduced on
-\famCertifying\ of them and the same edit's flip rate ranged widely, so
+\famCertifyingOf\ and the same edit's flip rate ranged widely, so
 the quantitative frontier (where savings sit for a given $\alpha$, and
 which edits are benign at all) is specific to the (edit, model) pair,
 even though the qualitative structure, a measurable floor that bounds

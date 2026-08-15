@@ -25,6 +25,11 @@
  *                  formatting pair. The synonym pair is v2 -> v3, as in the
  *                  benchmark (pairs.ts): its cache is the v2 draw and its
  *                  strata are v2's cached values;
+ *   EXP_FILL_FROM=<artifact.json>  reload a prior artifact's draws and call
+ *                  the model ONLY for draws recorded as null (a run whose
+ *                  tail failed, e.g. on a gateway budget cap, is completed
+ *                  without re-spending on the draws that succeeded); then
+ *                  recompute everything as in replay mode;
  *   EXP_REPLAY_FROM=<artifact.json>  skip the database and the model: reload
  *                  the per-row draws dumped by an earlier run and recompute
  *                  every derived quantity (used to correct the synonym-pair
@@ -53,6 +58,7 @@ const N = Number(process.env.EXP_ROWS ?? 500);
 const WITH_SYNONYM = process.env.EXP_SYNONYM === "1";
 const DECOMPOSE = process.env.EXP_DECOMPOSE === "1";
 const REPLAY_FROM = process.env.EXP_REPLAY_FROM;
+const FILL_FROM = process.env.EXP_FILL_FROM;
 const OUT =
   process.env.EXP_OUT ??
   (MODEL === "openai/gpt-5-nano"
@@ -111,7 +117,7 @@ type Draw = { id: unknown; a1: boolean | null; b1: boolean | null; a2: boolean |
 async function main() {
   const started = Date.now();
   if (REPLAY_FROM) {
-    const prior = JSON.parse(readFileSync(REPLAY_FROM, "utf8")) as { model: string; draws: Draw[] };
+    const prior = JSON.parse(readFileSync(REPLAY_FROM, "utf8")) as { model: string; ranAt?: string; draws: Draw[] };
     const d = prior.draws;
     const has = (k: keyof Draw) => d.some((r) => r[k] !== undefined);
     await finish({
@@ -124,6 +130,7 @@ async function main() {
       a4: has("a4") ? d.map((r) => r.a4 ?? null) : null,
       a5: has("a5") ? d.map((r) => r.a5 ?? null) : null,
       started,
+      ranAt: prior.ranAt ?? new Date(started).toISOString(),
       out: process.env.EXP_OUT ?? REPLAY_FROM,
     });
     return;
@@ -134,8 +141,14 @@ async function main() {
   const v1 = await getColumnVersion(lab.id, 1);
   const v2 = await getColumnVersion(lab.id, 2);
   if (!v1 || !v2) throw new Error("versions missing");
-  const v3 = WITH_SYNONYM ? await getColumnVersion(lab.id, 3) : null;
-  if (WITH_SYNONYM && !v3) throw new Error("v3 (synonym) missing");
+  const prior = FILL_FROM
+    ? (JSON.parse(readFileSync(FILL_FROM, "utf8")) as { model: string; n: number; ranAt?: string; draws: Draw[] })
+    : null;
+  const withSynonym = WITH_SYNONYM || (prior?.draws.some((r) => r.a3 !== undefined) ?? false);
+  const v3 = withSynonym ? await getColumnVersion(lab.id, 3) : null;
+  if (withSynonym && !v3) throw new Error("v3 (synonym) missing");
+  if (prior && prior.model !== MODEL) throw new Error(`fill: artifact model ${prior.model} != EXP_MODEL ${MODEL}`);
+  if (prior && prior.n !== N) throw new Error(`fill: artifact n ${prior.n} != EXP_ROWS ${N}`);
 
   const db = await mysql.createConnection({ uri: MYSQL_URL });
   const [rowsRaw] = await db.query(
@@ -158,14 +171,31 @@ async function main() {
     return out;
   });
 
-  // Two draws of v1 (floor) and one draw of v2 (edit effect).
+  // Two draws of v1 (floor) and one draw of v2 (edit effect). In fill mode
+  // every non-null prior draw is kept and only null slots are queried; the
+  // prior artifact's row order is the same seeded query, checked by id.
+  if (prior) {
+    const ids = rows.map((r, i) => (r as { response_id?: unknown }).response_id ?? i);
+    for (let i = 0; i < ids.length; i++) {
+      if (String(prior.draws[i]?.id) !== String(ids[i])) throw new Error(`fill: row order differs at ${i}`);
+    }
+  }
+  const drawOrKeep = async (prompts: string[], key: keyof Draw) => {
+    if (!prior) return mapLimit(prompts, CONCURRENCY, judge);
+    const out: Array<boolean | null> = prior.draws.map((r) => (r[key] as boolean | null | undefined) ?? null);
+    const missing = out.map((v, i) => (v === null ? i : -1)).filter((i) => i >= 0);
+    console.log(`fill ${String(key)}: ${missing.length} of ${out.length} draws missing`);
+    const fresh = await mapLimit(missing.map((i) => prompts[i]!), CONCURRENCY, judge);
+    missing.forEach((i, k) => { out[i] = fresh[k]!; });
+    return out;
+  };
   const p1 = rows.map((r) => bindTemplate(v1.prompt_template, r).text);
   const p2 = rows.map((r) => bindTemplate(v2.prompt_template, r).text);
-  const a1 = await mapLimit(p1, CONCURRENCY, judge);
-  const b1 = await mapLimit(p1, CONCURRENCY, judge);
-  const a2 = await mapLimit(p2, CONCURRENCY, judge);
+  const a1 = await drawOrKeep(p1, "a1");
+  const b1 = await drawOrKeep(p1, "b1");
+  const a2 = await drawOrKeep(p2, "a2");
   const p3 = v3 ? rows.map((r) => bindTemplate(v3.prompt_template, r).text) : [];
-  const a3 = v3 ? await mapLimit(p3, CONCURRENCY, judge) : [];
+  const a3 = v3 ? await drawOrKeep(p3, "a3") : [];
   // Decomposition of the formatting edit into its two surface components.
   // Guarded so the derivation cannot silently no-op if the templates change.
   let a4: Array<boolean | null> = [];
@@ -188,7 +218,8 @@ async function main() {
     a4: DECOMPOSE ? a4 : null,
     a5: DECOMPOSE ? a5 : null,
     started,
-    out: OUT,
+    ranAt: prior?.ranAt ?? new Date(started).toISOString(),
+    out: process.env.EXP_OUT ?? FILL_FROM ?? OUT,
   });
 }
 
@@ -202,6 +233,7 @@ async function finish(x: {
   a4: Array<boolean | null> | null;
   a5: Array<boolean | null> | null;
   started: number;
+  ranAt: string;
   out: string;
 }) {
   const { a1, b1, a2, started } = x;
@@ -325,6 +357,7 @@ async function finish(x: {
   const out = {
     experiment: "exp12-secondmodel",
     model: x.model,
+    ranAt: x.ranAt,
     n: rows.length,
     usableFloor: floorN,
     usableEdit: editN,
