@@ -32,8 +32,8 @@ cp paper/ieee/ieeeaccess.cls paper/ieee/IEEEtran.cls paper/ieee/IEEEtran.bst pap
 ( cd "$OUT/src" && latexmk -pdf -interaction=nonstopmode main.tex >/dev/null 2>&1 )
 ERRORS=$(/usr/bin/grep -c '^!' "$OUT/src/main.log" || true)
 [ "$ERRORS" = "0" ] || { echo "flattened build has $ERRORS TeX errors"; exit 1; }
-PAGES_FLAT=$(/usr/bin/grep -o 'Output written on main.pdf ([0-9]* pages' "$OUT/src/main.log" | /usr/bin/grep -o '[0-9]* pages')
-PAGES_TREE=$(/usr/bin/grep -o 'Output written on main.pdf ([0-9]* pages' paper/ieee/main.log | /usr/bin/grep -o '[0-9]* pages')
+PAGES_FLAT=$(/usr/bin/grep -o 'Output written on main.pdf ([0-9]* pages\?' "$OUT/src/main.log" | /usr/bin/grep -o '[0-9]* pages')
+PAGES_TREE=$(/usr/bin/grep -o 'Output written on main.pdf ([0-9]* pages\?' paper/ieee/main.log | /usr/bin/grep -o '[0-9]* pages')
 [ "$PAGES_FLAT" = "$PAGES_TREE" ] || { echo "page count differs: flat=$PAGES_FLAT tree=$PAGES_TREE"; exit 1; }
 UNDEF=$(/usr/bin/grep -c 'Citation.*undefined\|Reference.*undefined' "$OUT/src/main.log" || true)
 [ "$UNDEF" = "0" ] || { echo "$UNDEF undefined citations/references"; exit 1; }
@@ -52,5 +52,5 @@ cp "$OUT/manuscript.pdf" "$OUT/src/main.pdf"
 mkdir -p "$OUT/cover" && cp paper/ieee/cover-letter.tex "$OUT/cover/" \
   && ( cd "$OUT/cover" && pdflatex -interaction=nonstopmode cover-letter.tex >/dev/null 2>&1 && pdflatex -interaction=nonstopmode cover-letter.tex >/dev/null 2>&1 ) \
   && cp "$OUT/cover/cover-letter.pdf" "$OUT/cover-letter.pdf"
-echo "cover letter: $OUT/cover-letter.pdf ($(/usr/bin/grep -o 'Output written on cover-letter.pdf ([0-9]* pages' "$OUT/cover/cover-letter.log" | /usr/bin/grep -o '[0-9]* pages'))"
+echo "cover letter: $OUT/cover-letter.pdf ($(/usr/bin/grep -o 'Output written on cover-letter.pdf ([0-9]* pages\?' "$OUT/cover/cover-letter.log" | /usr/bin/grep -o '[0-9]* pages\?'))"
 echo "packed: $OUT/manuscript.pdf ($PAGES_FLAT), $OUT/source.zip ($(du -h "$OUT/source.zip" | cut -f1); flat, with main.bbl and main.pdf)"
