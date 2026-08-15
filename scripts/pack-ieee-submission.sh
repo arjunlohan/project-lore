@@ -38,8 +38,13 @@ PAGES_TREE=$(/usr/bin/grep -o 'Output written on main.pdf ([0-9]* pages' paper/i
 UNDEF=$(/usr/bin/grep -c 'Citation.*undefined\|Reference.*undefined' "$OUT/src/main.log" || true)
 [ "$UNDEF" = "0" ] || { echo "$UNDEF undefined citations/references"; exit 1; }
 
-# 5. Deliverables: the PDF and a zip of the sources without build residue.
+# 5. Deliverables: the PDF, and a FLAT zip of the sources (the IEEE Author
+#    Portal compiles the archive itself: main.tex at the archive root, the
+#    resolved main.bbl kept so the build does not depend on the portal
+#    running BibTeX, and the matching main.pdf included as the checklist's
+#    "source plus matching PDF"). Build residue (aux/log/fls/...) removed.
 cp "$OUT/src/main.pdf" "$OUT/manuscript.pdf"
-( cd "$OUT/src" && latexmk -c main.tex >/dev/null 2>&1; rm -f main.bbl main.pdf )
-( cd "$OUT" && rm -f source.zip && zip -q -r source.zip src -x '*.DS_Store' )
-echo "packed: $OUT/manuscript.pdf ($PAGES_FLAT), $OUT/source.zip ($(du -h "$OUT/source.zip" | cut -f1))"
+( cd "$OUT/src" && latexmk -c main.tex >/dev/null 2>&1 )   # keeps main.bbl; -c never removes .bbl/.pdf? it removes .pdf, so restore:
+cp "$OUT/manuscript.pdf" "$OUT/src/main.pdf"
+( cd "$OUT/src" && rm -f source.zip && zip -q source.zip * -x '*.DS_Store' && mv source.zip .. )
+echo "packed: $OUT/manuscript.pdf ($PAGES_FLAT), $OUT/source.zip ($(du -h "$OUT/source.zip" | cut -f1); flat, with main.bbl and main.pdf)"
