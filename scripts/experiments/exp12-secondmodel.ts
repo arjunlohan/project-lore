@@ -29,7 +29,13 @@
  *                  the model ONLY for draws recorded as null (a run whose
  *                  tail failed, e.g. on a gateway budget cap, is completed
  *                  without re-spending on the draws that succeeded); then
- *                  recompute everything as in replay mode;
+ *                  recompute everything as in replay mode. Every run also
+ *                  CHECKPOINTS: after each batch of completed draws the
+ *                  partial draws are written to <out>.partial.json, so a
+ *                  killed or budget-capped run keeps what it paid for and
+ *                  EXP_FILL_FROM=<out>.partial.json resumes it (a
+ *                  2026-08-15 fill lost an hour of Gemini 3 draws to
+ *                  exactly this gap);
  *   EXP_REPLAY_FROM=<artifact.json>  skip the database and the model: reload
  *                  the per-row draws dumped by an earlier run and recompute
  *                  every derived quantity (used to correct the synonym-pair
@@ -97,6 +103,8 @@ async function mapLimit<T, R>(
   return out;
 }
 
+let completedSinceCheckpoint = 0;
+let onProgress: (() => void) | null = null;
 async function judge(prompt: string): Promise<boolean | null> {
   try {
     const res = await generateObject({
@@ -106,8 +114,12 @@ async function judge(prompt: string): Promise<boolean | null> {
       prompt,
       temperature: 0,
     });
+    completedSinceCheckpoint++;
+    if (completedSinceCheckpoint >= 100 && onProgress) { completedSinceCheckpoint = 0; onProgress(); }
     return res.object.value;
   } catch {
+    completedSinceCheckpoint++;
+    if (completedSinceCheckpoint >= 100 && onProgress) { completedSinceCheckpoint = 0; onProgress(); }
     return null;
   }
 }
@@ -180,13 +192,34 @@ async function main() {
       if (String(prior.draws[i]?.id) !== String(ids[i])) throw new Error(`fill: row order differs at ${i}`);
     }
   }
+  const ids = rows.map((r, i) => (r as { response_id?: unknown }).response_id ?? i);
+  const partial: Record<string, Array<boolean | null>> = {};
+  const checkpoint = () => {
+    const keys = Object.keys(partial) as Array<keyof Draw>;
+    const draws = ids.map((id, i) => {
+      const d: Record<string, unknown> = { id };
+      for (const k of keys) d[k as string] = partial[k as string]![i] ?? null;
+      return d;
+    });
+    const out = process.env.EXP_OUT ?? FILL_FROM ?? OUT;
+    writeFileSync(`${out}.partial.json`, JSON.stringify({ experiment: "exp12-secondmodel", model: MODEL, ranAt: prior?.ranAt ?? new Date(started).toISOString(), n: rows.length, partial: true, draws }));
+  };
   const drawOrKeep = async (prompts: string[], key: keyof Draw) => {
-    if (!prior) return mapLimit(prompts, CONCURRENCY, judge);
-    const out: Array<boolean | null> = prior.draws.map((r) => (r[key] as boolean | null | undefined) ?? null);
+    const res = await drawOrKeepInner(prompts, key);
+    partial[key as string] = res;
+    checkpoint();
+    return res;
+  };
+  const drawOrKeepInner = async (prompts: string[], key: keyof Draw) => {
+    const out: Array<boolean | null> = prior
+      ? prior.draws.map((r) => (r[key] as boolean | null | undefined) ?? null)
+      : new Array(prompts.length).fill(null);
     const missing = out.map((v, i) => (v === null ? i : -1)).filter((i) => i >= 0);
-    console.log(`fill ${String(key)}: ${missing.length} of ${out.length} draws missing`);
-    const fresh = await mapLimit(missing.map((i) => prompts[i]!), CONCURRENCY, judge);
-    missing.forEach((i, k) => { out[i] = fresh[k]!; });
+    if (prior) console.log(`fill ${String(key)}: ${missing.length} of ${out.length} draws missing`);
+    partial[key as string] = out;           // live view for the intra-pass checkpoint
+    onProgress = () => { console.log(`  ${String(key)}: ${out.filter((v) => v !== null).length}/${out.length} done`); checkpoint(); };
+    await mapLimit(missing, CONCURRENCY, async (i) => { out[i] = await judge(prompts[i]!); return null; });
+    onProgress = null;
     return out;
   };
   const p1 = rows.map((r) => bindTemplate(v1.prompt_template, r).text);

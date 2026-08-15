@@ -36,3 +36,5 @@ paper/ieee/*.out
 paper/ieee/*.fls
 paper/ieee/*.fdb_latexmk
 paper/ieee/submission/
+# transient checkpoints written by scripts/experiments/exp12-secondmodel.ts
+docs/research/experiments/*.partial.json
