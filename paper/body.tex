@@ -564,6 +564,37 @@ silently absorbing error at roughly the population flip rates
 (\flipSoFormatting; \flipSoWidening): the
 deployed status quo. That $\tau$ sits on the shoulder of the widening
 edit's collapse, quantified in the threshold sweep below.
+Table~\ref{tab:policies} lines these policies up beside the two trivial
+ones, always recompute and always reuse, on the two headline edits at
+$\alpha{=}0.2$: the trivial policies bracket the design space (zero error
+at full cost; full savings at the population flip rate), the aggregate
+methods buy volume from the unstable subgroup, and \sivm{} is the only
+row whose reused cells carry a per-stratum bound.
+
+\begin{table*}[t]
+\caption{Reuse policies on the SO formatting and scope-widening edits at
+$\alpha{=}0.2$ ($n{=}\benchN$, main seed). Realized error is the flip rate
+among reused cells; the trivial policies are exact by construction
+(always-reuse error is the population flip rate). B2 additionally reports
+the error of its reused cached-TRUE subgroup in parentheses. Oracle calls
+for the aggregate arms are the same \hhBudget\ labels as \sivm{}.}
+\label{tab:policies}
+\centering\small
+\begin{tabular}{@{}llrrrr@{}}
+\toprule
+ & & \multicolumn{2}{c}{Formatting} & \multicolumn{2}{c}{Widening} \\
+\cmidrule(lr){3-4}\cmidrule(lr){5-6}
+Policy & Guarantee & reused & error & reused & error \\
+\midrule
+Always recompute & exact & $0.0\%$ & $0.0\%$ & $0.0\%$ & $0.0\%$ \\
+Always reuse (status quo) & none & $100\%$ & \flipSoFormatting & $100\%$ & \flipSoWidening \\
+B3 GPTCache, $\tau{=}0.95$ & none & $100\%$ & \flipSoFormatting & \bThreeReuseW & $\approx$\flipSoWidening \\
+B2 aggregate-only & aggregate & \aggFsavings & \aggFrealized\ (\aggFsubgroup) & \aggWsavings & \aggWrealized\ (\aggWsubgroup) \\
+B2$'$ SUPG-style, matched & aggregate & \hhSupgReusedFrac & \hhSupgErr & \hhSupgReusedFracW & \hhSupgErrW \\
+\sivm{} (this work) & per stratum & \hhSivmReusedFrac & \hhSivmErr & \hhSivmReusedFracW & \hhSivmErrW \\
+\bottomrule
+\end{tabular}
+\end{table*}
 
 \paragraph{Setup and evaluation protocol.} All cells use one
 budget-class reasoning model (DeepSeek V4 Flash, accessed through a
@@ -1097,8 +1128,9 @@ would otherwise go unmeasured.
 
 \section*{Availability and reproducibility}
 The system, the certifier, every experiment script, and every result
-artifact are prepared for deposit as a single archive; the archive URL
-will be added to this paper when it is public.
+artifact are public in a single repository,
+\url{https://github.com/arjunlohan/project-lore}, under a
+source-available license that permits research and noncommercial use.
 Released: the two corpora (already public and redistributable
 under ODbL~1.0/DbCL~1.0 and MIT), the five versioned edit pairs, the
 per-cell ground-truth flip labels, the certifier, the adapter
@@ -1107,8 +1139,8 @@ number in this paper. Both corpora are used as distributed by their
 maintainers under those licenses; the Djinni corpus is released
 anonymized at source, and this work collects no new human-subject
 data, attempts no re-identification, and releases only per-cell labels
-and aggregate statistics. Withheld until the archive is public: nothing in
-the evaluation path. Anyone reproducing this needs a model endpoint of
+and aggregate statistics. Nothing in the evaluation path is withheld.
+Anyone reproducing this needs a model endpoint of
 their own; the labels are released so the statistical results can be
 reproduced without one. Several numbers here (the per-stratum floors,
 the ledger economics, the materialization wall clock, the certificate's

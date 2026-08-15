@@ -1,0 +1,29 @@
+{
+  "experiment": "exp12-secondmodel",
+  "model": "zai/glm-4.7-flash",
+  "n": 500,
+  "usableFloor": 500,
+  "usableEdit": 499,
+  "selfFlipFloor": 0.122,
+  "formattingEditFlip": 0.23446893787575152,
+  "floorDominated": true,
+  "sweeps": [
+    {
+      "alpha": 0.1,
+      "certifiedStrata": [],
+      "sampled": 90,
+      "reused": 0,
+      "realizedPresented": null,
+      "savings": 0
+    },
+    {
+      "alpha": 0.2,
+      "certifiedStrata": [],
+      "sampled": 90,
+      "reused": 0,
+      "realizedPresented": null,
+      "savings": 0
+    }
+  ],
+  "wallMs": 138090
+}

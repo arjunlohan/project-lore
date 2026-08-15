@@ -58,6 +58,11 @@
 \newtheorem{theorem}{Theorem}
 \newtheorem{assumption}{Assumption}
 
+%% acmart loads hyperref itself; IEEEtran does not, and the body carries
+%% \url. Loaded last per hyperref's own rule; hidelinks keeps the IEEE
+%% house look (no colored link boxes).
+\usepackage[hidelinks]{hyperref}
+
 \newcommand{\sivm}{\textsc{sIVM}}
 %% Venue dialect hooks consumed by ../body.tex.
 \newcommand{\secref}[1]{Section~\ref{#1}}
@@ -81,22 +86,19 @@ concludes.}
 \history{Date of publication xxxx 00, 0000, date of current version xxxx 00, 0000.}
 \doi{10.1109/ACCESS.2026.DOI}
 
-\title{Reuse, but Verify: Certified Maintenance of LLM-Computed Table
-Cells under Prompt Edits}
+\title{Reuse, but Verify: Certified Maintenance of Table Cells Computed
+by Large Language Models under Prompt Edits}
 
 \author{\uppercase{Arjun Lohan}\authorrefmark{1}}
 
-%% TODO(author): confirm department line and campus address (submission
-%% question on affiliation).
 \address[1]{University of Southern California, Los Angeles, CA 90089 USA
 (e-mail: lohan@usc.edu)}
 
-%% TODO(author): confirm funding wording (submission question on funding).
 \tfootnote{This work received no external funding.}
 
 \markboth
-{Lohan: Reuse, but Verify: Certified Maintenance of LLM-Computed Table Cells}
-{Lohan: Reuse, but Verify: Certified Maintenance of LLM-Computed Table Cells}
+{Lohan: Reuse, but Verify: Certified Maintenance of Table Cells Computed by Large Language Models}
+{Lohan: Reuse, but Verify: Certified Maintenance of Table Cells Computed by Large Language Models}
 
 \corresp{Corresponding author: Arjun Lohan (e-mail: lohan@usc.edu).}
 
@@ -109,8 +111,9 @@ Modern data tables let users define columns in natural language: each cell
 is computed by a language model from a versioned prompt over its row. When
 the prompt is edited, deployed systems face a choice: recompute every
 cell, which is expensive and rate-limited, or silently reuse stale ones,
-which incurs unbounded error. We present \sivm{}, a maintenance layer that
-certifies which cached cells may be reused after a prompt edit, bounding
+which incurs unbounded error. We present semantic incremental view
+maintenance (\sivm{}), a layer that certifies which cached cells may be
+reused after a prompt edit, bounding
 the expected false-reuse rate of each certified stratum by a user-chosen
 error budget at a stated confidence level. \sivm{} freezes cached-value
 strata, samples adaptively on a doubling look schedule, and bounds each
@@ -143,8 +146,7 @@ models, materialized views, prompt engineering, query processing.
 
 \section*{Acknowledgment}
 %% IEEE policy: AI-generated text must be disclosed in the acknowledgments
-%% and the system cited where used.
-%% TODO(author): confirm wording (submission question on the disclosure).
+%% and the system cited where used. Wording confirmed by the author.
 The author used Claude (Anthropic) as a drafting and editing assistant for
 the manuscript text and as a coding assistant for the system and
 experiment harness. All technical content, experimental designs,
@@ -156,12 +158,15 @@ the author.
 
 %% Biographies for all authors are required at initial submission (photo
 %% optional at every stage).
-%% TODO(author): degrees with institutions and years (submission question
-%% on biography facts).
+%% Facts supplied by the author 2026-08-15. Bachelor's degree field: TODO
+%% (author to supply); no employer named by the author's choice.
 \begin{IEEEbiographynophoto}{Arjun Lohan}
-is a student at the University of Southern California, Los Angeles, CA,
-USA, where this work was carried out. Research interests include data
-systems for language-model pipelines, semantic caching and
+received the bachelor's degree from the University of California San
+Diego, La Jolla, CA, USA, in 2019, and the M.S. degree in financial
+engineering from the University of Southern California, Los Angeles, CA,
+USA, in 2024, and is currently affiliated with the University of Southern
+California, where this work was carried out. Research interests include
+data systems for language-model pipelines, semantic caching and
 materialized-view maintenance, and statistical guarantees for
 machine-computed data.
 \end{IEEEbiographynophoto}

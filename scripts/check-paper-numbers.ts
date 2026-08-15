@@ -34,7 +34,9 @@ const body = tex
   // legitimately carry digits (dates "xxxx 00, 0000", the DOI, a zip code).
   .replace(/\\(history|doi|corresp|tfootnote)\{[^}]*\}/g, "")
   .replace(/\\markboth\s*\{[^}]*\}\s*\{[^}]*\}/g, "")
-  .replace(/\\address\[[^\]]*\]\{[^}]*\}/g, "");
+  .replace(/\\address\[[^\]]*\]\{[^}]*\}/g, "")
+  // Author biography: degree years are biographical facts, not measurements.
+  .replace(/\\begin\{IEEEbiographynophoto\}[\s\S]*?\\end\{IEEEbiographynophoto\}/g, "");
 
 /** Quantities the paper may state literally, with the reason. */
 const ALLOWED: Array<[RegExp, string]> = [

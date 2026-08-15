@@ -439,6 +439,7 @@ def("aggFrealized", pct(aggF.realized, 2));
 def("aggFsubgroup", pct(aggF.realizedTrueSubgroup ?? 0, 1));
 def("aggWsubgroup", pct(aggW.realizedTrueSubgroup ?? 0, 1));
 def("aggWsavings", pct(aggW.savings));
+def("aggWrealized", pct(aggW.realized, 2));
 const aggFt = e7f.aggregate["alpha0.1"]!;
 def("aggTightCertF", aggFt.certified ? "certifies" : "certifies nothing");
 def("aggFtSavings", pct(aggFt.savings));
@@ -691,6 +692,17 @@ def("hhSupgErrW", pct(hhW.supgValueProxy.realizedAmongReused ?? 0, 2));
 def("hhSupgTrueRowsW", String(hhW.supgValueProxy.reusedTrueSubgroup));
 def("hhSivmReusedW", num(hhW.sivm.reused));
 def("hhSupgReusedW", num(hhW.supgValueProxy.reused));
+// Reused counts as fractions of the evaluation vector, for the policy table
+// (Table 2), whose other rows are fractions; n comes from the same exp13
+// records the counts do.
+{
+  const nF = (exp13.results as Array<{ pair: string; n: number }>).find((r) => r.pair === "so-formatting")!.n;
+  const nW = (exp13.results as Array<{ pair: string; n: number }>).find((r) => r.pair === "so-widening")!.n;
+  def("hhSivmReusedFrac", pct(hh.sivm.reused / nF, 1));
+  def("hhSupgReusedFrac", pct(hh.supgValueProxy.reused / nF, 1));
+  def("hhSivmReusedFracW", pct(hhW.sivm.reused / nW, 1));
+  def("hhSupgReusedFracW", pct(hhW.supgValueProxy.reused / nW, 1));
+}
 // r8/M8: the matched competitor selects essentially every row it is allowed
 // to, so it is the guarantee-free baseline wearing a certificate. Reporting
 // "wins on volume" without this fraction reads as a tuning outcome rather
