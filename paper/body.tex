@@ -955,19 +955,19 @@ prompts, $T{=}0$, one fresh draw per cell, the pinned procedure
 does not. First, every family has a measurable self-flip floor, from
 \famFloorLo\ to \famFloorHi\ across them%
 \ifnum\famProbeRow=1\relax\ and \altModelFloor\ on the probe\fi, and
-the floor bounds certifiability as \secref{sec:problem} predicts%
-\ifnum\famProbeRow=1\relax: the probe's floor is above any budget a
-user would set, its formatting edit flips \altModelEditFlip\ of cells,
-barely above that floor, and the certifier refuses every stratum after
-90 oracle calls\fi. Second, certified reuse is not a property of the
-primary model. On Gemini~3 Flash (floor \famGeminiThreeFloor,
+the floor bounds certifiability as \secref{sec:problem} predicts: GPT-5
+nano, whose floor of \famNanoFloor\ sits above every budget in the grid,
+flips \famNanoFmt\ of cells under the formatting edit, barely above that
+floor, and is refused on every stratum of that edit after 90 oracle
+calls. Second, certified reuse is not a property of the primary model. On Gemini~3 Flash (floor \famGeminiThreeFloor,
 formatting flip \famGeminiThreeFmt) the formatting edit certifies the
 cached-FALSE stratum at both budgets; on Qwen3.7-Flash (floor
 \famQwenFloor, flip \famQwenFmt) it certifies both strata at the loose
-budget after most of the schedule; and on the two families whose
-formatting edit is not benign, the synonym pair certifies instead, the
-cached-FALSE stratum on Gemini~2.5 Flash-Lite and the cached-TRUE
-stratum on GLM-4.7-Flash. Certification reproduces on \famCertCount\
+budget after most of the schedule; and on the three families whose
+formatting edit is not benign, the synonym pair certifies a stratum
+instead: the cached-FALSE stratum on Gemini~2.5 Flash-Lite, and the
+cached-TRUE stratum on GLM-4.7-Flash and on GPT-5 nano, where it is the
+one stratum the loose budget admits. Certification reproduces on \famCertCount\
 of the \famCount\ families\famRefusedClause, and in every certified cell of
 Table~\ref{tab:fam} the realized presented-cells error is inside the
 budget. Third, refusals stay conservative: a refused stratum is never
@@ -990,10 +990,10 @@ and the one-word case change alone \famGeminiCaseOnlyFlip, and the
 flips run one way (\famGeminiFmtToFalseShare\ of them TRUE$\to$FALSE on
 Gemini~2.5 Flash-Lite, \famGlmFmtToFalseShare\ on GLM-4.7-Flash): a
 shift of the model's decision threshold, in opposite directions on the
-two families, not noise. On both of those families it is the synonym
-rewording, semantically a tightening of the definition, that certifies
-a stratum, because its flips concentrate in one cached value and leave
-the other reusable. The label ordering that intuition suggests
+two families, not noise. On all three families whose formatting edit
+fails it is the synonym rewording, semantically a tightening of the
+definition, that certifies a stratum, because its flips concentrate in
+one cached value and leave the other reusable. The label ordering that intuition suggests
 (formatting benign, semantic edits not) therefore inverts on some
 families and holds on others; benignness is a property of the (edit,
 model) pair, and the certifier measures it per stratum without ever
