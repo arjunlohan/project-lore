@@ -1,15 +1,13 @@
-%% latexdiff preamble for the IEEE Access "Highlighted PDF": additions are
-%% highlighted in yellow (the editorial office's stated preference) and
-%% deletions are dropped, so the highlighted copy paginates like the clean
-%% copy with the changed passages marked. The highlighter is ulem's
-%% mark-over construction (a yellow rule laid under every character), which
-%% breaks across lines and survives the citations, monospace paths, and
-%% table cells that soul's \hl cannot reconstruct. Passed to latexdiff
-%% --preamble by scripts/pack-ieee-submission.sh.
-\RequirePackage[normalem]{ulem}
+%% latexdiff preamble for the IEEE Access "Highlighted PDF". Additions are
+%% set in blue and deletions are omitted, so the highlighted copy paginates
+%% like the clean copy with every changed passage marked. Color-only markup
+%% is used deliberately: both background highlighters available under
+%% pdfTeX (soul's \hl and ulem's mark-over) fail on this class's captions,
+%% run-in headings, and the citation-dense prose, and a highlighted copy
+%% that does not compile marks nothing. Passed to latexdiff --preamble by
+%% scripts/pack-ieee-submission.sh.
 \RequirePackage{color}
-\newcommand{\DIFhighlight}{\bgroup\markoverwith{\textcolor{yellow}{\rule[-.55ex]{2pt}{2.5ex}}}\ULon}
-\providecommand{\DIFaddtex}[1]{\DIFhighlight{#1}}
+\providecommand{\DIFaddtex}[1]{{\protect\color{blue}#1}}
 \providecommand{\DIFdeltex}[1]{}
 \providecommand{\DIFadd}[1]{\DIFaddtex{#1}}
 \providecommand{\DIFdel}[1]{\DIFdeltex{#1}}
@@ -20,9 +18,7 @@
 \providecommand{\DIFmodbegin}{}
 \providecommand{\DIFmodend}{}
 %DIF FLOATSAFE PREAMBLE
-%% Captions are moving arguments in which ulem recurses under this class;
-%% additions inside them are marked by color instead of the yellow rule.
-\providecommand{\DIFaddFL}[1]{{\protect\color{blue}#1}}
+\providecommand{\DIFaddFL}[1]{\DIFadd{#1}}
 \providecommand{\DIFdelFL}[1]{\DIFdel{#1}}
 \providecommand{\DIFaddbeginFL}{}
 \providecommand{\DIFaddendFL}{}

@@ -95,17 +95,41 @@ elif [ -n "$LATEXDIFF" ] && git rev-parse -q --verify "$DIFF_BASE_TAG" >/dev/nul
     sed -i '' -e 's#\\input{\\paperroot/#\\input{#g' "$OUT/diff/$d/body.tex"
     sed -i '' -e '/\\enlargethispage/d' "$OUT/diff/$d/main.tex"
   done
+  # The prose gates optional studies on \ifnum<macro>=1\relax ... \else ... \fi;
+  # latexdiff marks up inside the test and breaks it. Resolve the gates with
+  # the macro values of this build, so the diff shows what actually prints.
+  python3 - "$OUT/diff/new/body.tex" "$OUT/diff/new/macros.tex" <<'PY'
+import re, sys
+body, macros = sys.argv[1], sys.argv[2]
+vals = dict(re.findall(r'\\newcommand\{\\(\w+)\}\{(.*)\}', open(macros).read()))
+src = open(body).read()
+def resolve(m):
+    name, yes, no = m.group(1), m.group(2), m.group(3) or ""
+    return yes if vals.get(name, "0").strip() == "1" else no
+out = re.sub(r'\\ifnum\\(\w+)=1\\relax(.*?)(?:\\else(.*?))?\\fi', resolve, src, flags=re.S)
+open(body, "w").write(out)
+PY
   # tikz/pgfplots pictures, the algorithm block and the abstract's own
   # environment are compared as wholes; math is not marked inside.
   if ! "$PERL" "$LATEXDIFF" --flatten --math-markup=0 \
       --preamble=paper/ieee/latexdiff-highlight.tex \
-      --config "PICTUREENV=(?:picture|DIFnomarkup|tikzpicture|axis)[\\w\\d*@]*" \
+      --config "PICTUREENV=(?:picture|DIFnomarkup|tikzpicture|axis|algorithmic|tabular)[\\w\\d*@]*" \
       --config "FLOATENV=(?:figure|table|plate|algorithm)[\\w\\d*@]*" \
       --exclude-safecmd=Description \
-      --exclude-textcmd=section,subsection,subsubsection,paragraph \
       "$OUT/diff/old/main.tex" "$OUT/diff/new/main.tex" > "$OUT/diff/main.tex" 2> "$OUT/diff/latexdiff.log"; then
     echo "latexdiff FAILED (see $OUT/diff/latexdiff.log)"; exit 1
   fi
+  # latexdiff wraps \DIFadd/\DIFdel in \texorpdfstring when it sees hyperref,
+  # for headings; headings are excluded from markup above, and the wrapper
+  # cannot span a paragraph break, so restore the plain definitions.
+  python3 - "$OUT/diff/main.tex" <<'PY'
+import sys
+p = sys.argv[1]
+s = open(p).read()
+s = s.replace(r"\providecommand{\DIFadd}[1]{\texorpdfstring{\DIFaddtex{#1}}{#1}}", r"\providecommand{\DIFadd}[1]{\DIFaddtex{#1}}")
+s = s.replace(r"\providecommand{\DIFdel}[1]{\texorpdfstring{\DIFdeltex{#1}}{}}", r"\providecommand{\DIFdel}[1]{\DIFdeltex{#1}}")
+open(p, "w").write(s)
+PY
   # Compile the diff beside the vendored template files.
   cp "$OUT"/src/*.cls "$OUT"/src/*.bst "$OUT"/src/*.sty "$OUT"/src/*.pfb "$OUT"/src/*.tfm "$OUT"/src/*.map "$OUT"/src/*.fd "$OUT"/src/*.png "$OUT/src/refs.bib" "$OUT/diff/"
   ( cd "$OUT/diff" && latexmk -pdf -interaction=nonstopmode -f main.tex >/dev/null 2>&1 ) || true
