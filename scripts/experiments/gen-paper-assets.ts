@@ -81,7 +81,7 @@ const def = (name: string, value: string | number) => {
   }
   macros.push(`\\newcommand{\\${name}}{${value}}`);
 };
-const pct = (x: number, d = 1) => `${(x * 100).toFixed(d)}\\%`;
+const pct = (x: number, d = 1) => `${Number((x * 100).toPrecision(12)).toFixed(d)}\\%`;
 const num = (x: number) => x.toLocaleString("en-US").replace(/,/g, "{,}");
 /** Wilson score interval; every interval in the paper is Wilson. */
 const wilsonInterval = (k: number, n: number, z = 1.96): [number, number] => {
@@ -134,7 +134,7 @@ const texRows = rows.map((r) => {
       cert
         ? `${(m.realizedReuse * 100).toFixed(2)} [${(((b as unknown as {realizedReuseCiLo:number}).realizedReuseCiLo) * 100).toFixed(1)},${(((b as unknown as {realizedReuseCiHi:number}).realizedReuseCiHi) * 100).toFixed(1)}]`
         : "--",
-      `${(b.savingsMean * 100).toFixed(1)} [${((b as unknown as {savingsLo:number}).savingsLo * 100).toFixed(0)},${((b as unknown as {savingsHi:number}).savingsHi * 100).toFixed(0)}]`,
+      `${(b.savingsMean * 100).toFixed(1)} [${((b as unknown as {savingsLo:number}).savingsLo * 100).toFixed(1)},${((b as unknown as {savingsHi:number}).savingsHi * 100).toFixed(1)}]`,
       `${(b.certificationRate * 100).toFixed(0)}\\%`,
       b.certificationRate > 0
         ? `${(b.violationRateReuseSet * 100).toFixed(1)}\\%`
@@ -330,7 +330,7 @@ const bci = bench.bootstrap as unknown as {
   savingsLo: number; savingsHi: number;
   realizedReuseCiLo: number; realizedReuseCiHi: number; B: number;
 };
-def("benchSavingsPi", `[${(bci.savingsLo * 100).toFixed(0)}, ${(bci.savingsHi * 100).toFixed(0)}]`);
+def("benchSavingsPi", `[${(bci.savingsLo * 100).toFixed(1)}, ${(bci.savingsHi * 100).toFixed(1)}]`);
 def("benchRealizedCi", `[${(bci.realizedReuseCiLo * 100).toFixed(1)}, ${(bci.realizedReuseCiHi * 100).toFixed(1)}]`);
 def("bootB", num(bci.B));
 def("benchRealized", pct(bench.main.realizedPresented, 2));
@@ -595,6 +595,7 @@ def("calConfigs", String(exp9.results.length));
   const cleanLarge = Math.round((cleanAt(sizes[sizes.length - 1]!) as unknown as { avgSampled: number }).avgSampled);
   def("minZeroFlipRealizedSmall", String(cleanSmall));
   def("minZeroFlipRealizedLarge", String(cleanLarge));
+  def("minZeroFlipLargeSize", num(sizes[sizes.length - 1]!));
 }
 // r8/M6: the grid now probes JUST ABOVE each budget, which is the only
 // regime where the without-replacement gap in Assumption 3 could bite; the
@@ -1103,8 +1104,23 @@ const editPairs = new Map(
     .filter((r) => r.estimand === "presented")
     .map((r) => [r.pair, r.n]),
 );
-const editLabels =
-  [...editPairs.values()].reduce((a, n) => a + n, 0) * 2;
+const editLabels = (() => {
+  // Distinct (column, version) cells: the lab columns' middle version is
+  // shared by two pairs and must be counted once.
+  const seen = new Set<string>();
+  let total = 0;
+  for (const p of PAIRS) {
+    const n = editPairs.get(p.key) ?? 0;
+    for (const v of [p.fromV, p.toV]) {
+      const id = `${p.corpus}|${p.columnMatch.toString()}|${v}`;
+      if (!seen.has(id)) {
+        seen.add(id);
+        total += n;
+      }
+    }
+  }
+  return total;
+})();
 const drawLabels = Object.values(
   rawLabels as Record<string, { d1: unknown[]; d2: unknown[] }>,
 ).reduce((a, r) => a + r.d1.length + r.d2.length, 0);
@@ -1244,6 +1260,7 @@ await db.end();
   };
   const nullTrials = (exp15.results as R15[]).filter((r) => r.bound === "exact" && r.isNull).length * Number(exp15.trials);
   def("boundNullTrials", num(nullTrials));
+  def("boundCleanStratum", num(Math.max(...(exp15.results as Array<{ size: number }>).map((r) => r.size))));
   def("boundNullDeltaS", pct(Number(exp15.perStratumDelta), 0));
   for (const [b, tag] of Object.entries(TAG)) {
     if (!cal[b]) continue;
@@ -1503,7 +1520,7 @@ def("famRefusedClause", famRefused.length ? ` (every stratum refused on ${famRef
   const inp = (m: string) => prices.models[m]?.inputPerToken ?? 0;
   const cheapest = Math.min(...FAMILIES.map((f) => out(String((J(f.file) as { model: string }).model))).filter((x) => x > 0));
   def("famGeminiThreePriceMultiple", (out("google/gemini-3-flash") / cheapest).toFixed(0));
-  def("priceFetchedAt", new Date(prices.fetchedAt).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" }));
+  def("priceFetchedAt", new Date(prices.fetchedAt).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric", timeZone: "America/Los_Angeles" }));
   void inp;
 }
 def("famFloorLo", pct(Math.min(...famFloors), 1));
@@ -1602,6 +1619,8 @@ if (exp17) {
   def("indepAgreeCi", ci(e.betweenArmAgreement.wilson95));
   def("indepAgreeFalse", pct(e.betweenArmAgreement.byCachedValue.false?.rate ?? 0, 1));
   def("indepAgreeTrue", pct(e.betweenArmAgreement.byCachedValue.true?.rate ?? 0, 1));
+  def("indepAgreeFalseN", String(e.betweenArmAgreement.byCachedValue.false?.n ?? 0));
+  def("indepAgreeTrueN", String(e.betweenArmAgreement.byCachedValue.true?.n ?? 0));
   const lagP = (x: number) => (x < 0.001 ? "<0.001" : x.toFixed(2));
   def("indepSeqLag", e.sequential.serial.lag1.toFixed(3));
   def("indepSeqLagP", lagP(e.sequential.serial.lag1PermutationP));
@@ -1620,6 +1639,7 @@ if (exp17) {
   const se = Math.sqrt((2 * pooled * (1 - pooled)) / Math.max(1, Math.min(e.sequential.usable, e.concurrent.usable)));
   def("indepMdd", pct((1.96 + 0.84) * se, 1));
   def("indepPowerTarget", "80\\%");
+  def("indepLevel", "5\\%");
   const dfc = e.concurrent.serial.dispersionDf;
   const ratio = e.concurrent.serial.blockVarianceRatio ?? 0;
   def("indepConcDispersionCi", `[${((ratio * dfc) / chiSquareQuantile(0.975, dfc)).toFixed(2)}, ${((ratio * dfc) / chiSquareQuantile(0.025, dfc)).toFixed(2)}]`);
@@ -1704,7 +1724,7 @@ ${lines.join("\n")}
   const flipOf = (pair: string) => pct(r8.find((x) => x.pair === pair)!.trueFlipRate, 1);
   const rows18: string[] = [];
   rows18.push(
-    `DeepSeek V4 Flash (primary) & ${pct(floorBoolValue, 1)} & ${flipOf("so-widening")} & ${primaryCell("so-widening", 0.1)} & ${primaryCell("so-widening", 0.2)} & ${pct(exp0b.selfFlipRate, 1)} & ${flipOf("dj-formatting")} & ${primaryCell("dj-formatting", 0.1)} & ${primaryCell("dj-formatting", 0.2)} & ${flipOf("dj-criteria")} & ${primaryCell("dj-criteria", 0.1)} & ${primaryCell("dj-criteria", 0.2)} \\\\`,
+    `DeepSeek V4 Flash (primary) & -- & ${flipOf("so-widening")} & ${primaryCell("so-widening", 0.1)} & ${primaryCell("so-widening", 0.2)} & ${pct(exp0b.selfFlipRate, 1)} & ${flipOf("dj-formatting")} & ${primaryCell("dj-formatting", 0.1)} & ${primaryCell("dj-formatting", 0.2)} & ${flipOf("dj-criteria")} & ${primaryCell("dj-criteria", 0.1)} & ${primaryCell("dj-criteria", 0.2)} \\\\`,
   );
   let complete = 0;
   const completeLabels: string[] = [];
@@ -1866,7 +1886,6 @@ if (pilotReady && exp19) {
 {
   const fmt = (iso: string) =>
     new Date(iso).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" });
-  const famDate = (f: string) => fmt(String((J(f) as { ranAt: string }).ranAt));
   const pairsOf = (model: string) => {
     const has18 = exp18Files.filter((f) => (J(f) as { model: string }).model === model);
     const sets = new Set(has18.map((f) => (J(f) as { pairset: string }).pairset));
@@ -1884,7 +1903,15 @@ if (pilotReady && exp19) {
   ];
   for (const f of FAMILIES) {
     const d = J(f.file) as { model: string };
-    rowsM.push(`\\texttt{${d.model.replace(/_/g, "\\_")}} & family study, ${pairsOf(d.model)} & ${famDate(f.file)} & ${priceOf(d.model)} \\\\`);
+    const dates = [
+      ...new Set(
+        [f.file, ...exp18Files.filter((x) => (J(x) as { model: string }).model === d.model)]
+          .map((x) => String((J(x) as { ranAt: string }).ranAt))
+          .sort()
+          .map((iso) => fmt(iso)),
+      ),
+    ].join("; ");
+    rowsM.push(`\\texttt{${d.model.replace(/_/g, "\\_")}} & family study, ${pairsOf(d.model)} & ${dates} & ${priceOf(d.model)} \\\\`);
   }
   if (!nanoPromoted) {
     rowsM.push(`\\texttt{${String(exp12.model).replace(/_/g, "\\_")}} & earlier probe, formatting pair only ($n{=}\\altModelN$) & August 2026 & ${priceOf(String(exp12.model))} \\\\`);

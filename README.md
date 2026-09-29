@@ -114,9 +114,9 @@ benign edits, and honest refusals everywhere else. Full report:
 | `lib/lore/` | NL compiler, cell runner, certifier, stores |
 | `app/lore/`, `app/api/lore/` | table UI + API |
 | `scripts/ingest/` | corpus ingestion (reproducible) |
-| `scripts/experiments/` | exp0–exp13 + asset/report generation |
+| `scripts/experiments/` | exp0–exp19 (exp14–exp19: bound ablation and null study, snapshot versions and drift, independence check, remaining pairs on further families, free-text judge pilot) + asset/report generation |
 | `docs/research/` | report, review memos, result JSONs |
-| `paper/` | PVLDB-target draft (tectonic-compilable) |
+| `paper/` | manuscript body shared by the acmart shell (`main.tex`, tectonic) and the IEEE Access shell (`ieee/main.tex`, latexmk; `pnpm pack:paper:ieee` builds the submission package) |
 | `patent/` | provisional draft (attorney review pending) |
 
 ## Reproducing the paper
