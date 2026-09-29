@@ -9,6 +9,8 @@
       "p": 0,
       "estimand": "presented",
       "certificationRate": 1,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 0,
       "avgSampled": 90
@@ -19,6 +21,8 @@
       "p": 0,
       "estimand": "reuse-set",
       "certificationRate": 1,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 0,
       "avgSampled": 180
@@ -29,6 +33,8 @@
       "p": 0.005,
       "estimand": "presented",
       "certificationRate": 0.999,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 0,
       "avgSampled": 124.47
@@ -39,6 +45,8 @@
       "p": 0.005,
       "estimand": "reuse-set",
       "certificationRate": 0.9215,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 0,
       "avgSampled": 236.805
@@ -49,6 +57,8 @@
       "p": 0.01,
       "estimand": "presented",
       "certificationRate": 0.989,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 0,
       "avgSampled": 162.675
@@ -59,6 +69,8 @@
       "p": 0.01,
       "estimand": "reuse-set",
       "certificationRate": 0.615,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 0,
       "avgSampled": 364.2825
@@ -69,6 +81,8 @@
       "p": 0.02,
       "estimand": "presented",
       "certificationRate": 0.887,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 0.0005636978579481398,
       "avgSampled": 240.8775
@@ -79,6 +93,8 @@
       "p": 0.02,
       "estimand": "reuse-set",
       "certificationRate": 0.1455,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 0,
       "avgSampled": 501.3
@@ -89,6 +105,8 @@
       "p": 0.04,
       "estimand": "presented",
       "certificationRate": 0.228,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 0.14035087719298245,
       "avgSampled": 306.3825
@@ -99,6 +117,8 @@
       "p": 0.04,
       "estimand": "reuse-set",
       "certificationRate": 0.0035,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 0.14285714285714285,
       "avgSampled": 379.1175
@@ -109,6 +129,8 @@
       "p": 0.05,
       "estimand": "presented",
       "certificationRate": 0.0545,
+      "violationRateTheorem": 0.05504587155963303,
+      "unsafeRateTheorem": 0.003,
       "violationRatePresented": 0.03669724770642202,
       "violationRateReuseSet": 0.4954128440366973,
       "avgSampled": 229.5
@@ -119,6 +141,8 @@
       "p": 0.05,
       "estimand": "reuse-set",
       "certificationRate": 0.0015,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 0.6666666666666666,
       "avgSampled": 249.945
@@ -129,6 +153,8 @@
       "p": 0.0525,
       "estimand": "presented",
       "certificationRate": 0.035,
+      "violationRateTheorem": 0.11428571428571428,
+      "unsafeRateTheorem": 0.004,
       "violationRatePresented": 0.08571428571428572,
       "violationRateReuseSet": 0.5142857142857142,
       "avgSampled": 212.6625
@@ -139,6 +165,8 @@
       "p": 0.0525,
       "estimand": "reuse-set",
       "certificationRate": 0.001,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 0.5,
       "avgSampled": 229.905
@@ -149,6 +177,8 @@
       "p": 0.055,
       "estimand": "presented",
       "certificationRate": 0.028,
+      "violationRateTheorem": 0.21428571428571427,
+      "unsafeRateTheorem": 0.006,
       "violationRatePresented": 0.14285714285714285,
       "violationRateReuseSet": 0.5892857142857143,
       "avgSampled": 191.3325
@@ -159,6 +189,8 @@
       "p": 0.055,
       "estimand": "reuse-set",
       "certificationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 0,
       "avgSampled": 194.625
@@ -169,6 +201,8 @@
       "p": 0.0625,
       "estimand": "presented",
       "certificationRate": 0.009,
+      "violationRateTheorem": 0.5,
+      "unsafeRateTheorem": 0.0045,
       "violationRatePresented": 0.3888888888888889,
       "violationRateReuseSet": 0.8333333333333334,
       "avgSampled": 141.78
@@ -179,6 +213,8 @@
       "p": 0.0625,
       "estimand": "reuse-set",
       "certificationRate": 0.0005,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 1,
       "avgSampled": 145.56
@@ -189,6 +225,8 @@
       "p": 0.08,
       "estimand": "presented",
       "certificationRate": 0.002,
+      "violationRateTheorem": 0.5,
+      "unsafeRateTheorem": 0.001,
       "violationRatePresented": 0.25,
       "violationRateReuseSet": 0.75,
       "avgSampled": 79.2675
@@ -199,6 +237,8 @@
       "p": 0.08,
       "estimand": "reuse-set",
       "certificationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 0,
       "avgSampled": 75.1425
@@ -209,6 +249,8 @@
       "p": 0.15,
       "estimand": "presented",
       "certificationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 0,
       "avgSampled": 46.845
@@ -219,6 +261,8 @@
       "p": 0.15,
       "estimand": "reuse-set",
       "certificationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 0,
       "avgSampled": 46.5525
@@ -229,6 +273,8 @@
       "p": 0,
       "estimand": "presented",
       "certificationRate": 1,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 0,
       "avgSampled": 90
@@ -239,6 +285,8 @@
       "p": 0,
       "estimand": "reuse-set",
       "certificationRate": 1,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 0,
       "avgSampled": 180
@@ -249,6 +297,8 @@
       "p": 0.005,
       "estimand": "presented",
       "certificationRate": 0.999,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 0,
       "avgSampled": 132.615
@@ -259,6 +309,8 @@
       "p": 0.005,
       "estimand": "reuse-set",
       "certificationRate": 0.997,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 0,
       "avgSampled": 191.4075
@@ -269,6 +321,8 @@
       "p": 0.01,
       "estimand": "presented",
       "certificationRate": 0.9885,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 0,
       "avgSampled": 186.48
@@ -279,6 +333,8 @@
       "p": 0.01,
       "estimand": "reuse-set",
       "certificationRate": 0.975,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 0,
       "avgSampled": 246.1725
@@ -289,6 +345,8 @@
       "p": 0.02,
       "estimand": "presented",
       "certificationRate": 0.92,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 0,
       "avgSampled": 307.6425
@@ -299,6 +357,8 @@
       "p": 0.02,
       "estimand": "reuse-set",
       "certificationRate": 0.5765,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 0,
       "avgSampled": 690.3675
@@ -309,6 +369,8 @@
       "p": 0.04,
       "estimand": "presented",
       "certificationRate": 0.4845,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 0.08771929824561403,
       "avgSampled": 616.005
@@ -319,6 +381,8 @@
       "p": 0.04,
       "estimand": "reuse-set",
       "certificationRate": 0.032,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 0,
       "avgSampled": 798.7275
@@ -329,6 +393,8 @@
       "p": 0.05,
       "estimand": "presented",
       "certificationRate": 0.0985,
+      "violationRateTheorem": 0.050761421319796954,
+      "unsafeRateTheorem": 0.005,
       "violationRatePresented": 0.030456852791878174,
       "violationRateReuseSet": 0.47715736040609136,
       "avgSampled": 442.035
@@ -339,6 +405,8 @@
       "p": 0.05,
       "estimand": "reuse-set",
       "certificationRate": 0.0065,
+      "violationRateTheorem": 0.38461538461538464,
+      "unsafeRateTheorem": 0.0025,
       "violationRatePresented": 0.3076923076923077,
       "violationRateReuseSet": 0.6153846153846154,
       "avgSampled": 453.7575
@@ -349,6 +417,8 @@
       "p": 0.0525,
       "estimand": "presented",
       "certificationRate": 0.0615,
+      "violationRateTheorem": 0.16260162601626016,
+      "unsafeRateTheorem": 0.01,
       "violationRatePresented": 0.08130081300813008,
       "violationRateReuseSet": 0.5447154471544715,
       "avgSampled": 369.6075
@@ -359,6 +429,8 @@
       "p": 0.0525,
       "estimand": "reuse-set",
       "certificationRate": 0.0035,
+      "violationRateTheorem": 0.42857142857142855,
+      "unsafeRateTheorem": 0.0015,
       "violationRatePresented": 0.42857142857142855,
       "violationRateReuseSet": 0.8571428571428571,
       "avgSampled": 376.6275
@@ -369,6 +441,8 @@
       "p": 0.055,
       "estimand": "presented",
       "certificationRate": 0.03,
+      "violationRateTheorem": 0.31666666666666665,
+      "unsafeRateTheorem": 0.0095,
       "violationRatePresented": 0.18333333333333332,
       "violationRateReuseSet": 0.7,
       "avgSampled": 312.1875
@@ -379,6 +453,8 @@
       "p": 0.055,
       "estimand": "reuse-set",
       "certificationRate": 0.0005,
+      "violationRateTheorem": 1,
+      "unsafeRateTheorem": 0.0005,
       "violationRatePresented": 1,
       "violationRateReuseSet": 1,
       "avgSampled": 308.7225
@@ -389,6 +465,8 @@
       "p": 0.0625,
       "estimand": "presented",
       "certificationRate": 0.008,
+      "violationRateTheorem": 0.9375,
+      "unsafeRateTheorem": 0.0075,
       "violationRatePresented": 0.875,
       "violationRateReuseSet": 1,
       "avgSampled": 181.98
@@ -399,6 +477,8 @@
       "p": 0.0625,
       "estimand": "reuse-set",
       "certificationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 0,
       "avgSampled": 175.455
@@ -409,6 +489,8 @@
       "p": 0.08,
       "estimand": "presented",
       "certificationRate": 0.001,
+      "violationRateTheorem": 1,
+      "unsafeRateTheorem": 0.001,
       "violationRatePresented": 1,
       "violationRateReuseSet": 1,
       "avgSampled": 76.23
@@ -419,6 +501,8 @@
       "p": 0.08,
       "estimand": "reuse-set",
       "certificationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 0,
       "avgSampled": 79.5375
@@ -429,6 +513,8 @@
       "p": 0.15,
       "estimand": "presented",
       "certificationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 0,
       "avgSampled": 46.5975
@@ -439,6 +525,8 @@
       "p": 0.15,
       "estimand": "reuse-set",
       "certificationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 0,
       "avgSampled": 46.305
@@ -449,6 +537,8 @@
       "p": 0,
       "estimand": "presented",
       "certificationRate": 1,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 0,
       "avgSampled": 180
@@ -459,6 +549,8 @@
       "p": 0,
       "estimand": "reuse-set",
       "certificationRate": 1,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 0,
       "avgSampled": 180
@@ -469,6 +561,8 @@
       "p": 0.005,
       "estimand": "presented",
       "certificationRate": 0.9975,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 0,
       "avgSampled": 190.2825
@@ -479,6 +573,8 @@
       "p": 0.005,
       "estimand": "reuse-set",
       "certificationRate": 0.996,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 0,
       "avgSampled": 190.485
@@ -489,6 +585,8 @@
       "p": 0.01,
       "estimand": "presented",
       "certificationRate": 0.9885,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 0,
       "avgSampled": 226.755
@@ -499,6 +597,8 @@
       "p": 0.01,
       "estimand": "reuse-set",
       "certificationRate": 0.989,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 0,
       "avgSampled": 233.505
@@ -509,6 +609,8 @@
       "p": 0.02,
       "estimand": "presented",
       "certificationRate": 0.9255,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 0,
       "avgSampled": 372.3525
@@ -519,6 +621,8 @@
       "p": 0.02,
       "estimand": "reuse-set",
       "certificationRate": 0.8865,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 0,
       "avgSampled": 484.335
@@ -529,6 +633,8 @@
       "p": 0.04,
       "estimand": "presented",
       "certificationRate": 0.289,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 0,
       "avgSampled": 691.02
@@ -539,6 +645,8 @@
       "p": 0.04,
       "estimand": "reuse-set",
       "certificationRate": 0.0515,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 0,
       "avgSampled": 777.87
@@ -549,6 +657,8 @@
       "p": 0.05,
       "estimand": "presented",
       "certificationRate": 0.0285,
+      "violationRateTheorem": 0.19298245614035087,
+      "unsafeRateTheorem": 0.0055,
       "violationRatePresented": 0.15789473684210525,
       "violationRateReuseSet": 0.5263157894736842,
       "avgSampled": 446.5575
@@ -559,6 +669,8 @@
       "p": 0.05,
       "estimand": "reuse-set",
       "certificationRate": 0.006,
+      "violationRateTheorem": 0.3333333333333333,
+      "unsafeRateTheorem": 0.002,
       "violationRatePresented": 0.3333333333333333,
       "violationRateReuseSet": 0.5,
       "avgSampled": 454.32
@@ -569,6 +681,8 @@
       "p": 0.0525,
       "estimand": "presented",
       "certificationRate": 0.0105,
+      "violationRateTheorem": 0.47619047619047616,
+      "unsafeRateTheorem": 0.005,
       "violationRatePresented": 0.23809523809523808,
       "violationRateReuseSet": 0.8571428571428571,
       "avgSampled": 372.69
@@ -579,6 +693,8 @@
       "p": 0.0525,
       "estimand": "reuse-set",
       "certificationRate": 0.006,
+      "violationRateTheorem": 0.8333333333333334,
+      "unsafeRateTheorem": 0.005,
       "violationRatePresented": 0.6666666666666666,
       "violationRateReuseSet": 0.9166666666666666,
       "avgSampled": 382.905
@@ -589,6 +705,8 @@
       "p": 0.055,
       "estimand": "presented",
       "certificationRate": 0.0065,
+      "violationRateTheorem": 0.7692307692307693,
+      "unsafeRateTheorem": 0.005,
       "violationRatePresented": 0.46153846153846156,
       "violationRateReuseSet": 1,
       "avgSampled": 294.7725
@@ -599,6 +717,8 @@
       "p": 0.055,
       "estimand": "reuse-set",
       "certificationRate": 0.0025,
+      "violationRateTheorem": 0.8,
+      "unsafeRateTheorem": 0.002,
       "violationRatePresented": 0.2,
       "violationRateReuseSet": 0.8,
       "avgSampled": 329.8725
@@ -609,6 +729,8 @@
       "p": 0.0625,
       "estimand": "presented",
       "certificationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 0,
       "avgSampled": 176.1075
@@ -619,6 +741,8 @@
       "p": 0.0625,
       "estimand": "reuse-set",
       "certificationRate": 0.003,
+      "violationRateTheorem": 1,
+      "unsafeRateTheorem": 0.003,
       "violationRatePresented": 1,
       "violationRateReuseSet": 1,
       "avgSampled": 190.08
@@ -629,6 +753,8 @@
       "p": 0.08,
       "estimand": "presented",
       "certificationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 0,
       "avgSampled": 81.135
@@ -639,6 +765,8 @@
       "p": 0.08,
       "estimand": "reuse-set",
       "certificationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 0,
       "avgSampled": 82.3725
@@ -649,6 +777,8 @@
       "p": 0.15,
       "estimand": "presented",
       "certificationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 0,
       "avgSampled": 45.9225
@@ -659,6 +789,8 @@
       "p": 0.15,
       "estimand": "reuse-set",
       "certificationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 0,
       "avgSampled": 46.3725
@@ -669,6 +801,8 @@
       "p": 0,
       "estimand": "presented",
       "certificationRate": 1,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 0,
       "avgSampled": 45
@@ -679,6 +813,8 @@
       "p": 0,
       "estimand": "reuse-set",
       "certificationRate": 1,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 0,
       "avgSampled": 90
@@ -689,6 +825,8 @@
       "p": 0.005,
       "estimand": "presented",
       "certificationRate": 1,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 0,
       "avgSampled": 53.8425
@@ -699,6 +837,8 @@
       "p": 0.005,
       "estimand": "reuse-set",
       "certificationRate": 1,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 0,
       "avgSampled": 90.81
@@ -709,6 +849,8 @@
       "p": 0.01,
       "estimand": "presented",
       "certificationRate": 1,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 0,
       "avgSampled": 67.3425
@@ -719,6 +861,8 @@
       "p": 0.01,
       "estimand": "reuse-set",
       "certificationRate": 1,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 0,
       "avgSampled": 95.49
@@ -729,6 +873,8 @@
       "p": 0.02,
       "estimand": "presented",
       "certificationRate": 0.9975,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 0,
       "avgSampled": 94.05
@@ -739,6 +885,8 @@
       "p": 0.02,
       "estimand": "reuse-set",
       "certificationRate": 0.9105,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 0,
       "avgSampled": 152.985
@@ -749,6 +897,8 @@
       "p": 0.04,
       "estimand": "presented",
       "certificationRate": 0.9635,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 0,
       "avgSampled": 158.1
@@ -759,6 +909,8 @@
       "p": 0.04,
       "estimand": "reuse-set",
       "certificationRate": 0.3885,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 0,
       "avgSampled": 392.9775
@@ -769,6 +921,8 @@
       "p": 0.05,
       "estimand": "presented",
       "certificationRate": 0.91,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 0,
       "avgSampled": 189.1575
@@ -779,6 +933,8 @@
       "p": 0.05,
       "estimand": "reuse-set",
       "certificationRate": 0.2085,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 0,
       "avgSampled": 453.9525
@@ -789,6 +945,8 @@
       "p": 0.08,
       "estimand": "presented",
       "certificationRate": 0.352,
+      "violationRateTheorem": 0.0014204545454545455,
+      "unsafeRateTheorem": 0.0005,
       "violationRatePresented": 0.0014204545454545455,
       "violationRateReuseSet": 0.09375,
       "avgSampled": 289.3125
@@ -799,6 +957,8 @@
       "p": 0.08,
       "estimand": "reuse-set",
       "certificationRate": 0.0235,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 0.06382978723404255,
       "avgSampled": 396.675
@@ -809,6 +969,8 @@
       "p": 0.105,
       "estimand": "presented",
       "certificationRate": 0.042,
+      "violationRateTheorem": 0.047619047619047616,
+      "unsafeRateTheorem": 0.002,
       "violationRatePresented": 0.011904761904761904,
       "violationRateReuseSet": 0.5357142857142857,
       "avgSampled": 193.7175
@@ -819,6 +981,8 @@
       "p": 0.105,
       "estimand": "reuse-set",
       "certificationRate": 0.005,
+      "violationRateTheorem": 0.3,
+      "unsafeRateTheorem": 0.0015,
       "violationRatePresented": 0.2,
       "violationRateReuseSet": 0.6,
       "avgSampled": 200.8875
@@ -829,6 +993,8 @@
       "p": 0.11,
       "estimand": "presented",
       "certificationRate": 0.0235,
+      "violationRateTheorem": 0.19148936170212766,
+      "unsafeRateTheorem": 0.0045,
       "violationRatePresented": 0.14893617021276595,
       "violationRateReuseSet": 0.5957446808510638,
       "avgSampled": 160.7775
@@ -839,6 +1005,8 @@
       "p": 0.11,
       "estimand": "reuse-set",
       "certificationRate": 0.004,
+      "violationRateTheorem": 0.375,
+      "unsafeRateTheorem": 0.0015,
       "violationRatePresented": 0.25,
       "violationRateReuseSet": 0.5,
       "avgSampled": 163.8225
@@ -849,6 +1017,8 @@
       "p": 0.125,
       "estimand": "presented",
       "certificationRate": 0.007,
+      "violationRateTheorem": 0.8571428571428571,
+      "unsafeRateTheorem": 0.006,
       "violationRatePresented": 0.5714285714285714,
       "violationRateReuseSet": 0.8571428571428571,
       "avgSampled": 99.7875
@@ -859,6 +1029,8 @@
       "p": 0.125,
       "estimand": "reuse-set",
       "certificationRate": 0.002,
+      "violationRateTheorem": 1,
+      "unsafeRateTheorem": 0.002,
       "violationRatePresented": 0.75,
       "violationRateReuseSet": 1,
       "avgSampled": 106.0275
@@ -869,6 +1041,8 @@
       "p": 0.15,
       "estimand": "presented",
       "certificationRate": 0.001,
+      "violationRateTheorem": 1,
+      "unsafeRateTheorem": 0.001,
       "violationRatePresented": 1,
       "violationRateReuseSet": 1,
       "avgSampled": 62.3025
@@ -879,6 +1053,8 @@
       "p": 0.15,
       "estimand": "reuse-set",
       "certificationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 0,
       "avgSampled": 62.19
@@ -889,6 +1065,8 @@
       "p": 0,
       "estimand": "presented",
       "certificationRate": 1,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 0,
       "avgSampled": 45
@@ -899,6 +1077,8 @@
       "p": 0,
       "estimand": "reuse-set",
       "certificationRate": 1,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 0,
       "avgSampled": 90
@@ -909,6 +1089,8 @@
       "p": 0.005,
       "estimand": "presented",
       "certificationRate": 1,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 0,
       "avgSampled": 55.125
@@ -919,6 +1101,8 @@
       "p": 0.005,
       "estimand": "reuse-set",
       "certificationRate": 1,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 0,
       "avgSampled": 90.9
@@ -929,6 +1113,8 @@
       "p": 0.01,
       "estimand": "presented",
       "certificationRate": 0.999,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 0,
       "avgSampled": 66.4425
@@ -939,6 +1125,8 @@
       "p": 0.01,
       "estimand": "reuse-set",
       "certificationRate": 1,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 0,
       "avgSampled": 95.895
@@ -949,6 +1137,8 @@
       "p": 0.02,
       "estimand": "presented",
       "certificationRate": 0.997,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 0,
       "avgSampled": 94.6575
@@ -959,6 +1149,8 @@
       "p": 0.02,
       "estimand": "reuse-set",
       "certificationRate": 0.998,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 0,
       "avgSampled": 118.8
@@ -969,6 +1161,8 @@
       "p": 0.04,
       "estimand": "presented",
       "certificationRate": 0.967,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 0,
       "avgSampled": 170.955
@@ -979,6 +1173,8 @@
       "p": 0.04,
       "estimand": "reuse-set",
       "certificationRate": 0.8605,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 0,
       "avgSampled": 344.565
@@ -989,6 +1185,8 @@
       "p": 0.05,
       "estimand": "presented",
       "certificationRate": 0.934,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 0,
       "avgSampled": 233.28
@@ -999,6 +1197,8 @@
       "p": 0.05,
       "estimand": "reuse-set",
       "certificationRate": 0.5545,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 0,
       "avgSampled": 653.76
@@ -1009,6 +1209,8 @@
       "p": 0.08,
       "estimand": "presented",
       "certificationRate": 0.6005,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 0.029142381348875937,
       "avgSampled": 553.3425
@@ -1019,6 +1221,8 @@
       "p": 0.08,
       "estimand": "reuse-set",
       "certificationRate": 0.042,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 0,
       "avgSampled": 851.2425
@@ -1029,6 +1233,8 @@
       "p": 0.105,
       "estimand": "presented",
       "certificationRate": 0.0335,
+      "violationRateTheorem": 0.23880597014925373,
+      "unsafeRateTheorem": 0.008,
       "violationRatePresented": 0.11940298507462686,
       "violationRateReuseSet": 0.7014925373134329,
       "avgSampled": 298.44
@@ -1039,6 +1245,8 @@
       "p": 0.105,
       "estimand": "reuse-set",
       "certificationRate": 0.002,
+      "violationRateTheorem": 0.5,
+      "unsafeRateTheorem": 0.001,
       "violationRatePresented": 0.25,
       "violationRateReuseSet": 1,
       "avgSampled": 310.8825
@@ -1049,6 +1257,8 @@
       "p": 0.11,
       "estimand": "presented",
       "certificationRate": 0.0195,
+      "violationRateTheorem": 0.358974358974359,
+      "unsafeRateTheorem": 0.007,
       "violationRatePresented": 0.3076923076923077,
       "violationRateReuseSet": 0.7692307692307693,
       "avgSampled": 224.82
@@ -1059,6 +1269,8 @@
       "p": 0.11,
       "estimand": "reuse-set",
       "certificationRate": 0.003,
+      "violationRateTheorem": 0.8333333333333334,
+      "unsafeRateTheorem": 0.0025,
       "violationRatePresented": 0.6666666666666666,
       "violationRateReuseSet": 1,
       "avgSampled": 238.7475
@@ -1069,6 +1281,8 @@
       "p": 0.125,
       "estimand": "presented",
       "certificationRate": 0.002,
+      "violationRateTheorem": 1,
+      "unsafeRateTheorem": 0.002,
       "violationRatePresented": 1,
       "violationRateReuseSet": 1,
       "avgSampled": 116.7075
@@ -1079,6 +1293,8 @@
       "p": 0.125,
       "estimand": "reuse-set",
       "certificationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 0,
       "avgSampled": 108.99
@@ -1089,6 +1305,8 @@
       "p": 0.15,
       "estimand": "presented",
       "certificationRate": 0.0005,
+      "violationRateTheorem": 1,
+      "unsafeRateTheorem": 0.0005,
       "violationRatePresented": 1,
       "violationRateReuseSet": 1,
       "avgSampled": 63.4275
@@ -1099,6 +1317,8 @@
       "p": 0.15,
       "estimand": "reuse-set",
       "certificationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 0,
       "avgSampled": 63.855
@@ -1109,6 +1329,8 @@
       "p": 0,
       "estimand": "presented",
       "certificationRate": 1,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 0,
       "avgSampled": 90
@@ -1119,6 +1341,8 @@
       "p": 0,
       "estimand": "reuse-set",
       "certificationRate": 1,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 0,
       "avgSampled": 90
@@ -1129,6 +1353,8 @@
       "p": 0.005,
       "estimand": "presented",
       "certificationRate": 1,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 0,
       "avgSampled": 90.81
@@ -1139,6 +1365,8 @@
       "p": 0.005,
       "estimand": "reuse-set",
       "certificationRate": 1,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 0,
       "avgSampled": 90.945
@@ -1149,6 +1377,8 @@
       "p": 0.01,
       "estimand": "presented",
       "certificationRate": 1,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 0,
       "avgSampled": 94.815
@@ -1159,6 +1389,8 @@
       "p": 0.01,
       "estimand": "reuse-set",
       "certificationRate": 1,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 0,
       "avgSampled": 95.895
@@ -1169,6 +1401,8 @@
       "p": 0.02,
       "estimand": "presented",
       "certificationRate": 0.9955,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 0,
       "avgSampled": 115.5375
@@ -1179,6 +1413,8 @@
       "p": 0.02,
       "estimand": "reuse-set",
       "certificationRate": 0.9975,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 0,
       "avgSampled": 115.2225
@@ -1189,6 +1425,8 @@
       "p": 0.04,
       "estimand": "presented",
       "certificationRate": 0.9645,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 0,
       "avgSampled": 196.695
@@ -1199,6 +1437,8 @@
       "p": 0.04,
       "estimand": "reuse-set",
       "certificationRate": 0.967,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 0,
       "avgSampled": 215.01
@@ -1209,6 +1449,8 @@
       "p": 0.05,
       "estimand": "presented",
       "certificationRate": 0.9175,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 0,
       "avgSampled": 261
@@ -1219,6 +1461,8 @@
       "p": 0.05,
       "estimand": "reuse-set",
       "certificationRate": 0.91,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 0,
       "avgSampled": 337.3425
@@ -1229,6 +1473,8 @@
       "p": 0.08,
       "estimand": "presented",
       "certificationRate": 0.517,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 0,
       "avgSampled": 628.1775
@@ -1239,6 +1485,8 @@
       "p": 0.08,
       "estimand": "reuse-set",
       "certificationRate": 0.0965,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 0,
       "avgSampled": 804.555
@@ -1249,6 +1497,8 @@
       "p": 0.105,
       "estimand": "presented",
       "certificationRate": 0.0095,
+      "violationRateTheorem": 0.5789473684210527,
+      "unsafeRateTheorem": 0.0055,
       "violationRatePresented": 0.3157894736842105,
       "violationRateReuseSet": 0.7894736842105263,
       "avgSampled": 320.625
@@ -1259,6 +1509,8 @@
       "p": 0.105,
       "estimand": "reuse-set",
       "certificationRate": 0.0045,
+      "violationRateTheorem": 0.8888888888888888,
+      "unsafeRateTheorem": 0.004,
       "violationRatePresented": 0.6666666666666666,
       "violationRateReuseSet": 0.8888888888888888,
       "avgSampled": 309.42
@@ -1269,6 +1521,8 @@
       "p": 0.11,
       "estimand": "presented",
       "certificationRate": 0.006,
+      "violationRateTheorem": 1,
+      "unsafeRateTheorem": 0.006,
       "violationRatePresented": 0.8333333333333334,
       "violationRateReuseSet": 1,
       "avgSampled": 238.455
@@ -1279,6 +1533,8 @@
       "p": 0.11,
       "estimand": "reuse-set",
       "certificationRate": 0.003,
+      "violationRateTheorem": 1,
+      "unsafeRateTheorem": 0.003,
       "violationRatePresented": 1,
       "violationRateReuseSet": 1,
       "avgSampled": 249.8175
@@ -1289,6 +1545,8 @@
       "p": 0.125,
       "estimand": "presented",
       "certificationRate": 0.0015,
+      "violationRateTheorem": 1,
+      "unsafeRateTheorem": 0.0015,
       "violationRatePresented": 1,
       "violationRateReuseSet": 1,
       "avgSampled": 117.36
@@ -1299,6 +1557,8 @@
       "p": 0.125,
       "estimand": "reuse-set",
       "certificationRate": 0.0005,
+      "violationRateTheorem": 1,
+      "unsafeRateTheorem": 0.0005,
       "violationRatePresented": 1,
       "violationRateReuseSet": 1,
       "avgSampled": 109.8
@@ -1309,6 +1569,8 @@
       "p": 0.15,
       "estimand": "presented",
       "certificationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 0,
       "avgSampled": 64.35
@@ -1319,6 +1581,8 @@
       "p": 0.15,
       "estimand": "reuse-set",
       "certificationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 0,
       "avgSampled": 61.6725
@@ -1329,6 +1593,8 @@
       "p": 0,
       "estimand": "presented",
       "certificationRate": 1,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 0,
       "avgSampled": 45
@@ -1339,6 +1605,8 @@
       "p": 0,
       "estimand": "reuse-set",
       "certificationRate": 1,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 0,
       "avgSampled": 45
@@ -1349,6 +1617,8 @@
       "p": 0.005,
       "estimand": "presented",
       "certificationRate": 1,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 0,
       "avgSampled": 45
@@ -1359,6 +1629,8 @@
       "p": 0.005,
       "estimand": "reuse-set",
       "certificationRate": 1,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 0,
       "avgSampled": 45.09
@@ -1369,6 +1641,8 @@
       "p": 0.01,
       "estimand": "presented",
       "certificationRate": 1,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 0,
       "avgSampled": 45.045
@@ -1379,6 +1653,8 @@
       "p": 0.01,
       "estimand": "reuse-set",
       "certificationRate": 1,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 0,
       "avgSampled": 45.2925
@@ -1389,6 +1665,8 @@
       "p": 0.02,
       "estimand": "presented",
       "certificationRate": 1,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 0,
       "avgSampled": 45.4275
@@ -1399,6 +1677,8 @@
       "p": 0.02,
       "estimand": "reuse-set",
       "certificationRate": 1,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 0,
       "avgSampled": 47.4075
@@ -1409,6 +1689,8 @@
       "p": 0.04,
       "estimand": "presented",
       "certificationRate": 1,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 0,
       "avgSampled": 49.6125
@@ -1419,6 +1701,8 @@
       "p": 0.04,
       "estimand": "reuse-set",
       "certificationRate": 0.999,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 0,
       "avgSampled": 59.2125
@@ -1429,6 +1713,8 @@
       "p": 0.05,
       "estimand": "presented",
       "certificationRate": 1,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 0,
       "avgSampled": 54.675
@@ -1439,6 +1725,8 @@
       "p": 0.05,
       "estimand": "reuse-set",
       "certificationRate": 0.9935,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 0,
       "avgSampled": 71.8725
@@ -1449,6 +1737,8 @@
       "p": 0.08,
       "estimand": "presented",
       "certificationRate": 0.9985,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 0,
       "avgSampled": 82.4625
@@ -1459,6 +1749,8 @@
       "p": 0.08,
       "estimand": "reuse-set",
       "certificationRate": 0.7965,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 0,
       "avgSampled": 197.34
@@ -1469,6 +1761,8 @@
       "p": 0.15,
       "estimand": "presented",
       "certificationRate": 0.7465,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 0.004018754186202277,
       "avgSampled": 239.9175
@@ -1479,6 +1773,8 @@
       "p": 0.15,
       "estimand": "reuse-set",
       "certificationRate": 0.057,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 0.008771929824561403,
       "avgSampled": 483.615
@@ -1489,6 +1785,8 @@
       "p": 0.21,
       "estimand": "presented",
       "certificationRate": 0.033,
+      "violationRateTheorem": 0.24242424242424243,
+      "unsafeRateTheorem": 0.008,
       "violationRatePresented": 0.07575757575757576,
       "violationRateReuseSet": 0.7424242424242424,
       "avgSampled": 174.75
@@ -1499,6 +1797,8 @@
       "p": 0.21,
       "estimand": "reuse-set",
       "certificationRate": 0.002,
+      "violationRateTheorem": 0.5,
+      "unsafeRateTheorem": 0.001,
       "violationRatePresented": 0.25,
       "violationRateReuseSet": 0.75,
       "avgSampled": 186.015
@@ -1509,6 +1809,8 @@
       "p": 0.22,
       "estimand": "presented",
       "certificationRate": 0.0175,
+      "violationRateTheorem": 0.37142857142857144,
+      "unsafeRateTheorem": 0.0065,
       "violationRatePresented": 0.22857142857142856,
       "violationRateReuseSet": 0.8285714285714286,
       "avgSampled": 135
@@ -1519,6 +1821,8 @@
       "p": 0.22,
       "estimand": "reuse-set",
       "certificationRate": 0.0015,
+      "violationRateTheorem": 0.6666666666666666,
+      "unsafeRateTheorem": 0.001,
       "violationRatePresented": 0.6666666666666666,
       "violationRateReuseSet": 1,
       "avgSampled": 144.96
@@ -1529,6 +1833,8 @@
       "p": 0.25,
       "estimand": "presented",
       "certificationRate": 0.0015,
+      "violationRateTheorem": 1,
+      "unsafeRateTheorem": 0.0015,
       "violationRatePresented": 1,
       "violationRateReuseSet": 1,
       "avgSampled": 75.0225
@@ -1539,6 +1845,8 @@
       "p": 0.25,
       "estimand": "reuse-set",
       "certificationRate": 0.001,
+      "violationRateTheorem": 1,
+      "unsafeRateTheorem": 0.001,
       "violationRatePresented": 1,
       "violationRateReuseSet": 1,
       "avgSampled": 77.3775
@@ -1549,6 +1857,8 @@
       "p": 0,
       "estimand": "presented",
       "certificationRate": 1,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 0,
       "avgSampled": 45
@@ -1559,6 +1869,8 @@
       "p": 0,
       "estimand": "reuse-set",
       "certificationRate": 1,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 0,
       "avgSampled": 45
@@ -1569,6 +1881,8 @@
       "p": 0.005,
       "estimand": "presented",
       "certificationRate": 1,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 0,
       "avgSampled": 45.1125
@@ -1579,6 +1893,8 @@
       "p": 0.005,
       "estimand": "reuse-set",
       "certificationRate": 1,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 0,
       "avgSampled": 45.0675
@@ -1589,6 +1905,8 @@
       "p": 0.01,
       "estimand": "presented",
       "certificationRate": 1,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 0,
       "avgSampled": 45.405
@@ -1599,6 +1917,8 @@
       "p": 0.01,
       "estimand": "reuse-set",
       "certificationRate": 1,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 0,
       "avgSampled": 45.495
@@ -1609,6 +1929,8 @@
       "p": 0.02,
       "estimand": "presented",
       "certificationRate": 1,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 0,
       "avgSampled": 48.0375
@@ -1619,6 +1941,8 @@
       "p": 0.02,
       "estimand": "reuse-set",
       "certificationRate": 1,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 0,
       "avgSampled": 47.6325
@@ -1629,6 +1953,8 @@
       "p": 0.04,
       "estimand": "presented",
       "certificationRate": 1,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 0,
       "avgSampled": 57.69
@@ -1639,6 +1965,8 @@
       "p": 0.04,
       "estimand": "reuse-set",
       "certificationRate": 1,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 0,
       "avgSampled": 58.4325
@@ -1649,6 +1977,8 @@
       "p": 0.05,
       "estimand": "presented",
       "certificationRate": 1,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 0,
       "avgSampled": 63.7875
@@ -1659,6 +1989,8 @@
       "p": 0.05,
       "estimand": "reuse-set",
       "certificationRate": 1,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 0,
       "avgSampled": 65.1825
@@ -1669,6 +2001,8 @@
       "p": 0.08,
       "estimand": "presented",
       "certificationRate": 0.9985,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 0,
       "avgSampled": 93.78
@@ -1679,6 +2013,8 @@
       "p": 0.08,
       "estimand": "reuse-set",
       "certificationRate": 0.9955,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 0,
       "avgSampled": 108.9225
@@ -1689,6 +2025,8 @@
       "p": 0.15,
       "estimand": "presented",
       "certificationRate": 0.836,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 0,
       "avgSampled": 355.05
@@ -1699,6 +2037,8 @@
       "p": 0.15,
       "estimand": "reuse-set",
       "certificationRate": 0.133,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 0,
       "avgSampled": 1023.3225
@@ -1709,6 +2049,8 @@
       "p": 0.21,
       "estimand": "presented",
       "certificationRate": 0.0235,
+      "violationRateTheorem": 0.2127659574468085,
+      "unsafeRateTheorem": 0.005,
       "violationRatePresented": 0.06382978723404255,
       "violationRateReuseSet": 0.7021276595744681,
       "avgSampled": 280.1925
@@ -1719,6 +2061,8 @@
       "p": 0.21,
       "estimand": "reuse-set",
       "certificationRate": 0.005,
+      "violationRateTheorem": 0.7,
+      "unsafeRateTheorem": 0.0035,
       "violationRatePresented": 0.4,
       "violationRateReuseSet": 0.8,
       "avgSampled": 287.2575
@@ -1729,6 +2073,8 @@
       "p": 0.22,
       "estimand": "presented",
       "certificationRate": 0.0045,
+      "violationRateTheorem": 0.8888888888888888,
+      "unsafeRateTheorem": 0.004,
       "violationRatePresented": 0.6666666666666666,
       "violationRateReuseSet": 0.8888888888888888,
       "avgSampled": 177.705
@@ -1739,6 +2085,8 @@
       "p": 0.22,
       "estimand": "reuse-set",
       "certificationRate": 0.0015,
+      "violationRateTheorem": 1,
+      "unsafeRateTheorem": 0.0015,
       "violationRatePresented": 1,
       "violationRateReuseSet": 1,
       "avgSampled": 191.4075
@@ -1749,6 +2097,8 @@
       "p": 0.25,
       "estimand": "presented",
       "certificationRate": 0.0005,
+      "violationRateTheorem": 1,
+      "unsafeRateTheorem": 0.0005,
       "violationRatePresented": 1,
       "violationRateReuseSet": 1,
       "avgSampled": 77.445
@@ -1759,6 +2109,8 @@
       "p": 0.25,
       "estimand": "reuse-set",
       "certificationRate": 0.0005,
+      "violationRateTheorem": 1,
+      "unsafeRateTheorem": 0.0005,
       "violationRatePresented": 1,
       "violationRateReuseSet": 1,
       "avgSampled": 77.1075
@@ -1769,6 +2121,8 @@
       "p": 0,
       "estimand": "presented",
       "certificationRate": 1,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 0,
       "avgSampled": 45
@@ -1779,6 +2133,8 @@
       "p": 0,
       "estimand": "reuse-set",
       "certificationRate": 1,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 0,
       "avgSampled": 45
@@ -1789,6 +2145,8 @@
       "p": 0.005,
       "estimand": "presented",
       "certificationRate": 1,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 0,
       "avgSampled": 45.0675
@@ -1799,6 +2157,8 @@
       "p": 0.005,
       "estimand": "reuse-set",
       "certificationRate": 1,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 0,
       "avgSampled": 45.1125
@@ -1809,6 +2169,8 @@
       "p": 0.01,
       "estimand": "presented",
       "certificationRate": 1,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 0,
       "avgSampled": 45.4275
@@ -1819,6 +2181,8 @@
       "p": 0.01,
       "estimand": "reuse-set",
       "certificationRate": 1,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 0,
       "avgSampled": 45.54
@@ -1829,6 +2193,8 @@
       "p": 0.02,
       "estimand": "presented",
       "certificationRate": 1,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 0,
       "avgSampled": 47.9025
@@ -1839,6 +2205,8 @@
       "p": 0.02,
       "estimand": "reuse-set",
       "certificationRate": 1,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 0,
       "avgSampled": 47.475
@@ -1849,6 +2217,8 @@
       "p": 0.04,
       "estimand": "presented",
       "certificationRate": 1,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 0,
       "avgSampled": 57.0825
@@ -1859,6 +2229,8 @@
       "p": 0.04,
       "estimand": "reuse-set",
       "certificationRate": 1,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 0,
       "avgSampled": 59.6025
@@ -1869,6 +2241,8 @@
       "p": 0.05,
       "estimand": "presented",
       "certificationRate": 1,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 0,
       "avgSampled": 62.91
@@ -1879,6 +2253,8 @@
       "p": 0.05,
       "estimand": "reuse-set",
       "certificationRate": 1,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 0,
       "avgSampled": 64.9575
@@ -1889,6 +2265,8 @@
       "p": 0.08,
       "estimand": "presented",
       "certificationRate": 0.997,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 0,
       "avgSampled": 93.3075
@@ -1899,6 +2277,8 @@
       "p": 0.08,
       "estimand": "reuse-set",
       "certificationRate": 0.9985,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 0,
       "avgSampled": 103.2075
@@ -1909,6 +2289,8 @@
       "p": 0.15,
       "estimand": "presented",
       "certificationRate": 0.829,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 0,
       "avgSampled": 390.8925
@@ -1919,6 +2301,8 @@
       "p": 0.15,
       "estimand": "reuse-set",
       "certificationRate": 0.376,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 0,
       "avgSampled": 780.8175
@@ -1929,6 +2313,8 @@
       "p": 0.21,
       "estimand": "presented",
       "certificationRate": 0.0115,
+      "violationRateTheorem": 0.8260869565217391,
+      "unsafeRateTheorem": 0.0095,
       "violationRatePresented": 0.6086956521739131,
       "violationRateReuseSet": 0.9565217391304348,
       "avgSampled": 288.2475
@@ -1939,6 +2325,8 @@
       "p": 0.21,
       "estimand": "reuse-set",
       "certificationRate": 0.006,
+      "violationRateTheorem": 0.8333333333333334,
+      "unsafeRateTheorem": 0.005,
       "violationRatePresented": 0.6666666666666666,
       "violationRateReuseSet": 1,
       "avgSampled": 290.8575
@@ -1949,6 +2337,8 @@
       "p": 0.22,
       "estimand": "presented",
       "certificationRate": 0.005,
+      "violationRateTheorem": 1,
+      "unsafeRateTheorem": 0.005,
       "violationRatePresented": 0.8,
       "violationRateReuseSet": 1,
       "avgSampled": 169.6725
@@ -1959,6 +2349,8 @@
       "p": 0.22,
       "estimand": "reuse-set",
       "certificationRate": 0.001,
+      "violationRateTheorem": 1,
+      "unsafeRateTheorem": 0.001,
       "violationRatePresented": 1,
       "violationRateReuseSet": 1,
       "avgSampled": 176.7825
@@ -1969,6 +2361,8 @@
       "p": 0.25,
       "estimand": "presented",
       "certificationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "violationRatePresented": 0,
       "violationRateReuseSet": 0,
       "avgSampled": 79.425
@@ -1979,6 +2373,8 @@
       "p": 0.25,
       "estimand": "reuse-set",
       "certificationRate": 0.001,
+      "violationRateTheorem": 1,
+      "unsafeRateTheorem": 0.001,
       "violationRatePresented": 1,
       "violationRateReuseSet": 1,
       "avgSampled": 82.1025

@@ -25,7 +25,7 @@
  * Run: set -a; source .env.local; set +a; pnpm tsx scripts/experiments/exp11c-deployment-bounds.ts
  *   EXP_BOUNDS=eb,wor,exact,cp  EXP_ALPHAS=0.2,0.1,0.05  EXP_LIVE=0|1
  */
-import { mkdirSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import mysql from "mysql2/promise";
 import type { BoundKind } from "@lore/core/sivm";
 import { certifyColumnEdit } from "../../lib/lore/certify";
@@ -60,8 +60,11 @@ const MYSQL_URL =
 type Row = Record<string, unknown>;
 
 class NeedsLiveDraws extends Error {
-  constructor(public readonly missing: number) {
-    super(`replay needs ${missing} fresh draws the live run never took`);
+  constructor(
+    public readonly missing: number,
+    public readonly newRowsAtFailingLook: number,
+  ) {
+    super(`replay needs ${missing} fresh draws the live run never took (${newRowsAtFailingLook} new rows at the failing look)`);
   }
 }
 
@@ -122,7 +125,14 @@ async function main() {
 
   const spendBefore = await totalSpendUsd();
   let liveCalls = 0;
+  let liveRequested = 0;
+  let liveCached = 0;
   const sweeps: Record<string, unknown>[] = [];
+  // Reuse sets are kept so every arm can be audited at the END of the run
+  // against every oracle cell of this snapshot, not against whatever cells
+  // existed when the arm happened to run (an earlier version did the latter
+  // and two arms with different reuse sets reported one audit pool).
+  const reuseSets: Array<{ i: number; rowIds: string[] }> = [];
   for (const bound of BOUNDS) {
     for (const alpha of ALPHAS) {
       let oracleCalls = 0;
@@ -139,7 +149,7 @@ async function main() {
             oracleCalls += rowIds.length;
             const missing = rowIds.filter((id) => !stored.has(id));
             if (missing.length > 0) {
-              if (!LIVE) throw new NeedsLiveDraws(missing.length);
+              if (!LIVE) throw new NeedsLiveDraws(missing.length, rowIds.length);
               const missingSet = new Set(missing);
               const sampleRows = rows.filter((r) =>
                 missingSet.has(String(r[PROFILE_ID_FIELD])),
@@ -152,6 +162,8 @@ async function main() {
                 },
               });
               liveCalls += res.ran;
+              liveCached += res.cached;
+              liveRequested += missing.length;
               missingTotal += missing.length;
               stored = await oracleCells();
               console.log(
@@ -159,7 +171,7 @@ async function main() {
               );
             }
             const still = rowIds.filter((id) => !stored.has(id));
-            if (still.length > 0) throw new NeedsLiveDraws(still.length);
+            if (still.length > 0) throw new NeedsLiveDraws(still.length, rowIds.length);
             return new Map(rowIds.map((id) => [id, stored.get(id)]));
           },
           {
@@ -172,14 +184,9 @@ async function main() {
             bound,
           },
         );
-        const overlap = outcome.reusedRowIds.filter((id) => stored.has(id));
-        const flipOf = (id: string) =>
-          JSON.stringify(v1cells.get(id)) !== JSON.stringify(stored.get(id));
-        const overlapFlips = overlap.filter(flipOf).length;
-        const fromReleased = overlap.filter((id) => releasedVector.has(id));
-        const releasedFlips = fromReleased.filter(flipOf).length;
         const covered =
           oracleCalls + outcome.reusedRowIds.length + outcome.recomputeRowIds.length;
+        reuseSets.push({ i: sweeps.length, rowIds: outcome.reusedRowIds });
         const rec = {
           bound,
           alpha,
@@ -192,15 +199,14 @@ async function main() {
           covered,
           savings: 1 - (oracleCalls + outcome.recomputeRowIds.length) / covered,
           replayWallMs: Date.now() - t0,
-          gtOverlapReused: overlap.length,
-          gtOverlapFlips: overlapFlips,
-          realizedOnOverlap: overlap.length > 0 ? overlapFlips / overlap.length : null,
+          gtOverlapReused: 0,
+          gtOverlapFlips: 0,
+          realizedOnOverlap: null as number | null,
           auditComposition: {
-            fromReleasedVector: fromReleased.length,
-            fromRunOracle: overlap.length - fromReleased.length,
-            releasedOnlyFlips: releasedFlips,
-            releasedOnlyRealized:
-              fromReleased.length > 0 ? releasedFlips / fromReleased.length : null,
+            fromReleasedVector: 0,
+            fromRunOracle: 0,
+            releasedOnlyFlips: 0,
+            releasedOnlyRealized: null as number | null,
           },
           strata: outcome.strata,
         };
@@ -222,6 +228,9 @@ async function main() {
             status: "needs-live-draws",
             oracleCallsRequestedSoFar: oracleCalls,
             missingFreshDraws: err.missing,
+            // The certifier asks for each look's new rows only, so the look
+            // itself is the cumulative request count (this stratum is first).
+            newRowsAtFailingLook: err.newRowsAtFailingLook,
           });
           console.log(
             `${bound} alpha=${alpha}: needs ${err.missing} fresh draws beyond the stored ones (requested ${oracleCalls}); rerun with EXP_LIVE=1`,
@@ -231,6 +240,28 @@ async function main() {
         }
       }
     }
+  }
+  // End-of-run audit: every arm's reuse set against every oracle cell of
+  // this snapshot that exists now.
+  stored = await oracleCells();
+  const flipOf = (id: string) =>
+    JSON.stringify(v1cells.get(id)) !== JSON.stringify(stored.get(id));
+  for (const { i, rowIds } of reuseSets) {
+    const rec = sweeps[i] as Record<string, unknown>;
+    const overlap = rowIds.filter((id) => stored.has(id));
+    const overlapFlips = overlap.filter(flipOf).length;
+    const fromReleased = overlap.filter((id) => releasedVector.has(id));
+    const releasedFlips = fromReleased.filter(flipOf).length;
+    rec.gtOverlapReused = overlap.length;
+    rec.gtOverlapFlips = overlapFlips;
+    rec.realizedOnOverlap = overlap.length > 0 ? overlapFlips / overlap.length : null;
+    rec.auditComposition = {
+      fromReleasedVector: fromReleased.length,
+      fromRunOracle: overlap.length - fromReleased.length,
+      releasedOnlyFlips: releasedFlips,
+      releasedOnlyRealized: fromReleased.length > 0 ? releasedFlips / fromReleased.length : null,
+    };
+    console.log(`  audit ${rec.bound} alpha=${rec.alpha}: ${overlapFlips}/${overlap.length} = ${rec.realizedOnOverlap === null ? "n/a" : ((rec.realizedOnOverlap as number) * 100).toFixed(2) + "%"}`);
   }
   // Path check against the live run's persisted record (exp11-fullscale.json).
   const EXPECTED: Record<string, { oracleCalls: number; reused: number }> = {
@@ -246,6 +277,37 @@ async function main() {
     }
   }
   const spendAfter = await totalSpendUsd();
+  // A replay over stored draws makes no calls, so its own accounting reads
+  // zero; the accounting that matters is the live run's, and it must survive
+  // the replays that add audits later. Carry it forward from the artifact on
+  // disk unless this run itself drew live cells.
+  type LiveRun = {
+    ranAt: string;
+    liveCalls: number;
+    liveRequested: number;
+    liveCached: number;
+    ledgerSpendDeltaUsd: number;
+    arms: Array<{ bound: string; alpha: number; liveDrawsThisArm: number; wallMs: number | null }>;
+    source: string;
+  };
+  const previous = existsSync(OUT) ? (JSON.parse(readFileSync(OUT, "utf8")) as { liveRun?: LiveRun }) : {};
+  const liveRun: LiveRun | null =
+    liveCalls > 0
+      ? {
+          ranAt: new Date(started).toISOString(),
+          liveCalls,
+          liveRequested,
+          liveCached,
+          ledgerSpendDeltaUsd: spendAfter - spendBefore,
+          arms: sweeps.map((w) => ({
+            bound: String(w.bound),
+            alpha: Number(w.alpha),
+            liveDrawsThisArm: Number(w.liveDrawsThisArm ?? 0),
+            wallMs: Number(w.replayWallMs ?? 0),
+          })),
+          source: "this run",
+        }
+      : (previous.liveRun ?? null);
   const out = {
     experiment: "exp11c-deployment-bounds",
     note:
@@ -260,7 +322,10 @@ async function main() {
     alphas: ALPHAS,
     live: LIVE,
     liveCalls,
+    liveRequested,
+    liveCached,
     ledgerSpendDeltaUsd: spendAfter - spendBefore,
+    liveRun,
     sweeps,
     wallMs: Date.now() - started,
   };

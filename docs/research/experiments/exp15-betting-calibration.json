@@ -27,6 +27,22 @@
       "worstViolationRate": 1,
       "certRateAtCleanBig": 1,
       "avgSampledAtCleanBig": 90
+    },
+    "cp": {
+      "worstNullCertificationRate": 0.015,
+      "nullsExceedingDelta": 0,
+      "nullConfigurations": 18,
+      "worstViolationRate": 1,
+      "certRateAtCleanBig": 1,
+      "avgSampledAtCleanBig": 180
+    },
+    "wor": {
+      "worstNullCertificationRate": 0,
+      "nullsExceedingDelta": 0,
+      "nullConfigurations": 18,
+      "worstViolationRate": 0,
+      "certRateAtCleanBig": 1,
+      "avgSampledAtCleanBig": 720
     }
   },
   "results": [
@@ -43,6 +59,8 @@
       ],
       "exceedsDelta": false,
       "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "avgSampled": 360
     },
     {
@@ -58,6 +76,8 @@
       ],
       "exceedsDelta": false,
       "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "avgSampled": 558.555
     },
     {
@@ -73,6 +93,8 @@
       ],
       "exceedsDelta": false,
       "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "avgSampled": 375.315
     },
     {
@@ -88,6 +110,8 @@
       ],
       "exceedsDelta": false,
       "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "avgSampled": 228.525
     },
     {
@@ -103,6 +127,8 @@
       ],
       "exceedsDelta": false,
       "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "avgSampled": 145.2
     },
     {
@@ -118,6 +144,8 @@
       ],
       "exceedsDelta": false,
       "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "avgSampled": 57.105
     },
     {
@@ -133,6 +161,8 @@
       ],
       "exceedsDelta": false,
       "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "avgSampled": 360
     },
     {
@@ -148,6 +178,8 @@
       ],
       "exceedsDelta": false,
       "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "avgSampled": 1172.475
     },
     {
@@ -163,6 +195,8 @@
       ],
       "exceedsDelta": false,
       "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "avgSampled": 865.44
     },
     {
@@ -178,6 +212,8 @@
       ],
       "exceedsDelta": false,
       "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "avgSampled": 375.795
     },
     {
@@ -193,6 +229,8 @@
       ],
       "exceedsDelta": false,
       "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "avgSampled": 178.29
     },
     {
@@ -208,6 +246,8 @@
       ],
       "exceedsDelta": false,
       "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "avgSampled": 57.465
     },
     {
@@ -223,6 +263,8 @@
       ],
       "exceedsDelta": false,
       "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "avgSampled": 180
     },
     {
@@ -238,6 +280,8 @@
       ],
       "exceedsDelta": false,
       "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "avgSampled": 508.62
     },
     {
@@ -253,6 +297,8 @@
       ],
       "exceedsDelta": false,
       "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "avgSampled": 393.825
     },
     {
@@ -268,6 +314,8 @@
       ],
       "exceedsDelta": false,
       "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "avgSampled": 188.31
     },
     {
@@ -283,6 +331,8 @@
       ],
       "exceedsDelta": false,
       "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "avgSampled": 101.01
     },
     {
@@ -298,6 +348,8 @@
       ],
       "exceedsDelta": false,
       "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "avgSampled": 47.61
     },
     {
@@ -313,6 +365,8 @@
       ],
       "exceedsDelta": false,
       "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "avgSampled": 180
     },
     {
@@ -328,6 +382,8 @@
       ],
       "exceedsDelta": false,
       "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "avgSampled": 630.27
     },
     {
@@ -343,6 +399,8 @@
       ],
       "exceedsDelta": false,
       "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "avgSampled": 901.305
     },
     {
@@ -358,6 +416,8 @@
       ],
       "exceedsDelta": false,
       "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "avgSampled": 305.91
     },
     {
@@ -373,6 +433,8 @@
       ],
       "exceedsDelta": false,
       "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "avgSampled": 108.18
     },
     {
@@ -388,6 +450,8 @@
       ],
       "exceedsDelta": false,
       "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "avgSampled": 47.205
     },
     {
@@ -403,6 +467,8 @@
       ],
       "exceedsDelta": false,
       "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "avgSampled": 90
     },
     {
@@ -418,6 +484,8 @@
       ],
       "exceedsDelta": false,
       "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "avgSampled": 310.35
     },
     {
@@ -433,6 +501,8 @@
       ],
       "exceedsDelta": false,
       "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "avgSampled": 467.595
     },
     {
@@ -448,6 +518,8 @@
       ],
       "exceedsDelta": false,
       "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "avgSampled": 172.665
     },
     {
@@ -463,6 +535,8 @@
       ],
       "exceedsDelta": false,
       "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "avgSampled": 75.48
     },
     {
@@ -478,6 +552,8 @@
       ],
       "exceedsDelta": false,
       "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "avgSampled": 45.135
     },
     {
@@ -493,6 +569,8 @@
       ],
       "exceedsDelta": false,
       "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "avgSampled": 90
     },
     {
@@ -508,6 +586,8 @@
       ],
       "exceedsDelta": false,
       "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "avgSampled": 311.985
     },
     {
@@ -523,6 +603,8 @@
       ],
       "exceedsDelta": false,
       "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "avgSampled": 1076.085
     },
     {
@@ -538,6 +620,8 @@
       ],
       "exceedsDelta": false,
       "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "avgSampled": 294.3
     },
     {
@@ -553,6 +637,8 @@
       ],
       "exceedsDelta": false,
       "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "avgSampled": 77.715
     },
     {
@@ -568,6 +654,8 @@
       ],
       "exceedsDelta": false,
       "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "avgSampled": 45.09
     },
     {
@@ -583,6 +671,8 @@
       ],
       "exceedsDelta": false,
       "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "avgSampled": 180
     },
     {
@@ -598,6 +688,8 @@
       ],
       "exceedsDelta": false,
       "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "avgSampled": 314.19
     },
     {
@@ -613,6 +705,8 @@
       ],
       "exceedsDelta": false,
       "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "avgSampled": 334.95
     },
     {
@@ -628,6 +722,8 @@
       ],
       "exceedsDelta": false,
       "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "avgSampled": 219.48
     },
     {
@@ -643,6 +739,8 @@
       ],
       "exceedsDelta": false,
       "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "avgSampled": 135
     },
     {
@@ -658,6 +756,8 @@
       ],
       "exceedsDelta": false,
       "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "avgSampled": 56.295
     },
     {
@@ -673,6 +773,8 @@
       ],
       "exceedsDelta": false,
       "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "avgSampled": 180
     },
     {
@@ -688,6 +790,8 @@
       ],
       "exceedsDelta": false,
       "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "avgSampled": 355.32
     },
     {
@@ -703,6 +807,8 @@
       ],
       "exceedsDelta": false,
       "violationRate": 0.004975124378109453,
+      "violationRateTheorem": 0.004975124378109453,
+      "unsafeRateTheorem": 0.001,
       "avgSampled": 663.345
     },
     {
@@ -718,6 +824,8 @@
       ],
       "exceedsDelta": false,
       "violationRate": 0.18181818181818182,
+      "violationRateTheorem": 0.2727272727272727,
+      "unsafeRateTheorem": 0.006,
       "avgSampled": 349.56
     },
     {
@@ -733,6 +841,8 @@
       ],
       "exceedsDelta": false,
       "violationRate": 0.3333333333333333,
+      "violationRateTheorem": 1,
+      "unsafeRateTheorem": 0.006,
       "avgSampled": 170.235
     },
     {
@@ -748,6 +858,8 @@
       ],
       "exceedsDelta": false,
       "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "avgSampled": 55.08
     },
     {
@@ -763,6 +875,8 @@
       ],
       "exceedsDelta": false,
       "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "avgSampled": 90
     },
     {
@@ -778,6 +892,8 @@
       ],
       "exceedsDelta": false,
       "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "avgSampled": 182.865
     },
     {
@@ -793,6 +909,8 @@
       ],
       "exceedsDelta": false,
       "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "avgSampled": 333.765
     },
     {
@@ -808,6 +926,8 @@
       ],
       "exceedsDelta": false,
       "violationRate": 0.07692307692307693,
+      "violationRateTheorem": 0.23076923076923078,
+      "unsafeRateTheorem": 0.003,
       "avgSampled": 190.635
     },
     {
@@ -823,6 +943,8 @@
       ],
       "exceedsDelta": false,
       "violationRate": 0.4,
+      "violationRateTheorem": 0.6,
+      "unsafeRateTheorem": 0.003,
       "avgSampled": 102.345
     },
     {
@@ -838,6 +960,8 @@
       ],
       "exceedsDelta": false,
       "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "avgSampled": 47.07
     },
     {
@@ -853,6 +977,8 @@
       ],
       "exceedsDelta": false,
       "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "avgSampled": 90
     },
     {
@@ -868,6 +994,8 @@
       ],
       "exceedsDelta": false,
       "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "avgSampled": 188.955
     },
     {
@@ -883,6 +1011,8 @@
       ],
       "exceedsDelta": false,
       "violationRate": 0.002976190476190476,
+      "violationRateTheorem": 0.002976190476190476,
+      "unsafeRateTheorem": 0.001,
       "avgSampled": 721.935
     },
     {
@@ -898,6 +1028,8 @@
       ],
       "exceedsDelta": false,
       "violationRate": 0.22727272727272727,
+      "violationRateTheorem": 0.5454545454545454,
+      "unsafeRateTheorem": 0.012,
       "avgSampled": 331.11
     },
     {
@@ -913,6 +1045,8 @@
       ],
       "exceedsDelta": false,
       "violationRate": 1,
+      "violationRateTheorem": 1,
+      "unsafeRateTheorem": 0.001,
       "avgSampled": 115.695
     },
     {
@@ -928,6 +1062,8 @@
       ],
       "exceedsDelta": false,
       "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "avgSampled": 47.205
     },
     {
@@ -943,6 +1079,8 @@
       ],
       "exceedsDelta": false,
       "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "avgSampled": 45
     },
     {
@@ -958,6 +1096,8 @@
       ],
       "exceedsDelta": false,
       "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "avgSampled": 90.585
     },
     {
@@ -973,6 +1113,8 @@
       ],
       "exceedsDelta": false,
       "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "avgSampled": 360.57
     },
     {
@@ -988,6 +1130,8 @@
       ],
       "exceedsDelta": false,
       "violationRate": 0.12,
+      "violationRateTheorem": 0.36,
+      "unsafeRateTheorem": 0.009,
       "avgSampled": 183.9
     },
     {
@@ -1003,6 +1147,8 @@
       ],
       "exceedsDelta": false,
       "violationRate": 1,
+      "violationRateTheorem": 1,
+      "unsafeRateTheorem": 0.002,
       "avgSampled": 77.19
     },
     {
@@ -1018,6 +1164,8 @@
       ],
       "exceedsDelta": false,
       "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "avgSampled": 45.135
     },
     {
@@ -1033,6 +1181,8 @@
       ],
       "exceedsDelta": false,
       "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "avgSampled": 45
     },
     {
@@ -1048,6 +1198,8 @@
       ],
       "exceedsDelta": false,
       "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "avgSampled": 91.17
     },
     {
@@ -1063,6 +1215,8 @@
       ],
       "exceedsDelta": false,
       "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "avgSampled": 635.67
     },
     {
@@ -1078,6 +1232,8 @@
       ],
       "exceedsDelta": false,
       "violationRate": 0.25,
+      "violationRateTheorem": 0.55,
+      "unsafeRateTheorem": 0.011,
       "avgSampled": 276.48
     },
     {
@@ -1093,6 +1249,8 @@
       ],
       "exceedsDelta": false,
       "violationRate": 1,
+      "violationRateTheorem": 1,
+      "unsafeRateTheorem": 0.002,
       "avgSampled": 79.02
     },
     {
@@ -1108,6 +1266,8 @@
       ],
       "exceedsDelta": false,
       "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "avgSampled": 45.09
     },
     {
@@ -1123,6 +1283,8 @@
       ],
       "exceedsDelta": false,
       "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "avgSampled": 90
     },
     {
@@ -1138,6 +1300,8 @@
       ],
       "exceedsDelta": false,
       "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "avgSampled": 240.48
     },
     {
@@ -1153,6 +1317,8 @@
       ],
       "exceedsDelta": false,
       "violationRate": 0,
+      "violationRateTheorem": 0.0048543689320388345,
+      "unsafeRateTheorem": 0.001,
       "avgSampled": 295.02
     },
     {
@@ -1168,6 +1334,8 @@
       ],
       "exceedsDelta": false,
       "violationRate": 0.02564102564102564,
+      "violationRateTheorem": 0.10256410256410256,
+      "unsafeRateTheorem": 0.004,
       "avgSampled": 209.175
     },
     {
@@ -1183,6 +1351,8 @@
       ],
       "exceedsDelta": false,
       "violationRate": 0.29411764705882354,
+      "violationRateTheorem": 0.29411764705882354,
+      "unsafeRateTheorem": 0.005,
       "avgSampled": 142.32
     },
     {
@@ -1198,6 +1368,8 @@
       ],
       "exceedsDelta": false,
       "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "avgSampled": 55.845
     },
     {
@@ -1213,6 +1385,8 @@
       ],
       "exceedsDelta": false,
       "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "avgSampled": 90
     },
     {
@@ -1228,6 +1402,8 @@
       ],
       "exceedsDelta": false,
       "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "avgSampled": 307.215
     },
     {
@@ -1243,6 +1419,8 @@
       ],
       "exceedsDelta": false,
       "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "avgSampled": 630.63
     },
     {
@@ -1258,6 +1436,8 @@
       ],
       "exceedsDelta": false,
       "violationRate": 0.06349206349206349,
+      "violationRateTheorem": 0.14285714285714285,
+      "unsafeRateTheorem": 0.009,
       "avgSampled": 371.52
     },
     {
@@ -1273,6 +1453,8 @@
       ],
       "exceedsDelta": false,
       "violationRate": 0.8571428571428571,
+      "violationRateTheorem": 1,
+      "unsafeRateTheorem": 0.007,
       "avgSampled": 181.89
     },
     {
@@ -1288,6 +1470,8 @@
       ],
       "exceedsDelta": false,
       "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "avgSampled": 56.61
     },
     {
@@ -1303,6 +1487,8 @@
       ],
       "exceedsDelta": false,
       "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "avgSampled": 45
     },
     {
@@ -1318,6 +1504,8 @@
       ],
       "exceedsDelta": false,
       "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "avgSampled": 154.2
     },
     {
@@ -1333,6 +1521,8 @@
       ],
       "exceedsDelta": false,
       "violationRate": 0,
+      "violationRateTheorem": 0.0028653295128939827,
+      "unsafeRateTheorem": 0.001,
       "avgSampled": 287.145
     },
     {
@@ -1348,6 +1538,8 @@
       ],
       "exceedsDelta": false,
       "violationRate": 0.021739130434782608,
+      "violationRateTheorem": 0.043478260869565216,
+      "unsafeRateTheorem": 0.002,
       "avgSampled": 193.26
     },
     {
@@ -1363,6 +1555,8 @@
       ],
       "exceedsDelta": false,
       "violationRate": 1,
+      "violationRateTheorem": 1,
+      "unsafeRateTheorem": 0.001,
       "avgSampled": 104.91
     },
     {
@@ -1378,6 +1572,8 @@
       ],
       "exceedsDelta": false,
       "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "avgSampled": 47.52
     },
     {
@@ -1393,6 +1589,8 @@
       ],
       "exceedsDelta": false,
       "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "avgSampled": 45
     },
     {
@@ -1408,6 +1606,8 @@
       ],
       "exceedsDelta": false,
       "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "avgSampled": 166.725
     },
     {
@@ -1423,6 +1623,8 @@
       ],
       "exceedsDelta": false,
       "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "avgSampled": 515.115
     },
     {
@@ -1438,6 +1640,8 @@
       ],
       "exceedsDelta": false,
       "violationRate": 0.2,
+      "violationRateTheorem": 0.2857142857142857,
+      "unsafeRateTheorem": 0.01,
       "avgSampled": 327.645
     },
     {
@@ -1453,6 +1657,8 @@
       ],
       "exceedsDelta": false,
       "violationRate": 1,
+      "violationRateTheorem": 1,
+      "unsafeRateTheorem": 0.002,
       "avgSampled": 114.435
     },
     {
@@ -1468,6 +1674,8 @@
       ],
       "exceedsDelta": false,
       "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "avgSampled": 47.655
     },
     {
@@ -1483,6 +1691,8 @@
       ],
       "exceedsDelta": false,
       "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "avgSampled": 45
     },
     {
@@ -1498,6 +1708,8 @@
       ],
       "exceedsDelta": false,
       "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "avgSampled": 80.685
     },
     {
@@ -1513,6 +1725,8 @@
       ],
       "exceedsDelta": false,
       "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "avgSampled": 261.525
     },
     {
@@ -1528,6 +1742,8 @@
       ],
       "exceedsDelta": false,
       "violationRate": 0.10416666666666667,
+      "violationRateTheorem": 0.20833333333333334,
+      "unsafeRateTheorem": 0.01,
       "avgSampled": 174.405
     },
     {
@@ -1543,6 +1759,8 @@
       ],
       "exceedsDelta": false,
       "violationRate": 1,
+      "violationRateTheorem": 1,
+      "unsafeRateTheorem": 0.002,
       "avgSampled": 73.92
     },
     {
@@ -1558,6 +1776,8 @@
       ],
       "exceedsDelta": false,
       "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "avgSampled": 45.09
     },
     {
@@ -1573,6 +1793,8 @@
       ],
       "exceedsDelta": false,
       "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "avgSampled": 45
     },
     {
@@ -1588,6 +1810,8 @@
       ],
       "exceedsDelta": false,
       "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "avgSampled": 94.68
     },
     {
@@ -1603,6 +1827,8 @@
       ],
       "exceedsDelta": false,
       "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "avgSampled": 438.345
     },
     {
@@ -1618,6 +1844,8 @@
       ],
       "exceedsDelta": false,
       "violationRate": 0.3157894736842105,
+      "violationRateTheorem": 0.47368421052631576,
+      "unsafeRateTheorem": 0.009,
       "avgSampled": 252.765
     },
     {
@@ -1633,6 +1861,8 @@
       ],
       "exceedsDelta": false,
       "violationRate": 1,
+      "violationRateTheorem": 1,
+      "unsafeRateTheorem": 0.001,
       "avgSampled": 74.43
     },
     {
@@ -1648,8 +1878,1234 @@
       ],
       "exceedsDelta": false,
       "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
       "avgSampled": 45
+    },
+    {
+      "bound": "cp",
+      "alpha": 0.05,
+      "size": 600,
+      "p": 0,
+      "isNull": false,
+      "certificationRate": 1,
+      "certificationCi": [
+        0.9961731014136096,
+        1
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
+      "avgSampled": 90
+    },
+    {
+      "bound": "cp",
+      "alpha": 0.05,
+      "size": 600,
+      "p": 0.02,
+      "isNull": false,
+      "certificationRate": 0.68,
+      "certificationCi": [
+        0.6504458220300267,
+        0.7081764944788729
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
+      "avgSampled": 322.365
+    },
+    {
+      "bound": "cp",
+      "alpha": 0.05,
+      "size": 600,
+      "p": 0.04,
+      "isNull": false,
+      "certificationRate": 0.069,
+      "certificationCi": [
+        0.054883714221355163,
+        0.08641507236011349
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "violationRateTheorem": 0.014492753623188406,
+      "unsafeRateTheorem": 0.001,
+      "avgSampled": 343.17
+    },
+    {
+      "bound": "cp",
+      "alpha": 0.05,
+      "size": 600,
+      "p": 0.0525,
+      "isNull": true,
+      "certificationRate": 0.015,
+      "certificationCi": [
+        0.00911089683719635,
+        0.02460119479160246
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0.13333333333333333,
+      "violationRateTheorem": 0.13333333333333333,
+      "unsafeRateTheorem": 0.002,
+      "avgSampled": 224.955
+    },
+    {
+      "bound": "cp",
+      "alpha": 0.05,
+      "size": 600,
+      "p": 0.0625,
+      "isNull": true,
+      "certificationRate": 0.004,
+      "certificationCi": [
+        0.0015565629678934289,
+        0.010239720429805971
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0.75,
+      "violationRateTheorem": 1,
+      "unsafeRateTheorem": 0.004,
+      "avgSampled": 133.74
+    },
+    {
+      "bound": "cp",
+      "alpha": 0.05,
+      "size": 600,
+      "p": 0.1,
+      "isNull": true,
+      "certificationRate": 0,
+      "certificationCi": [
+        0,
+        0.003826898586390522
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
+      "avgSampled": 56.16
+    },
+    {
+      "bound": "cp",
+      "alpha": 0.05,
+      "size": 1800,
+      "p": 0,
+      "isNull": false,
+      "certificationRate": 1,
+      "certificationCi": [
+        0.9961731014136096,
+        1
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
+      "avgSampled": 180
+    },
+    {
+      "bound": "cp",
+      "alpha": 0.05,
+      "size": 1800,
+      "p": 0.02,
+      "isNull": false,
+      "certificationRate": 0.929,
+      "certificationCi": [
+        0.9113859810064908,
+        0.9433305400063863
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
+      "avgSampled": 380.925
+    },
+    {
+      "bound": "cp",
+      "alpha": 0.05,
+      "size": 1800,
+      "p": 0.04,
+      "isNull": false,
+      "certificationRate": 0.235,
+      "certificationCi": [
+        0.20976514435033908,
+        0.26226311190044793
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
+      "avgSampled": 732.645
+    },
+    {
+      "bound": "cp",
+      "alpha": 0.05,
+      "size": 1800,
+      "p": 0.0525,
+      "isNull": true,
+      "certificationRate": 0.006,
+      "certificationCi": [
+        0.0027526315709082323,
+        0.013028344232445607
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "violationRateTheorem": 0.16666666666666666,
+      "unsafeRateTheorem": 0.001,
+      "avgSampled": 389.115
+    },
+    {
+      "bound": "cp",
+      "alpha": 0.05,
+      "size": 1800,
+      "p": 0.0625,
+      "isNull": true,
+      "certificationRate": 0.002,
+      "certificationCi": [
+        0.000548632102457155,
+        0.007262958889587807
+      ],
+      "exceedsDelta": false,
+      "violationRate": 1,
+      "violationRateTheorem": 1,
+      "unsafeRateTheorem": 0.002,
+      "avgSampled": 188.775
+    },
+    {
+      "bound": "cp",
+      "alpha": 0.05,
+      "size": 1800,
+      "p": 0.1,
+      "isNull": true,
+      "certificationRate": 0,
+      "certificationCi": [
+        0,
+        0.003826898586390522
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
+      "avgSampled": 54.81
+    },
+    {
+      "bound": "cp",
+      "alpha": 0.1,
+      "size": 600,
+      "p": 0,
+      "isNull": false,
+      "certificationRate": 1,
+      "certificationCi": [
+        0.9961731014136096,
+        1
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
+      "avgSampled": 45
+    },
+    {
+      "bound": "cp",
+      "alpha": 0.1,
+      "size": 600,
+      "p": 0.04,
+      "isNull": false,
+      "certificationRate": 0.94,
+      "certificationCi": [
+        0.9235285893693421,
+        0.9531037398746343
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
+      "avgSampled": 185.1
+    },
+    {
+      "bound": "cp",
+      "alpha": 0.1,
+      "size": 600,
+      "p": 0.08,
+      "isNull": false,
+      "certificationRate": 0.127,
+      "certificationCi": [
+        0.1077796817543659,
+        0.14907518459108146
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
+      "avgSampled": 342.135
+    },
+    {
+      "bound": "cp",
+      "alpha": 0.1,
+      "size": 600,
+      "p": 0.105,
+      "isNull": true,
+      "certificationRate": 0.009,
+      "certificationCi": [
+        0.004742006589011481,
+        0.017016007822824013
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0.1111111111111111,
+      "violationRateTheorem": 0.2222222222222222,
+      "unsafeRateTheorem": 0.002,
+      "avgSampled": 195.915
+    },
+    {
+      "bound": "cp",
+      "alpha": 0.1,
+      "size": 600,
+      "p": 0.125,
+      "isNull": true,
+      "certificationRate": 0.002,
+      "certificationCi": [
+        0.000548632102457155,
+        0.007262958889587807
+      ],
+      "exceedsDelta": false,
+      "violationRate": 1,
+      "violationRateTheorem": 1,
+      "unsafeRateTheorem": 0.002,
+      "avgSampled": 103.29
+    },
+    {
+      "bound": "cp",
+      "alpha": 0.1,
+      "size": 600,
+      "p": 0.2,
+      "isNull": true,
+      "certificationRate": 0,
+      "certificationCi": [
+        0,
+        0.003826898586390522
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
+      "avgSampled": 47.205
+    },
+    {
+      "bound": "cp",
+      "alpha": 0.1,
+      "size": 1800,
+      "p": 0,
+      "isNull": false,
+      "certificationRate": 1,
+      "certificationCi": [
+        0.9961731014136096,
+        1
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
+      "avgSampled": 90
+    },
+    {
+      "bound": "cp",
+      "alpha": 0.1,
+      "size": 1800,
+      "p": 0.04,
+      "isNull": false,
+      "certificationRate": 0.962,
+      "certificationCi": [
+        0.9482727912457906,
+        0.9721911544603846
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
+      "avgSampled": 201.15
+    },
+    {
+      "bound": "cp",
+      "alpha": 0.1,
+      "size": 1800,
+      "p": 0.08,
+      "isNull": false,
+      "certificationRate": 0.422,
+      "certificationCi": [
+        0.39174476023808424,
+        0.45285223594139273
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
+      "avgSampled": 698.085
+    },
+    {
+      "bound": "cp",
+      "alpha": 0.1,
+      "size": 1800,
+      "p": 0.105,
+      "isNull": true,
+      "certificationRate": 0.01,
+      "certificationCi": [
+        0.005440695309270557,
+        0.01830966530539216
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0.2,
+      "violationRateTheorem": 0.5,
+      "unsafeRateTheorem": 0.005,
+      "avgSampled": 300.735
+    },
+    {
+      "bound": "cp",
+      "alpha": 0.1,
+      "size": 1800,
+      "p": 0.125,
+      "isNull": true,
+      "certificationRate": 0.001,
+      "certificationCi": [
+        0.00017654182905727116,
+        0.0056427029601604705
+      ],
+      "exceedsDelta": false,
+      "violationRate": 1,
+      "violationRateTheorem": 1,
+      "unsafeRateTheorem": 0.001,
+      "avgSampled": 116.505
+    },
+    {
+      "bound": "cp",
+      "alpha": 0.1,
+      "size": 1800,
+      "p": 0.2,
+      "isNull": true,
+      "certificationRate": 0,
+      "certificationCi": [
+        0,
+        0.003826898586390522
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
+      "avgSampled": 47.7
+    },
+    {
+      "bound": "cp",
+      "alpha": 0.2,
+      "size": 600,
+      "p": 0,
+      "isNull": false,
+      "certificationRate": 1,
+      "certificationCi": [
+        0.9961731014136096,
+        1
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
+      "avgSampled": 45
+    },
+    {
+      "bound": "cp",
+      "alpha": 0.2,
+      "size": 600,
+      "p": 0.08,
+      "isNull": false,
+      "certificationRate": 0.995,
+      "certificationCi": [
+        0.9883488743952387,
+        0.9978624960042348
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
+      "avgSampled": 94.545
+    },
+    {
+      "bound": "cp",
+      "alpha": 0.2,
+      "size": 600,
+      "p": 0.16,
+      "isNull": false,
+      "certificationRate": 0.381,
+      "certificationCi": [
+        0.35140978019057395,
+        0.4115010216729871
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
+      "avgSampled": 339.81
+    },
+    {
+      "bound": "cp",
+      "alpha": 0.2,
+      "size": 600,
+      "p": 0.21,
+      "isNull": true,
+      "certificationRate": 0.01,
+      "certificationCi": [
+        0.005440695309270557,
+        0.01830966530539216
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0.1,
+      "violationRateTheorem": 0.3,
+      "unsafeRateTheorem": 0.003,
+      "avgSampled": 185.16
+    },
+    {
+      "bound": "cp",
+      "alpha": 0.2,
+      "size": 600,
+      "p": 0.25,
+      "isNull": true,
+      "certificationRate": 0,
+      "certificationCi": [
+        0,
+        0.003826898586390522
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
+      "avgSampled": 77.685
+    },
+    {
+      "bound": "cp",
+      "alpha": 0.2,
+      "size": 600,
+      "p": 0.4,
+      "isNull": true,
+      "certificationRate": 0,
+      "certificationCi": [
+        0,
+        0.003826898586390522
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
+      "avgSampled": 45.27
+    },
+    {
+      "bound": "cp",
+      "alpha": 0.2,
+      "size": 1800,
+      "p": 0,
+      "isNull": false,
+      "certificationRate": 1,
+      "certificationCi": [
+        0.9961731014136096,
+        1
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
+      "avgSampled": 45
+    },
+    {
+      "bound": "cp",
+      "alpha": 0.2,
+      "size": 1800,
+      "p": 0.08,
+      "isNull": false,
+      "certificationRate": 0.998,
+      "certificationCi": [
+        0.9927370411104123,
+        0.9994513678975429
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
+      "avgSampled": 104.535
+    },
+    {
+      "bound": "cp",
+      "alpha": 0.2,
+      "size": 1800,
+      "p": 0.16,
+      "isNull": false,
+      "certificationRate": 0.746,
+      "certificationCi": [
+        0.7181137816345097,
+        0.7720033842609862
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
+      "avgSampled": 553.275
+    },
+    {
+      "bound": "cp",
+      "alpha": 0.2,
+      "size": 1800,
+      "p": 0.21,
+      "isNull": true,
+      "certificationRate": 0.005,
+      "certificationCi": [
+        0.00213750399576525,
+        0.011651125604761366
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0.2,
+      "violationRateTheorem": 0.8,
+      "unsafeRateTheorem": 0.004,
+      "avgSampled": 272.295
+    },
+    {
+      "bound": "cp",
+      "alpha": 0.2,
+      "size": 1800,
+      "p": 0.25,
+      "isNull": true,
+      "certificationRate": 0,
+      "certificationCi": [
+        0,
+        0.003826898586390522
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
+      "avgSampled": 80.145
+    },
+    {
+      "bound": "cp",
+      "alpha": 0.2,
+      "size": 1800,
+      "p": 0.4,
+      "isNull": true,
+      "certificationRate": 0,
+      "certificationCi": [
+        0,
+        0.003826898586390522
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
+      "avgSampled": 45.135
+    },
+    {
+      "bound": "wor",
+      "alpha": 0.05,
+      "size": 600,
+      "p": 0,
+      "isNull": false,
+      "certificationRate": 0,
+      "certificationCi": [
+        0,
+        0.003826898586390522
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
+      "avgSampled": 600
+    },
+    {
+      "bound": "wor",
+      "alpha": 0.05,
+      "size": 600,
+      "p": 0.02,
+      "isNull": false,
+      "certificationRate": 0,
+      "certificationCi": [
+        0,
+        0.003826898586390522
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
+      "avgSampled": 556.065
+    },
+    {
+      "bound": "wor",
+      "alpha": 0.05,
+      "size": 600,
+      "p": 0.04,
+      "isNull": false,
+      "certificationRate": 0,
+      "certificationCi": [
+        0,
+        0.003826898586390522
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
+      "avgSampled": 378.63
+    },
+    {
+      "bound": "wor",
+      "alpha": 0.05,
+      "size": 600,
+      "p": 0.0525,
+      "isNull": true,
+      "certificationRate": 0,
+      "certificationCi": [
+        0,
+        0.003826898586390522
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
+      "avgSampled": 220.2
+    },
+    {
+      "bound": "wor",
+      "alpha": 0.05,
+      "size": 600,
+      "p": 0.0625,
+      "isNull": true,
+      "certificationRate": 0,
+      "certificationCi": [
+        0,
+        0.003826898586390522
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
+      "avgSampled": 136.98
+    },
+    {
+      "bound": "wor",
+      "alpha": 0.05,
+      "size": 600,
+      "p": 0.1,
+      "isNull": true,
+      "certificationRate": 0,
+      "certificationCi": [
+        0,
+        0.003826898586390522
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
+      "avgSampled": 56.835
+    },
+    {
+      "bound": "wor",
+      "alpha": 0.05,
+      "size": 1800,
+      "p": 0,
+      "isNull": false,
+      "certificationRate": 1,
+      "certificationCi": [
+        0.9961731014136096,
+        1
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
+      "avgSampled": 720
+    },
+    {
+      "bound": "wor",
+      "alpha": 0.05,
+      "size": 1800,
+      "p": 0.02,
+      "isNull": false,
+      "certificationRate": 0.813,
+      "certificationCi": [
+        0.7876517772269639,
+        0.8359525842579556
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
+      "avgSampled": 1332.09
+    },
+    {
+      "bound": "wor",
+      "alpha": 0.05,
+      "size": 1800,
+      "p": 0.04,
+      "isNull": false,
+      "certificationRate": 0,
+      "certificationCi": [
+        0,
+        0.003826898586390522
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
+      "avgSampled": 800.505
+    },
+    {
+      "bound": "wor",
+      "alpha": 0.05,
+      "size": 1800,
+      "p": 0.0525,
+      "isNull": true,
+      "certificationRate": 0,
+      "certificationCi": [
+        0,
+        0.003826898586390522
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
+      "avgSampled": 414.09
+    },
+    {
+      "bound": "wor",
+      "alpha": 0.05,
+      "size": 1800,
+      "p": 0.0625,
+      "isNull": true,
+      "certificationRate": 0,
+      "certificationCi": [
+        0,
+        0.003826898586390522
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
+      "avgSampled": 172.17
+    },
+    {
+      "bound": "wor",
+      "alpha": 0.05,
+      "size": 1800,
+      "p": 0.1,
+      "isNull": true,
+      "certificationRate": 0,
+      "certificationCi": [
+        0,
+        0.003826898586390522
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
+      "avgSampled": 55.575
+    },
+    {
+      "bound": "wor",
+      "alpha": 0.1,
+      "size": 600,
+      "p": 0,
+      "isNull": false,
+      "certificationRate": 1,
+      "certificationCi": [
+        0.9961731014136096,
+        1
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
+      "avgSampled": 360
+    },
+    {
+      "bound": "wor",
+      "alpha": 0.1,
+      "size": 600,
+      "p": 0.04,
+      "isNull": false,
+      "certificationRate": 0,
+      "certificationCi": [
+        0,
+        0.003826898586390522
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
+      "avgSampled": 580.62
+    },
+    {
+      "bound": "wor",
+      "alpha": 0.1,
+      "size": 600,
+      "p": 0.08,
+      "isNull": false,
+      "certificationRate": 0,
+      "certificationCi": [
+        0,
+        0.003826898586390522
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
+      "avgSampled": 405.285
+    },
+    {
+      "bound": "wor",
+      "alpha": 0.1,
+      "size": 600,
+      "p": 0.105,
+      "isNull": true,
+      "certificationRate": 0,
+      "certificationCi": [
+        0,
+        0.003826898586390522
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
+      "avgSampled": 193.32
+    },
+    {
+      "bound": "wor",
+      "alpha": 0.1,
+      "size": 600,
+      "p": 0.125,
+      "isNull": true,
+      "certificationRate": 0,
+      "certificationCi": [
+        0,
+        0.003826898586390522
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
+      "avgSampled": 106.635
+    },
+    {
+      "bound": "wor",
+      "alpha": 0.1,
+      "size": 600,
+      "p": 0.2,
+      "isNull": true,
+      "certificationRate": 0,
+      "certificationCi": [
+        0,
+        0.003826898586390522
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
+      "avgSampled": 46.98
+    },
+    {
+      "bound": "wor",
+      "alpha": 0.1,
+      "size": 1800,
+      "p": 0,
+      "isNull": false,
+      "certificationRate": 1,
+      "certificationCi": [
+        0.9961731014136096,
+        1
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
+      "avgSampled": 360
+    },
+    {
+      "bound": "wor",
+      "alpha": 0.1,
+      "size": 1800,
+      "p": 0.04,
+      "isNull": false,
+      "certificationRate": 0.97,
+      "certificationCi": [
+        0.95749631851849,
+        0.9789063968103029
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
+      "avgSampled": 1055.475
+    },
+    {
+      "bound": "wor",
+      "alpha": 0.1,
+      "size": 1800,
+      "p": 0.08,
+      "isNull": false,
+      "certificationRate": 0.064,
+      "certificationCi": [
+        0.050435979806259336,
+        0.08090107576107321
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
+      "avgSampled": 950.4
+    },
+    {
+      "bound": "wor",
+      "alpha": 0.1,
+      "size": 1800,
+      "p": 0.105,
+      "isNull": true,
+      "certificationRate": 0,
+      "certificationCi": [
+        0,
+        0.003826898586390522
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
+      "avgSampled": 316.26
+    },
+    {
+      "bound": "wor",
+      "alpha": 0.1,
+      "size": 1800,
+      "p": 0.125,
+      "isNull": true,
+      "certificationRate": 0,
+      "certificationCi": [
+        0,
+        0.003826898586390522
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
+      "avgSampled": 110.43
+    },
+    {
+      "bound": "wor",
+      "alpha": 0.1,
+      "size": 1800,
+      "p": 0.2,
+      "isNull": true,
+      "certificationRate": 0,
+      "certificationCi": [
+        0,
+        0.003826898586390522
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
+      "avgSampled": 46.755
+    },
+    {
+      "bound": "wor",
+      "alpha": 0.2,
+      "size": 600,
+      "p": 0,
+      "isNull": false,
+      "certificationRate": 1,
+      "certificationCi": [
+        0.9961731014136096,
+        1
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
+      "avgSampled": 180
+    },
+    {
+      "bound": "wor",
+      "alpha": 0.2,
+      "size": 600,
+      "p": 0.08,
+      "isNull": false,
+      "certificationRate": 0.775,
+      "certificationCi": [
+        0.7480937254100813,
+        0.799801480367404
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
+      "avgSampled": 411.78
+    },
+    {
+      "bound": "wor",
+      "alpha": 0.2,
+      "size": 600,
+      "p": 0.16,
+      "isNull": false,
+      "certificationRate": 0,
+      "certificationCi": [
+        0,
+        0.003826898586390522
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
+      "avgSampled": 479.34
+    },
+    {
+      "bound": "wor",
+      "alpha": 0.2,
+      "size": 600,
+      "p": 0.21,
+      "isNull": true,
+      "certificationRate": 0,
+      "certificationCi": [
+        0,
+        0.003826898586390522
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
+      "avgSampled": 177.045
+    },
+    {
+      "bound": "wor",
+      "alpha": 0.2,
+      "size": 600,
+      "p": 0.25,
+      "isNull": true,
+      "certificationRate": 0,
+      "certificationCi": [
+        0,
+        0.003826898586390522
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
+      "avgSampled": 72.87
+    },
+    {
+      "bound": "wor",
+      "alpha": 0.2,
+      "size": 600,
+      "p": 0.4,
+      "isNull": true,
+      "certificationRate": 0,
+      "certificationCi": [
+        0,
+        0.003826898586390522
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
+      "avgSampled": 45.225
+    },
+    {
+      "bound": "wor",
+      "alpha": 0.2,
+      "size": 1800,
+      "p": 0,
+      "isNull": false,
+      "certificationRate": 1,
+      "certificationCi": [
+        0.9961731014136096,
+        1
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
+      "avgSampled": 180
+    },
+    {
+      "bound": "wor",
+      "alpha": 0.2,
+      "size": 1800,
+      "p": 0.08,
+      "isNull": false,
+      "certificationRate": 0.997,
+      "certificationCi": [
+        0.9912168282105722,
+        0.9989792345945557
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
+      "avgSampled": 580.815
+    },
+    {
+      "bound": "wor",
+      "alpha": 0.2,
+      "size": 1800,
+      "p": 0.16,
+      "isNull": false,
+      "certificationRate": 0.553,
+      "certificationCi": [
+        0.522039800841041,
+        0.5835545479088018
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
+      "avgSampled": 1133.64
+    },
+    {
+      "bound": "wor",
+      "alpha": 0.2,
+      "size": 1800,
+      "p": 0.21,
+      "isNull": true,
+      "certificationRate": 0,
+      "certificationCi": [
+        0,
+        0.003826898586390522
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
+      "avgSampled": 297.72
+    },
+    {
+      "bound": "wor",
+      "alpha": 0.2,
+      "size": 1800,
+      "p": 0.25,
+      "isNull": true,
+      "certificationRate": 0,
+      "certificationCi": [
+        0,
+        0.003826898586390522
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
+      "avgSampled": 76.77
+    },
+    {
+      "bound": "wor",
+      "alpha": 0.2,
+      "size": 1800,
+      "p": 0.4,
+      "isNull": true,
+      "certificationRate": 0,
+      "certificationCi": [
+        0,
+        0.003826898586390522
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "violationRateTheorem": 0,
+      "unsafeRateTheorem": 0,
+      "avgSampled": 45.045
     }
   ],
-  "wallMs": 6956
+  "wallMs": 12138
 }

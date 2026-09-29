@@ -45,6 +45,7 @@ async function main() {
           let certified = 0;
           let violPres = 0;
           let violReuse = 0;
+          let violTheorem = 0;
           let sampledSum = 0;
           for (let t = 0; t < TRIALS; t++) {
             const flips = Array.from({ length: size }, () =>
@@ -64,6 +65,10 @@ async function main() {
               certified++;
               const rest = flips.slice(outcome.sampled);
               const restFlips = rest.reduce((a: number, b) => a + b, 0);
+              // Theorem 1's event: the realized whole-stratum flip count
+              // (sampled flips included) exceeds alpha times the size.
+              const allFlips = flips.reduce((a: number, b) => a + b, 0);
+              if (allFlips / size > alpha) violTheorem++;
               if (restFlips / size > alpha) violPres++;
               if (rest.length > 0 && restFlips / rest.length > alpha)
                 violReuse++;
@@ -75,6 +80,8 @@ async function main() {
             p,
             estimand,
             certificationRate: certified / TRIALS,
+            violationRateTheorem: certified > 0 ? violTheorem / certified : 0,
+            unsafeRateTheorem: violTheorem / TRIALS,
             violationRatePresented: certified > 0 ? violPres / certified : 0,
             violationRateReuseSet: certified > 0 ? violReuse / certified : 0,
             avgSampled: sampledSum / TRIALS,

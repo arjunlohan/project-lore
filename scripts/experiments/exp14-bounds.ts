@@ -169,13 +169,15 @@ async function main() {
   // alone already above alpha=0.2? Test it on a clean (all-zero) sample.
   const perLook = DELTA / 2 / 6;
   const clean90 = new Array<number>(90).fill(0);
+  const CLEAN_N = 1800;
   const atN90 = {
     n: 90,
+    N: CLEAN_N,
     perLookDelta: perLook,
     eb: ebUpperBound(clean90, perLook),
     betting: bettingUpperBound(clean90, DELTA / 2),
-    wor: worUpperBound(clean90, perLook, 1800),
-    exact: exactUpperBound(0, 90, 1800, perLook),
+    wor: worUpperBound(clean90, perLook, CLEAN_N),
+    exact: exactUpperBound(0, 90, CLEAN_N, perLook),
     cp: binomialUpperBound(0, 90, perLook),
   };
   // The deployment certificate a reviewer re-derived: 5 flips in 180 draws

@@ -30,7 +30,7 @@ const PER_STRATUM_DELTA = 0.05; // delta=0.1 over K=2 strata, as pinned
 // "exact" added for the IEEE Access resubmission: the finite-population
 // bound is now the pinned certifier, so its null certification rate at
 // tight nulls is measured beside the two it replaces or is compared with.
-const BOUNDS = ["eb", "betting", "exact"] as const;
+const BOUNDS = ["eb", "betting", "exact", "cp", "wor"] as const;
 
 const rand = mulberry32(20260805);
 
@@ -63,6 +63,7 @@ async function main() {
           const p = Number((alpha * ratio).toFixed(4));
           let certified = 0;
           let violations = 0;
+          let violTheorem = 0;
           let sampledSum = 0;
           for (let t = 0; t < TRIALS; t++) {
             const flips = Array.from({ length: size }, () =>
@@ -85,6 +86,8 @@ async function main() {
               const restFlips = rest.reduce((a: number, b) => a + b, 0);
               // Presented-cells error: stale-and-wrong over ALL cells shown.
               if (restFlips / size > alpha) violations++;
+              // Theorem 1's event: realized whole-stratum count above alpha n.
+              if (flips.reduce((a: number, b) => a + b, 0) / size > alpha) violTheorem++;
             }
           }
           const [ciLo, ciHi] = wilson(certified, TRIALS);
@@ -99,6 +102,8 @@ async function main() {
             // Evidence AGAINST validity: the whole interval sits above delta.
             exceedsDelta: p > alpha && ciLo > PER_STRATUM_DELTA,
             violationRate: certified > 0 ? violations / certified : 0,
+            violationRateTheorem: certified > 0 ? violTheorem / certified : 0,
+            unsafeRateTheorem: violTheorem / TRIALS,
             avgSampled: sampledSum / TRIALS,
           });
         }

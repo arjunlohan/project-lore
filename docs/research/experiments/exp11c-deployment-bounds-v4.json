@@ -16,9 +16,11 @@
     0.1,
     0.05
   ],
-  "live": true,
-  "liveCalls": 766,
-  "ledgerSpendDeltaUsd": 0.1522523800000002,
+  "live": false,
+  "liveCalls": 0,
+  "liveRequested": 0,
+  "liveCached": 0,
+  "ledgerSpendDeltaUsd": 0,
   "sweeps": [
     {
       "bound": "exact",
@@ -26,20 +28,20 @@
       "status": "ok",
       "n": 89184,
       "oracleCalls": 90,
-      "liveDrawsThisArm": 90,
+      "liveDrawsThisArm": 0,
       "reused": 81424,
       "recompute": 7670,
       "covered": 89184,
       "savings": 0.9129888769285971,
-      "replayWallMs": 100912,
-      "gtOverlapReused": 699,
-      "gtOverlapFlips": 53,
-      "realizedOnOverlap": 0.07582260371959942,
+      "replayWallMs": 815,
+      "gtOverlapReused": 1395,
+      "gtOverlapFlips": 104,
+      "realizedOnOverlap": 0.07455197132616488,
       "auditComposition": {
-        "fromReleasedVector": 0,
-        "fromRunOracle": 699,
-        "releasedOnlyFlips": 0,
-        "releasedOnlyRealized": null
+        "fromReleasedVector": 36,
+        "fromRunOracle": 1359,
+        "releasedOnlyFlips": 5,
+        "releasedOnlyRealized": 0.1388888888888889
       },
       "strata": [
         {
@@ -86,20 +88,20 @@
       "status": "ok",
       "n": 89184,
       "oracleCalls": 405,
-      "liveDrawsThisArm": 315,
+      "liveDrawsThisArm": 0,
       "reused": 81109,
       "recompute": 7670,
       "covered": 89184,
       "savings": 0.9094568532472193,
-      "replayWallMs": 304098,
-      "gtOverlapReused": 699,
-      "gtOverlapFlips": 53,
-      "realizedOnOverlap": 0.07582260371959942,
+      "replayWallMs": 840,
+      "gtOverlapReused": 1080,
+      "gtOverlapFlips": 86,
+      "realizedOnOverlap": 0.07962962962962963,
       "auditComposition": {
-        "fromReleasedVector": 0,
-        "fromRunOracle": 699,
-        "releasedOnlyFlips": 0,
-        "releasedOnlyRealized": null
+        "fromReleasedVector": 27,
+        "fromRunOracle": 1053,
+        "releasedOnlyFlips": 4,
+        "releasedOnlyRealized": 0.14814814814814814
       },
       "strata": [
         {
@@ -172,7 +174,7 @@
       "recompute": 89049,
       "covered": 89184,
       "savings": 0,
-      "replayWallMs": 946,
+      "replayWallMs": 831,
       "gtOverlapReused": 0,
       "gtOverlapFlips": 0,
       "realizedOnOverlap": null,
@@ -239,15 +241,15 @@
       "recompute": 7670,
       "covered": 89184,
       "savings": 0.9114751524937208,
-      "replayWallMs": 893,
-      "gtOverlapReused": 879,
-      "gtOverlapFlips": 62,
-      "realizedOnOverlap": 0.07053469852104664,
+      "replayWallMs": 857,
+      "gtOverlapReused": 1260,
+      "gtOverlapFlips": 95,
+      "realizedOnOverlap": 0.07539682539682539,
       "auditComposition": {
-        "fromReleasedVector": 4,
-        "fromRunOracle": 875,
-        "releasedOnlyFlips": 0,
-        "releasedOnlyRealized": 0
+        "fromReleasedVector": 31,
+        "fromRunOracle": 1229,
+        "releasedOnlyFlips": 4,
+        "releasedOnlyRealized": 0.12903225806451613
       },
       "strata": [
         {
@@ -308,12 +310,12 @@
       "status": "ok",
       "n": 89184,
       "oracleCalls": 1485,
-      "liveDrawsThisArm": 381,
+      "liveDrawsThisArm": 0,
       "reused": 0,
       "recompute": 87699,
       "covered": 89184,
       "savings": 0,
-      "replayWallMs": 453601,
+      "replayWallMs": 832,
       "gtOverlapReused": 0,
       "gtOverlapFlips": 0,
       "realizedOnOverlap": null,
@@ -408,7 +410,7 @@
       "recompute": 89049,
       "covered": 89184,
       "savings": 0,
-      "replayWallMs": 1083,
+      "replayWallMs": 836,
       "gtOverlapReused": 0,
       "gtOverlapFlips": 0,
       "realizedOnOverlap": null,
@@ -475,7 +477,7 @@
       "recompute": 7670,
       "covered": 89184,
       "savings": 0.9094568532472193,
-      "replayWallMs": 981,
+      "replayWallMs": 834,
       "gtOverlapReused": 1080,
       "gtOverlapFlips": 86,
       "realizedOnOverlap": 0.07962962962962963,
@@ -556,7 +558,7 @@
       "recompute": 87699,
       "covered": 89184,
       "savings": 0,
-      "replayWallMs": 887,
+      "replayWallMs": 841,
       "gtOverlapReused": 0,
       "gtOverlapFlips": 0,
       "realizedOnOverlap": null,
@@ -651,7 +653,7 @@
       "recompute": 89049,
       "covered": 89184,
       "savings": 0,
-      "replayWallMs": 884,
+      "replayWallMs": 862,
       "gtOverlapReused": 0,
       "gtOverlapFlips": 0,
       "realizedOnOverlap": null,
@@ -718,7 +720,7 @@
       "recompute": 7670,
       "covered": 89184,
       "savings": 0.9129888769285971,
-      "replayWallMs": 924,
+      "replayWallMs": 905,
       "gtOverlapReused": 1395,
       "gtOverlapFlips": 104,
       "realizedOnOverlap": 0.07455197132616488,
@@ -778,7 +780,7 @@
       "recompute": 7670,
       "covered": 89184,
       "savings": 0.9094568532472193,
-      "replayWallMs": 881,
+      "replayWallMs": 867,
       "gtOverlapReused": 1080,
       "gtOverlapFlips": 86,
       "realizedOnOverlap": 0.07962962962962963,
@@ -859,7 +861,7 @@
       "recompute": 89049,
       "covered": 89184,
       "savings": 0,
-      "replayWallMs": 883,
+      "replayWallMs": 831,
       "gtOverlapReused": 0,
       "gtOverlapFlips": 0,
       "realizedOnOverlap": null,
@@ -916,5 +918,87 @@
       ]
     }
   ],
-  "wallMs": 868283
+  "wallMs": 11348,
+  "liveRun": {
+    "ranAt": "2026-09-29T18:31:00Z",
+    "liveCalls": 766,
+    "liveRequested": 786,
+    "liveCached": 20,
+    "ledgerSpendDeltaUsd": 0.15225238,
+    "arms": [
+      {
+        "bound": "exact",
+        "alpha": 0.2,
+        "liveDrawsThisArm": 90,
+        "wallMs": 101000
+      },
+      {
+        "bound": "exact",
+        "alpha": 0.1,
+        "liveDrawsThisArm": 315,
+        "wallMs": 304000
+      },
+      {
+        "bound": "exact",
+        "alpha": 0.05,
+        "liveDrawsThisArm": 0,
+        "wallMs": null
+      },
+      {
+        "bound": "eb",
+        "alpha": 0.2,
+        "liveDrawsThisArm": 0,
+        "wallMs": null
+      },
+      {
+        "bound": "eb",
+        "alpha": 0.1,
+        "liveDrawsThisArm": 381,
+        "wallMs": null
+      },
+      {
+        "bound": "eb",
+        "alpha": 0.05,
+        "liveDrawsThisArm": 0,
+        "wallMs": null
+      },
+      {
+        "bound": "wor",
+        "alpha": 0.2,
+        "liveDrawsThisArm": 0,
+        "wallMs": null
+      },
+      {
+        "bound": "wor",
+        "alpha": 0.1,
+        "liveDrawsThisArm": 0,
+        "wallMs": null
+      },
+      {
+        "bound": "wor",
+        "alpha": 0.05,
+        "liveDrawsThisArm": 0,
+        "wallMs": null
+      },
+      {
+        "bound": "cp",
+        "alpha": 0.2,
+        "liveDrawsThisArm": 0,
+        "wallMs": null
+      },
+      {
+        "bound": "cp",
+        "alpha": 0.1,
+        "liveDrawsThisArm": 0,
+        "wallMs": null
+      },
+      {
+        "bound": "cp",
+        "alpha": 0.05,
+        "liveDrawsThisArm": 0,
+        "wallMs": null
+      }
+    ],
+    "source": "live run of 2026-09-29, 18:31 to 18:47 UTC (scratch log exp11c-v4.log: fresh cells 43+45 for exact alpha=0.2, 44+86+177 for exact alpha=0.1, 350+21 for eb alpha=0.1; cost_ledger rows 89 to 95 sum to the spend; 786 requested = 766 run + 20 served by the content-hash cache). Per-arm wall clock as that run's artifact recorded it (101 s and 304 s, seconds resolution); the audit replay of the same day overwrote the artifact before liveRun was carried forward, so this block was restored by hand from those records."
+  }
 }

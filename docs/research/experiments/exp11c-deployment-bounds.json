@@ -18,7 +18,10 @@
   ],
   "live": false,
   "liveCalls": 0,
+  "liveRequested": 0,
+  "liveCached": 0,
   "ledgerSpendDeltaUsd": 0,
+  "liveRun": null,
   "sweeps": [
     {
       "bound": "eb",
@@ -31,7 +34,7 @@
       "recompute": 7670,
       "covered": 89184,
       "savings": 0.9114751524937208,
-      "replayWallMs": 898,
+      "replayWallMs": 830,
       "gtOverlapReused": 2686,
       "gtOverlapFlips": 85,
       "realizedOnOverlap": 0.03164556962025317,
@@ -105,7 +108,7 @@
       "recompute": 7670,
       "covered": 89184,
       "savings": 0.9054202547542161,
-      "replayWallMs": 890,
+      "replayWallMs": 862,
       "gtOverlapReused": 2146,
       "gtOverlapFlips": 65,
       "realizedOnOverlap": 0.030288909599254427,
@@ -187,7 +190,8 @@
       "alpha": 0.05,
       "status": "needs-live-draws",
       "oracleCallsRequestedSoFar": 1440,
-      "missingFreshDraws": 699
+      "missingFreshDraws": 699,
+      "newRowsAtFailingLook": 720
     },
     {
       "bound": "wor",
@@ -200,7 +204,7 @@
       "recompute": 7670,
       "covered": 89184,
       "savings": 0.9094568532472193,
-      "replayWallMs": 889,
+      "replayWallMs": 857,
       "gtOverlapReused": 2506,
       "gtOverlapFlips": 78,
       "realizedOnOverlap": 0.03112529928172386,
@@ -281,7 +285,7 @@
       "recompute": 7670,
       "covered": 89184,
       "savings": 0.9054202547542161,
-      "replayWallMs": 845,
+      "replayWallMs": 848,
       "gtOverlapReused": 2146,
       "gtOverlapFlips": 65,
       "realizedOnOverlap": 0.030288909599254427,
@@ -363,7 +367,8 @@
       "alpha": 0.05,
       "status": "needs-live-draws",
       "oracleCallsRequestedSoFar": 1440,
-      "missingFreshDraws": 699
+      "missingFreshDraws": 699,
+      "newRowsAtFailingLook": 720
     },
     {
       "bound": "exact",
@@ -376,7 +381,7 @@
       "recompute": 7670,
       "covered": 89184,
       "savings": 0.9129888769285971,
-      "replayWallMs": 846,
+      "replayWallMs": 848,
       "gtOverlapReused": 2821,
       "gtOverlapFlips": 89,
       "realizedOnOverlap": 0.031549096065225095,
@@ -436,7 +441,7 @@
       "recompute": 7670,
       "covered": 89184,
       "savings": 0.9114751524937208,
-      "replayWallMs": 838,
+      "replayWallMs": 864,
       "gtOverlapReused": 2686,
       "gtOverlapFlips": 85,
       "realizedOnOverlap": 0.03164556962025317,
@@ -504,7 +509,8 @@
       "alpha": 0.05,
       "status": "needs-live-draws",
       "oracleCallsRequestedSoFar": 1440,
-      "missingFreshDraws": 699
+      "missingFreshDraws": 699,
+      "newRowsAtFailingLook": 720
     },
     {
       "bound": "cp",
@@ -517,7 +523,7 @@
       "recompute": 7670,
       "covered": 89184,
       "savings": 0.9129888769285971,
-      "replayWallMs": 921,
+      "replayWallMs": 848,
       "gtOverlapReused": 2821,
       "gtOverlapFlips": 89,
       "realizedOnOverlap": 0.031549096065225095,
@@ -577,7 +583,7 @@
       "recompute": 7670,
       "covered": 89184,
       "savings": 0.9114751524937208,
-      "replayWallMs": 882,
+      "replayWallMs": 861,
       "gtOverlapReused": 2686,
       "gtOverlapFlips": 85,
       "realizedOnOverlap": 0.03164556962025317,
@@ -645,8 +651,9 @@
       "alpha": 0.05,
       "status": "needs-live-draws",
       "oracleCallsRequestedSoFar": 1440,
-      "missingFreshDraws": 699
+      "missingFreshDraws": 699,
+      "newRowsAtFailingLook": 720
     }
   ],
-  "wallMs": 12064
+  "wallMs": 11822
 }

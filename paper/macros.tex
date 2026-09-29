@@ -26,6 +26,7 @@
 \newcommand{\bootB}{1{,}000}
 \newcommand{\benchRealized}{3.20\%}
 \newcommand{\benchOracleTight}{90}
+\newcommand{\synTightCertRate}{81\%}
 \newcommand{\benchOracleMain}{90}
 \newcommand{\frontierA}{88.1\%}
 \newcommand{\frontierB}{82.6\%}
@@ -70,10 +71,13 @@
 \newcommand{\aggWsubgroup}{44.6\%}
 \newcommand{\aggWsavings}{95.5\%}
 \newcommand{\aggWrealized}{9.37\%}
+\newcommand{\aggWsampled}{90}
 \newcommand{\aggTightCertF}{certifies}
 \newcommand{\aggFtSavings}{82.0\%}
 \newcommand{\aggFtRealized}{6.46\%}
 \newcommand{\aggFtSubgroup}{35.3\%}
+\newcommand{\aggFsampled}{45}
+\newcommand{\aggFtSampled}{360}
 \newcommand{\aggTightCertW}{refuses}
 \newcommand{\tauFmid}{100\%}
 \newcommand{\tauFhi}{10.7\%}
@@ -88,14 +92,15 @@
 \newcommand{\minorityNoise}{20.4\%}
 \newcommand{\calTrials}{396{,}000}
 \newcommand{\calConfigs}{198}
-\newcommand{\calUnsafeWorst}{0.70\%}
-\newcommand{\calUnsafeWorstCi}{[0.33, 1.07]\%}
+\newcommand{\calUnsafeWorst}{1.00\%}
+\newcommand{\calUnsafeWorstCi}{[0.65, 1.54]\%}
+\newcommand{\calUnsafePresentedWorst}{0.70\%}
 \newcommand{\calUnsafeWorstAlpha}{0.05}
-\newcommand{\calUnsafeWorstP}{0.0625}
+\newcommand{\calUnsafeWorstP}{0.0525}
 \newcommand{\calUnsafeWorstSize}{1{,}800}
 \newcommand{\calUnsafeWorstEstimand}{presented-cells}
 \newcommand{\calNominalDelta}{5\%}
-\newcommand{\calUnsafeTightMean}{0.26\%}
+\newcommand{\calUnsafeTightMean}{0.35\%}
 \newcommand{\calTightCertWorst}{6.2\%}
 \newcommand{\minZeroFlipRealizedSmall}{90}
 \newcommand{\minZeroFlipRealizedLarge}{180}
@@ -130,12 +135,15 @@
 \newcommand{\deployMpSavings}{91.1\%}
 \newcommand{\deployMpOracleTight}{765}
 \newcommand{\deployMpSavingsTight}{90.5\%}
-\newcommand{\deployMpRealized}{3.01\%}
+\newcommand{\deployMpRealized}{3.16\%}
+\newcommand{\deployMpAuditRows}{2{,}686}
+\newcommand{\deployAuditFlips}{89}
 \newcommand{\deployMpLookLoose}{180}
 \newcommand{\deployMpFlipsLoose}{5}
 \newcommand{\deployMpLookTight}{720}
 \newcommand{\deployMpFlipsTight}{25}
 \newcommand{\deployAugustFiveMissing}{699}
+\newcommand{\deployAugustFiveLook}{1{,}440}
 \newcommand{\deployTrueStratum}{7{,}715}
 \newcommand{\deployCeiling}{91.3\%}
 \newcommand{\sepSnapshotDate}{29 September 2026}
@@ -160,7 +168,16 @@
 \newcommand{\sepWallLoose}{101}
 \newcommand{\sepWallTight}{304}
 \newcommand{\sepLiveDraws}{766}
+\newcommand{\sepLiveRequested}{786}
+\newcommand{\sepLiveCached}{20}
 \newcommand{\sepLedgerUsd}{\$0.15}
+\newcommand{\sepPerCell}{\$0.00020}
+\newcommand{\sepOracleCellsNeeded}{1{,}485}
+\newcommand{\sepStoredBefore}{699}
+\newcommand{\sepAuditRowsLoose}{1{,}395}
+\newcommand{\sepAuditRowsTight}{1{,}080}
+\newcommand{\sepRealizedLoose}{7.46\%}
+\newcommand{\sepRealizedTight}{7.96\%}
 \newcommand{\sepMpOracleLoose}{225}
 \newcommand{\sepMpTightOutcome}{refuses after 1485 calls}
 \newcommand{\driftFalseRows}{720}
@@ -180,6 +197,9 @@
 \newcommand{\driftTrueSepEdit}{24.4\%}
 \newcommand{\driftTruePrompt}{31.1\%}
 \newcommand{\driftTruePromptCi}{[19.5, 45.7]}
+\newcommand{\driftTrueMcNemarP}{0.79}
+\newcommand{\driftTrueOnlyAug}{8}
+\newcommand{\driftTrueOnlySep}{6}
 \newcommand{\driftLiveDraws}{752}
 \newcommand{\driftTokensAug}{290}
 \newcommand{\driftTokensSep}{534}
@@ -252,6 +272,8 @@
 \newcommand{\boundBetConfigs}{9}
 \newcommand{\boundBetSavings}{29.1\%}
 \newcommand{\boundBetOracle}{7{,}616}
+\newcommand{\boundExactAtNLarge}{0.052}
+\newcommand{\boundExactAtNStratum}{1{,}800}
 \newcommand{\boundExactAtN}{0.050}
 \newcommand{\boundEbAtN}{0.144}
 \newcommand{\boundWorAtN}{0.317}
@@ -289,24 +311,34 @@
 \newcommand{\boundBetOverExactExactSavings}{62.7\%}
 \newcommand{\boundCalTrials}{36{,}000}
 \newcommand{\boundNullConfigs}{18}
+\newcommand{\boundNullTrials}{18{,}000}
+\newcommand{\boundNullDeltaS}{5\%}
 \newcommand{\boundExactNullWorst}{6.3\%}
 \newcommand{\boundExactNullsOver}{0}
 \newcommand{\boundExactCleanSample}{90}
-\newcommand{\boundExactNullUnsafe}{0.7\%}
+\newcommand{\boundExactNullUnsafe}{1.00\%}
 \newcommand{\boundEbNullWorst}{0.0\%}
-\newcommand{\boundEbNullsOver}{0}
 \newcommand{\boundEbCleanSample}{360}
-\newcommand{\boundEbNullUnsafe}{0.0\%}
+\newcommand{\boundEbNullUnsafe}{0.00\%}
+\newcommand{\boundWorNullWorst}{0.0\%}
+\newcommand{\boundWorCleanSample}{720}
+\newcommand{\boundWorNullUnsafe}{0.00\%}
+\newcommand{\boundCpNullWorst}{1.5\%}
+\newcommand{\boundCpCleanSample}{180}
+\newcommand{\boundCpNullUnsafe}{0.50\%}
 \newcommand{\boundBetNullWorst}{2.5\%}
-\newcommand{\boundBetNullsOver}{0}
 \newcommand{\boundBetCleanSample}{180}
-\newcommand{\boundBetNullUnsafe}{0.5\%}
+\newcommand{\boundBetNullUnsafe}{1.20\%}
+\newcommand{\boundExactNullUnsafeAlpha}{0.1}
+\newcommand{\boundExactNullUnsafeP}{0.105}
+\newcommand{\boundExactNullUnsafeSize}{1{,}800}
+\newcommand{\boundExactNullUnsafeCi}{[0.54, 1.83]\%}
 \newcommand{\totalSpend}{\$12.01}
 \newcommand{\ledgerStart}{4 August 2026}
 \newcommand{\ledgerEnd}{5 August 2026}
-\newcommand{\famRunDate}{15 August 2026}
+\newcommand{\famRunDate}{15 August 2026 to 29 September 2026}
 \newcommand{\totalCells}{100{,}683}
-\newcommand{\offLedgerCells}{51{,}377}
+\newcommand{\offLedgerCells}{71{,}371}
 \newcommand{\famGeminiFloor}{4.9\%}
 \newcommand{\famGeminiFmt}{25.4\%}
 \newcommand{\famGeminiFmtTrueStratum}{28.7\%}
@@ -324,13 +356,17 @@
 \newcommand{\famQwenFloor}{5.5\%}
 \newcommand{\famQwenFmt}{14.3\%}
 \newcommand{\famCount}{4}
-\newcommand{\famCertifyingOf}{all 4}
+\newcommand{\famCertCount}{4}
+\newcommand{\famRefusedClause}{}
+\newcommand{\famGeminiThreePriceMultiple}{23}
+\newcommand{\priceFetchedAt}{30 September 2026}
 \newcommand{\famFloorLo}{0.4\%}
 \newcommand{\famFloorHi}{10.3\%}
 \newcommand{\famProbeRow}{1}
 \newcommand{\indepAvailable}{0}
-\newcommand{\famPairsAvailable}{0}
-\newcommand{\famFivePairFamilies}{0}
-\newcommand{\famFivePairList}{--}
-\newcommand{\famPairsFamilies}{0}
-\newcommand{\famPairsCertifying}{0}
+\newcommand{\famPairsAvailable}{1}
+\newcommand{\famFivePairFamilies}{1}
+\newcommand{\famFivePairList}{GLM-4.7-Flash}
+\newcommand{\famPairsFamilies}{2}
+\newcommand{\famPairsCertifying}{2}
+\newcommand{\pilotAvailable}{0}

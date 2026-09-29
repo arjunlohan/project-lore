@@ -83,6 +83,16 @@ const def = (name: string, value: string | number) => {
 };
 const pct = (x: number, d = 1) => `${(x * 100).toFixed(d)}\\%`;
 const num = (x: number) => x.toLocaleString("en-US").replace(/,/g, "{,}");
+/** Wilson score interval; every interval in the paper is Wilson. */
+const wilsonInterval = (k: number, n: number, z = 1.96): [number, number] => {
+  if (n === 0) return [0, 1];
+  const p = k / n;
+  const d = 1 + (z * z) / n;
+  const c = p + (z * z) / (2 * n);
+  const h = z * Math.sqrt((p * (1 - p)) / n + (z * z) / (4 * n * n));
+  return [Math.max(0, (c - h) / d), Math.min(1, (c + h) / d)];
+};
+const prices = J("gateway-prices.json") as { fetchedAt: string; models: Record<string, { inputPerToken: number; outputPerToken: number }> };
 
 // ---------------------------------------------------------------------------
 // Table 1
@@ -325,6 +335,7 @@ def("benchRealizedCi", `[${(bci.realizedReuseCiLo * 100).toFixed(1)}, ${(bci.rea
 def("bootB", num(bci.B));
 def("benchRealized", pct(bench.main.realizedPresented, 2));
 def("benchOracleTight", String(pick("so-formatting", 0.1).main.sampled));
+def("synTightCertRate", pct(pick("so-synonym", 0.1).bootstrap.certificationRate, 0));
 def("benchOracleMain", String(pick("so-formatting", 0.2).main.sampled));
 const frontier = [0.2, 0.1, 0.05, 0.02].map(
   (a) => `${(pick("so-formatting", a).bootstrap.savingsMean * 100).toFixed(1)}\\%`,
@@ -505,11 +516,14 @@ def("aggFsubgroup", pct(aggF.realizedTrueSubgroup ?? 0, 1));
 def("aggWsubgroup", pct(aggW.realizedTrueSubgroup ?? 0, 1));
 def("aggWsavings", pct(aggW.savings));
 def("aggWrealized", pct(aggW.realized, 2));
+def("aggWsampled", String(aggW.sampled));
 const aggFt = e7f.aggregate["alpha0.1"]!;
 def("aggTightCertF", aggFt.certified ? "certifies" : "certifies nothing");
 def("aggFtSavings", pct(aggFt.savings));
 def("aggFtRealized", pct(aggFt.realized, 2));
 def("aggFtSubgroup", pct(aggFt.realizedTrueSubgroup ?? 0, 1));
+def("aggFsampled", String(aggF.sampled));
+def("aggFtSampled", String(aggFt.sampled));
 def("aggTightCertW", e7w.aggregate["alpha0.1"]!.certified ? "certifies" : "refuses");
 const tauF = e7f.b3.tauSweep;
 const tauW = e7w.b3.tauSweep;
@@ -548,14 +562,21 @@ def("calConfigs", String(exp9.results.length));
   };
   const cal = exp9.results as C9[];
   const T = Number(exp9.trials);
-  const unsafeOf = (r: C9) =>
+  // Theorem 1's event: certified AND realized whole-stratum flip count above
+  // alpha n_j (sampled flips included). In strict mode the certified quantity
+  // is the reuse-set rate, so that mode's violation is the reuse-set event.
+  const unsafeOf = (r: C9 & { violationRateTheorem?: number }) =>
     r.certificationRate *
-    (r.estimand === "presented" ? r.violationRatePresented : r.violationRateReuseSet);
+    (r.estimand === "presented" ? (r.violationRateTheorem ?? r.violationRatePresented) : r.violationRateReuseSet);
   const worst = cal.reduce((a, b) => (unsafeOf(b) > unsafeOf(a) ? b : a));
   const u = unsafeOf(worst);
-  const half = 1.96 * Math.sqrt(Math.max(u * (1 - u), 1e-12) / T);
+  const [wlo, whi] = wilsonInterval(Math.round(u * T), T);
   def("calUnsafeWorst", pct(u, 2));
-  def("calUnsafeWorstCi", `[${Math.max(0, (u - half) * 100).toFixed(2)}, ${((u + half) * 100).toFixed(2)}]\\%`);
+  def("calUnsafeWorstCi", `[${(wlo * 100).toFixed(2)}, ${(whi * 100).toFixed(2)}]\\%`);
+  // The presented-cells event (a strict subset of the theorem's event), for
+  // the reader who wants the user-facing quantity.
+  const presentedWorst = cal.filter((r) => r.estimand === "presented").reduce((a, r) => Math.max(a, r.certificationRate * r.violationRatePresented), 0);
+  def("calUnsafePresentedWorst", pct(presentedWorst, 2));
   def("calUnsafeWorstAlpha", worst.alpha.toString());
   def("calUnsafeWorstP", worst.p.toString());
   def("calUnsafeWorstSize", num(worst.size));
@@ -688,7 +709,13 @@ def("deployMpReused", num(d2.reused));
 def("deployMpSavings", pct(d2.savings, 1));
 def("deployMpOracleTight", String(d1.oracleCalls));
 def("deployMpSavingsTight", pct(d1.savings, 1));
-def("deployMpRealized", pct(d2.realizedOnOverlap, 2));
+// The applied certificate's audited error comes from the same replay and
+// the same oracle set as every other Table 7 row (exp11c's eb arm walks the
+// live run's path exactly), so one quantity has one value.
+const dmp2 = arm(exp11c, "eb", 0.2);
+def("deployMpRealized", pct(dmp2.realizedOnOverlap ?? 0, 2));
+def("deployMpAuditRows", num(dmp2.gtOverlapReused));
+def("deployAuditFlips", num((dx2 as unknown as { gtOverlapFlips: number }).gtOverlapFlips));
 const mpF2 = (d2.strata as S11[]).find((s) => s.certified)!;
 const mpF1 = (d1.strata as S11[]).find((s) => s.certified)!;
 def("deployMpLookLoose", String(mpF2.sampled));
@@ -701,6 +728,14 @@ def("deployMpFlipsTight", String(mpF1.flips));
     | { status: string; missingFreshDraws?: number; oracleCallsRequestedSoFar?: number }
     | undefined;
   def("deployAugustFiveMissing", num(Number(a05?.missingFreshDraws ?? 0)));
+  {
+    // The look the August draws could not reach: the cumulative request count
+    // at the failing look, which is the cached-FALSE stratum's look size
+    // because that stratum is certified first. Assert the schedule shape.
+    const look = Number(a05?.oracleCallsRequestedSoFar ?? 0);
+    if (look <= 0 || Math.log2(look / 45) % 1 !== 0) throw new Error(`deployAugustFiveLook ${look} is not a schedule look`);
+    def("deployAugustFiveLook", num(look));
+  }
 }
 // r8/M10: the refused stratum's SIZE, which is NOT the recompute count; the
 // recompute count is the size minus the cells the futility stop already spent.
@@ -749,10 +784,32 @@ def("sepRateFive", pct(sxF05.flips / Math.max(1, sxF05.sampled), 1));
 def("sepTrueFlips", String(sxT.flips));
 def("sepTrueLook", String(sxT.sampled));
 const secondsOf = (ms: number) => (ms / 1e3).toFixed(0);
-def("sepWallLoose", secondsOf(sx2.replayWallMs));
-def("sepWallTight", secondsOf(sx1.replayWallMs));
-def("sepLiveDraws", num(Number(exp11cSep.liveCalls)));
-def("sepLedgerUsd", `\\$${Number(exp11cSep.ledgerSpendDeltaUsd).toFixed(2)}`);
+// The live run's accounting survives audit replays in the artifact's liveRun
+// block; a replay's own counters read zero and must not be quoted.
+type LiveRun = { liveCalls: number; liveRequested: number; liveCached: number; ledgerSpendDeltaUsd: number; arms: Array<{ bound: string; alpha: number; liveDrawsThisArm: number; wallMs: number | null }> };
+const sepLive = (exp11cSep as { liveRun?: LiveRun }).liveRun;
+if (!sepLive || sepLive.liveCalls <= 0) throw new Error("exp11c-deployment-bounds-v4.json carries no liveRun accounting");
+const sepArmWall = (b: string, a: number): number => {
+  const w = sepLive.arms.find((x) => x.bound === b && Math.abs(x.alpha - a) < 1e-9)?.wallMs;
+  if (w === null || w === undefined) throw new Error(`no live wall clock for ${b} alpha=${a}`);
+  return w;
+};
+def("sepWallLoose", secondsOf(sepArmWall("exact", 0.2)));
+def("sepWallTight", secondsOf(sepArmWall("exact", 0.1)));
+def("sepLiveDraws", num(sepLive.liveCalls));
+def("sepLiveRequested", num(sepLive.liveRequested));
+def("sepLiveCached", num(sepLive.liveCached));
+def("sepLedgerUsd", `\\$${sepLive.ledgerSpendDeltaUsd.toFixed(2)}`);
+def("sepPerCell", `\\$${(sepLive.ledgerSpendDeltaUsd / sepLive.liveCalls).toFixed(5)}`);
+{
+  const needed = Math.max(...(exp11cSep.sweeps as W11c[]).map((s) => s.oracleCalls));
+  def("sepOracleCellsNeeded", num(needed));
+  def("sepStoredBefore", num(needed - sepLive.liveRequested));
+}
+def("sepAuditRowsLoose", num(sx2.gtOverlapReused));
+def("sepAuditRowsTight", num(sx1.gtOverlapReused));
+def("sepRealizedLoose", pct(sx2.realizedOnOverlap ?? 0, 2));
+def("sepRealizedTight", pct(sx1.realizedOnOverlap ?? 0, 2));
 {
   const smp2 = arm(exp11cSep, "eb", 0.2);
   def("sepMpOracleLoose", String(smp2.oracleCalls));
@@ -776,11 +833,11 @@ def("sepLedgerUsd", `\\$${Number(exp11cSep.ledgerSpendDeltaUsd).toFixed(2)}`);
       def(`drift${tag}CacheCi`, ci(s.cacheDrift));
       def(`drift${tag}Fresh`, pct(s.sepFresh.rate ?? 0, 1));
       def(`drift${tag}FreshCi`, ci(s.sepFresh));
-      const p = s.augVsSepEditPaired.mcnemarP;
-      def(`drift${tag}McNemarP`, p < 0.001 ? "<0.001" : p.toFixed(3));
-      def(`drift${tag}OnlyAug`, String(s.augVsSepEditPaired.onlyFirstFlips));
-      def(`drift${tag}OnlySep`, String(s.augVsSepEditPaired.onlySecondFlips));
     }
+    const p = s.augVsSepEditPaired.mcnemarP;
+    def(`drift${tag}McNemarP`, p < 0.001 ? "<0.001" : p.toFixed(2));
+    def(`drift${tag}OnlyAug`, String(s.augVsSepEditPaired.onlyFirstFlips));
+    def(`drift${tag}OnlySep`, String(s.augVsSepEditPaired.onlySecondFlips));
   }
   def("driftLiveDraws", num(Number(exp16.liveCalls)));
 }
@@ -1111,6 +1168,8 @@ await db.end();
     def(`bound${tag}Oracle`, num(sum[b]!.totalOracle));
   }
   const at90 = exp14.cleanSampleAtN90 as Record<string, number>;
+  def("boundExactAtNLarge", exactUpperBound(0, 90, mpF2.size, PINNED_PER_LOOK).toFixed(3));
+  def("boundExactAtNStratum", num(Number((exp14.cleanSampleAtN90 as { N: number }).N)));
   const atDeploy = exp14.deploymentEvidence as Record<string, number>;
   for (const [b, tag] of Object.entries(TAG)) {
     def(`bound${tag}AtN`, at90[b]!.toFixed(3));
@@ -1178,27 +1237,44 @@ await db.end();
   const betCfgs = (exp15.results as Array<{ bound: string }>).filter((r) => r.bound === "betting").length;
   def("boundCalTrials", num(Number(exp15.trials) * betCfgs));
   def("boundNullConfigs", String(cal.betting!.nullConfigurations));
-  for (const [b, tag] of [["exact", "Exact"], ["eb", "Eb"], ["betting", "Bet"]] as const) {
+  type R15 = { bound: string; isNull: boolean; alpha: number; size: number; p: number; certificationRate: number; violationRate: number; unsafeRateTheorem?: number };
+  const nullUnsafe = (b: string) => {
+    const rs = (exp15.results as R15[]).filter((r) => r.bound === b && r.isNull);
+    return rs.reduce((a, r) => Math.max(a, r.unsafeRateTheorem ?? r.certificationRate * r.violationRate), 0);
+  };
+  const nullTrials = (exp15.results as R15[]).filter((r) => r.bound === "exact" && r.isNull).length * Number(exp15.trials);
+  def("boundNullTrials", num(nullTrials));
+  def("boundNullDeltaS", pct(Number(exp15.perStratumDelta), 0));
+  for (const [b, tag] of Object.entries(TAG)) {
+    if (!cal[b]) continue;
     def(`bound${tag}NullWorst`, pct(cal[b]!.worstNullCertificationRate, 1));
-    def(`bound${tag}NullsOver`, String(cal[b]!.nullsExceedingDelta));
+    if (b === "exact") def(`bound${tag}NullsOver`, String(cal[b]!.nullsExceedingDelta));
     def(`bound${tag}CleanSample`, String(Math.round(cal[b]!.avgSampledAtCleanBig)));
-    // Unconditional unsafe rate at nulls: certified AND realized error > alpha.
-    const rs = (exp15.results as Array<{ bound: string; isNull: boolean; certificationRate: number; violationRate: number }>)
-      .filter((r) => r.bound === b && r.isNull);
-    def(`bound${tag}NullUnsafe`, pct(rs.reduce((a, r) => Math.max(a, r.certificationRate * r.violationRate), 0), 1));
+    // Theorem 1's event at planted nulls: certified AND realized count > alpha n.
+    def(`bound${tag}NullUnsafe`, pct(nullUnsafe(b), 2));
+  }
+  // The configuration behind the exact bound's worst unsafe rate.
+  {
+    const rs = (exp15.results as R15[]).filter((r) => r.bound === "exact" && r.isNull);
+    const w = rs.reduce((a, r) => ((r.unsafeRateTheorem ?? 0) > (a.unsafeRateTheorem ?? 0) ? r : a));
+    def("boundExactNullUnsafeAlpha", String(w.alpha));
+    def("boundExactNullUnsafeP", String(w.p));
+    def("boundExactNullUnsafeSize", num(w.size));
+    const [lo, hi] = wilsonInterval(Math.round((w.unsafeRateTheorem ?? 0) * Number(exp15.trials)), Number(exp15.trials));
+    def("boundExactNullUnsafeCi", `[${(lo * 100).toFixed(2)}, ${(hi * 100).toFixed(2)}]\\%`);
   }
   // Generated bound-comparison table (Section: the bound is the binding constraint).
   const row = (b: string, label: string) =>
-    `${label} & ${at90[b]!.toFixed(3)} & ${typeof atDeploy[b] === "number" ? atDeploy[b]!.toFixed(3) : "--"} & ${sum[b]!.configurationsCertifying} & ${pct(sum[b]!.meanSavings, 1)} & ${num(sum[b]!.totalOracle)} & ${cal[b] ? pct(cal[b]!.worstNullCertificationRate, 1) : "--"} \\\\`;
+    `${label} & ${at90[b]!.toFixed(3)} & ${typeof atDeploy[b] === "number" ? atDeploy[b]!.toFixed(3) : "--"} & ${sum[b]!.configurationsCertifying} & ${pct(sum[b]!.meanSavings, 1)} & ${num(sum[b]!.totalOracle)} & ${cal[b] ? pct(nullUnsafe(b), 2) : "--"} \\\\`;
   writeFileSync(
     "paper/tablebounds.tex",
     `% GENERATED by scripts/experiments/gen-paper-assets.ts from exp14-bounds.json
 % and exp15-betting-calibration.json. Do not edit by hand.
 \\begin{tabular}{@{}lrrrrrr@{}}
 \\toprule
- & \\multicolumn{2}{c}{upper bound on} & \\multicolumn{3}{c}{Table~\\ref{tab:main} grid (${sum.exact!.totalConfigurations} configurations)} & null cert. \\\\
+ & \\multicolumn{2}{c}{upper bound on} & \\multicolumn{3}{c}{Table~\\ref{tab:main} grid (${sum.exact!.totalConfigurations} configurations)} & unsafe at nulls \\\\
 \\cmidrule(lr){2-3}\\cmidrule(lr){4-6}
-Bound & $0/90$ & $5/180$ & certifying & mean savings & oracle calls & worst \\\\
+Bound & $0/90$, $N{=}1800$ & $5/180$, $N{=}81469$ & certifying & mean savings & oracle calls & worst \\\\
 \\midrule
 ${row("exact", "Exact finite-population (pinned)")}
 ${row("cp", "Clopper--Pearson (binomial)")}
@@ -1206,6 +1282,7 @@ ${row("betting", "Betting confidence sequence")}
 ${row("eb", "Maurer--Pontil (first submission)")}
 ${row("wor", "Bardenet--Maillard (WoR)")}
 \\bottomrule
+\\multicolumn{7}{@{}p{\\linewidth}@{}}{\\footnotesize The betting sequence has no $5/180$ entry because its bound is a function of the whole draw sequence, not of $(k, n)$ alone.}
 \\end{tabular}
 `,
   );
@@ -1381,6 +1458,7 @@ if (!nanoPromoted) {
 }
 let famCertifying = 0;
 const famFloors: number[] = [];
+const famRefused: string[] = [];
 for (const f of FAMILIES) {
   const d = J(f.file) as Exp12;
   // Report the synonym pair only if it completed: a run cut off mid-batch
@@ -1397,6 +1475,7 @@ for (const f of FAMILIES) {
   const anyCert = d.sweeps.some((x) => x.certifiedStrata.length > 0) ||
     (syn?.sweeps ?? []).some((x) => x.certifiedStrata.length > 0);
   if (anyCert) famCertifying++;
+  else famRefused.push(`${f.label} (floor ${pct(d.selfFlipFloor, 1)})`);
   // Flip anatomy from the per-row draws: which stratum flips, and which way.
   if (f.anatomy && d.draws && d.draws.length > 0) {
     let tN = 0, tF = 0, fN = 0, fF = 0, toFalse = 0, flips = 0;
@@ -1417,7 +1496,16 @@ for (const f of FAMILIES) {
   }
 }
 def("famCount", String(FAMILIES.length));
-def("famCertifyingOf", famCertifying === FAMILIES.length ? `all ${FAMILIES.length}` : `${famCertifying} of the ${FAMILIES.length}`);
+def("famCertCount", String(famCertifying));
+def("famRefusedClause", famRefused.length ? ` (every stratum refused on ${famRefused.join(", ")})` : "");
+{
+  const out = (m: string) => prices.models[m]?.outputPerToken ?? 0;
+  const inp = (m: string) => prices.models[m]?.inputPerToken ?? 0;
+  const cheapest = Math.min(...FAMILIES.map((f) => out(String((J(f.file) as { model: string }).model))).filter((x) => x > 0));
+  def("famGeminiThreePriceMultiple", (out("google/gemini-3-flash") / cheapest).toFixed(0));
+  def("priceFetchedAt", new Date(prices.fetchedAt).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" }));
+  void inp;
+}
 def("famFloorLo", pct(Math.min(...famFloors), 1));
 def("famFloorHi", pct(Math.max(...famFloors), 1));
 writeFileSync(
@@ -1444,8 +1532,62 @@ def("famProbeRow", nanoPromoted ? "0" : "1");
 // on the same rows. Gated on the artifact (a paid run).
 // ---------------------------------------------------------------------------
 def("indepAvailable", exp17 ? "1" : "0");
+// Regularized lower incomplete gamma P(a, x) (series for x < a+1, continued
+// fraction otherwise) and the chi-square quantile by bisection, for the
+// dispersion-ratio interval below.
+const gammaP = (a: number, x: number): number => {
+  if (x <= 0) return 0;
+  const lgamma = (z: number): number => {
+    const c = [76.18009172947146, -86.50532032941677, 24.01409824083091, -1.231739572450155, 0.1208650973866179e-2, -0.5395239384953e-5];
+    let y = z;
+    let t = z + 5.5;
+    t -= (z + 0.5) * Math.log(t);
+    let ser = 1.000000000190015;
+    for (const cj of c) ser += cj / ++y;
+    return -t + Math.log((2.5066282746310005 * ser) / z);
+  };
+  if (x < a + 1) {
+    let sum = 1 / a;
+    let del = sum;
+    let ap = a;
+    for (let i = 0; i < 500; i++) {
+      ap += 1;
+      del *= x / ap;
+      sum += del;
+      if (Math.abs(del) < Math.abs(sum) * 1e-14) break;
+    }
+    return sum * Math.exp(-x + a * Math.log(x) - lgamma(a));
+  }
+  let b = x + 1 - a;
+  let c = 1 / 1e-300;
+  let d = 1 / b;
+  let h = d;
+  for (let i = 1; i < 500; i++) {
+    const an = -i * (i - a);
+    b += 2;
+    d = an * d + b;
+    if (Math.abs(d) < 1e-300) d = 1e-300;
+    c = b + an / c;
+    if (Math.abs(c) < 1e-300) c = 1e-300;
+    d = 1 / d;
+    const del = d * c;
+    h *= del;
+    if (Math.abs(del - 1) < 1e-14) break;
+  }
+  return 1 - Math.exp(-x + a * Math.log(x) - lgamma(a)) * h;
+};
+const chiSquareQuantile = (prob: number, df: number): number => {
+  let lo = 0;
+  let hi = Math.max(10, df * 10);
+  for (let i = 0; i < 200; i++) {
+    const mid = (lo + hi) / 2;
+    if (gammaP(df / 2, mid / 2) < prob) lo = mid;
+    else hi = mid;
+  }
+  return (lo + hi) / 2;
+};
 if (exp17) {
-  type Arm = { usable: number; flips: number; flipRate: number | null; wilson95: [number, number]; medianLatencyMs: number | null; serial: { lag1: number; lag1PermutationP: number; blocks: number; blockVarianceRatio: number | null; dispersionChiSquare: number; dispersionDf: number } };
+  type Arm = { usable: number; errors: number; flips: number; flipRate: number | null; wilson95: [number, number]; medianLatencyMs: number | null; serial: { lag1: number; lag1PermutationP: number; blocks: number; blockSize: number; blockVarianceRatio: number | null; dispersionChiSquare: number; dispersionDf: number } };
   const e = exp17 as { n: number; concurrency: { concurrent: number }; sequential: Arm; concurrent: Arm; flipRateDifference: { z: number; twoSidedP: number }; betweenArmAgreement: { rows: number; disagreements: number; rate: number | null; wilson95: [number, number]; byCachedValue: Record<string, { rate: number | null; n: number }> }; wallMs: { sequential: number; concurrent: number } };
   const ci = (w: [number, number]) => `[${(w[0] * 100).toFixed(1)}, ${(w[1] * 100).toFixed(1)}]`;
   def("indepN", num(e.n));
@@ -1471,6 +1613,18 @@ if (exp17) {
   const minutesOf = (ms: number, d: number) => (ms / 6e4).toFixed(d);
   def("indepSeqMinutes", minutesOf(e.wallMs.sequential, 0));
   def("indepConcMinutes", minutesOf(e.wallMs.concurrent, 1));
+  // Resolution of the tests, stated beside the results: the minimum
+  // detectable difference of the two-proportion test at 80% power and the
+  // 95% interval on the block variance ratio (chi-square with blocks-1 df).
+  const pooled = (e.sequential.flips + e.concurrent.flips) / Math.max(1, e.sequential.usable + e.concurrent.usable);
+  const se = Math.sqrt((2 * pooled * (1 - pooled)) / Math.max(1, Math.min(e.sequential.usable, e.concurrent.usable)));
+  def("indepMdd", pct((1.96 + 0.84) * se, 1));
+  def("indepPowerTarget", "80\\%");
+  const dfc = e.concurrent.serial.dispersionDf;
+  const ratio = e.concurrent.serial.blockVarianceRatio ?? 0;
+  def("indepConcDispersionCi", `[${((ratio * dfc) / chiSquareQuantile(0.975, dfc)).toFixed(2)}, ${((ratio * dfc) / chiSquareQuantile(0.025, dfc)).toFixed(2)}]`);
+  def("indepBlockSize", String(e.concurrent.serial.blockSize ?? e.concurrency.concurrent));
+  def("indepErrors", String(e.sequential.errors + e.concurrent.errors));
 }
 
 // Full bound-by-configuration grid (exp14) for the appendix: savings and
@@ -1558,10 +1712,6 @@ ${lines.join("\n")}
       complete++;
       completeLabels.push(LABEL[model] ?? model);
     }
-    const tag = (LABEL[model] ?? model).replace(/[^A-Za-z]/g, "");
-    if (w?.pairs["so-widening"]?.flip !== null && w?.pairs["so-widening"]?.flip !== undefined) def(`famPair${tag}Widening`, pct(w.pairs["so-widening"].flip, 1));
-    if (d?.pairs["dj-formatting"]?.flip !== null && d?.pairs["dj-formatting"]?.flip !== undefined) def(`famPair${tag}DjFmt`, pct(d.pairs["dj-formatting"].flip, 1));
-    if (d?.pairs["dj-criteria"]?.flip !== null && d?.pairs["dj-criteria"]?.flip !== undefined) def(`famPair${tag}DjCrit`, pct(d.pairs["dj-criteria"].flip, 1));
   }
   def("famPairsAvailable", arts.length > 0 ? "1" : "0");
   def("famFivePairFamilies", String(complete));
@@ -1634,6 +1784,75 @@ Figure & Edit & Cells & Instrument (artifact) \\\\
 );
 
 // ---------------------------------------------------------------------------
+// Free-text pilot (exp19): judge-based equivalence, the judge's miss rate
+// calibrated on hand labels and folded into alpha. The macros exist only
+// once the labels have been applied; the paragraph that cites them is gated.
+// ---------------------------------------------------------------------------
+type Exp19Sweep = { alpha: number; alphaEffective: number; certifiedStrata: string[]; sampled: number; reused: number; savings: number; realizedJudge: number | null };
+type Exp19 = {
+  model: string;
+  judge: string;
+  adjudicator: string;
+  ranAt: string;
+  n: number;
+  categories: string[];
+  deltaCal: number;
+  calibrationSummary: {
+    labeledJudgeSame: number;
+    missesAmongJudgeSame: number;
+    missUcbConditional: number | null;
+    labeledJudgeDifferent: number;
+    falseFlipsAmongJudgeDifferent: number;
+    humanLabeled: number;
+    adjudicatorVsHuman: { n: number; agree: number; rate: number | null };
+    judgeVsHuman: { n: number; agree: number; rate: number | null };
+  };
+  results: Record<string, { usable: number; judgeFlips: number; judgeFlipRate: number; wilson95: [number, number]; judgeSameShare: number; missBound: number | null; sweeps: Record<string, Exp19Sweep> }>;
+};
+const exp19 = JOpt("exp19-freetext.json") as Exp19 | undefined;
+const pilotReady = !!exp19 && !!exp19.calibrationSummary && exp19.calibrationSummary.humanLabeled > 0 && exp19.calibrationSummary.missUcbConditional !== null;
+def("pilotAvailable", pilotReady ? "1" : "0");
+if (pilotReady && exp19) {
+  const cs = exp19.calibrationSummary;
+  const wil = (w: [number, number]) => `[${(w[0] * 100).toFixed(1)}, ${(w[1] * 100).toFixed(1)}]`;
+  const res = (name: string) => {
+    const r = exp19.results[name];
+    if (!r) throw new Error(`exp19 has no comparison ${name}`);
+    return r;
+  };
+  def("pilotRows", num(exp19.n));
+  def("pilotJudgeModel", `\\texttt{${exp19.judge.replace(/_/g, "\\_")}}`);
+  def("pilotAdjudicator", `\\texttt{${exp19.adjudicator.replace(/_/g, "\\_")}}`);
+  def("pilotCategories", String(exp19.categories.length));
+  def("pilotDeltaCal", pct(exp19.deltaCal, 0));
+  def("pilotFloorRate", pct(res("floor").judgeFlipRate, 1));
+  def("pilotFloorCi", wil(res("floor").wilson95));
+  def("pilotFmtRate", pct(res("formatting").judgeFlipRate, 1));
+  def("pilotFmtCi", wil(res("formatting").wilson95));
+  def("pilotSynRate", pct(res("synonym").judgeFlipRate, 1));
+  def("pilotSynCi", wil(res("synonym").wilson95));
+  def("pilotLabeled", String(cs.humanLabeled));
+  def("pilotLabeledSame", String(cs.labeledJudgeSame));
+  def("pilotMisses", String(cs.missesAmongJudgeSame));
+  def("pilotMissUcb", pct(cs.missUcbConditional ?? 0, 1));
+  def("pilotLabeledDiff", String(cs.labeledJudgeDifferent));
+  def("pilotFalseFlips", String(cs.falseFlipsAmongJudgeDifferent));
+  def("pilotAdjAgree", pct(cs.adjudicatorVsHuman.rate ?? 0, 1));
+  def("pilotJudgeAgree", pct(cs.judgeVsHuman.rate ?? 0, 1));
+  def("pilotFmtMissBound", pct(res("formatting").missBound ?? 0, 1));
+  const outcome = (name: string, key: string) => {
+    const s = res(name).sweeps[key];
+    if (!s) throw new Error(`exp19 ${name} has no sweep ${key}`);
+    return s.certifiedStrata.length > 0
+      ? `certifies ${pct(s.savings, 1)} savings (realized judge-scored error ${s.realizedJudge === null ? "--" : pct(s.realizedJudge, 2)}, ${s.sampled} oracle calls)`
+      : `refuses every stratum after ${s.sampled} oracle calls`;
+  };
+  def("pilotFmtCalLoose", outcome("formatting", "category@0.2:calibrated"));
+  def("pilotFmtCalTight", outcome("formatting", "category@0.1:calibrated"));
+  def("pilotSynCalLoose", outcome("synonym", "category@0.2:calibrated"));
+}
+
+// ---------------------------------------------------------------------------
 // Model identifiers and run dates, one row per model the paper uses.
 // ---------------------------------------------------------------------------
 {
@@ -1645,23 +1864,32 @@ Figure & Edit & Cells & Instrument (artifact) \\\\
     const sets = new Set(has18.map((f) => (J(f) as { pairset: string }).pairset));
     return sets.has("widening") && sets.has("djinni") ? "all five pairs" : sets.size > 0 ? "lab pairs and part of the rest" : "lab column's two pairs";
   };
+  const priceOf = (m: string) => {
+    const p = prices.models[m];
+    if (!p) return "--";
+    const perM = (x: number) => (x * 1e6).toFixed(2).replace(/\\.?0+$/, "");
+    return `${perM(p.inputPerToken)} / ${perM(p.outputPerToken)}`;
+  };
   const rowsM: string[] = [
-    `\\texttt{deepseek/deepseek-v4-flash-0731} & primary model: every cell of the main program, the deployment run, the drift and independence checks & \\ledgerStart\\ to \\ledgerEnd; \\sepSnapshotDate \\\\`,
-    `\\texttt{openai/text-embedding-3-small} & embedding proxy (baselines B1, B3; interaction stratifier) & with the main program \\\\`,
+    `\\texttt{deepseek/deepseek-v4-flash-0731} & primary model: every cell of the main program, the deployment run, the drift and independence checks${pilotReady ? ", the free-text pilot's cells and its judge" : ""} & \\ledgerStart\\ to \\ledgerEnd; \\sepSnapshotDate & ${priceOf("deepseek/deepseek-v4-flash-0731")} \\\\`,
+    `\\texttt{openai/text-embedding-3-small} & embedding proxy (baselines B1, B3; interaction stratifier) & with the main program & ${priceOf("openai/text-embedding-3-small")} \\\\`,
   ];
   for (const f of FAMILIES) {
     const d = J(f.file) as { model: string };
-    rowsM.push(`\\texttt{${d.model.replace(/_/g, "\\_")}} & family study, ${pairsOf(d.model)} & ${famDate(f.file)} \\\\`);
+    rowsM.push(`\\texttt{${d.model.replace(/_/g, "\\_")}} & family study, ${pairsOf(d.model)} & ${famDate(f.file)} & ${priceOf(d.model)} \\\\`);
   }
   if (!nanoPromoted) {
-    rowsM.push(`\\texttt{${String(exp12.model).replace(/_/g, "\\_")}} & earlier probe, formatting pair only ($n{=}\\altModelN$) & August 2026 \\\\`);
+    rowsM.push(`\\texttt{${String(exp12.model).replace(/_/g, "\\_")}} & earlier probe, formatting pair only ($n{=}\\altModelN$) & August 2026 & ${priceOf(String(exp12.model))} \\\\`);
+  }
+  if (pilotReady && exp19) {
+    rowsM.push(`\\texttt{${exp19.adjudicator.replace(/_/g, "\\_")}} & free-text pilot: second labeler of the calibration pairs, reported beside the hand labels & ${fmt(exp19.ranAt)} & ${priceOf(exp19.adjudicator)} \\\\`);
   }
   writeFileSync(
     "paper/tablemodels.tex",
     `% GENERATED by scripts/experiments/gen-paper-assets.ts. Do not edit by hand.
-\\begin{tabular}{@{}lp{6.8cm}p{4.0cm}@{}}
+\\begin{tabular}{@{}lp{5.6cm}p{3.6cm}r@{}}
 \\toprule
-Gateway identifier & Role & Run dates \\\\
+Gateway identifier & Role & Run dates & \\$/M tokens in / out \\\\
 \\midrule
 ${rowsM.join("\n")}
 \\bottomrule
@@ -1680,9 +1908,10 @@ ${rowsM.join("\n")}
       const m = (w as { missingFreshDraws?: number } | undefined)?.missingFreshDraws;
       return `${label} & \\multicolumn{5}{l}{not reachable from the stored draws${m ? ` (${num(m)} further draws needed)` : ""}} \\\\`;
     }
-    const x = w as W11c;
+    const x = w as W11c & { gtOverlapFlips: number };
     const f = x.strata.find((s) => s.stratumId.startsWith("v=false"))!;
-    return `${label} & ${x.oracleCalls} & ${f.sampled} / ${f.flips}${f.certified ? "" : " (refused)"} & ${num(x.reused)} & ${pct(x.savings, 1)} & ${x.realizedOnOverlap === null ? "--" : pct(x.realizedOnOverlap, 2)}${applied ? " (applied)" : ""} \\\\`;
+    const audit = x.realizedOnOverlap === null ? "--" : `${pct(x.realizedOnOverlap, 2)} (${num(x.gtOverlapFlips)}/${num(x.gtOverlapReused)})`;
+    return `${label} & ${x.oracleCalls} & ${f.sampled} / ${f.flips}${f.certified ? "" : " (refused)"} & ${num(x.reused)} & ${pct(x.savings, 1)} & ${audit}${applied ? " (applied)" : ""} \\\\`;
   };
   const find = (file: { sweeps: W11c[] }, bound: string, alpha: number) =>
     file.sweeps.find((s) => s.bound === bound && Math.abs(s.alpha - alpha) < 1e-9) as W11c | undefined;
@@ -1707,7 +1936,7 @@ ${rowsM.join("\n")}
 % and exp11c-deployment-bounds-v4.json. Do not edit by hand.
 \\begin{tabular}{@{}lrrrrr@{}}
 \\toprule
-Regime & oracle calls & FALSE look / flips & reused & savings & audited error \\\\
+Regime & oracle calls & FALSE look / flips & reused & savings & audited error (flips/rows) \\\\
 \\midrule
 ${lines.join("\n")}
 \\bottomrule

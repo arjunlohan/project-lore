@@ -134,8 +134,8 @@ cached-value strata, samples adaptively on a doubling look schedule, and
 bounds each stratum's flip rate with an exact finite-population
 confidence bound; a strict mode certifies at a deflated threshold to
 bound the error of the reused cells alone. An impossibility floor
-follows: a model's rate of disagreement with itself under the unedited
-prompt limits the certifiable budget. On two public corpora (\corpusSO\
+follows for this estimand: a model's rate of disagreement with itself
+under the unedited prompt limits the certifiable budget. On two public corpora (\corpusSO\
 Stack Overflow developer profiles; \corpusDjinni\ Djinni candidate
 profiles) with \labeledCells+ labeled cells, a formatting-only edit
 certifies \benchSavings\ call savings at an error budget of 0.2 with
@@ -145,10 +145,10 @@ cells. Across \calTrials\ calibration runs with planted flip rates,
 unsafe certificates occur in at most \calUnsafeWorst\ of runs in any
 configuration, against a nominal per-stratum budget of \calNominalDelta.
 A second certification \driftDaysLater\ days later, against the same
-cache, detected provider-side model drift, refused the tightest budget,
-and re-certified the others. Certification reproduces on
-\famCertifyingOf\ further model families we ran, while which edits are
-benign varies by family. We release the system under a source-available
+cache, measured provider-side model drift as a higher flip rate and
+re-certified the same budgets, the tighter one at a deeper look. Certification reproduces on
+\famCertCount\ of \famCount\ further model families, while which edits
+are benign varies by family. We release the system under a source-available
 noncommercial license, with the labels and a benchmark of versioned
 prompt-edit pairs.
 \end{abstract}

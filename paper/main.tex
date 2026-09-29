@@ -89,7 +89,7 @@ by a user budget $\alpha$ with probability at least $1-\delta$.
 look schedule, and bounds each stratum's flip rate with an exact
 finite-population confidence bound; a strict mode certifies at a
 deflated threshold to bound the error of the reused cells alone. We
-also establish an impossibility floor: a model's rate of disagreement
+also establish an impossibility floor for this estimand: a model's rate of disagreement
 with itself under the unedited prompt floors the certifiable
 budget. On two
 public corpora (\corpusSO\ Stack Overflow developer profiles;
@@ -102,9 +102,10 @@ calls certify reuse of \deployReused\ of \deployN\ cells. Across
 certificates occur in at most \calUnsafeWorst\ of runs in any
 configuration, against a nominal per-stratum budget of
 \calNominalDelta. A second certification \driftDaysLater\ days later,
-against the same cache, detected provider-side model drift, refused the
-tightest budget, and re-certified the others. Certification reproduces
-on \famCertifyingOf\ further model families we ran, while which edits
+against the same cache, measured provider-side model drift as a higher
+flip rate and re-certified the same budgets, the tighter one at a
+deeper look. Certification reproduces
+on \famCertCount\ of \famCount\ further model families, while which edits
 are benign varies by family. We release the system under a
 source-available noncommercial license, with the labels and a benchmark
 of versioned prompt-edit pairs.
