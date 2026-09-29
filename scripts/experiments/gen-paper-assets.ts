@@ -1064,6 +1064,10 @@ def("hhSupgSelFracW", selFrac("so-widening"));
 const exp12 = J("exp12-secondmodel.json");
 const NANO_FULL = "exp12-secondmodel-openai-gpt-5-nano.json";
 const nanoPromoted = existsSync(`docs/research/experiments/${NANO_FULL}`);
+// The sixth family of the revision (google/gemini-3.8-flash) joins the table
+// the same way, once its lab-pair artifact exists.
+const GEMINI38_FULL = "exp12-secondmodel-google-gemini-3.8-flash.json";
+const gemini38Present = existsSync(`docs/research/experiments/${GEMINI38_FULL}`);
 if (!nanoPromoted) {
   def("altModelName", String(exp12.model).replace(/_/g, "\\_"));
   def("altModelFloor", pct(exp12.selfFlipFloor, 1));
@@ -1444,6 +1448,7 @@ const FAMILIES: Array<{ key: string; file: string; label: string; anatomy: boole
   { key: "Glm", file: FAMILY_FILES[2]!, label: "GLM-4.7-Flash", anatomy: true },
   { key: "Qwen", file: FAMILY_FILES[3]!, label: "Qwen3.7-Flash", anatomy: false },
   ...(nanoPromoted ? [{ key: "Nano", file: NANO_FULL, label: "GPT-5 nano", anatomy: false }] : []),
+  ...(gemini38Present ? [{ key: "GeminiEight", file: GEMINI38_FULL, label: "Gemini 3.8 Flash", anatomy: false }] : []),
 ];
 const famRows: string[] = [];
 // One cell per (pair, alpha): "refused (calls)" or "savings (realized)".
@@ -1711,6 +1716,7 @@ ${lines.join("\n")}
     "zai/glm-4.7-flash": "GLM-4.7-Flash",
     "alibaba/qwen3.7-flash": "Qwen3.7-Flash",
     "openai/gpt-5-nano": "GPT-5 nano",
+    "google/gemini-3.8-flash": "Gemini 3.8 Flash",
   };
   const cell18 = (p: P18 | undefined, alpha: number) => {
     const x = p?.sweeps.find((s) => Math.abs(s.alpha - alpha) < 1e-9);
