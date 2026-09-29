@@ -259,6 +259,7 @@ async function main() {
     model: lab.model,
     n: rows.length,
     concurrency: { sequential: 1, concurrent: CONC },
+    callTimeoutMs: CALL_TIMEOUT_MS,
     wallMs: { sequential: seqMs, concurrent: concMs },
     sequential: seq,
     concurrent: conc,

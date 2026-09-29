@@ -1624,7 +1624,15 @@ if (exp17) {
   const ratio = e.concurrent.serial.blockVarianceRatio ?? 0;
   def("indepConcDispersionCi", `[${((ratio * dfc) / chiSquareQuantile(0.975, dfc)).toFixed(2)}, ${((ratio * dfc) / chiSquareQuantile(0.025, dfc)).toFixed(2)}]`);
   def("indepBlockSize", String(e.concurrent.serial.blockSize ?? e.concurrency.concurrent));
-  def("indepErrors", String(e.sequential.errors + e.concurrent.errors));
+  def("indepCallCeiling", String(Math.round(Number((exp17 as { callTimeoutMs?: number }).callTimeoutMs ?? 0) / 1e3)));
+  def("indepSeqErrors", String(e.sequential.errors));
+  def("indepConcErrors", String(e.concurrent.errors));
+  // Upper-tail p-values of the block-dispersion chi-square statistics.
+  const chiP = (x: number, df: number) => 1 - gammaP(df / 2, x / 2);
+  const fmtP = (p: number) => (p < 0.001 ? "<0.001" : p.toFixed(2));
+  def("indepSeqDispersionP", fmtP(chiP(e.sequential.serial.dispersionChiSquare, e.sequential.serial.dispersionDf)));
+  def("indepConcDispersionP", fmtP(chiP(e.concurrent.serial.dispersionChiSquare, e.concurrent.serial.dispersionDf)));
+  def("indepSeqBlocks", String(e.sequential.serial.blocks));
 }
 
 // Full bound-by-configuration grid (exp14) for the appendix: savings and

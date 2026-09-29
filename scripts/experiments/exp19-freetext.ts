@@ -175,24 +175,44 @@ async function main() {
     const spec = { kind: "text" } as const;
     const schema = z.object({ value: z.string(), rationale: z.string() });
     const system = systemFor(spec);
+    // Draws are paid for once: a checkpoint holds every completed draw so
+    // far, and a restart over the same seeded rows redraws only the gaps.
+    const partialPath = `${OUT}.partial.json`;
+    const prior = existsSync(partialPath)
+      ? (JSON.parse(readFileSync(partialPath, "utf8")) as { ids?: string[]; draws?: Record<string, Array<string | null>> })
+      : null;
+    const priorDraws = prior && JSON.stringify(prior.ids) === JSON.stringify(ids) ? (prior.draws ?? {}) : {};
     const partial: Record<string, Array<string | null>> = {};
     const checkpoint = () =>
-      writeFileSync(`${OUT}.partial.json`, JSON.stringify({ experiment: "exp19-freetext", model: MODEL, partial: true, ids, draws: partial }));
+      writeFileSync(partialPath, JSON.stringify({ experiment: "exp19-freetext", model: MODEL, partial: true, ids, draws: partial }));
     const draw = async (version: 1 | 2 | 3, key: string) => {
       const prompts = rows.map((r) => bindTemplate(TEMPLATES[version], r).text);
+      const cur: Array<string | null> = prompts.map((_, i) => priorDraws[key]?.[i] ?? null);
+      const reused = cur.filter((x) => x !== null).length;
+      if (reused > 0) console.log(`  ${key}: ${reused}/${prompts.length} draws reused from the checkpoint`);
+      partial[key] = cur;
       let done = 0;
-      const out = await mapLimit(prompts, CONCURRENCY, async (prompt) => {
-        let v: string | null = null;
-        try {
-          const r = await generateObject({ model: MODEL, schema, system, prompt, temperature: 0, abortSignal: AbortSignal.timeout(120000) });
-          v = r.object.value.trim();
-        } catch {
-          v = null;
-        }
-        done++;
-        if (done % 200 === 0) console.log(`  ${key}: ${done}/${prompts.length}`);
-        return v;
-      });
+      const out = await mapLimit(
+        prompts.map((prompt, i) => ({ prompt, i })),
+        CONCURRENCY,
+        async ({ prompt, i }) => {
+          if (cur[i] !== null) return cur[i];
+          let v: string | null = null;
+          try {
+            const r = await generateObject({ model: MODEL, schema, system, prompt, temperature: 0, abortSignal: AbortSignal.timeout(120000) });
+            v = r.object.value.trim();
+          } catch {
+            v = null;
+          }
+          cur[i] = v;
+          done++;
+          if (done % 200 === 0) {
+            console.log(`  ${key}: ${done}/${prompts.length - reused}`);
+            checkpoint();
+          }
+          return v;
+        },
+      );
       partial[key] = out;
       checkpoint();
       console.log(`${key}: ${out.filter((x) => x !== null).length}/${out.length} draws`);

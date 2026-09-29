@@ -1408,29 +1408,36 @@ the formatting edit's new version twice for every row on
 \sepSnapshotDate: once with a single request in flight
 (\indepSeqMinutes\ minutes of wall clock) and once at the deployment
 run's concurrency of \indepConcurrency\ (\indepConcMinutes\ minutes),
-against the same cache; \indepErrors\ requests timed out or errored and
-are excluded from both arms. The falsification criterion was fixed in
-advance: a flip rate that differs between the arms, or serial
-dependence among concurrent completions. Neither appears. The flip
-rates read \indepSeqRate\ (Wilson \indepSeqCi) sequential against
+against the same cache. Requests that errored or exceeded a
+\indepCallCeiling-second ceiling are excluded from their arm: \indepSeqErrors\ sequential and
+\indepConcErrors\ concurrent, where the ceiling binds more often. The
+falsification criterion was fixed in advance: a flip rate that differs
+between the arms, or dependence among concurrent completions. The rates
+agree: \indepSeqRate\ (Wilson \indepSeqCi) sequential against
 \indepConcRate\ (\indepConcCi) concurrent, two-proportion
 $p{=}\indepDiffP$, a test whose minimum detectable difference at
-\indepPowerTarget\ power is \indepMdd\ absolute. The two arms disagree with each other on
-\indepAgreeDisagree\ of rows (\indepAgreeCi), the same-prompt
-self-disagreement of the September snapshot (\indepAgreeFalse\ on
-cached-FALSE rows, \indepAgreeTrue\ on cached-TRUE rows); the August
-floors belong to another snapshot and are not the comparison. In
-completion order, the lag-one autocorrelation of the flip indicator is
-\indepConcLag\ in the concurrent arm (permutation $p{=}\indepConcLagP$)
-and \indepSeqLag\ in the sequential arm ($p{=}\indepSeqLagP$), and the
-variance of flip counts over \indepBlocks\ consecutive blocks of
-\indepBlockSize\ completions is \indepConcDispersion\ times its
-binomial value in the concurrent arm (95\% interval
-\indepConcDispersionCi) against \indepSeqDispersion\ sequential.
-Concurrency at this level, through this gateway, leaves the flip
-indicators independent to the resolution of these tests; a dependence
-smaller than \indepMdd\ in rate, or confined to lags the block test
-does not see, is not excluded.
+\indepPowerTarget\ power is \indepMdd\ absolute. The two arms disagree
+with each other on \indepAgreeDisagree\ of rows (\indepAgreeCi), the
+same-prompt self-disagreement of the September snapshot
+(\indepAgreeFalse\ on cached-FALSE rows, \indepAgreeTrue\ on
+cached-TRUE rows); the August floors belong to another snapshot and are
+not the comparison. In completion order, the lag-one autocorrelation of
+the flip indicator is \indepConcLag\ in the concurrent arm (permutation
+$p{=}\indepConcLagP$) and \indepSeqLag\ in the sequential arm
+($p{=}\indepSeqLagP$). The variance of flip counts over consecutive
+blocks of \indepBlockSize\ completions is \indepConcDispersion\ times
+its binomial value in the concurrent arm (\indepBlocks\ blocks; 95\% CI
+\indepConcDispersionCi; chi-square $p{=}\indepConcDispersionP$)
+against \indepSeqDispersion\ in the sequential arm (\indepSeqBlocks\
+blocks; $p{=}\indepSeqDispersionP$): an excess the interval does not
+resolve, on too few blocks to see modest overdispersion. The rate test
+and the lag test find nothing at this concurrency through this gateway;
+the block test leaves a dependence at the block scale open, and a rate
+difference smaller than \indepMdd\ is not excluded. Since the pinned
+schedule tests a stratum's flip \emph{rate} and the rates agree, the
+practical reading is that the certificates of the deployment run, which
+was issued at this concurrency, rest on draws whose rate the sequential
+arm reproduces.
 \fi
 
 \paragraph{The bound.} Every result above spends its budget through the
