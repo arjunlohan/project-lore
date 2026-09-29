@@ -1210,8 +1210,12 @@ snapshot had moved; the v1 prompt re-drawn disagreed with the cache on
 with both sides drawn in September was \driftFalseFresh\
 (\driftFalseFreshCi), above its August value, so the new snapshot is
 both different from the old one and less stable under this edit. The
-certifier measures their sum against the cache it is asked to reuse,
-which is the quantity a user is exposed to. On the \driftTrueRows\ cached-TRUE rows the same-prompt disagreement
+change is visible in the ledger too: the same template drew
+\driftTokensSep\ output tokens per cell in September against
+\driftTokensAug\ in August, at \driftLatencySep\ seconds per call against
+\driftLatencyAug. The certifier measures the sum of these effects
+against the cache it is asked to reuse, which is the quantity a user is
+exposed to. On the \driftTrueRows\ cached-TRUE rows the same-prompt disagreement
 was \driftTruePrompt\ (\driftTruePromptCi) against a floor of
 \floorTrueStratum, and the edit's flip rate against the cache read
 \driftTrueAugEdit\ in August and \driftTrueSepEdit\ in September. The certifier behaved as the theory says it should

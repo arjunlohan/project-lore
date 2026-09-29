@@ -784,6 +784,25 @@ def("sepLedgerUsd", `\\$${Number(exp11cSep.ledgerSpendDeltaUsd).toFixed(2)}`);
   }
   def("driftLiveDraws", num(Number(exp16.liveCalls)));
 }
+// The snapshot moved in behavior as well as in answers: output tokens per
+// cell (reasoning included) and latency of the v2 template in August
+// (version 2) against its September re-issue (version 4), from the stored
+// cells; dumped beside the other database-derived inputs.
+const dbt = await mysql.createConnection({ uri: MYSQL_URL });
+const [tokRows] = (await dbt.query(
+  `SELECT c.prompt_version AS v, COUNT(*) AS n, AVG(c.output_tokens) AS out_tok, AVG(c.latency_ms) AS ms
+   FROM ai_cells c JOIN ai_columns col ON col.id = c.column_id
+   WHERE col.name LIKE '%(lab)%' AND col.table_id = 'profiles'
+     AND c.status = 'done' AND c.output_tokens > 0 AND c.prompt_version IN (2, 4)
+   GROUP BY c.prompt_version`,
+)) as unknown as [Array<{ v: number; n: number; out_tok: number; ms: number }>];
+await dbt.end();
+const tokAug = tokRows.find((r) => Number(r.v) === 2)!;
+const tokSep = tokRows.find((r) => Number(r.v) === 4)!;
+def("driftTokensAug", String(Math.round(Number(tokAug.out_tok))));
+def("driftTokensSep", String(Math.round(Number(tokSep.out_tok))));
+def("driftLatencyAug", (Number(tokAug.ms) / 1e3).toFixed(0));
+def("driftLatencySep", (Number(tokSep.ms) / 1e3).toFixed(0));
 
 // How many cells the certificate ACTUALLY stamped, read from the database
 // rather than from the certificate's own reused_count. These differ, and the
@@ -1261,6 +1280,7 @@ writeFileSync(
         stampedCellsNow: Number(cert.stamped),
       },
       wideningTrue: wt,
+      snapshotTokens: tokRows.map((r) => ({ version: Number(r.v), cells: Number(r.n), avgOutputTokens: Number(r.out_tok), avgLatencyMs: Number(r.ms) })),
     },
   ),
 );
