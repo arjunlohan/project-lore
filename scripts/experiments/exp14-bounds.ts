@@ -31,7 +31,9 @@ import mysql from "mysql2/promise";
 import {
   adaptiveCertifyStratum,
   bettingUpperBound,
+  binomialUpperBound,
   ebUpperBound,
+  exactUpperBound,
   seededShuffle,
   worUpperBound,
 } from "@lore/core/sivm";
@@ -39,7 +41,10 @@ import { getCellsForVersion, listColumns } from "../../lib/lore/column-store";
 import { PAIRS } from "./pairs";
 
 const ALPHAS = [0.02, 0.05, 0.1, 0.2];
-const BOUNDS = ["eb", "betting", "wor"] as const;
+// Resubmission arms: "exact" is the finite-population (hypergeometric)
+// bound the procedure now certifies with; "cp" is its binomial
+// Clopper-Pearson limit, the exact bound a reviewer named.
+const BOUNDS = ["eb", "betting", "wor", "exact", "cp"] as const;
 const DELTA = 0.1;
 const SEED = 42;
 const N0 = 45;
@@ -110,6 +115,7 @@ async function main() {
         let reusedFlips = 0;
         let certifiedCells = 0;
         const certified: string[] = [];
+        const looksByStratum: Record<string, unknown> = {};
         for (const st of strata) {
           const order = seededShuffle(st.members, SEED + st.id.length * 7919);
           const o = await adaptiveCertifyStratum(
@@ -130,6 +136,7 @@ async function main() {
             reusedFlips += rest.reduce((a, id) => a + flipOf(id), 0);
             certifiedCells += st.members.length;
           }
+          looksByStratum[st.id] = o.looks;
         }
         results.push({
           pair: pair.key,
@@ -142,6 +149,7 @@ async function main() {
           savings: usable.length > 0 ? reused / usable.length : 0,
           realizedPresented:
             certifiedCells > 0 ? reusedFlips / certifiedCells : null,
+          looks: looksByStratum,
         });
       }
       const row = results.slice(-BOUNDS.length);
@@ -167,6 +175,20 @@ async function main() {
     eb: ebUpperBound(clean90, perLook),
     betting: bettingUpperBound(clean90, DELTA / 2),
     wor: worUpperBound(clean90, perLook, 1800),
+    exact: exactUpperBound(0, 90, 1800, perLook),
+    cp: binomialUpperBound(0, 90, perLook),
+  };
+  // The deployment certificate a reviewer re-derived: 5 flips in 180 draws
+  // from the 81,469-cell cached-FALSE stratum, at the pinned per-look level.
+  const deploymentEvidence = {
+    k: 5,
+    n: 180,
+    N: 81469,
+    perLookDelta: perLook,
+    eb: ebUpperBound([...new Array(175).fill(0), ...new Array(5).fill(1)], perLook),
+    wor: worUpperBound([...new Array(175).fill(0), ...new Array(5).fill(1)], perLook, 81469),
+    exact: exactUpperBound(5, 180, 81469, perLook),
+    cp: binomialUpperBound(5, 180, perLook),
   };
 
   const byBound = Object.fromEntries(
@@ -192,6 +214,7 @@ async function main() {
     delta: DELTA,
     schedule: { n0: N0, maxLooks: MAX_LOOKS },
     cleanSampleAtN90: atN90,
+    deploymentEvidence,
     summaryByBound: byBound,
     results,
     wallMs: Date.now() - started,
@@ -202,6 +225,7 @@ async function main() {
     JSON.stringify(out, null, 2),
   );
   console.log("\nclean n=90 upper bounds:", JSON.stringify(atN90));
+  console.log("deployment evidence (5/180, N=81469):", JSON.stringify(deploymentEvidence));
   console.log("summary:", JSON.stringify(byBound, null, 2));
   console.log("EXP14_DONE");
   process.exit(0);

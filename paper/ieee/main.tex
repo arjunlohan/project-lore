@@ -23,6 +23,8 @@
 \usepackage{textcomp}
 \usepackage{amsthm}
 \usepackage{booktabs}
+\usepackage{algorithm}
+\usepackage{algorithmic}
 %% ieeeaccess.cls:512 redefines the TeX primitive \year as a one-argument
 %% text macro for \history dates, which detonates pgfmath's random-seed
 %% init (\multiply ... by\year) when pgfplots loads. Feed the seed a
@@ -63,12 +65,17 @@
 %% \url. Loaded last per hyperref's own rule; hidelinks keeps the IEEE
 %% house look (no colored link boxes).
 \usepackage[hidelinks]{hyperref}
+%% Long documentation URLs in the bibliography (product citations) need
+%% break points hyperref's url does not offer.
+\usepackage{xurl}
 
 \newcommand{\sivm}{\textsc{sIVM}}
 %% Venue dialect hooks consumed by ../body.tex.
 \newcommand{\secref}[1]{Section~\ref{#1}}
 \newcommand{\figref}[1]{Fig.~\ref{#1}}
 \newcommand{\paperroot}{..}
+%% IEEEtran letters appendices only under \appendices; acmart uses \appendix.
+\newcommand{\venueappendix}{\appendices}
 %% acmart's accessibility descriptions have no IEEEtran equivalent; drop.
 \newcommand{\Description}[2][]{}
 %% Roadmap paragraph closing the introduction: IEEE Access house furniture
@@ -82,9 +89,15 @@ maintains. \secref{sec:experiments} reports the evaluation.
 \secref{sec:benchmark} describes the released benchmark of versioned
 prompt-edit pairs. \secref{sec:related} positions the work against prior
 art. \secref{sec:limits} states limitations, and \secref{sec:conclusion}
-concludes.}
+concludes. Appendix~\ref{app:guards} lists the mechanical guards on the
+manuscript's numbers and Appendix~\ref{app:grid} the bound ablation
+configuration by configuration.}
 
 \begin{document}
+%% The class's footer defaults to "VOLUME 11, 2023" (a reviewer flagged it);
+%% IEEE Access volume 14 is the 2026 volume.
+\vol{14}
+\year{2026}
 \history{Date of publication xxxx 00, 0000, date of current version xxxx 00, 0000.}
 \doi{10.1109/ACCESS.2026.DOI}
 
@@ -113,27 +126,31 @@ Modern data tables let users define columns in natural language: each cell
 is computed by a language model from a versioned prompt over its row. When
 the prompt is edited, systems face a choice: recompute every cell,
 expensive and rate-limited, or silently reuse stale ones, with unbounded
-error. We present semantic incremental view
-maintenance (\sivm{}), a layer that certifies which cached cells may be
-reused after a prompt edit, bounding the expected false-reuse rate of
-each certified stratum by a user-chosen error budget with stated
-confidence. \sivm{} freezes cached-value strata, samples adaptively
-on a doubling look schedule, and bounds each stratum's flip rate with
-empirical-Bernstein bounds; a strict mode certifies at a
-deflated threshold to bound the error of the reused cells alone. An
-impossibility floor follows: a model's rate of disagreement with itself
-under the unedited prompt limits the certifiable budget. On two
-public corpora (\corpusSO\ Stack Overflow developer profiles;
-\corpusDjinni\ Djinni candidate profiles) with \labeledCells+ labeled
-cells, a formatting-only edit certifies \benchSavings\ call savings at an
-error budget of 0.2 with \benchRealized\ realized false-reuse, and at
-deployment scale \deployOracle\ oracle calls certify reuse of
-\deployReused\ of \deployN\ cells (\deploySavings\ fewer calls). Every certified stratum in every seeded sweep, sampling
-replication, and known-rate calibration trial (\calTrials\ runs) held its
-budget, as the bound's conservatism guarantees. Certification reproduces
-on \famCertifyingOf\ further model families we ran, while which edits
-are benign varies by family. We release the system, the labels, and a benchmark of
-versioned prompt-edit pairs.
+error. We present semantic incremental view maintenance (\sivm{}), a
+layer that certifies which cached cells may be reused after a prompt
+edit, bounding the false-reuse rate of each certified stratum by a
+user-chosen error budget with stated confidence. \sivm{} freezes
+cached-value strata, samples adaptively on a doubling look schedule, and
+bounds each stratum's flip rate with an exact finite-population
+confidence bound; a strict mode certifies at a deflated threshold to
+bound the error of the reused cells alone. An impossibility floor
+follows: a model's rate of disagreement with itself under the unedited
+prompt limits the certifiable budget. On two public corpora (\corpusSO\
+Stack Overflow developer profiles; \corpusDjinni\ Djinni candidate
+profiles) with \labeledCells+ labeled cells, a formatting-only edit
+certifies \benchSavings\ call savings at an error budget of 0.2 with
+\benchRealized\ realized false-reuse, and at deployment scale
+\deployOracle\ oracle calls certify reuse of \deployReused\ of \deployN\
+cells. Across \calTrials\ calibration runs with planted flip rates,
+unsafe certificates occur in at most \calUnsafeWorst\ of runs in any
+configuration, against a nominal per-stratum budget of \calNominalDelta.
+A second certification \driftDaysLater\ days later, against the same
+cache, detected provider-side model drift, refused the tightest budget,
+and re-certified the others. Certification reproduces on
+\famCertifyingOf\ further model families we ran, while which edits are
+benign varies by family. We release the system under a source-available
+noncommercial license, with the labels and a benchmark of versioned
+prompt-edit pairs.
 \end{abstract}
 
 \begin{keywords}
@@ -162,6 +179,8 @@ conclusions were specified, reviewed, and verified by the author.
 %% optional at every stage).
 %% Facts supplied by the author 2026-08-15; no employer named by the
 %% author's choice.
+%% The end-of-article mark otherwise lands alone on a fresh page.
+\enlargethispage{3\baselineskip}
 \begin{IEEEbiographynophoto}{Arjun Lohan}
 received the B.S. degree in chemical engineering from the University of
 California San Diego, La Jolla, CA, USA, in 2019, and the M.S. degree in financial

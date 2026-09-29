@@ -27,8 +27,9 @@ import mysql from "mysql2/promise";
 import {
   adaptiveCertifyStratum,
   diffPrompts,
-  ebUpperBound,
   seededShuffle,
+  upperBoundFor,
+  type BoundKind,
 } from "@lore/core/sivm";
 import {
   getCellsForVersion,
@@ -42,6 +43,9 @@ import { bindTemplate } from "../../lib/lore/run-column";
 const ALPHAS = [0.1, 0.2];
 const DELTA = 0.1;
 const SEED = 42;
+// Both arms spend their budget through the same bound, so the comparison
+// isolates per-stratum against aggregate certification and nothing else.
+const BOUND = (process.env.EXP_BOUND ?? "exact") as BoundKind;
 const MYSQL_URL =
   process.env.LORE_MYSQL_URL ?? "mysql://root@localhost:3306/lore";
 
@@ -135,6 +139,8 @@ async function main() {
           async (n) => order.slice(0, n).map(flip),
           45,
           6,
+          "presented",
+          BOUND,
         );
         sivmOracle += o.sampled;
         if (o.certified) {
@@ -167,9 +173,14 @@ async function main() {
         const tau = score.get(sorted[k - 1]!)!;
         const sel = labelled.filter((id) => (score.get(id) ?? 0) >= tau);
         const flips = sel.map(flip);
-        // One-sided EB upper bound at the multiplicity-corrected level.
-        if (ebUpperBound(flips, supgDelta) <= alpha) {
-          const selectedAll = rest.filter((id) => (score.get(id) ?? 0) >= tau);
+        const selectedAll = rest.filter((id) => (score.get(id) ?? 0) >= tau);
+        // One-sided upper bound on the selected population's flip rate at
+        // the multiplicity-corrected level, under the SAME bound sIVM uses
+        // (the labelled rows above tau are a uniform without-replacement
+        // sample of the population above tau, whose size the exact bound
+        // takes as N).
+        const ucb = upperBoundFor(BOUND, flips, supgDelta, sel.length + selectedAll.length);
+        if (ucb <= alpha) {
           if (selectedAll.length > bestSelected) {
             bestSelected = selectedAll.length;
             bestTau = tau;
@@ -190,8 +201,8 @@ async function main() {
       for (const keep of [[false], [true], [false, true]]) {
         const sel = labelled.filter((id) => keep.includes(cache.get(id) === true));
         if (sel.length < 10) continue;
-        if (ebUpperBound(sel.map(flip), DELTA / 3) <= alpha) {
-          const selAll = rest.filter((id) => keep.includes(cache.get(id) === true));
+        const selAll = rest.filter((id) => keep.includes(cache.get(id) === true));
+        if (upperBoundFor(BOUND, sel.map(flip), DELTA / 3, sel.length + selAll.length) <= alpha) {
           if (selAll.length > valueBest.length) valueBest = selAll;
         }
       }

@@ -27,7 +27,10 @@ const RATIOS = [0, 0.4, 0.8, 1.05, 1.25, 2.0];
 const SIZES = [600, 1800];
 const TRIALS = Number(process.env.EXP_TRIALS ?? 1000);
 const PER_STRATUM_DELTA = 0.05; // delta=0.1 over K=2 strata, as pinned
-const BOUNDS = ["eb", "betting"] as const;
+// "exact" added for the IEEE Access resubmission: the finite-population
+// bound is now the pinned certifier, so its null certification rate at
+// tight nulls is measured beside the two it replaces or is compared with.
+const BOUNDS = ["eb", "betting", "exact"] as const;
 
 const rand = mulberry32(20260805);
 

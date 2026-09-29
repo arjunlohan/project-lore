@@ -16,6 +16,7 @@ import {
   planSampleSizes,
   seededShuffle,
   selectReuse,
+  type BoundKind,
   type PromptDeltaV1,
   type SivmCellInput,
   type StratumResult,
@@ -60,6 +61,8 @@ export interface CertifyOptions {
   /** Guarantee target: user-facing presented cells (default) or the strict
    * unsampled reuse set (deflated threshold). */
   estimand?: "presented" | "reuse-set";
+  /** Upper confidence bound the adaptive certifier spends the budget on. */
+  bound?: BoundKind;
 }
 
 export interface CertifyOutcome {
@@ -99,9 +102,31 @@ export async function certifyColumnEdit(
   const cached = await getCellsForVersion(column.id, fromVersion, [
     ...rowById.keys(),
   ]);
-  const usable = cached.filter(
-    (c) => (c.status === "done" || c.status === "cached") && rowById.has(c.row_id),
-  );
+  // Canonical row order BEFORE stratification: the seeded shuffle below is
+  // a permutation of each stratum's member list, so the sample path is
+  // pinned only if that list's order is. The cell query has no ORDER BY and
+  // MySQL has served it through different indexes at different times (the
+  // deployment run of 2026-08-05 came back in idx_cache order, i.e. by
+  // content hash; the same query today comes back in primary-key order,
+  // and the same seed then draws a different sample). Sorting by content
+  // hash, then row id, reproduces the reported run and makes the path a
+  // function of the seed and the data alone.
+  const usable = cached
+    .filter(
+      (c) =>
+        (c.status === "done" || c.status === "cached") && rowById.has(c.row_id),
+    )
+    .sort((a, b) =>
+      a.row_content_hash < b.row_content_hash
+        ? -1
+        : a.row_content_hash > b.row_content_hash
+          ? 1
+          : a.row_id < b.row_id
+            ? -1
+            : a.row_id > b.row_id
+              ? 1
+              : 0,
+    );
 
   // Freeze strata from v_from cache + the prompt delta (pre-sampling).
   const inputs: SivmCellInput[] = usable.map((c) => ({
@@ -156,6 +181,7 @@ export async function certifyColumnEdit(
         45,
         opts.maxLooks ?? 4,
         opts.estimand ?? "presented",
+        opts.bound,
       );
       sampledByStratum.set(s.id, order.slice(0, outcome.sampled));
       const last = outcome.looks[outcome.looks.length - 1]!;
@@ -167,6 +193,7 @@ export async function certifyColumnEdit(
         empiricalFlipRate: last.n > 0 ? last.flips / last.n : 1,
         upperBound: last.upperBound,
         certified: outcome.certified,
+        looks: outcome.looks,
       });
     }
   } else {

@@ -10,13 +10,27 @@
  *
  * Run: pnpm tsx scripts/experiments/gen-paper-assets.ts
  */
-import { readFileSync, writeFileSync } from "node:fs";
-import { mulberry32, worUpperBound } from "@lore/core/sivm";
+import { existsSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
+import {
+  binomialUpperBound,
+  ebUpperBound,
+  exactUpperBound,
+  mulberry32,
+  worUpperBound,
+} from "@lore/core/sivm";
 import mysql from "mysql2/promise";
 import { PAIRS } from "./pairs";
 
 const J = (f: string) =>
   JSON.parse(readFileSync(`docs/research/experiments/${f}`, "utf8"));
+// Artifacts that may legitimately be absent from a checkout (paid runs the
+// paper reports only when they exist); the prose is gated on the macro that
+// says so rather than on a LaTeX error.
+const JOpt = (f: string) =>
+  existsSync(`docs/research/experiments/${f}`) ? J(f) : null;
+// The per-look level of the pinned procedure (delta / K strata / 6 looks),
+// used wherever a bound is re-evaluated on persisted evidence.
+const PINNED_PER_LOOK = 0.1 / 2 / 6;
 // exp12 reruns on further model families (see the model-family block below
 // and the off-ledger cell count).
 const FAMILY_FILES = [
@@ -38,6 +52,14 @@ const exp11 = J("exp11-fullscale.json");
 const exp6 = J("exp6-djinni.json");
 const exp14 = J("exp14-bounds.json");
 const exp15 = J("exp15-betting-calibration.json");
+// IEEE Access resubmission artifacts.
+const exp11c = J("exp11c-deployment-bounds.json"); // August draws, every bound
+const exp11cSep = J("exp11c-deployment-bounds-v4.json"); // September snapshot, live
+const exp16 = J("exp16-snapshot-drift.json");
+const exp17 = JOpt("exp17-independence.json");
+const exp18Files = readdirSync("docs/research/experiments")
+  .filter((f) => /^exp18-families-(widening|djinni)-.*\.json$/.test(f) && !f.endsWith(".partial.json"))
+  .sort();
 
 const MYSQL_URL =
   process.env.LORE_MYSQL_URL ?? "mysql://root@localhost:3306/lore";
@@ -314,7 +336,41 @@ const edge = pick("so-formatting", 0.05);
 // One decimal: this rate is 0.8%, and toFixed(0) printed it as "1%", a
 // 25% overstatement of the paper's single nonzero exceedance cell.
 def("edgeCertRate", `${(edge.bootstrap.certificationRate * 100).toFixed(1)}\\%`);
-def("edgeExceed", pct(edge.bootstrap.violationRateReuseSet, 1));
+def("edgeSavingsMean", pct(edge.bootstrap.savingsMean, 1));
+// Under the exact bound the certifier spends its budget, so Table 1 can
+// contain a configuration whose rare certifications are unsafe (a stratum
+// whose flip rate sits just above alpha). Report the worst unconditional
+// rate, P(certify and realized presented-cells error > alpha), against the
+// nominal delta, and every cell with nonzero reuse-set exceedance, instead
+// of asserting that no such cell exists.
+{
+  type RV = Row8 & { bootstrap: Row8["bootstrap"] & { violationRatePresented: number } };
+  const pres = rows as RV[];
+  const unsafe = pres.map((r) => ({
+    r,
+    u: r.bootstrap.certificationRate * r.bootstrap.violationRatePresented,
+  }));
+  const worst = unsafe.reduce((a, b) => (b.u > a.u ? b : a));
+  def("tableUnsafeWorst", pct(worst.u, 2));
+  def("tableUnsafeWorstPair", LABELS[worst.r.pair] ?? worst.r.pair);
+  def("tableUnsafeWorstAlpha", worst.r.alpha.toString());
+  def("tableUnsafeWorstCert", pct(worst.r.bootstrap.certificationRate, 1));
+  def("tableUnsafeWorstViol", pct(worst.r.bootstrap.violationRatePresented, 0));
+  def("tableUnsafeConfigs", String(unsafe.filter((x) => x.u > 0).length));
+  const exceed = pres.filter(
+    (r) => r.bootstrap.certificationRate > 0 && r.bootstrap.violationRateReuseSet > 0,
+  );
+  def("tableExceedConfigs", String(exceed.length));
+  def(
+    "tableExceedList",
+    exceed
+      .map(
+        (r) =>
+          `${LABELS[r.pair] ?? r.pair} at $\\alpha{=}${r.alpha}$ (${pct(r.bootstrap.violationRateReuseSet, 1)} of the ${pct(r.bootstrap.certificationRate, 0)} of replications that certify)`,
+      )
+      .join("; "),
+  );
+}
 
 // Sampling fractions across reliably-certifying configs
 const reliable = rows.filter(
@@ -475,6 +531,50 @@ def("minorityNoise", pct(1 - exp4.vote3ConfirmsStoredTrue, 1));
 // exp9 calibration
 def("calTrials", num(exp9.results.length * exp9.trials));
 def("calConfigs", String(exp9.results.length));
+// Validity under the exact bound is a RATE, not a zero: the guarantee is on
+// the realized whole-stratum flip count, so at a planted p just above alpha
+// the realized population rate is often below alpha and certifying it is
+// correct. The metric is P(certify and realized presented-cells error >
+// alpha), unconditional, against the per-stratum delta the study plants.
+{
+  type C9 = {
+    alpha: number;
+    size: number;
+    p: number;
+    estimand: string;
+    certificationRate: number;
+    violationRatePresented: number;
+    violationRateReuseSet: number;
+  };
+  const cal = exp9.results as C9[];
+  const T = Number(exp9.trials);
+  const unsafeOf = (r: C9) =>
+    r.certificationRate *
+    (r.estimand === "presented" ? r.violationRatePresented : r.violationRateReuseSet);
+  const worst = cal.reduce((a, b) => (unsafeOf(b) > unsafeOf(a) ? b : a));
+  const u = unsafeOf(worst);
+  const half = 1.96 * Math.sqrt(Math.max(u * (1 - u), 1e-12) / T);
+  def("calUnsafeWorst", pct(u, 2));
+  def("calUnsafeWorstCi", `[${Math.max(0, (u - half) * 100).toFixed(2)}, ${((u + half) * 100).toFixed(2)}]\\%`);
+  def("calUnsafeWorstAlpha", worst.alpha.toString());
+  def("calUnsafeWorstP", worst.p.toString());
+  def("calUnsafeWorstSize", num(worst.size));
+  def("calUnsafeWorstEstimand", worst.estimand === "presented" ? "presented-cells" : "reuse-set");
+  def("calNominalDelta", pct(Number(exp9.perStratumDelta), 0));
+  const tight = cal.filter((r) => r.p > r.alpha && r.p <= r.alpha * 1.3);
+  def("calUnsafeTightMean", pct(tight.reduce((a, r) => a + unsafeOf(r), 0) / tight.length, 2));
+  const tightCertWorst = tight.reduce((a, r) => Math.max(a, r.certificationRate), 0);
+  def("calTightCertWorst", pct(tightCertWorst, 1));
+  // A clean stratum's cost under the schedule, per stratum size.
+  const cleanAt = (size: number) =>
+    cal.find((r) => r.alpha === 0.05 && r.p === 0 && r.size === size && r.estimand === "presented")!;
+  // Grid sizes come from the artifact itself (smallest and largest size).
+  const sizes = [...new Set(cal.map((r) => r.size))].sort((a, b) => a - b);
+  const cleanSmall = Math.round((cleanAt(sizes[0]!) as unknown as { avgSampled: number }).avgSampled);
+  const cleanLarge = Math.round((cleanAt(sizes[sizes.length - 1]!) as unknown as { avgSampled: number }).avgSampled);
+  def("minZeroFlipRealizedSmall", String(cleanSmall));
+  def("minZeroFlipRealizedLarge", String(cleanLarge));
+}
 // r8/M6: the grid now probes JUST ABOVE each budget, which is the only
 // regime where the without-replacement gap in Assumption 3 could bite; the
 // old grid's tightest null was 1.5*alpha, where futility stops at look 1 and
@@ -497,17 +597,6 @@ def("calConfigs", String(exp9.results.length));
   const at95 = w.b3.tauSweep.find((t) => t.tau === 0.95)!;
   def("bThreeReuseW", pct(at95.reusedFraction, 1));
 }
-// r8/M10: n* is the FIXED-PLAN minimum; the pinned doubling schedule cannot
-// stop there, so report what the schedule actually spends on a clean stratum.
-{
-  const clean = (exp9.results as Array<{
-    alpha: number;
-    p: number;
-    estimand: string;
-    avgSampled: number;
-  }>).filter((r) => r.alpha === 0.05 && r.p === 0 && r.estimand === "presented");
-  def("minZeroFlipRealized", String(Math.round(clean[0]!.avgSampled)));
-}
   // r9: the prose hardcoded "p in [0, 0.15]", which the alpha=0.2 tight nulls
 // (planted at 0.21, 0.22, 0.25) silently falsified. Emit the range.
 def(
@@ -515,10 +604,6 @@ def(
   `[${Math.min(...cal.map((r) => r.p))}, ${Math.max(...cal.map((r) => r.p))}]`,
 );
 def("calTightNulls", String(tight.length));
-  def(
-    "calTightWorstCert",
-    pct(tight.reduce((a, r) => Math.max(a, r.certificationRate), 0), 1),
-  );
   def(
     "calAlphaGrid",
     [...new Set(cal.map((r) => r.alpha))]
@@ -549,17 +634,74 @@ def("calWorstAlpha", String(worstCfg.alpha));
 // share (a third of 8 is not an integer).
 def("calWorstCertRate", pct(worstCfg.certificationRate, 2));
 
-// exp11 deployment
+// Deployment scale. Three sources, one sample path:
+//   exp11     the live August run under Maurer-Pontil (the applied
+//             certificate; its numbers are the "MP" macros);
+//   exp11c    the same August oracle draws re-certified under every bound
+//             (the "exact" macros the paper now headlines are a replay over
+//             the stored draws; the eb arm reproduces exp11 exactly);
+//   exp11cSep the certification run live again inside the September 2026
+//             snapshot (version 4), all bounds and budgets.
+type S11 = { stratumId: string; size: number; sampled: number; flips: number; certified: boolean; upperBound: number; looks?: Array<{ n: number; flips: number; upperBound: number; certified: boolean }> };
+type W11c = { bound: string; alpha: number; status: string; oracleCalls: number; reused: number; recompute: number; savings: number; realizedOnOverlap: number | null; gtOverlapReused: number; replayWallMs: number; liveDrawsThisArm?: number; strata: S11[]; auditComposition: { fromReleasedVector: number; releasedOnlyRealized: number | null } };
+const arm = (file: { sweeps: W11c[] }, bound: string, alpha: number): W11c => {
+  const w = file.sweeps.find((s) => s.bound === bound && Math.abs(s.alpha - alpha) < 1e-9);
+  if (!w || w.status !== "ok") throw new Error(`deployment arm ${bound}@${alpha} missing or incomplete`);
+  return w;
+};
 const d2 = exp11.sweeps.find((s: { alpha: number }) => s.alpha === 0.2)!;
 const d1 = exp11.sweeps.find((s: { alpha: number }) => s.alpha === 0.1)!;
+// The replay must walk the live run's path; the script asserts it, and the
+// generator asserts it again so a stale artifact cannot slip through.
+for (const [a, live] of [[0.2, d2], [0.1, d1]] as const) {
+  const r = arm(exp11c, "eb", a);
+  if (r.oracleCalls !== live.oracleCalls || r.reused !== live.reused) {
+    throw new Error(`exp11c eb@${a} (${r.oracleCalls}/${r.reused}) does not reproduce exp11 (${live.oracleCalls}/${live.reused})`);
+  }
+}
+const dx2 = arm(exp11c, "exact", 0.2);
+const dx1 = arm(exp11c, "exact", 0.1);
 def("deployN", num(exp11.n));
-def("deployOracle", String(d2.oracleCalls));
-def("deployReused", num(d2.reused));
-def("deployRecompute", num(d2.recompute));
-def("deploySavings", pct(d2.savings, 1));
-def("deployRealized", pct(d2.realizedOnOverlap, 2));
-def("deployOverlap", num(d2.gtOverlapReused));
-def("deployReplayMs", num(Number(d2.certifyWallMs)));
+// Headline (exact bound, August draws).
+def("deployOracle", String(dx2.oracleCalls));
+def("deployReused", num(dx2.reused));
+def("deployRecompute", num(dx2.recompute));
+def("deploySavings", pct(dx2.savings, 1));
+def("deployRealized", pct(dx2.realizedOnOverlap ?? 0, 2));
+def("deployOverlap", num(dx2.gtOverlapReused));
+def("deployAuditReleased", num(dx2.auditComposition.fromReleasedVector));
+def("deployAuditReleasedErr", pct(dx2.auditComposition.releasedOnlyRealized ?? 0, 2));
+def("deployOracleTight", String(dx1.oracleCalls));
+def("deployReusedTight", num(dx1.reused));
+def("deploySavingsTight", pct(dx1.savings, 1));
+const dxF2 = dx2.strata.find((s) => s.certified)!;
+const dxF1 = dx1.strata.find((s) => s.certified)!;
+def("deployLookLoose", String(dxF2.sampled));
+def("deployFlipsLoose", String(dxF2.flips));
+def("deployBoundLoose", dxF2.upperBound.toFixed(3));
+def("deployLookTight", String(dxF1.sampled));
+def("deployFlipsTight", String(dxF1.flips));
+def("deployBoundTight", dxF1.upperBound.toFixed(3));
+// The live August run under Maurer-Pontil: what was actually applied.
+def("deployMpOracle", String(d2.oracleCalls));
+def("deployMpReused", num(d2.reused));
+def("deployMpSavings", pct(d2.savings, 1));
+def("deployMpOracleTight", String(d1.oracleCalls));
+def("deployMpSavingsTight", pct(d1.savings, 1));
+def("deployMpRealized", pct(d2.realizedOnOverlap, 2));
+const mpF2 = (d2.strata as S11[]).find((s) => s.certified)!;
+const mpF1 = (d1.strata as S11[]).find((s) => s.certified)!;
+def("deployMpLookLoose", String(mpF2.sampled));
+def("deployMpFlipsLoose", String(mpF2.flips));
+def("deployMpLookTight", String(mpF1.sampled));
+def("deployMpFlipsTight", String(mpF1.flips));
+// The August evidence at alpha=0.05 stops where the stored draws stop.
+{
+  const a05 = exp11c.sweeps.find((s: W11c) => s.bound === "exact" && Math.abs(s.alpha - 0.05) < 1e-9) as
+    | { status: string; missingFreshDraws?: number; oracleCallsRequestedSoFar?: number }
+    | undefined;
+  def("deployAugustFiveMissing", num(Number(a05?.missingFreshDraws ?? 0)));
+}
 // r8/M10: the refused stratum's SIZE, which is NOT the recompute count; the
 // recompute count is the size minus the cells the futility stop already spent.
 const refused = (d2.strata as Array<{ certified: boolean; size: number }>).find(
@@ -570,8 +712,78 @@ def("deployTrueStratum", num(Number(refused.size)));
 // be certified), so it must come from that stratum's size, not from a realised
 // recompute count that happens to exclude the cells futility already sampled.
 def("deployCeiling", pct(1 - Number(refused.size) / exp11.n, 1));
-def("deployOracleTight", String(d1.oracleCalls));
-def("deploySavingsTight", pct(d1.savings, 1));
+// The September 2026 live certification (same cache, oracle inside the new
+// snapshot), exact bound at the three budgets, plus MP for the comparison.
+const sx2 = arm(exp11cSep, "exact", 0.2);
+const sx1 = arm(exp11cSep, "exact", 0.1);
+const sx05 = arm(exp11cSep, "exact", 0.05);
+def(
+  "sepSnapshotDate",
+  new Date(String(exp11cSep.snapshot)).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" }),
+);
+{
+  const days = Math.round(
+    (Date.parse(String(exp11cSep.snapshot)) - Date.parse(String(exp11c.snapshot))) / 86400000,
+  );
+  def("driftDaysLater", String(days));
+}
+def("sepOracleLoose", String(sx2.oracleCalls));
+def("sepReusedLoose", num(sx2.reused));
+def("sepSavingsLoose", pct(sx2.savings, 1));
+def("sepOracleTight", String(sx1.oracleCalls));
+def("sepReusedTight", num(sx1.reused));
+def("sepSavingsTight", pct(sx1.savings, 1));
+def("sepOracleFive", String(sx05.oracleCalls));
+const sxF2 = sx2.strata.find((s) => s.certified) ?? sx2.strata[0]!;
+const sxF1 = sx1.strata.find((s) => s.certified) ?? sx1.strata[0]!;
+const sxF05 = sx05.strata.find((s) => s.stratumId.startsWith("v=false"))!;
+const sxT = sx2.strata.find((s) => s.stratumId.startsWith("v=true"))!;
+def("sepLookLoose", String(sxF2.sampled));
+def("sepFlipsLoose", String(sxF2.flips));
+def("sepLookTight", String(sxF1.sampled));
+def("sepFlipsTight", String(sxF1.flips));
+def("sepBoundTight", sxF1.upperBound.toFixed(3));
+def("sepLookFive", String(sxF05.sampled));
+def("sepFlipsFive", String(sxF05.flips));
+def("sepRateFive", pct(sxF05.flips / Math.max(1, sxF05.sampled), 1));
+def("sepTrueFlips", String(sxT.flips));
+def("sepTrueLook", String(sxT.sampled));
+const secondsOf = (ms: number) => (ms / 1e3).toFixed(0);
+def("sepWallLoose", secondsOf(sx2.replayWallMs));
+def("sepWallTight", secondsOf(sx1.replayWallMs));
+def("sepLiveDraws", num(Number(exp11cSep.liveCalls)));
+def("sepLedgerUsd", `\\$${Number(exp11cSep.ledgerSpendDeltaUsd).toFixed(2)}`);
+{
+  const smp2 = arm(exp11cSep, "eb", 0.2);
+  def("sepMpOracleLoose", String(smp2.oracleCalls));
+  const smp1 = exp11cSep.sweeps.find((s: W11c) => s.bound === "eb" && Math.abs(s.alpha - 0.1) < 1e-9) as W11c;
+  def("sepMpTightOutcome", smp1.status === "ok" && smp1.reused > 0 ? `certifies after ${smp1.oracleCalls} calls` : smp1.status === "ok" ? `refuses after ${smp1.oracleCalls} calls` : "is not reached");
+}
+// Snapshot drift (exp16): the same rows under both snapshots.
+{
+  type Cmp = { n: number; disagreements: number; rate: number | null; wilson95: [number, number] };
+  type Strat = { prefix: number; augEdit: Cmp; sepEdit: Cmp; promptDrift: Cmp; cacheDrift: Cmp; sepFresh: Cmp; augVsSepEditPaired: { onlyFirstFlips: number; onlySecondFlips: number; mcnemarP: number } };
+  const st = exp16.strata as { false: Strat; true: Strat };
+  const ci = (c: Cmp) => `[${(c.wilson95[0] * 100).toFixed(1)}, ${(c.wilson95[1] * 100).toFixed(1)}]`;
+  for (const [tag, s] of [["False", st.false], ["True", st.true]] as const) {
+    def(`drift${tag}Rows`, num(s.prefix));
+    def(`drift${tag}AugEdit`, pct(s.augEdit.rate ?? 0, 1));
+    def(`drift${tag}SepEdit`, pct(s.sepEdit.rate ?? 0, 1));
+    def(`drift${tag}Prompt`, pct(s.promptDrift.rate ?? 0, 1));
+    def(`drift${tag}PromptCi`, ci(s.promptDrift));
+    if (tag === "False") {
+      def(`drift${tag}Cache`, pct(s.cacheDrift.rate ?? 0, 1));
+      def(`drift${tag}CacheCi`, ci(s.cacheDrift));
+      def(`drift${tag}Fresh`, pct(s.sepFresh.rate ?? 0, 1));
+      def(`drift${tag}FreshCi`, ci(s.sepFresh));
+      const p = s.augVsSepEditPaired.mcnemarP;
+      def(`drift${tag}McNemarP`, p < 0.001 ? "<0.001" : p.toFixed(3));
+      def(`drift${tag}OnlyAug`, String(s.augVsSepEditPaired.onlyFirstFlips));
+      def(`drift${tag}OnlySep`, String(s.augVsSepEditPaired.onlySecondFlips));
+    }
+  }
+  def("driftLiveDraws", num(Number(exp16.liveCalls)));
+}
 
 // How many cells the certificate ACTUALLY stamped, read from the database
 // rather than from the certificate's own reused_count. These differ, and the
@@ -596,8 +808,24 @@ if (Number(cert.reused_count) !== Number(d2.reused)) {
       `the run the paper reports`,
   );
 }
-def("deployStamped", num(Number(cert.stamped)));
-def("deployUnstamped", num(Number(cert.reused_count) - Number(cert.stamped)));
+// The stamp count is a fact about the apply step at the time it ran. Later
+// experiments legitimately compute fresh cells on rows the certificate had
+// stamped (a fresh value always wins over a reused one), so the live count
+// can only fall from its value at apply time; the dump made at the first
+// generation freezes it, and a live count that disagrees is reported, not
+// silently substituted.
+const priorDump = existsSync("docs/research/experiments/db-derived-inputs.json")
+  ? (J("db-derived-inputs.json") as { deploymentCertificate?: { id: string; stampedCells: number } })
+  : null;
+const stampedAtApply =
+  priorDump?.deploymentCertificate?.id === cert.id
+    ? Number(priorDump.deploymentCertificate.stampedCells)
+    : Number(cert.stamped);
+if (stampedAtApply !== Number(cert.stamped)) {
+  console.log(`NOTE: certificate ${cert.id} stamped ${stampedAtApply} cells at apply time; ${cert.stamped} remain stamped now`);
+}
+def("deployStamped", num(stampedAtApply));
+def("deployUnstamped", num(Number(cert.reused_count) - stampedAtApply));
 
 // Deployment economics from the LEDGER (single source of truth for money):
 // the per-cell rate measured on this column, applied to the full-corpus
@@ -636,16 +864,13 @@ const CONC = 32;
 const matHours = Number(lat.ms) / CONC / 3600000;
 def("deployMatHours", matHours.toFixed(1));
 def("deployConcurrency", String(CONC));
-const maintCells = d2.oracleCalls + d2.recompute;
+const maintCells = dx2.oracleCalls + dx2.recompute;
 def("deployMaintCells", num(maintCells));
 def("deployMaintCost", `\\$${(maintCells * perCell).toFixed(2)}`);
 def(
   "deployMaintMinutes",
   String(Math.round((maintCells / Number(lat.c)) * matHours * 60)),
 );
-// Audit composition (review r4, finding R5)
-def("deployAuditReleased", num(d2.auditComposition.fromReleasedVector));
-def("deployAuditReleasedErr", pct(d2.auditComposition.releasedOnlyRealized, 2));
 
 // exp6 cross-corpus
 const dj = exp6.results;
@@ -733,46 +958,49 @@ const selFrac = (pair: string) => {
 def("hhSupgSelFrac", selFrac("so-formatting"));
 def("hhSupgSelFracW", selFrac("so-widening"));
 
-// Deployment certificates under the without-replacement bound: recomputed
-// from the certificate's own persisted evidence (sampled, flips, stratum
-// size) at the pinned procedure's per-look level (delta / K strata / 6
-// looks). This is what "discharging Assumption 3" costs at deployment
-// scale, and it needs no new oracle calls.
+// The August MP certificates' evidence re-evaluated under the other bounds
+// at the pinned per-look level: the reviewer's re-derivation (5 flips in
+// 180 under Bardenet-Maillard reads above 0.2) and what the exact bound
+// reads on the same evidence. No new oracle calls.
 {
-  type S11 = { stratumId: string; size: number; sampled: number; flips: number; certified: boolean };
-  type W11 = { alpha: number; strata: S11[] };
-  const sw = exp11.sweeps as W11[];
-  const perLook = 0.1 / 2 / 6;
-  const worOf = (st: S11) =>
-    worUpperBound(
-      Array.from({ length: st.sampled }, (_, i) => (i < st.flips ? 1 : 0)),
-      perLook,
-      st.size,
-    );
-  for (const [tag, alpha] of [["Loose", 0.2], ["Tight", 0.1]] as const) {
-    const w = sw.find((x) => Math.abs(x.alpha - alpha) < 1e-9)!;
-    const st = w.strata.find((x) => x.certified)!;
-    def(`deployWor${tag}`, worOf(st).toFixed(3));
-    def(`deploy${tag}Sampled`, String(st.sampled));
-    def(`deploy${tag}Flips`, String(st.flips));
-    def(`deployWor${tag}Clears`, worOf(st) <= alpha ? "clears" : "does not clear");
+  const flipsVec = (st: S11) => Array.from({ length: st.sampled }, (_, i) => (i < st.flips ? 1 : 0));
+  for (const [tag, st, alpha] of [["Loose", mpF2, 0.2], ["Tight", mpF1, 0.1]] as const) {
+    const wor = worUpperBound(flipsVec(st), PINNED_PER_LOOK, st.size);
+    const ex = exactUpperBound(st.flips, st.sampled, st.size, PINNED_PER_LOOK);
+    def(`deployWor${tag}`, wor.toFixed(3));
+    def(`deployWor${tag}Clears`, wor <= alpha ? "clears" : "does not clear");
+    def(`deployExact${tag}`, ex.toFixed(3));
+    def(`deployExact${tag}Clears`, ex <= alpha ? "clears" : "does not clear");
   }
-  def("deployFalseStratum", num(sw[0]!.strata.find((x) => x.certified)!.size));
+  def("deployFalseStratum", num(mpF2.size));
 }
 
-// exp12: second model family.
+// exp12: the gpt-5-nano probe of an earlier draft (formatting pair, n=500).
+// If the family was later run at full size on both lab pairs, that artifact
+// promotes it to a full row of the family table and the probe row is dropped;
+// the probe macros are then not defined, so any prose still citing them fails
+// the orphan guard's mirror image (an undefined macro) at compile time.
 const exp12 = J("exp12-secondmodel.json");
-def("altModelName", String(exp12.model).replace(/_/g, "\\_"));
-def("altModelFloor", pct(exp12.selfFlipFloor, 1));
-def("altModelEditFlip", pct(exp12.formattingEditFlip, 1));
-def("altModelN", num(exp12.n));
+const NANO_FULL = "exp12-secondmodel-openai-gpt-5-nano.json";
+const nanoPromoted = existsSync(`docs/research/experiments/${NANO_FULL}`);
+if (!nanoPromoted) {
+  def("altModelName", String(exp12.model).replace(/_/g, "\\_"));
+  def("altModelFloor", pct(exp12.selfFlipFloor, 1));
+  def("altModelEditFlip", pct(exp12.formattingEditFlip, 1));
+  def("altModelN", num(exp12.n));
+}
 
-// The zero-flip minimum sample under the pinned procedure.
+// The zero-flip minimum sample under the pinned procedure: the smallest n at
+// which a clean sample clears alpha at the per-look level, for the exact
+// bound in a large stratum (its binomial limit, (1-alpha)^n <= delta') and
+// for the Maurer-Pontil bound the first submission used.
 {
-  const K = 2, looks = 6, alphaRef = 0.05;
-  const perLook = 0.1 / K / looks;
-  const nStar = Math.ceil((7 * Math.log(2 / perLook)) / (3 * alphaRef)) + 1;
-  def("minZeroFlipSample", `$n^{*}{=}${nStar}$`);
+  const alphaRef = 0.05;
+  let nExact = 1;
+  while (binomialUpperBound(0, nExact, PINNED_PER_LOOK) > alphaRef) nExact++;
+  const nEb = Math.ceil((7 * Math.log(2 / PINNED_PER_LOOK)) / (3 * alphaRef)) + 1;
+  def("minZeroFlipSample", `$n^{*}{=}${nExact}$`);
+  def("minZeroFlipSampleEb", String(nEb));
 }
 
 // Corpus + scope constants (so no size is typed in prose)
@@ -837,96 +1065,145 @@ const db = await mysql.createConnection({ uri: MYSQL_URL });
 const [[led]] = (await db.query(
   `SELECT COALESCE(SUM(cost_usd),0) AS s, COALESCE(SUM(cells),0) AS c FROM cost_ledger`,
 )) as unknown as [[{ s: number; c: number }]];
+// The main program's window: ledger rows before the September snapshot
+// (the re-certification and its checks are ledgered too, and dated
+// separately by \sepSnapshotDate).
 const [[ledgerWindow]] = (await db.query(
-  `SELECT DATE_FORMAT(MIN(at), '%e %M %Y') AS s, DATE_FORMAT(MAX(at), '%e %M %Y') AS e FROM cost_ledger`,
+  `SELECT DATE_FORMAT(MIN(at), '%e %M %Y') AS s, DATE_FORMAT(MAX(at), '%e %M %Y') AS e
+   FROM cost_ledger WHERE at < ?`,
+  [String(exp11cSep.snapshot)],
 )) as unknown as [[{ s: string; e: string }]];
 await db.end();
-// r10: the proof sketch ASSERTED that betting/without-replacement bounds are
-// not tighter here and would refuse certificates this procedure issues.
-// exp14/exp15 measure it, and the assertion is false, so these macros exist to
-// replace it with numbers.
+// The bound ablation (exp14): five bounds swapped inside the same pinned
+// procedure over the same stored labels. The exact finite-population bound
+// is the pinned certifier from the IEEE Access resubmission on; Maurer-
+// Pontil ("eb") is what the first submission certified with; Bardenet-
+// Maillard ("wor") is the proven empirical-Bernstein alternative a reviewer
+// asked for; Clopper-Pearson ("cp") the exact bound another reviewer named;
+// the betting sequence is the anytime-valid arm.
 {
-  const sum = exp14.summaryByBound as Record<
-    string,
-    { configurationsCertifying: number; totalConfigurations: number; meanSavings: number; totalOracle: number }
-  >;
-  def("boundConfigsTotal", String(sum.eb!.totalConfigurations));
-  def("boundEbConfigs", String(sum.eb!.configurationsCertifying));
-  def("boundBetConfigs", String(sum.betting!.configurationsCertifying));
-  def("boundWorConfigs", String(sum.wor!.configurationsCertifying));
-  def("boundEbSavings", pct(sum.eb!.meanSavings, 1));
-  def("boundBetSavings", pct(sum.betting!.meanSavings, 1));
-  def("boundEbOracle", num(sum.eb!.totalOracle));
-  def("boundBetOracle", num(sum.betting!.totalOracle));
-  const at90 = exp14.cleanSampleAtN90 as { eb: number; betting: number; wor: number };
-  def("boundEbAtN", at90.eb.toFixed(3));
-  def("boundBetAtN", at90.betting.toFixed(3));
-  def("boundWorAtN", at90.wor.toFixed(3));
-  // IEEE Access review round: with the published Bardenet-Maillard constant
-  // (kappa = 7/3 + 3/sqrt2; an earlier draft used Maurer-Pontil's 7/3 and
-  // overstated this bound's power), does the without-replacement bound
-  // certify what the pinned Maurer-Pontil procedure certifies, and at what
-  // sample cost? Per (pair, alpha) over the eb-certifying configurations.
-  {
-    type R14 = { bound: string; pair: string; alpha: number; oracle: number; certifiedStrata: string[]; savings: number };
-    const rows14 = exp14.results as R14[];
-    const key = (r: R14) => `${r.pair}@${r.alpha}`;
-    const worBy = new Map(rows14.filter((r) => r.bound === "wor").map((r) => [key(r), r]));
+  type Sum = { configurationsCertifying: number; totalConfigurations: number; meanSavings: number; totalOracle: number };
+  const sum = exp14.summaryByBound as Record<string, Sum>;
+  const TAG: Record<string, string> = { exact: "Exact", eb: "Eb", wor: "Wor", cp: "Cp", betting: "Bet" };
+  def("boundConfigsTotal", String(sum.exact!.totalConfigurations));
+  for (const [b, tag] of Object.entries(TAG)) {
+    def(`bound${tag}Configs`, String(sum[b]!.configurationsCertifying));
+    def(`bound${tag}Savings`, pct(sum[b]!.meanSavings, 1));
+    def(`bound${tag}Oracle`, num(sum[b]!.totalOracle));
+  }
+  const at90 = exp14.cleanSampleAtN90 as Record<string, number>;
+  const atDeploy = exp14.deploymentEvidence as Record<string, number>;
+  for (const [b, tag] of Object.entries(TAG)) {
+    def(`bound${tag}AtN`, at90[b]!.toFixed(3));
+  }
+  // Pairwise: how each alternative relates to the exact bound per (pair, alpha).
+  type R14 = { bound: string; pair: string; alpha: number; oracle: number; certifiedStrata: string[]; savings: number };
+  const rows14 = exp14.results as R14[];
+  const key = (r: R14) => `${r.pair}@${r.alpha}`;
+  const exactBy = new Map(rows14.filter((r) => r.bound === "exact").map((r) => [key(r), r]));
+  for (const [b, tag] of Object.entries(TAG)) {
+    if (b === "exact") continue;
     let same = 0, earlier = 0, later = 0, lost = 0, extra = 0;
-    for (const e of rows14.filter((r) => r.bound === "eb")) {
-      const w = worBy.get(key(e))!;
+    for (const o of rows14.filter((r) => r.bound === b)) {
+      const e = exactBy.get(key(o))!;
       const ec = e.certifiedStrata.length > 0;
-      const wc = w.certifiedStrata.length > 0;
-      if (ec && !wc) lost++;
-      else if (!ec && wc) extra++;
-      else if (ec && wc) {
-        if (w.oracle === e.oracle) same++;
-        else if (w.oracle < e.oracle) earlier++;
+      const oc = o.certifiedStrata.length > 0;
+      if (ec && !oc) lost++; // the alternative loses a certificate the exact bound issues
+      else if (!ec && oc) extra++;
+      else if (ec && oc) {
+        if (o.oracle === e.oracle) same++;
+        else if (o.oracle < e.oracle) earlier++;
         else later++;
       }
     }
-    def("boundWorSameLook", String(same));
-    def("boundWorLater", String(later));
-    def("boundWorLost", String(lost));
-    def("boundWorExtra", String(extra));
-    def("boundWorOracle", num(sum.wor!.totalOracle));
-    def("boundWorSavings", pct(sum.wor!.meanSavings, 1));
+    def(`bound${tag}SameLook`, String(same));
+    def(`bound${tag}Earlier`, String(earlier));
+    def(`bound${tag}Later`, String(later));
+    def(`bound${tag}Lost`, String(lost));
+    def(`bound${tag}Extra`, String(extra));
   }
-  // The widest single gap, which is the one worth naming in prose.
-  const cell = (b: string, pair: string, alpha: number) =>
-    (exp14.results as Array<{ bound: string; pair: string; alpha: number; savings: number; oracle: number }>)
-      .find((r) => r.bound === b && r.pair === pair && r.alpha === alpha)!;
-  const ebW = cell("eb", "so-widening", 0.1);
-  const btW = cell("betting", "so-widening", 0.1);
-  def("boundGapEbSavings", pct(ebW.savings, 1));
-  def("boundGapBetSavings", pct(btW.savings, 1));
-  def("boundGapEbOracle", num(ebW.oracle));
-  def("boundGapBetOracle", num(btW.oracle));
+  // The widest single gain of the exact bound over Maurer-Pontil, named in prose.
+  {
+    let best: { e: R14; m: R14 } | null = null;
+    for (const e of rows14.filter((r) => r.bound === "exact")) {
+      const m = rows14.find((r) => r.bound === "eb" && key(r) === key(e))!;
+      if (!best || e.savings - m.savings > best.e.savings - best.m.savings) best = { e, m };
+    }
+    def("boundGapPair", LABELS[best!.e.pair] ?? best!.e.pair);
+    def("boundGapAlpha", best!.e.alpha.toString());
+    def("boundGapEbSavings", pct(best!.m.savings, 1));
+    def("boundGapExactSavings", pct(best!.e.savings, 1));
+    def("boundGapEbOracle", num(best!.m.oracle));
+    def("boundGapExactOracle", num(best!.e.oracle));
+  }
+  // Where the betting sequence beats the exact bound (it spends no Bonferroni
+  // split), and by how much at most.
+  {
+    let best: { e: R14; b: R14 } | null = null;
+    for (const b of rows14.filter((r) => r.bound === "betting")) {
+      const e = exactBy.get(key(b))!;
+      if (!best || b.savings - e.savings > best.b.savings - best.e.savings) best = { e, b };
+    }
+    def("boundBetOverExactPair", LABELS[best!.b.pair] ?? best!.b.pair);
+    def("boundBetOverExactAlpha", best!.b.alpha.toString());
+    def("boundBetOverExactSavings", pct(best!.b.savings, 1));
+    def("boundBetOverExactExactSavings", pct(best!.e.savings, 1));
+  }
+  // Null calibration per bound (exp15): the worst certification rate at a
+  // planted null, whether any null's interval sits above delta, and the
+  // draws a clean stratum costs.
   const cal = exp15.summary as Record<
     string,
     { worstNullCertificationRate: number; nullsExceedingDelta: number; nullConfigurations: number; avgSampledAtCleanBig: number }
   >;
-  // Per-ARM trial count: exp15 runs both bounds over identical planted data,
-  // so the total across the file double-counts if a sentence attributes it to
-  // one arm, which the first draft of that sentence did.
-  const betCfgs = (exp15.results as Array<{ bound: string }>).filter(
-    (r) => r.bound === "betting",
-  ).length;
+  const betCfgs = (exp15.results as Array<{ bound: string }>).filter((r) => r.bound === "betting").length;
   def("boundCalTrials", num(Number(exp15.trials) * betCfgs));
-  def("boundBetNullWorst", pct(cal.betting!.worstNullCertificationRate, 1));
-  def("boundBetNullsOver", String(cal.betting!.nullsExceedingDelta));
   def("boundNullConfigs", String(cal.betting!.nullConfigurations));
-  def("boundEbCleanSample", String(Math.round(cal.eb!.avgSampledAtCleanBig)));
-  def("boundBetCleanSample", String(Math.round(cal.betting!.avgSampledAtCleanBig)));
+  for (const [b, tag] of [["exact", "Exact"], ["eb", "Eb"], ["betting", "Bet"]] as const) {
+    def(`bound${tag}NullWorst`, pct(cal[b]!.worstNullCertificationRate, 1));
+    def(`bound${tag}NullsOver`, String(cal[b]!.nullsExceedingDelta));
+    def(`bound${tag}CleanSample`, String(Math.round(cal[b]!.avgSampledAtCleanBig)));
+    // Unconditional unsafe rate at nulls: certified AND realized error > alpha.
+    const rs = (exp15.results as Array<{ bound: string; isNull: boolean; certificationRate: number; violationRate: number }>)
+      .filter((r) => r.bound === b && r.isNull);
+    def(`bound${tag}NullUnsafe`, pct(rs.reduce((a, r) => Math.max(a, r.certificationRate * r.violationRate), 0), 1));
+  }
+  // Generated bound-comparison table (Section: the bound is the binding constraint).
+  const row = (b: string, label: string) =>
+    `${label} & ${at90[b]!.toFixed(3)} & ${typeof atDeploy[b] === "number" ? atDeploy[b]!.toFixed(3) : "--"} & ${sum[b]!.configurationsCertifying} & ${pct(sum[b]!.meanSavings, 1)} & ${num(sum[b]!.totalOracle)} & ${cal[b] ? pct(cal[b]!.worstNullCertificationRate, 1) : "--"} \\\\`;
+  writeFileSync(
+    "paper/tablebounds.tex",
+    `% GENERATED by scripts/experiments/gen-paper-assets.ts from exp14-bounds.json
+% and exp15-betting-calibration.json. Do not edit by hand.
+\\begin{tabular}{@{}lrrrrrr@{}}
+\\toprule
+ & \\multicolumn{2}{c}{upper bound on} & \\multicolumn{3}{c}{Table~\\ref{tab:main} grid (${sum.exact!.totalConfigurations} configurations)} & null cert. \\\\
+\\cmidrule(lr){2-3}\\cmidrule(lr){4-6}
+Bound & $0/90$ & $5/180$ & certifying & mean savings & oracle calls & worst \\\\
+\\midrule
+${row("exact", "Exact finite-population (pinned)")}
+${row("cp", "Clopper--Pearson (binomial)")}
+${row("betting", "Betting confidence sequence")}
+${row("eb", "Maurer--Pontil (first submission)")}
+${row("wor", "Bardenet--Maillard (WoR)")}
+\\bottomrule
+\\end{tabular}
+`,
+  );
 }
 def("totalSpend", `\\$${Number(led.s).toFixed(2)}`);
 {
   def("ledgerStart", ledgerWindow.s);
   def("ledgerEnd", ledgerWindow.e);
-  // Off-ledger family runs: date range from the artifacts' own ranAt stamps.
+  // Off-ledger family runs: date range from the artifacts' own ranAt stamps
+  // (the lab-pair runs, the gpt-5-nano completion if present, and the
+  // remaining-pair runs if present).
   const fmtDate = (iso: string) =>
     new Date(iso).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" });
-  const stamps = FAMILY_FILES.map((f) => String((J(f) as { ranAt: string }).ranAt)).sort();
+  const stamps = [
+    ...FAMILY_FILES.map((f) => String((J(f) as { ranAt: string }).ranAt)),
+    ...exp18Files.map((f) => String((J(f) as { ranAt: string }).ranAt)),
+  ].sort();
   const first = fmtDate(stamps[0]!);
   const last = fmtDate(stamps[stamps.length - 1]!);
   def("famRunDate", first === last ? first : `${first} to ${last}`);
@@ -949,7 +1226,14 @@ const offLedgerCells =
   }, 0) +
   Number(exp0.n) * 2 +
   Number(exp0b.n) * 2 +
-  Number(exp4.validPairs) * 6;
+  Number(exp4.validPairs) * 6 +
+  // Independence check (two arms, direct calls) and the remaining-pair
+  // family runs, both off the ledger.
+  (exp17 ? Number(exp17.n) * 2 : 0) +
+  exp18Files.reduce((acc, f) => {
+    const d = J(f) as { draws: Array<Record<string, unknown>> };
+    return acc + d.draws.reduce((a, r) => a + ["a1", "b1", "a2", "a3"].filter((k) => r[k] !== undefined && r[k] !== null).length, 0);
+  }, 0);
 def("offLedgerCells", num(offLedgerCells));
 
 // r8/M12: several load-bearing macros (the per-stratum floors, the ledger
@@ -973,7 +1257,8 @@ writeFileSync(
       deploymentCertificate: {
         id: cert.id,
         reusedCount: Number(cert.reused_count),
-        stampedCells: Number(cert.stamped),
+        stampedCells: stampedAtApply,
+        stampedCellsNow: Number(cert.stamped),
       },
       wideningTrue: wt,
     },
@@ -1040,6 +1325,7 @@ const FAMILIES: Array<{ key: string; file: string; label: string; anatomy: boole
   { key: "GeminiThree", file: FAMILY_FILES[1]!, label: "Gemini 3 Flash", anatomy: false },
   { key: "Glm", file: FAMILY_FILES[2]!, label: "GLM-4.7-Flash", anatomy: true },
   { key: "Qwen", file: FAMILY_FILES[3]!, label: "Qwen3.7-Flash", anatomy: false },
+  ...(nanoPromoted ? [{ key: "Nano", file: NANO_FULL, label: "GPT-5 nano", anatomy: false }] : []),
 ];
 const famRows: string[] = [];
 // One cell per (pair, alpha): "refused (calls)" or "savings (realized)".
@@ -1067,7 +1353,7 @@ const outcome = (sw: Exp12["sweeps"] | undefined, alpha: number) => {
     `DeepSeek V4 Flash (primary; main seed) & ${num(r8[0]!.n)} & ${pct(floorBoolValue, 1)} & ${pct(fmtFlip, 1)} & ${cell("so-formatting", 0.1)} & ${cell("so-formatting", 0.2)} & ${pct(synFlip, 1)} & ${cell("so-synonym", 0.1)} & ${cell("so-synonym", 0.2)} \\\\`,
   );
 }
-{
+if (!nanoPromoted) {
   // The weaker-family probe (formatting pair only, n=500).
   famRows.push(
     `\\texttt{${String(exp12.model).replace(/_/g, "\\_")}} & ${num(exp12.n)} & ${pct(exp12.selfFlipFloor, 1)} & ${pct(exp12.formattingEditFlip, 1)} & ${outcome(exp12.sweeps, 0.1)} & ${outcome(exp12.sweeps, 0.2)} & -- & -- & -- \\\\`,
@@ -1130,6 +1416,285 @@ ${famRows.join("\n")}
 \\end{tabular}
 `,
 );
+
+def("famProbeRow", nanoPromoted ? "0" : "1");
+
+// ---------------------------------------------------------------------------
+// Independence across rows (exp17): sequential against concurrent requests
+// on the same rows. Gated on the artifact (a paid run).
+// ---------------------------------------------------------------------------
+def("indepAvailable", exp17 ? "1" : "0");
+if (exp17) {
+  type Arm = { usable: number; flips: number; flipRate: number | null; wilson95: [number, number]; medianLatencyMs: number | null; serial: { lag1: number; lag1PermutationP: number; blocks: number; blockVarianceRatio: number | null; dispersionChiSquare: number; dispersionDf: number } };
+  const e = exp17 as { n: number; concurrency: { concurrent: number }; sequential: Arm; concurrent: Arm; flipRateDifference: { z: number; twoSidedP: number }; betweenArmAgreement: { rows: number; disagreements: number; rate: number | null; wilson95: [number, number]; byCachedValue: Record<string, { rate: number | null; n: number }> }; wallMs: { sequential: number; concurrent: number } };
+  const ci = (w: [number, number]) => `[${(w[0] * 100).toFixed(1)}, ${(w[1] * 100).toFixed(1)}]`;
+  def("indepN", num(e.n));
+  def("indepConcurrency", String(e.concurrency.concurrent));
+  def("indepSeqRate", pct(e.sequential.flipRate ?? 0, 1));
+  def("indepSeqCi", ci(e.sequential.wilson95));
+  def("indepConcRate", pct(e.concurrent.flipRate ?? 0, 1));
+  def("indepConcCi", ci(e.concurrent.wilson95));
+  const p = e.flipRateDifference.twoSidedP;
+  def("indepDiffP", p < 0.001 ? "<0.001" : p.toFixed(2));
+  def("indepAgreeDisagree", pct(e.betweenArmAgreement.rate ?? 0, 1));
+  def("indepAgreeCi", ci(e.betweenArmAgreement.wilson95));
+  def("indepAgreeFalse", pct(e.betweenArmAgreement.byCachedValue.false?.rate ?? 0, 1));
+  def("indepAgreeTrue", pct(e.betweenArmAgreement.byCachedValue.true?.rate ?? 0, 1));
+  const lagP = (x: number) => (x < 0.001 ? "<0.001" : x.toFixed(2));
+  def("indepSeqLag", e.sequential.serial.lag1.toFixed(3));
+  def("indepSeqLagP", lagP(e.sequential.serial.lag1PermutationP));
+  def("indepConcLag", e.concurrent.serial.lag1.toFixed(3));
+  def("indepConcLagP", lagP(e.concurrent.serial.lag1PermutationP));
+  def("indepSeqDispersion", (e.sequential.serial.blockVarianceRatio ?? 0).toFixed(2));
+  def("indepConcDispersion", (e.concurrent.serial.blockVarianceRatio ?? 0).toFixed(2));
+  def("indepBlocks", String(e.concurrent.serial.blocks));
+  const minutesOf = (ms: number, d: number) => (ms / 6e4).toFixed(d);
+  def("indepSeqMinutes", minutesOf(e.wallMs.sequential, 0));
+  def("indepConcMinutes", minutesOf(e.wallMs.concurrent, 1));
+}
+
+// Full bound-by-configuration grid (exp14) for the appendix: savings and
+// oracle calls per (pair, alpha, bound).
+{
+  type R14 = { bound: string; pair: string; alpha: number; oracle: number; savings: number; certifiedStrata: string[] };
+  const rows14 = exp14.results as R14[];
+  const order = ["exact", "cp", "betting", "eb", "wor"];
+  const lines: string[] = [];
+  for (const pair of Object.keys(LABELS)) {
+    for (const alpha of [0.02, 0.05, 0.1, 0.2]) {
+      const cells = order.map((b) => {
+        const r = rows14.find((x) => x.bound === b && x.pair === pair && Math.abs(x.alpha - alpha) < 1e-9)!;
+        return r.certifiedStrata.length > 0 ? `${pct(r.savings, 1)} (${r.oracle})` : `refused (${r.oracle})`;
+      });
+      lines.push(`${LABELS[pair]} & ${alpha.toFixed(2)} & ${cells.join(" & ")} \\\\`);
+    }
+  }
+  writeFileSync(
+    "paper/tableboundsgrid.tex",
+    `% GENERATED by scripts/experiments/gen-paper-assets.ts from exp14-bounds.json. Do not edit by hand.
+\\begin{tabular}{@{}lrlllll@{}}
+\\toprule
+Edit & $\\alpha$ & exact & Clopper--Pearson & betting & Maurer--Pontil & Bardenet--Maillard \\\\
+\\midrule
+${lines.join("\n")}
+\\bottomrule
+\\end{tabular}
+`,
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Remaining edit pairs on further families (exp18): the production column's
+// scope-widening pair and the two Djinni pairs, so a family can carry all
+// five pairs. Reported only when the artifacts exist (paid runs); the prose
+// is gated on \famPairsAvailable.
+// ---------------------------------------------------------------------------
+{
+  type P18 = { usable: number; flip: number | null; strataCount: number; sweeps: Array<{ alpha: number; certifiedStrata: string[]; sampled: number; reused: number; realizedPresented: number | null; savings: number }> };
+  type E18 = { model: string; pairset: "widening" | "djinni"; n: number; selfFlipFloor: number | null; usableFloor: number; ranAt: string; pairs: Record<string, P18> };
+  const arts = exp18Files.map((f) => J(f) as E18);
+  const byModel = new Map<string, Partial<Record<"widening" | "djinni", E18>>>();
+  for (const a of arts) {
+    const m = byModel.get(a.model) ?? {};
+    m[a.pairset] = a;
+    byModel.set(a.model, m);
+  }
+  const LABEL: Record<string, string> = {
+    "google/gemini-2.5-flash-lite": "Gemini 2.5 Flash-Lite",
+    "google/gemini-3-flash": "Gemini 3 Flash",
+    "zai/glm-4.7-flash": "GLM-4.7-Flash",
+    "alibaba/qwen3.7-flash": "Qwen3.7-Flash",
+    "openai/gpt-5-nano": "GPT-5 nano",
+  };
+  const cell18 = (p: P18 | undefined, alpha: number) => {
+    const x = p?.sweeps.find((s) => Math.abs(s.alpha - alpha) < 1e-9);
+    if (!x) return "--";
+    if (x.certifiedStrata.length === 0) return `refused (${x.sampled})`;
+    return `${pct(x.savings, 1)} (${x.realizedPresented === null ? "--" : pct(x.realizedPresented, 2)})`;
+  };
+  // Primary-model rows for the same three pairs, from the main seed of exp8.
+  type R8p = { pair: string; alpha: number; estimand: string; trueFlipRate: number; main: { certifiedStrata: number; sampled: number; realizedPresented: number; savings: number } };
+  const r8 = (exp8.results as R8p[]).filter((r) => r.estimand === "presented");
+  const primaryCell = (pair: string, alpha: number) => {
+    const r = r8.find((x) => x.pair === pair && Math.abs(x.alpha - alpha) < 1e-9)!;
+    return r.main.certifiedStrata === 0 ? `refused (${r.main.sampled})` : `${pct(r.main.savings, 1)} (${pct(r.main.realizedPresented, 2)})`;
+  };
+  const flipOf = (pair: string) => pct(r8.find((x) => x.pair === pair)!.trueFlipRate, 1);
+  const rows18: string[] = [];
+  rows18.push(
+    `DeepSeek V4 Flash (primary) & ${pct(floorBoolValue, 1)} & ${flipOf("so-widening")} & ${primaryCell("so-widening", 0.1)} & ${primaryCell("so-widening", 0.2)} & ${pct(exp0b.selfFlipRate, 1)} & ${flipOf("dj-formatting")} & ${primaryCell("dj-formatting", 0.1)} & ${primaryCell("dj-formatting", 0.2)} & ${flipOf("dj-criteria")} & ${primaryCell("dj-criteria", 0.1)} & ${primaryCell("dj-criteria", 0.2)} \\\\`,
+  );
+  let complete = 0;
+  const completeLabels: string[] = [];
+  for (const [model, sets] of byModel) {
+    const w = sets.widening;
+    const d = sets.djinni;
+    const label = LABEL[model] ?? `\\texttt{${model.replace(/_/g, "\\_")}}`;
+    const fl = (v: number | null | undefined) => (v === null || v === undefined ? "--" : pct(v, 1));
+    rows18.push(
+      `${label} & ${fl(w?.selfFlipFloor)} & ${fl(w?.pairs["so-widening"]?.flip)} & ${cell18(w?.pairs["so-widening"], 0.1)} & ${cell18(w?.pairs["so-widening"], 0.2)} & ${fl(d?.selfFlipFloor)} & ${fl(d?.pairs["dj-formatting"]?.flip)} & ${cell18(d?.pairs["dj-formatting"], 0.1)} & ${cell18(d?.pairs["dj-formatting"], 0.2)} & ${fl(d?.pairs["dj-criteria"]?.flip)} & ${cell18(d?.pairs["dj-criteria"], 0.1)} & ${cell18(d?.pairs["dj-criteria"], 0.2)} \\\\`,
+    );
+    if (w && d) {
+      complete++;
+      completeLabels.push(LABEL[model] ?? model);
+    }
+    const tag = (LABEL[model] ?? model).replace(/[^A-Za-z]/g, "");
+    if (w?.pairs["so-widening"]?.flip !== null && w?.pairs["so-widening"]?.flip !== undefined) def(`famPair${tag}Widening`, pct(w.pairs["so-widening"].flip, 1));
+    if (d?.pairs["dj-formatting"]?.flip !== null && d?.pairs["dj-formatting"]?.flip !== undefined) def(`famPair${tag}DjFmt`, pct(d.pairs["dj-formatting"].flip, 1));
+    if (d?.pairs["dj-criteria"]?.flip !== null && d?.pairs["dj-criteria"]?.flip !== undefined) def(`famPair${tag}DjCrit`, pct(d.pairs["dj-criteria"].flip, 1));
+  }
+  def("famPairsAvailable", arts.length > 0 ? "1" : "0");
+  def("famFivePairFamilies", String(complete));
+  def("famFivePairList", completeLabels.join(", ") || "--");
+  // Certification outcomes across the remaining pairs, for the prose.
+  {
+    let certAny = 0;
+    let families = 0;
+    for (const [, sets] of byModel) {
+      families++;
+      const ps = [sets.widening?.pairs["so-widening"], sets.djinni?.pairs["dj-formatting"], sets.djinni?.pairs["dj-criteria"]];
+      if (ps.some((p) => p?.sweeps.some((s) => s.certifiedStrata.length > 0))) certAny++;
+    }
+    def("famPairsFamilies", String(families));
+    def("famPairsCertifying", String(certAny));
+  }
+  writeFileSync(
+    "paper/tablefampairs.tex",
+    arts.length === 0
+      ? `% GENERATED by scripts/experiments/gen-paper-assets.ts: no exp18 artifacts present.\n`
+      : `% GENERATED by scripts/experiments/gen-paper-assets.ts from the
+% exp18-families-*.json artifacts (same seeded rows as the primary evaluation
+% vectors, runner framing, T=0, pinned procedure). Do not edit by hand.
+\\begin{tabular}{@{}lrrll rrll rll@{}}
+\\toprule
+ & \\multicolumn{4}{c}{SO scope widening (production column)} & \\multicolumn{7}{c}{Djinni seniority tier (4-way select)} \\\\
+\\cmidrule(lr){2-5}\\cmidrule(lr){6-12}
+ & & & & & & \\multicolumn{3}{c}{formatting-only (v1$\\to$v2)} & \\multicolumn{3}{c}{criteria change (v2$\\to$v3)} \\\\
+\\cmidrule(lr){7-9}\\cmidrule(lr){10-12}
+Family & floor & flip & $\\alpha{=}0.1$ & $\\alpha{=}0.2$ & floor & flip & $\\alpha{=}0.1$ & $\\alpha{=}0.2$ & flip & $\\alpha{=}0.1$ & $\\alpha{=}0.2$ \\\\
+\\midrule
+${rows18.join("\n")}
+\\bottomrule
+\\end{tabular}
+`,
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Reconciliation of the flip-rate figures (a reviewer listed four values for
+// the headline edit and three for the cached-TRUE stratum): one row per
+// figure, naming the edit, the population, and the instrument. Values are
+// the same macros the prose cites.
+// ---------------------------------------------------------------------------
+writeFileSync(
+  "paper/tablerates.tex",
+  `% GENERATED by scripts/experiments/gen-paper-assets.ts. Every value is a
+% macro defined in macros.tex from the artifact named in the last column.
+\\begin{tabular}{@{}lp{2.2cm}p{2.3cm}p{5.6cm}@{}}
+\\toprule
+Figure & Edit & Cells & Instrument (artifact) \\\\
+\\midrule
+\\multicolumn{4}{@{}l}{\\emph{Headline pair: SO formatting-only, Boolean lab column}} \\\\
+\\flipSoFormatting & formatting v1$\\to$v2 & $n{=}\\benchN$ evaluation vector & stored v2 oracle cells against the stored v1 cache, one draw each side; the Table~\\ref{tab:main} label instrument (\\texttt{exp8}) \\\\
+\\floorBoolStored & formatting v1$\\to$v2 & same rows & a second, independent v2 draw against the same frozen v1 cache (\\texttt{exp10}); differs from the row above by \\flipInstrumentGapRows\\ rows \\\\
+\\floorBoolVote & formatting v1$\\to$v2 & same rows & majority of three draws on each side (\\texttt{exp10}) \\\\
+\\editFlipFreshBoth & formatting v1$\\to$v2 & same rows & fresh single draws on both sides, neither the cache (\\texttt{exp10}) \\\\
+\\floorBool & identity (no edit) & same rows & within-version draw pairs: the self-flip floor, pooled over both cached values (\\texttt{exp10}) \\\\
+\\floorFalseStratum, \\floorTrueStratum & identity & cached-FALSE, cached-TRUE rows & the same floor per cached-value stratum (\\texttt{exp10}, stored v1 value) \\\\
+\\midrule
+\\multicolumn{4}{@{}l}{\\emph{Cached-TRUE stratum figures}} \\\\
+\\minoritySingle & formatting v1$\\to$v2 & cached-TRUE rows of the vector & single fresh draw against the cache (\\texttt{exp4}) \\\\
+\\minorityVote & formatting v1$\\to$v2 & same & vote-of-3 on both sides (\\texttt{exp4}) \\\\
+\\wideningTrueFlip & widening v1$\\to$v2, production column & \\wideningTrueN\\ cached-TRUE rows & single fresh draw against the cache (Wilson \\wideningTrueCi) \\\\
+\\aggFtSubgroup & formatting v1$\\to$v2 & cached-TRUE cells B2 reused at $\\alpha{=}0.1$ & realized error among the cells the aggregate-only baseline reused, an adversely selected subset, not a population rate (\\texttt{exp7}) \\\\
+\\aggFsubgroup & formatting v1$\\to$v2 & same at $\\alpha{=}0.2$ & same (\\texttt{exp7}) \\\\
+\\bottomrule
+\\end{tabular}
+`,
+);
+
+// ---------------------------------------------------------------------------
+// Model identifiers and run dates, one row per model the paper uses.
+// ---------------------------------------------------------------------------
+{
+  const fmt = (iso: string) =>
+    new Date(iso).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" });
+  const famDate = (f: string) => fmt(String((J(f) as { ranAt: string }).ranAt));
+  const pairsOf = (model: string) => {
+    const has18 = exp18Files.filter((f) => (J(f) as { model: string }).model === model);
+    const sets = new Set(has18.map((f) => (J(f) as { pairset: string }).pairset));
+    return sets.has("widening") && sets.has("djinni") ? "all five pairs" : sets.size > 0 ? "lab pairs and part of the rest" : "lab column's two pairs";
+  };
+  const rowsM: string[] = [
+    `\\texttt{deepseek/deepseek-v4-flash-0731} & primary model: every cell of the main program, the deployment run, the drift and independence checks & \\ledgerStart\\ to \\ledgerEnd; \\sepSnapshotDate \\\\`,
+    `\\texttt{openai/text-embedding-3-small} & embedding proxy (baselines B1, B3; interaction stratifier) & with the main program \\\\`,
+  ];
+  for (const f of FAMILIES) {
+    const d = J(f.file) as { model: string };
+    rowsM.push(`\\texttt{${d.model.replace(/_/g, "\\_")}} & family study, ${pairsOf(d.model)} & ${famDate(f.file)} \\\\`);
+  }
+  if (!nanoPromoted) {
+    rowsM.push(`\\texttt{${String(exp12.model).replace(/_/g, "\\_")}} & earlier probe, formatting pair only ($n{=}\\altModelN$) & August 2026 \\\\`);
+  }
+  writeFileSync(
+    "paper/tablemodels.tex",
+    `% GENERATED by scripts/experiments/gen-paper-assets.ts. Do not edit by hand.
+\\begin{tabular}{@{}lp{6.8cm}p{4.0cm}@{}}
+\\toprule
+Gateway identifier & Role & Run dates \\\\
+\\midrule
+${rowsM.join("\n")}
+\\bottomrule
+\\end{tabular}
+`,
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Deployment table: the same sample path under three (snapshot, bound)
+// regimes at three budgets.
+// ---------------------------------------------------------------------------
+{
+  const fmtRow = (label: string, w: W11c | { status: string; missingFreshDraws?: number } | undefined, applied = false) => {
+    if (!w || w.status !== "ok") {
+      const m = (w as { missingFreshDraws?: number } | undefined)?.missingFreshDraws;
+      return `${label} & \\multicolumn{5}{l}{not reachable from the stored draws${m ? ` (${num(m)} further draws needed)` : ""}} \\\\`;
+    }
+    const x = w as W11c;
+    const f = x.strata.find((s) => s.stratumId.startsWith("v=false"))!;
+    return `${label} & ${x.oracleCalls} & ${f.sampled} / ${f.flips}${f.certified ? "" : " (refused)"} & ${num(x.reused)} & ${pct(x.savings, 1)} & ${x.realizedOnOverlap === null ? "--" : pct(x.realizedOnOverlap, 2)}${applied ? " (applied)" : ""} \\\\`;
+  };
+  const find = (file: { sweeps: W11c[] }, bound: string, alpha: number) =>
+    file.sweeps.find((s) => s.bound === bound && Math.abs(s.alpha - alpha) < 1e-9) as W11c | undefined;
+  const lines = [
+    `\\multicolumn{6}{@{}l}{\\emph{August 2026 snapshot, oracle draws of the live run (version 2)}} \\\\`,
+    fmtRow("Maurer--Pontil, $\\alpha{=}0.2$ (live)", find(exp11c, "eb", 0.2), true),
+    fmtRow("Maurer--Pontil, $\\alpha{=}0.1$ (live)", find(exp11c, "eb", 0.1)),
+    fmtRow("exact, $\\alpha{=}0.2$ (replay)", find(exp11c, "exact", 0.2)),
+    fmtRow("exact, $\\alpha{=}0.1$ (replay)", find(exp11c, "exact", 0.1)),
+    fmtRow("exact, $\\alpha{=}0.05$", find(exp11c, "exact", 0.05)),
+    `\\midrule`,
+    `\\multicolumn{6}{@{}l}{\\emph{September 2026 snapshot, oracle drawn live (version 4), same cache}} \\\\`,
+    fmtRow("exact, $\\alpha{=}0.2$", find(exp11cSep, "exact", 0.2)),
+    fmtRow("exact, $\\alpha{=}0.1$", find(exp11cSep, "exact", 0.1)),
+    fmtRow("exact, $\\alpha{=}0.05$", find(exp11cSep, "exact", 0.05)),
+    fmtRow("Maurer--Pontil, $\\alpha{=}0.2$", find(exp11cSep, "eb", 0.2)),
+    fmtRow("Maurer--Pontil, $\\alpha{=}0.1$", find(exp11cSep, "eb", 0.1)),
+  ];
+  writeFileSync(
+    "paper/tabledeploy.tex",
+    `% GENERATED by scripts/experiments/gen-paper-assets.ts from exp11c-deployment-bounds.json
+% and exp11c-deployment-bounds-v4.json. Do not edit by hand.
+\\begin{tabular}{@{}lrrrrr@{}}
+\\toprule
+Regime & oracle calls & FALSE look / flips & reused & savings & audited error \\\\
+\\midrule
+${lines.join("\n")}
+\\bottomrule
+\\end{tabular}
+`,
+  );
+}
 
 writeFileSync(
   "paper/macros.tex",

@@ -21,7 +21,9 @@ sed -e 's#\\input{\.\./#\\input{#g' \
     -e 's#\\newcommand{\\paperroot}{\.\.}#\\newcommand{\\paperroot}{.}#' \
     paper/ieee/main.tex > "$OUT/src/main.tex"
 # 2. Shared prose and generated inputs.
-cp paper/body.tex paper/macros.tex paper/figdata.tex paper/table1.tex paper/tablefam.tex "$OUT/src/"
+cp paper/body.tex paper/macros.tex paper/figdata.tex paper/table1.tex paper/tablefam.tex \
+   paper/tablebounds.tex paper/tablerates.tex paper/tablemodels.tex paper/tabledeploy.tex \
+   paper/tablefampairs.tex paper/tableboundsgrid.tex "$OUT/src/"
 # 3. Vendored template (class, bst, fonts, maps, fd, logos) and the IEEE bib.
 cp paper/ieee/ieeeaccess.cls paper/ieee/IEEEtran.cls paper/ieee/IEEEtran.bst paper/ieee/spotcolor.sty \
    paper/ieee/t1-*.pfb paper/ieee/t1-*.tfm paper/ieee/t1-*.map paper/ieee/t1*.fd \
@@ -54,3 +56,66 @@ mkdir -p "$OUT/cover" && cp paper/ieee/cover-letter.tex "$OUT/cover/" \
   && cp "$OUT/cover/cover-letter.pdf" "$OUT/cover-letter.pdf"
 echo "cover letter: $OUT/cover-letter.pdf ($(/usr/bin/grep -o 'Output written on cover-letter.pdf ([0-9]* pages\?' "$OUT/cover/cover-letter.log" | /usr/bin/grep -o '[0-9]* pages\?'))"
 echo "packed: $OUT/manuscript.pdf ($PAGES_FLAT), $OUT/source.zip ($(du -h "$OUT/source.zip" | cut -f1); flat, with main.bbl and main.pdf)"
+
+# 7. Resubmission deliverables (IEEE Access reject-with-resubmission): the
+#    point-by-point response to reviewers rendered from paper/ieee/response.md,
+#    and a "Highlighted PDF" with every change marked, built by latexdiff
+#    against the source submitted under the git tag DIFF_BASE_TAG.
+if [ -f paper/ieee/response.md ]; then
+  pandoc paper/ieee/response.md -o "$OUT/response-to-reviewers.docx"
+  pandoc paper/ieee/response.md -o "$OUT/response-to-reviewers.pdf" --pdf-engine=pdflatex \
+    -V geometry:margin=1in -V fontsize=11pt -V colorlinks=true
+  echo "response: $OUT/response-to-reviewers.docx and .pdf"
+fi
+DIFF_BASE_TAG="${DIFF_BASE_TAG:-ieee-access-submission-v1}"
+LATEXDIFF=$(kpsewhich latexdiff.pl 2>/dev/null || find "$(kpsewhich -var-value TEXMFDIST)/scripts/latexdiff" -name latexdiff.pl 2>/dev/null | head -1)
+# latexdiff needs Encode::Locale; Homebrew's perl ships without it, the
+# system perl may have it. Pick whichever can load the module.
+PERL=""
+for candidate in /usr/bin/perl "$(command -v perl)"; do
+  if [ -n "$candidate" ] && "$candidate" -MEncode::Locale -e 1 2>/dev/null; then PERL="$candidate"; break; fi
+done
+if [ -z "$PERL" ]; then
+  echo "highlighted PDF skipped: no perl with Encode::Locale (install with: cpanm Encode::Locale)"
+elif [ -n "$LATEXDIFF" ] && git rev-parse -q --verify "$DIFF_BASE_TAG" >/dev/null; then
+  rm -rf "$OUT/diff" && mkdir -p "$OUT/diff/old" "$OUT/diff/new"
+  # Old: the tagged sources, flattened the same way step 1 flattens the shell.
+  git show "$DIFF_BASE_TAG:paper/ieee/main.tex" \
+    | sed -e 's#\\input{\.\./#\\input{#g' -e 's#\\newcommand{\\paperroot}{\.\.}#\\newcommand{\\paperroot}{.}#' > "$OUT/diff/old/main.tex"
+  for f in body.tex macros.tex figdata.tex table1.tex tablefam.tex; do
+    git show "$DIFF_BASE_TAG:paper/$f" > "$OUT/diff/old/$f"
+  done
+  # New: the flattened sources of this package.
+  cp "$OUT"/src/*.tex "$OUT/diff/new/"
+  # latexdiff --flatten cannot resolve \input{\paperroot/...}; inline the
+  # root in both copies. The last-page stretch is a length argument latexdiff
+  # would mark up into a TeX error, and the highlighted copy paginates
+  # differently anyway.
+  for d in old new; do
+    sed -i '' -e 's#\\input{\\paperroot/#\\input{#g' "$OUT/diff/$d/body.tex"
+    sed -i '' -e '/\\enlargethispage/d' "$OUT/diff/$d/main.tex"
+  done
+  # tikz/pgfplots pictures, the algorithm block and the abstract's own
+  # environment are compared as wholes; math is not marked inside.
+  if ! "$PERL" "$LATEXDIFF" --flatten --math-markup=0 \
+      --preamble=paper/ieee/latexdiff-highlight.tex \
+      --config "PICTUREENV=(?:picture|DIFnomarkup|tikzpicture|axis)[\\w\\d*@]*" \
+      --config "FLOATENV=(?:figure|table|plate|algorithm)[\\w\\d*@]*" \
+      --exclude-safecmd=Description \
+      --exclude-textcmd=section,subsection,subsubsection,paragraph \
+      "$OUT/diff/old/main.tex" "$OUT/diff/new/main.tex" > "$OUT/diff/main.tex" 2> "$OUT/diff/latexdiff.log"; then
+    echo "latexdiff FAILED (see $OUT/diff/latexdiff.log)"; exit 1
+  fi
+  # Compile the diff beside the vendored template files.
+  cp "$OUT"/src/*.cls "$OUT"/src/*.bst "$OUT"/src/*.sty "$OUT"/src/*.pfb "$OUT"/src/*.tfm "$OUT"/src/*.map "$OUT"/src/*.fd "$OUT"/src/*.png "$OUT/src/refs.bib" "$OUT/diff/"
+  ( cd "$OUT/diff" && latexmk -pdf -interaction=nonstopmode -f main.tex >/dev/null 2>&1 ) || true
+  DIFF_ERRORS=$(/usr/bin/grep -c '^!' "$OUT/diff/main.log" 2>/dev/null || true)
+  if [ -f "$OUT/diff/main.pdf" ] && [ "${DIFF_ERRORS:-1}" = "0" ]; then
+    cp "$OUT/diff/main.pdf" "$OUT/highlighted.pdf"
+    echo "highlighted: $OUT/highlighted.pdf ($(/usr/bin/grep -o 'Output written on main.pdf ([0-9]* pages\?' "$OUT/diff/main.log" | /usr/bin/grep -o '[0-9]* pages\?'); diff base $DIFF_BASE_TAG)"
+  else
+    echo "highlighted PDF FAILED: $DIFF_ERRORS TeX errors in $OUT/diff/main.log"; exit 1
+  fi
+else
+  echo "highlighted PDF skipped (latexdiff or tag $DIFF_BASE_TAG missing)"
+fi

@@ -2,6 +2,7 @@
   "experiment": "exp12-secondmodel",
   "model": "google/gemini-2.5-flash-lite",
   "ranAt": "2026-08-15T00:00:00.000Z",
+  "bound": "exact",
   "n": 2000,
   "usableFloor": 2000,
   "usableEdit": 2000,
@@ -36,20 +37,20 @@
         "certifiedStrata": [
           "v=false"
         ],
-        "sampled": 225,
-        "reused": 1125,
+        "sampled": 90,
+        "reused": 1260,
         "realizedPresented": 0.00842911877394636,
-        "savings": 0.5625
+        "savings": 0.63
       },
       {
         "alpha": 0.2,
         "certifiedStrata": [
           "v=false"
         ],
-        "sampled": 135,
-        "reused": 1215,
+        "sampled": 90,
+        "reused": 1260,
         "realizedPresented": 0.00842911877394636,
-        "savings": 0.6075
+        "savings": 0.63
       }
     ]
   },
@@ -71,10 +72,10 @@
           "certifiedStrata": [
             "v=false"
           ],
-          "sampled": 405,
-          "reused": 1204,
-          "realizedPresented": 0.08248081841432225,
-          "savings": 0.602
+          "sampled": 135,
+          "reused": 1474,
+          "realizedPresented": 0.10294117647058823,
+          "savings": 0.737
         }
       ]
     },
@@ -18103,5 +18104,5 @@
       "a5": false
     }
   ],
-  "wallMs": 9
+  "wallMs": 10
 }

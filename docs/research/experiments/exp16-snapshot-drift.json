@@ -1,0 +1,7048 @@
+{
+  "experiment": "exp16-snapshot-drift",
+  "note": "same rows, same model id, same gateway, same prompts, T=0: August (versions 1, 2) against September 2026 (versions 5, 4) on the deployment sample path",
+  "model": "deepseek/deepseek-v4-flash-0731",
+  "snapshots": {
+    "august": "2026-08-04/05",
+    "september": "2026-09-29"
+  },
+  "seed": 42,
+  "sample": {
+    "false": 720,
+    "true": 45
+  },
+  "liveCalls": 752,
+  "ledgerSpendDeltaUsd": 0.164321919999999,
+  "strata": {
+    "false": {
+      "prefix": 720,
+      "augEdit": {
+        "n": 720,
+        "disagreements": 25,
+        "rate": 0.034722222222222224,
+        "wilson95": [
+          0.023627706907124773,
+          0.050755417798611945
+        ],
+        "directions": {
+          "false->true": 25
+        }
+      },
+      "sepEdit": {
+        "n": 720,
+        "disagreements": 50,
+        "rate": 0.06944444444444445,
+        "wilson95": [
+          0.05306977848314617,
+          0.09038923243858035
+        ],
+        "directions": {
+          "false->true": 50
+        }
+      },
+      "promptDrift": {
+        "n": 720,
+        "disagreements": 47,
+        "rate": 0.06527777777777778,
+        "wilson95": [
+          0.0494423877900049,
+          0.08572751678580286
+        ],
+        "directions": {
+          "false->true": 36,
+          "true->false": 11
+        }
+      },
+      "cacheDrift": {
+        "n": 720,
+        "disagreements": 32,
+        "rate": 0.044444444444444446,
+        "wilson95": [
+          0.03165563163799731,
+          0.062068741208216545
+        ],
+        "directions": {
+          "false->true": 32
+        }
+      },
+      "sepFresh": {
+        "n": 720,
+        "disagreements": 42,
+        "rate": 0.058333333333333334,
+        "wilson95": [
+          0.043442978359322884,
+          0.07791174897328688
+        ],
+        "directions": {
+          "true->false": 12,
+          "false->true": 30
+        }
+      },
+      "augVsSepEditPaired": {
+        "n": 720,
+        "onlyFirstFlips": 11,
+        "onlySecondFlips": 36,
+        "mcnemarP": 0.0003460011403149079
+      }
+    },
+    "true": {
+      "prefix": 45,
+      "augEdit": {
+        "n": 45,
+        "disagreements": 13,
+        "rate": 0.28888888888888886,
+        "wilson95": [
+          0.17729918031900158,
+          0.43368817472260224
+        ],
+        "directions": {
+          "true->false": 13
+        }
+      },
+      "sepEdit": {
+        "n": 45,
+        "disagreements": 11,
+        "rate": 0.24444444444444444,
+        "wilson95": [
+          0.14235335025509285,
+          0.3867366058479013
+        ],
+        "directions": {
+          "true->false": 11
+        }
+      },
+      "promptDrift": {
+        "n": 45,
+        "disagreements": 14,
+        "rate": 0.3111111111111111,
+        "wilson95": [
+          0.19528525463541907,
+          0.4566507998754897
+        ],
+        "directions": {
+          "true->false": 6,
+          "false->true": 8
+        }
+      },
+      "cacheDrift": {
+        "n": 45,
+        "disagreements": 12,
+        "rate": 0.26666666666666666,
+        "wilson95": [
+          0.15964748860054626,
+          0.4103911669717529
+        ],
+        "directions": {
+          "true->false": 12
+        }
+      },
+      "sepFresh": {
+        "n": 45,
+        "disagreements": 9,
+        "rate": 0.2,
+        "wilson95": [
+          0.10896004402509006,
+          0.3382325131392945
+        ],
+        "directions": {
+          "true->false": 4,
+          "false->true": 5
+        }
+      },
+      "augVsSepEditPaired": {
+        "n": 45,
+        "onlyFirstFlips": 8,
+        "onlySecondFlips": 6,
+        "mcnemarP": 0.7905273437500007
+      }
+    }
+  },
+  "draws": [
+    {
+      "stratum": "false",
+      "position": 1,
+      "row_id": "18168",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 2,
+      "row_id": "58641",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 3,
+      "row_id": "37028",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 4,
+      "row_id": "72038",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 5,
+      "row_id": "20002",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 6,
+      "row_id": "82851",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 7,
+      "row_id": "45683",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 8,
+      "row_id": "60953",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 9,
+      "row_id": "48839",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 10,
+      "row_id": "32316",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 11,
+      "row_id": "22344",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 12,
+      "row_id": "52633",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 13,
+      "row_id": "9169",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "true",
+      "sep_v5": "true"
+    },
+    {
+      "stratum": "false",
+      "position": 14,
+      "row_id": "70716",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 15,
+      "row_id": "34216",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 16,
+      "row_id": "70356",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 17,
+      "row_id": "34133",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 18,
+      "row_id": "5834",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 19,
+      "row_id": "60407",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 20,
+      "row_id": "6243",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 21,
+      "row_id": "14634",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 22,
+      "row_id": "81362",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 23,
+      "row_id": "65158",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 24,
+      "row_id": "32236",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 25,
+      "row_id": "15875",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 26,
+      "row_id": "17546",
+      "aug_v1": "false",
+      "aug_v2": "true",
+      "sep_v4": "true",
+      "sep_v5": "true"
+    },
+    {
+      "stratum": "false",
+      "position": 27,
+      "row_id": "64252",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 28,
+      "row_id": "62600",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 29,
+      "row_id": "44370",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "true"
+    },
+    {
+      "stratum": "false",
+      "position": 30,
+      "row_id": "73096",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "true"
+    },
+    {
+      "stratum": "false",
+      "position": 31,
+      "row_id": "56506",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 32,
+      "row_id": "54320",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 33,
+      "row_id": "60668",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 34,
+      "row_id": "52668",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 35,
+      "row_id": "57275",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 36,
+      "row_id": "54348",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 37,
+      "row_id": "32900",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 38,
+      "row_id": "32254",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 39,
+      "row_id": "71011",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 40,
+      "row_id": "57473",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 41,
+      "row_id": "82133",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 42,
+      "row_id": "52650",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 43,
+      "row_id": "44631",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 44,
+      "row_id": "25944",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 45,
+      "row_id": "77921",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 46,
+      "row_id": "77943",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 47,
+      "row_id": "26080",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "true",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 48,
+      "row_id": "57074",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 49,
+      "row_id": "65660",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 50,
+      "row_id": "54676",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 51,
+      "row_id": "78471",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 52,
+      "row_id": "89076",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 53,
+      "row_id": "66493",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 54,
+      "row_id": "36171",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 55,
+      "row_id": "48496",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "true",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 56,
+      "row_id": "74453",
+      "aug_v1": "false",
+      "aug_v2": "true",
+      "sep_v4": "true",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 57,
+      "row_id": "73436",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 58,
+      "row_id": "80045",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 59,
+      "row_id": "38779",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 60,
+      "row_id": "26146",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 61,
+      "row_id": "17263",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 62,
+      "row_id": "18373",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 63,
+      "row_id": "34012",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 64,
+      "row_id": "85687",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 65,
+      "row_id": "19823",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 66,
+      "row_id": "2388",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 67,
+      "row_id": "63128",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 68,
+      "row_id": "42188",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 69,
+      "row_id": "78064",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 70,
+      "row_id": "12611",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 71,
+      "row_id": "63252",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 72,
+      "row_id": "79931",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 73,
+      "row_id": "45915",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 74,
+      "row_id": "10680",
+      "aug_v1": "false",
+      "aug_v2": "true",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 75,
+      "row_id": "66504",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 76,
+      "row_id": "35542",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 77,
+      "row_id": "84266",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 78,
+      "row_id": "55470",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 79,
+      "row_id": "21138",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "true",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 80,
+      "row_id": "24517",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 81,
+      "row_id": "78214",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 82,
+      "row_id": "14171",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 83,
+      "row_id": "58373",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 84,
+      "row_id": "33975",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 85,
+      "row_id": "56782",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 86,
+      "row_id": "3454",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 87,
+      "row_id": "83878",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 88,
+      "row_id": "25010",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 89,
+      "row_id": "11790",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 90,
+      "row_id": "76723",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 91,
+      "row_id": "7658",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 92,
+      "row_id": "71681",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 93,
+      "row_id": "8575",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "true",
+      "sep_v5": "true"
+    },
+    {
+      "stratum": "false",
+      "position": 94,
+      "row_id": "63456",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 95,
+      "row_id": "42215",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 96,
+      "row_id": "29820",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 97,
+      "row_id": "70782",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 98,
+      "row_id": "39091",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 99,
+      "row_id": "14264",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 100,
+      "row_id": "11978",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 101,
+      "row_id": "87353",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 102,
+      "row_id": "47585",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 103,
+      "row_id": "83628",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 104,
+      "row_id": "24556",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 105,
+      "row_id": "36385",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 106,
+      "row_id": "53420",
+      "aug_v1": "false",
+      "aug_v2": "true",
+      "sep_v4": "true",
+      "sep_v5": "true"
+    },
+    {
+      "stratum": "false",
+      "position": 107,
+      "row_id": "24595",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "true",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 108,
+      "row_id": "77121",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 109,
+      "row_id": "49540",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 110,
+      "row_id": "52344",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 111,
+      "row_id": "52531",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 112,
+      "row_id": "82087",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 113,
+      "row_id": "33623",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 114,
+      "row_id": "74542",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 115,
+      "row_id": "64524",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 116,
+      "row_id": "77103",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 117,
+      "row_id": "79158",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 118,
+      "row_id": "81326",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 119,
+      "row_id": "35648",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 120,
+      "row_id": "39849",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 121,
+      "row_id": "83011",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 122,
+      "row_id": "7610",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 123,
+      "row_id": "53696",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "true"
+    },
+    {
+      "stratum": "false",
+      "position": 124,
+      "row_id": "42994",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 125,
+      "row_id": "35511",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 126,
+      "row_id": "77490",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 127,
+      "row_id": "53975",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 128,
+      "row_id": "11531",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 129,
+      "row_id": "26442",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 130,
+      "row_id": "1147",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "true",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 131,
+      "row_id": "1953",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 132,
+      "row_id": "36060",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 133,
+      "row_id": "29563",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 134,
+      "row_id": "46277",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 135,
+      "row_id": "66707",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 136,
+      "row_id": "9499",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 137,
+      "row_id": "81888",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 138,
+      "row_id": "13519",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 139,
+      "row_id": "2084",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 140,
+      "row_id": "49087",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 141,
+      "row_id": "24370",
+      "aug_v1": "false",
+      "aug_v2": "true",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 142,
+      "row_id": "37670",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 143,
+      "row_id": "55870",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 144,
+      "row_id": "935",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 145,
+      "row_id": "79697",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 146,
+      "row_id": "26466",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 147,
+      "row_id": "27811",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 148,
+      "row_id": "36657",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 149,
+      "row_id": "70575",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 150,
+      "row_id": "71882",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 151,
+      "row_id": "69592",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 152,
+      "row_id": "58534",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 153,
+      "row_id": "18273",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 154,
+      "row_id": "3447",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 155,
+      "row_id": "86319",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 156,
+      "row_id": "6031",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 157,
+      "row_id": "56123",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 158,
+      "row_id": "26497",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 159,
+      "row_id": "63256",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 160,
+      "row_id": "23617",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 161,
+      "row_id": "61398",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 162,
+      "row_id": "74066",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 163,
+      "row_id": "54223",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 164,
+      "row_id": "19014",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 165,
+      "row_id": "21047",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 166,
+      "row_id": "39942",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 167,
+      "row_id": "58055",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 168,
+      "row_id": "40521",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "true",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 169,
+      "row_id": "18749",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 170,
+      "row_id": "67536",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 171,
+      "row_id": "13028",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 172,
+      "row_id": "29303",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 173,
+      "row_id": "85144",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 174,
+      "row_id": "61179",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 175,
+      "row_id": "11966",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 176,
+      "row_id": "56314",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 177,
+      "row_id": "88889",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 178,
+      "row_id": "41521",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 179,
+      "row_id": "26831",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 180,
+      "row_id": "76648",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 181,
+      "row_id": "33780",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 182,
+      "row_id": "13126",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 183,
+      "row_id": "38343",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 184,
+      "row_id": "77399",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 185,
+      "row_id": "30192",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 186,
+      "row_id": "55541",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 187,
+      "row_id": "67108",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 188,
+      "row_id": "78210",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 189,
+      "row_id": "15324",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 190,
+      "row_id": "20598",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 191,
+      "row_id": "27052",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 192,
+      "row_id": "48597",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 193,
+      "row_id": "1481",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 194,
+      "row_id": "23367",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 195,
+      "row_id": "24654",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 196,
+      "row_id": "42506",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 197,
+      "row_id": "82840",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 198,
+      "row_id": "38693",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "true",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 199,
+      "row_id": "71086",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 200,
+      "row_id": "13741",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 201,
+      "row_id": "57602",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 202,
+      "row_id": "39702",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 203,
+      "row_id": "11148",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 204,
+      "row_id": "49533",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 205,
+      "row_id": "18385",
+      "aug_v1": "false",
+      "aug_v2": "true",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 206,
+      "row_id": "85432",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 207,
+      "row_id": "59658",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 208,
+      "row_id": "70271",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 209,
+      "row_id": "80626",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 210,
+      "row_id": "87118",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 211,
+      "row_id": "23503",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 212,
+      "row_id": "52195",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 213,
+      "row_id": "75903",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 214,
+      "row_id": "51411",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 215,
+      "row_id": "76070",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 216,
+      "row_id": "76186",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 217,
+      "row_id": "25482",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 218,
+      "row_id": "72300",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 219,
+      "row_id": "53144",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 220,
+      "row_id": "50992",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "true"
+    },
+    {
+      "stratum": "false",
+      "position": 221,
+      "row_id": "18663",
+      "aug_v1": "false",
+      "aug_v2": "true",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 222,
+      "row_id": "97",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 223,
+      "row_id": "66085",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 224,
+      "row_id": "22369",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 225,
+      "row_id": "83296",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 226,
+      "row_id": "48897",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 227,
+      "row_id": "19662",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 228,
+      "row_id": "52616",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 229,
+      "row_id": "13799",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 230,
+      "row_id": "61724",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 231,
+      "row_id": "2342",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 232,
+      "row_id": "84476",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 233,
+      "row_id": "15709",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 234,
+      "row_id": "16355",
+      "aug_v1": "false",
+      "aug_v2": "true",
+      "sep_v4": "true",
+      "sep_v5": "true"
+    },
+    {
+      "stratum": "false",
+      "position": 235,
+      "row_id": "37655",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 236,
+      "row_id": "64915",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 237,
+      "row_id": "26459",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 238,
+      "row_id": "24479",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 239,
+      "row_id": "25411",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 240,
+      "row_id": "84561",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 241,
+      "row_id": "46244",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 242,
+      "row_id": "1485",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 243,
+      "row_id": "22822",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "true",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 244,
+      "row_id": "63499",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 245,
+      "row_id": "81007",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 246,
+      "row_id": "55045",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 247,
+      "row_id": "46427",
+      "aug_v1": "false",
+      "aug_v2": "true",
+      "sep_v4": "true",
+      "sep_v5": "true"
+    },
+    {
+      "stratum": "false",
+      "position": 248,
+      "row_id": "1472",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 249,
+      "row_id": "37683",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 250,
+      "row_id": "46983",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 251,
+      "row_id": "44977",
+      "aug_v1": "false",
+      "aug_v2": "true",
+      "sep_v4": "true",
+      "sep_v5": "true"
+    },
+    {
+      "stratum": "false",
+      "position": 252,
+      "row_id": "82876",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 253,
+      "row_id": "72291",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 254,
+      "row_id": "62620",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 255,
+      "row_id": "34821",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 256,
+      "row_id": "42989",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 257,
+      "row_id": "7480",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 258,
+      "row_id": "49649",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 259,
+      "row_id": "19465",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 260,
+      "row_id": "66426",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 261,
+      "row_id": "58169",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 262,
+      "row_id": "65680",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 263,
+      "row_id": "21078",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 264,
+      "row_id": "4374",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 265,
+      "row_id": "9648",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 266,
+      "row_id": "59388",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 267,
+      "row_id": "3021",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 268,
+      "row_id": "37491",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 269,
+      "row_id": "62287",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 270,
+      "row_id": "46900",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 271,
+      "row_id": "51419",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 272,
+      "row_id": "48436",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 273,
+      "row_id": "756",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 274,
+      "row_id": "39837",
+      "aug_v1": "false",
+      "aug_v2": "true",
+      "sep_v4": "true",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 275,
+      "row_id": "5379",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 276,
+      "row_id": "75715",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 277,
+      "row_id": "21355",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 278,
+      "row_id": "64200",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 279,
+      "row_id": "83476",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 280,
+      "row_id": "69002",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 281,
+      "row_id": "26729",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 282,
+      "row_id": "62183",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 283,
+      "row_id": "28878",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 284,
+      "row_id": "55305",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 285,
+      "row_id": "27795",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 286,
+      "row_id": "74243",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 287,
+      "row_id": "27363",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 288,
+      "row_id": "69806",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 289,
+      "row_id": "35421",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 290,
+      "row_id": "63967",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 291,
+      "row_id": "45469",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 292,
+      "row_id": "58477",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 293,
+      "row_id": "70488",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 294,
+      "row_id": "47847",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 295,
+      "row_id": "30191",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 296,
+      "row_id": "85906",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 297,
+      "row_id": "61965",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 298,
+      "row_id": "67427",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 299,
+      "row_id": "40594",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 300,
+      "row_id": "35880",
+      "aug_v1": "false",
+      "aug_v2": "true",
+      "sep_v4": "true",
+      "sep_v5": "true"
+    },
+    {
+      "stratum": "false",
+      "position": 301,
+      "row_id": "72684",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 302,
+      "row_id": "27674",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 303,
+      "row_id": "65691",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 304,
+      "row_id": "6754",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 305,
+      "row_id": "53543",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 306,
+      "row_id": "83015",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 307,
+      "row_id": "20040",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 308,
+      "row_id": "28121",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 309,
+      "row_id": "58902",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 310,
+      "row_id": "18336",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 311,
+      "row_id": "88650",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 312,
+      "row_id": "266",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 313,
+      "row_id": "34627",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 314,
+      "row_id": "85321",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 315,
+      "row_id": "85612",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 316,
+      "row_id": "7099",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 317,
+      "row_id": "67907",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 318,
+      "row_id": "64783",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 319,
+      "row_id": "66477",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 320,
+      "row_id": "17953",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 321,
+      "row_id": "76952",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 322,
+      "row_id": "24599",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "true"
+    },
+    {
+      "stratum": "false",
+      "position": 323,
+      "row_id": "58710",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "true"
+    },
+    {
+      "stratum": "false",
+      "position": 324,
+      "row_id": "56930",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 325,
+      "row_id": "78457",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 326,
+      "row_id": "61288",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 327,
+      "row_id": "16179",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 328,
+      "row_id": "2551",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 329,
+      "row_id": "63786",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 330,
+      "row_id": "5347",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 331,
+      "row_id": "53493",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 332,
+      "row_id": "6935",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 333,
+      "row_id": "58558",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 334,
+      "row_id": "31712",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 335,
+      "row_id": "76928",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 336,
+      "row_id": "72954",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 337,
+      "row_id": "22207",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 338,
+      "row_id": "27348",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 339,
+      "row_id": "86770",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 340,
+      "row_id": "85763",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 341,
+      "row_id": "41077",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 342,
+      "row_id": "28079",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 343,
+      "row_id": "65750",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 344,
+      "row_id": "60539",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "true",
+      "sep_v5": "true"
+    },
+    {
+      "stratum": "false",
+      "position": 345,
+      "row_id": "88",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 346,
+      "row_id": "87074",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 347,
+      "row_id": "19025",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 348,
+      "row_id": "43954",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 349,
+      "row_id": "49550",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "true",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 350,
+      "row_id": "14614",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 351,
+      "row_id": "24892",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 352,
+      "row_id": "23461",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 353,
+      "row_id": "11533",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 354,
+      "row_id": "1875",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 355,
+      "row_id": "68992",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 356,
+      "row_id": "78293",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 357,
+      "row_id": "74279",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 358,
+      "row_id": "81335",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 359,
+      "row_id": "81021",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 360,
+      "row_id": "5095",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 361,
+      "row_id": "37501",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 362,
+      "row_id": "41989",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 363,
+      "row_id": "35359",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 364,
+      "row_id": "18377",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 365,
+      "row_id": "38868",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 366,
+      "row_id": "36291",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 367,
+      "row_id": "55296",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "true",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 368,
+      "row_id": "19410",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 369,
+      "row_id": "67106",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 370,
+      "row_id": "40377",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 371,
+      "row_id": "17278",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 372,
+      "row_id": "12884",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 373,
+      "row_id": "88511",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 374,
+      "row_id": "65409",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 375,
+      "row_id": "52138",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 376,
+      "row_id": "57879",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 377,
+      "row_id": "3003",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 378,
+      "row_id": "59671",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 379,
+      "row_id": "49563",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 380,
+      "row_id": "38204",
+      "aug_v1": "false",
+      "aug_v2": "true",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 381,
+      "row_id": "40023",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "true",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 382,
+      "row_id": "15464",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 383,
+      "row_id": "86185",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 384,
+      "row_id": "48306",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 385,
+      "row_id": "81584",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 386,
+      "row_id": "17787",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 387,
+      "row_id": "75058",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 388,
+      "row_id": "34590",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 389,
+      "row_id": "9974",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 390,
+      "row_id": "47624",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 391,
+      "row_id": "6384",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 392,
+      "row_id": "15212",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 393,
+      "row_id": "16069",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 394,
+      "row_id": "77936",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 395,
+      "row_id": "85093",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 396,
+      "row_id": "20765",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 397,
+      "row_id": "52559",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 398,
+      "row_id": "19975",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 399,
+      "row_id": "5372",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 400,
+      "row_id": "8361",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 401,
+      "row_id": "14301",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 402,
+      "row_id": "23228",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 403,
+      "row_id": "55937",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 404,
+      "row_id": "22607",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 405,
+      "row_id": "9871",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 406,
+      "row_id": "26717",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 407,
+      "row_id": "31014",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 408,
+      "row_id": "9269",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 409,
+      "row_id": "65825",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 410,
+      "row_id": "78741",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 411,
+      "row_id": "23074",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "true",
+      "sep_v5": "true"
+    },
+    {
+      "stratum": "false",
+      "position": 412,
+      "row_id": "49404",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 413,
+      "row_id": "40808",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 414,
+      "row_id": "6340",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 415,
+      "row_id": "57319",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 416,
+      "row_id": "41264",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "true"
+    },
+    {
+      "stratum": "false",
+      "position": 417,
+      "row_id": "5183",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 418,
+      "row_id": "37455",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 419,
+      "row_id": "20680",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 420,
+      "row_id": "33483",
+      "aug_v1": "false",
+      "aug_v2": "true",
+      "sep_v4": "false",
+      "sep_v5": "true"
+    },
+    {
+      "stratum": "false",
+      "position": 421,
+      "row_id": "51803",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 422,
+      "row_id": "41244",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 423,
+      "row_id": "67123",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 424,
+      "row_id": "27651",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 425,
+      "row_id": "48284",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 426,
+      "row_id": "17094",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 427,
+      "row_id": "15926",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 428,
+      "row_id": "34508",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 429,
+      "row_id": "32183",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 430,
+      "row_id": "71884",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 431,
+      "row_id": "56667",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 432,
+      "row_id": "65425",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 433,
+      "row_id": "50937",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 434,
+      "row_id": "50260",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 435,
+      "row_id": "51191",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 436,
+      "row_id": "66652",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 437,
+      "row_id": "2225",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 438,
+      "row_id": "42165",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 439,
+      "row_id": "278",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 440,
+      "row_id": "24733",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 441,
+      "row_id": "123",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 442,
+      "row_id": "2866",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 443,
+      "row_id": "79773",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 444,
+      "row_id": "22747",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "true",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 445,
+      "row_id": "24476",
+      "aug_v1": "false",
+      "aug_v2": "true",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 446,
+      "row_id": "23130",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 447,
+      "row_id": "56496",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 448,
+      "row_id": "7010",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 449,
+      "row_id": "8453",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 450,
+      "row_id": "70677",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 451,
+      "row_id": "21931",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 452,
+      "row_id": "21484",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 453,
+      "row_id": "7777",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 454,
+      "row_id": "473",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 455,
+      "row_id": "27653",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 456,
+      "row_id": "46239",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 457,
+      "row_id": "7719",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 458,
+      "row_id": "86326",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 459,
+      "row_id": "73958",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "true",
+      "sep_v5": "true"
+    },
+    {
+      "stratum": "false",
+      "position": 460,
+      "row_id": "47141",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 461,
+      "row_id": "80182",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 462,
+      "row_id": "68279",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 463,
+      "row_id": "82585",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 464,
+      "row_id": "81471",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 465,
+      "row_id": "27103",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 466,
+      "row_id": "88979",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 467,
+      "row_id": "87275",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 468,
+      "row_id": "20636",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 469,
+      "row_id": "49283",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "true",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 470,
+      "row_id": "44069",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 471,
+      "row_id": "21861",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 472,
+      "row_id": "73564",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 473,
+      "row_id": "83728",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 474,
+      "row_id": "42972",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 475,
+      "row_id": "67656",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 476,
+      "row_id": "51599",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 477,
+      "row_id": "21039",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 478,
+      "row_id": "40953",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 479,
+      "row_id": "73122",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 480,
+      "row_id": "49043",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 481,
+      "row_id": "73866",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 482,
+      "row_id": "75399",
+      "aug_v1": "false",
+      "aug_v2": "true",
+      "sep_v4": "true",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 483,
+      "row_id": "67070",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 484,
+      "row_id": "16419",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 485,
+      "row_id": "18063",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "true",
+      "sep_v5": "true"
+    },
+    {
+      "stratum": "false",
+      "position": 486,
+      "row_id": "61304",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 487,
+      "row_id": "15932",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 488,
+      "row_id": "63412",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 489,
+      "row_id": "29211",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 490,
+      "row_id": "11247",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 491,
+      "row_id": "10570",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "true",
+      "sep_v5": "true"
+    },
+    {
+      "stratum": "false",
+      "position": 492,
+      "row_id": "29600",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 493,
+      "row_id": "32299",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 494,
+      "row_id": "24493",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 495,
+      "row_id": "4204",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 496,
+      "row_id": "78433",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 497,
+      "row_id": "17202",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 498,
+      "row_id": "46663",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 499,
+      "row_id": "31453",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 500,
+      "row_id": "28780",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 501,
+      "row_id": "34405",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 502,
+      "row_id": "79646",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 503,
+      "row_id": "79423",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 504,
+      "row_id": "52747",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 505,
+      "row_id": "52431",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 506,
+      "row_id": "4587",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 507,
+      "row_id": "86278",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 508,
+      "row_id": "89000",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 509,
+      "row_id": "38076",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 510,
+      "row_id": "6946",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "true",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 511,
+      "row_id": "47723",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 512,
+      "row_id": "27089",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 513,
+      "row_id": "16262",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 514,
+      "row_id": "6560",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 515,
+      "row_id": "74011",
+      "aug_v1": "false",
+      "aug_v2": "true",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 516,
+      "row_id": "24384",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 517,
+      "row_id": "49728",
+      "aug_v1": "false",
+      "aug_v2": "true",
+      "sep_v4": "false",
+      "sep_v5": "true"
+    },
+    {
+      "stratum": "false",
+      "position": 518,
+      "row_id": "24054",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 519,
+      "row_id": "4834",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 520,
+      "row_id": "40972",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 521,
+      "row_id": "82770",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 522,
+      "row_id": "69911",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 523,
+      "row_id": "76502",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 524,
+      "row_id": "21723",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 525,
+      "row_id": "30140",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 526,
+      "row_id": "64229",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 527,
+      "row_id": "16545",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 528,
+      "row_id": "73349",
+      "aug_v1": "false",
+      "aug_v2": "true",
+      "sep_v4": "true",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 529,
+      "row_id": "24006",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 530,
+      "row_id": "62609",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 531,
+      "row_id": "3782",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 532,
+      "row_id": "62880",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 533,
+      "row_id": "60432",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 534,
+      "row_id": "30831",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 535,
+      "row_id": "60735",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 536,
+      "row_id": "8780",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 537,
+      "row_id": "61917",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "true",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 538,
+      "row_id": "73058",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 539,
+      "row_id": "38862",
+      "aug_v1": "false",
+      "aug_v2": "true",
+      "sep_v4": "true",
+      "sep_v5": "true"
+    },
+    {
+      "stratum": "false",
+      "position": 540,
+      "row_id": "8980",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "true",
+      "sep_v5": "true"
+    },
+    {
+      "stratum": "false",
+      "position": 541,
+      "row_id": "67309",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 542,
+      "row_id": "33044",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 543,
+      "row_id": "64291",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 544,
+      "row_id": "44889",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 545,
+      "row_id": "60762",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 546,
+      "row_id": "45390",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 547,
+      "row_id": "685",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 548,
+      "row_id": "57967",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 549,
+      "row_id": "68348",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 550,
+      "row_id": "27927",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 551,
+      "row_id": "14595",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 552,
+      "row_id": "72943",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 553,
+      "row_id": "54471",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 554,
+      "row_id": "10868",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 555,
+      "row_id": "57735",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 556,
+      "row_id": "66572",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 557,
+      "row_id": "45461",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "true",
+      "sep_v5": "true"
+    },
+    {
+      "stratum": "false",
+      "position": 558,
+      "row_id": "22218",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "true",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 559,
+      "row_id": "69048",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 560,
+      "row_id": "20582",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 561,
+      "row_id": "3586",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 562,
+      "row_id": "12371",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 563,
+      "row_id": "54012",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 564,
+      "row_id": "11017",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 565,
+      "row_id": "10988",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 566,
+      "row_id": "38835",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "true",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 567,
+      "row_id": "49827",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 568,
+      "row_id": "59269",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 569,
+      "row_id": "82457",
+      "aug_v1": "false",
+      "aug_v2": "true",
+      "sep_v4": "true",
+      "sep_v5": "true"
+    },
+    {
+      "stratum": "false",
+      "position": 570,
+      "row_id": "69455",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 571,
+      "row_id": "28763",
+      "aug_v1": "false",
+      "aug_v2": "true",
+      "sep_v4": "true",
+      "sep_v5": "true"
+    },
+    {
+      "stratum": "false",
+      "position": 572,
+      "row_id": "22571",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 573,
+      "row_id": "38639",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 574,
+      "row_id": "64677",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 575,
+      "row_id": "29562",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 576,
+      "row_id": "31012",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 577,
+      "row_id": "1742",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 578,
+      "row_id": "39610",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 579,
+      "row_id": "20834",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 580,
+      "row_id": "900",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 581,
+      "row_id": "18788",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 582,
+      "row_id": "23922",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 583,
+      "row_id": "58919",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 584,
+      "row_id": "65302",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 585,
+      "row_id": "77641",
+      "aug_v1": "false",
+      "aug_v2": "true",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 586,
+      "row_id": "30181",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 587,
+      "row_id": "68923",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 588,
+      "row_id": "64290",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "true"
+    },
+    {
+      "stratum": "false",
+      "position": 589,
+      "row_id": "12308",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 590,
+      "row_id": "18070",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 591,
+      "row_id": "49010",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "true",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 592,
+      "row_id": "28867",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 593,
+      "row_id": "63219",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 594,
+      "row_id": "16969",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 595,
+      "row_id": "55538",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 596,
+      "row_id": "35394",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 597,
+      "row_id": "15975",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 598,
+      "row_id": "74693",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 599,
+      "row_id": "1666",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 600,
+      "row_id": "35658",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 601,
+      "row_id": "39430",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "true",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 602,
+      "row_id": "13993",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 603,
+      "row_id": "4661",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 604,
+      "row_id": "47041",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 605,
+      "row_id": "962",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "true"
+    },
+    {
+      "stratum": "false",
+      "position": 606,
+      "row_id": "18946",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 607,
+      "row_id": "51422",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 608,
+      "row_id": "87400",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 609,
+      "row_id": "50872",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 610,
+      "row_id": "19007",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "true",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 611,
+      "row_id": "68156",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 612,
+      "row_id": "19385",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 613,
+      "row_id": "36022",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 614,
+      "row_id": "11970",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 615,
+      "row_id": "47605",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 616,
+      "row_id": "69644",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 617,
+      "row_id": "54162",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "true",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 618,
+      "row_id": "50280",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 619,
+      "row_id": "24757",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 620,
+      "row_id": "85620",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 621,
+      "row_id": "31495",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 622,
+      "row_id": "47093",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 623,
+      "row_id": "28314",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 624,
+      "row_id": "34895",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 625,
+      "row_id": "26370",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 626,
+      "row_id": "16145",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 627,
+      "row_id": "53175",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 628,
+      "row_id": "25743",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 629,
+      "row_id": "3400",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 630,
+      "row_id": "48736",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 631,
+      "row_id": "66293",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 632,
+      "row_id": "46832",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 633,
+      "row_id": "34092",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 634,
+      "row_id": "68668",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 635,
+      "row_id": "4676",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 636,
+      "row_id": "26850",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 637,
+      "row_id": "44312",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 638,
+      "row_id": "54556",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "true",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 639,
+      "row_id": "51240",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 640,
+      "row_id": "24237",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 641,
+      "row_id": "17997",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 642,
+      "row_id": "62804",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 643,
+      "row_id": "23525",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 644,
+      "row_id": "49881",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 645,
+      "row_id": "43919",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 646,
+      "row_id": "7483",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 647,
+      "row_id": "4494",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 648,
+      "row_id": "9942",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 649,
+      "row_id": "50870",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 650,
+      "row_id": "14354",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 651,
+      "row_id": "79360",
+      "aug_v1": "false",
+      "aug_v2": "true",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 652,
+      "row_id": "69813",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "true"
+    },
+    {
+      "stratum": "false",
+      "position": 653,
+      "row_id": "29467",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 654,
+      "row_id": "12377",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 655,
+      "row_id": "56994",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 656,
+      "row_id": "27191",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "true",
+      "sep_v5": "true"
+    },
+    {
+      "stratum": "false",
+      "position": 657,
+      "row_id": "56767",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 658,
+      "row_id": "81492",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 659,
+      "row_id": "4569",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 660,
+      "row_id": "31555",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 661,
+      "row_id": "13038",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 662,
+      "row_id": "41000",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 663,
+      "row_id": "3935",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 664,
+      "row_id": "62247",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 665,
+      "row_id": "5812",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 666,
+      "row_id": "64088",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 667,
+      "row_id": "46336",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 668,
+      "row_id": "74252",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 669,
+      "row_id": "8969",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 670,
+      "row_id": "21048",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 671,
+      "row_id": "1523",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 672,
+      "row_id": "62604",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 673,
+      "row_id": "36033",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 674,
+      "row_id": "34840",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 675,
+      "row_id": "31232",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 676,
+      "row_id": "22894",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 677,
+      "row_id": "376",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 678,
+      "row_id": "77643",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 679,
+      "row_id": "2399",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 680,
+      "row_id": "16815",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 681,
+      "row_id": "10995",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 682,
+      "row_id": "79809",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 683,
+      "row_id": "58707",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 684,
+      "row_id": "26451",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 685,
+      "row_id": "74512",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 686,
+      "row_id": "41701",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 687,
+      "row_id": "77222",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 688,
+      "row_id": "45949",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "true",
+      "sep_v5": "true"
+    },
+    {
+      "stratum": "false",
+      "position": 689,
+      "row_id": "1605",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 690,
+      "row_id": "39964",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 691,
+      "row_id": "69203",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 692,
+      "row_id": "43588",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 693,
+      "row_id": "51989",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 694,
+      "row_id": "6044",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 695,
+      "row_id": "72477",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 696,
+      "row_id": "77253",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 697,
+      "row_id": "86012",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "true",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 698,
+      "row_id": "4754",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 699,
+      "row_id": "12738",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 700,
+      "row_id": "34844",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 701,
+      "row_id": "51244",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 702,
+      "row_id": "87935",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 703,
+      "row_id": "4143",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 704,
+      "row_id": "16606",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 705,
+      "row_id": "55527",
+      "aug_v1": "false",
+      "aug_v2": "true",
+      "sep_v4": "true",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 706,
+      "row_id": "67597",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 707,
+      "row_id": "87371",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 708,
+      "row_id": "73913",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 709,
+      "row_id": "26175",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 710,
+      "row_id": "40818",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 711,
+      "row_id": "56909",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 712,
+      "row_id": "18262",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 713,
+      "row_id": "19157",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "true",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 714,
+      "row_id": "51993",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 715,
+      "row_id": "64049",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 716,
+      "row_id": "80981",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 717,
+      "row_id": "70047",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 718,
+      "row_id": "28814",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 719,
+      "row_id": "48976",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "false",
+      "position": 720,
+      "row_id": "12971",
+      "aug_v1": "false",
+      "aug_v2": "false",
+      "sep_v4": "true",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "true",
+      "position": 1,
+      "row_id": "47814",
+      "aug_v1": "true",
+      "aug_v2": "true",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "true",
+      "position": 2,
+      "row_id": "3124",
+      "aug_v1": "true",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "true",
+      "position": 3,
+      "row_id": "14477",
+      "aug_v1": "true",
+      "aug_v2": "true",
+      "sep_v4": "true",
+      "sep_v5": "true"
+    },
+    {
+      "stratum": "true",
+      "position": 4,
+      "row_id": "11651",
+      "aug_v1": "true",
+      "aug_v2": "true",
+      "sep_v4": "true",
+      "sep_v5": "true"
+    },
+    {
+      "stratum": "true",
+      "position": 5,
+      "row_id": "57868",
+      "aug_v1": "true",
+      "aug_v2": "false",
+      "sep_v4": "true",
+      "sep_v5": "true"
+    },
+    {
+      "stratum": "true",
+      "position": 6,
+      "row_id": "57730",
+      "aug_v1": "true",
+      "aug_v2": "true",
+      "sep_v4": "false",
+      "sep_v5": "true"
+    },
+    {
+      "stratum": "true",
+      "position": 7,
+      "row_id": "14750",
+      "aug_v1": "true",
+      "aug_v2": "true",
+      "sep_v4": "true",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "true",
+      "position": 8,
+      "row_id": "4284",
+      "aug_v1": "true",
+      "aug_v2": "false",
+      "sep_v4": "true",
+      "sep_v5": "true"
+    },
+    {
+      "stratum": "true",
+      "position": 9,
+      "row_id": "77282",
+      "aug_v1": "true",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "true"
+    },
+    {
+      "stratum": "true",
+      "position": 10,
+      "row_id": "12908",
+      "aug_v1": "true",
+      "aug_v2": "true",
+      "sep_v4": "true",
+      "sep_v5": "true"
+    },
+    {
+      "stratum": "true",
+      "position": 11,
+      "row_id": "44988",
+      "aug_v1": "true",
+      "aug_v2": "true",
+      "sep_v4": "true",
+      "sep_v5": "true"
+    },
+    {
+      "stratum": "true",
+      "position": 12,
+      "row_id": "9586",
+      "aug_v1": "true",
+      "aug_v2": "true",
+      "sep_v4": "true",
+      "sep_v5": "true"
+    },
+    {
+      "stratum": "true",
+      "position": 13,
+      "row_id": "47440",
+      "aug_v1": "true",
+      "aug_v2": "true",
+      "sep_v4": "true",
+      "sep_v5": "true"
+    },
+    {
+      "stratum": "true",
+      "position": 14,
+      "row_id": "68942",
+      "aug_v1": "true",
+      "aug_v2": "true",
+      "sep_v4": "true",
+      "sep_v5": "true"
+    },
+    {
+      "stratum": "true",
+      "position": 15,
+      "row_id": "23891",
+      "aug_v1": "true",
+      "aug_v2": "true",
+      "sep_v4": "true",
+      "sep_v5": "true"
+    },
+    {
+      "stratum": "true",
+      "position": 16,
+      "row_id": "1006",
+      "aug_v1": "true",
+      "aug_v2": "true",
+      "sep_v4": "true",
+      "sep_v5": "true"
+    },
+    {
+      "stratum": "true",
+      "position": 17,
+      "row_id": "63243",
+      "aug_v1": "true",
+      "aug_v2": "false",
+      "sep_v4": "true",
+      "sep_v5": "true"
+    },
+    {
+      "stratum": "true",
+      "position": 18,
+      "row_id": "63830",
+      "aug_v1": "true",
+      "aug_v2": "true",
+      "sep_v4": "true",
+      "sep_v5": "true"
+    },
+    {
+      "stratum": "true",
+      "position": 19,
+      "row_id": "64062",
+      "aug_v1": "true",
+      "aug_v2": "true",
+      "sep_v4": "true",
+      "sep_v5": "true"
+    },
+    {
+      "stratum": "true",
+      "position": 20,
+      "row_id": "19650",
+      "aug_v1": "true",
+      "aug_v2": "true",
+      "sep_v4": "true",
+      "sep_v5": "true"
+    },
+    {
+      "stratum": "true",
+      "position": 21,
+      "row_id": "28808",
+      "aug_v1": "true",
+      "aug_v2": "true",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "true",
+      "position": 22,
+      "row_id": "41361",
+      "aug_v1": "true",
+      "aug_v2": "true",
+      "sep_v4": "true",
+      "sep_v5": "true"
+    },
+    {
+      "stratum": "true",
+      "position": 23,
+      "row_id": "45548",
+      "aug_v1": "true",
+      "aug_v2": "false",
+      "sep_v4": "true",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "true",
+      "position": 24,
+      "row_id": "25601",
+      "aug_v1": "true",
+      "aug_v2": "true",
+      "sep_v4": "true",
+      "sep_v5": "true"
+    },
+    {
+      "stratum": "true",
+      "position": 25,
+      "row_id": "63913",
+      "aug_v1": "true",
+      "aug_v2": "true",
+      "sep_v4": "true",
+      "sep_v5": "true"
+    },
+    {
+      "stratum": "true",
+      "position": 26,
+      "row_id": "1928",
+      "aug_v1": "true",
+      "aug_v2": "true",
+      "sep_v4": "true",
+      "sep_v5": "true"
+    },
+    {
+      "stratum": "true",
+      "position": 27,
+      "row_id": "16821",
+      "aug_v1": "true",
+      "aug_v2": "true",
+      "sep_v4": "false",
+      "sep_v5": "true"
+    },
+    {
+      "stratum": "true",
+      "position": 28,
+      "row_id": "51991",
+      "aug_v1": "true",
+      "aug_v2": "true",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "true",
+      "position": 29,
+      "row_id": "76938",
+      "aug_v1": "true",
+      "aug_v2": "false",
+      "sep_v4": "true",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "true",
+      "position": 30,
+      "row_id": "51128",
+      "aug_v1": "true",
+      "aug_v2": "true",
+      "sep_v4": "true",
+      "sep_v5": "true"
+    },
+    {
+      "stratum": "true",
+      "position": 31,
+      "row_id": "87037",
+      "aug_v1": "true",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "true",
+      "position": 32,
+      "row_id": "62857",
+      "aug_v1": "true",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "true"
+    },
+    {
+      "stratum": "true",
+      "position": 33,
+      "row_id": "24985",
+      "aug_v1": "true",
+      "aug_v2": "true",
+      "sep_v4": "true",
+      "sep_v5": "true"
+    },
+    {
+      "stratum": "true",
+      "position": 34,
+      "row_id": "66757",
+      "aug_v1": "true",
+      "aug_v2": "true",
+      "sep_v4": "true",
+      "sep_v5": "true"
+    },
+    {
+      "stratum": "true",
+      "position": 35,
+      "row_id": "50361",
+      "aug_v1": "true",
+      "aug_v2": "true",
+      "sep_v4": "true",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "true",
+      "position": 36,
+      "row_id": "46321",
+      "aug_v1": "true",
+      "aug_v2": "true",
+      "sep_v4": "true",
+      "sep_v5": "true"
+    },
+    {
+      "stratum": "true",
+      "position": 37,
+      "row_id": "77254",
+      "aug_v1": "true",
+      "aug_v2": "false",
+      "sep_v4": "true",
+      "sep_v5": "true"
+    },
+    {
+      "stratum": "true",
+      "position": 38,
+      "row_id": "32190",
+      "aug_v1": "true",
+      "aug_v2": "false",
+      "sep_v4": "true",
+      "sep_v5": "true"
+    },
+    {
+      "stratum": "true",
+      "position": 39,
+      "row_id": "16873",
+      "aug_v1": "true",
+      "aug_v2": "true",
+      "sep_v4": "true",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "true",
+      "position": 40,
+      "row_id": "10298",
+      "aug_v1": "true",
+      "aug_v2": "true",
+      "sep_v4": "true",
+      "sep_v5": "true"
+    },
+    {
+      "stratum": "true",
+      "position": 41,
+      "row_id": "84251",
+      "aug_v1": "true",
+      "aug_v2": "true",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "true",
+      "position": 42,
+      "row_id": "64851",
+      "aug_v1": "true",
+      "aug_v2": "true",
+      "sep_v4": "true",
+      "sep_v5": "true"
+    },
+    {
+      "stratum": "true",
+      "position": 43,
+      "row_id": "27501",
+      "aug_v1": "true",
+      "aug_v2": "false",
+      "sep_v4": "false",
+      "sep_v5": "false"
+    },
+    {
+      "stratum": "true",
+      "position": 44,
+      "row_id": "50883",
+      "aug_v1": "true",
+      "aug_v2": "true",
+      "sep_v4": "true",
+      "sep_v5": "true"
+    },
+    {
+      "stratum": "true",
+      "position": 45,
+      "row_id": "60689",
+      "aug_v1": "true",
+      "aug_v2": "false",
+      "sep_v4": "true",
+      "sep_v5": "true"
+    }
+  ],
+  "wallMs": 1728474
+}

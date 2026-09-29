@@ -8,29 +8,27 @@
 Arjun Lohan\\
 University of Southern California, Los Angeles, CA, USA\\
 lohan@usc.edu \quad ORCID 0009-0003-3605-1221\\[0.4em]
-15 August 2026\\[0.8em]
-To the Editor-in-Chief, IEEE Access\\[0.6em]
-\textbf{Cover letter for the submission ``Reuse, but Verify: Certified Maintenance of Table Cells Computed by Large Language Models under Prompt Edits''}
+October 2026\\[0.8em]
+To the Editor-in-Chief and the Associate Editor, IEEE Access\\[0.6em]
+\textbf{Cover letter for the resubmission of Access-2026-41149, ``Reuse, but Verify: Certified Maintenance of Table Cells Computed by Large Language Models under Prompt Edits''}
 
-Dear Editor,
+Dear Editors,
 
-I am submitting the manuscript ``Reuse, but Verify: Certified Maintenance of Table Cells Computed by Large Language Models under Prompt Edits'' for consideration as a Research Article in IEEE Access.
+I am resubmitting the manuscript above, which was reviewed under manuscript ID Access-2026-41149 and returned on 29 September 2026 with a decision of reject with resubmission allowed. I am grateful to the three reviewers: their comments were specific, and acting on them made the paper better rather than merely longer. The point-by-point response is uploaded under ``Author's Response Files''; the highlighted PDF marks every change.
 
-\textbf{Contribution.} Tables whose columns are computed by a language model from a natural-language prompt are now common in data-enrichment and analytics tools. When the prompt is edited, today's systems either recompute every cell or silently reuse stale ones. The paper formalizes the maintenance question, gives a certification procedure (sIVM) that bounds the expected false-reuse rate of each reused stratum by a user budget with a stated confidence, proves an impossibility floor set by the model's own self-disagreement rate, and evaluates on two public corpora with over 32,000 labeled cells, 1,000-replication bootstraps, and 396,000 known-rate calibration trials, with a replication across four further model families. All code, labels, and result artifacts are public, and every number in the manuscript is generated from those artifacts.
+\textbf{What changed.} The reviewers' central concern was that the headline results rested on a concentration bound (Maurer--Pontil) that the paper's own theorem did not prove for the sampling the procedure performs. The revision replaces it with the exact finite-population (hypergeometric) bound, which is valid for exactly that sampling by a short argument and is tighter than the empirical-Bernstein alternatives on a binary loss; Theorem 1 is now fully proven for the bound used, and every number in the manuscript was regenerated from the same stored labels and oracle draws. The results improved on every axis the reviewers raised: more configurations certify, at higher savings, on fewer oracle calls, and the deployment certificate a reviewer re-derived clears both budgets. Two studies were added: a direct test of the cross-row independence assumption, and a live re-certification of the deployment column 55 days after the original run, which measured provider-side model drift and showed the certifier refusing the budget the drift had made unsafe. The clarity requests (terminology before use, a notation table, an algorithm box, an appendix for the checker conditions, a reconciliation table for the flip-rate figures, model identifiers, product citations, reference locators, the template footer) are all addressed.
 
-\textbf{Prior dissemination (please read before the similarity report).} An earlier version of this manuscript, under the title ``Reuse, but Verify: Certified Maintenance of LLM-Computed Table Cells under Prompt Edits,'' is posted as a preprint on Zenodo, doi:10.5281/zenodo.21833641, deposited by me on 7 August 2026. It is a preprint only: it has not been submitted to, reviewed by, or published in any journal or conference. Because it is a near-verbatim earlier draft of this same manuscript, the CrossCheck/iThenticate report will show very high similarity to that single Zenodo record; that overlap is my own preprint, not duplicate publication. In line with IEEE's preprint policy, on acceptance I will update the Zenodo record to carry the IEEE citation and DOI.
+\textbf{Prior dissemination (please read before the similarity report).} An earlier version of this manuscript, under the title ``Reuse, but Verify: Certified Maintenance of LLM-Computed Table Cells under Prompt Edits,'' is posted as a preprint on Zenodo, doi:10.5281/zenodo.21833641, deposited by me on 7 August 2026. It is a preprint only: it has not been submitted to, reviewed by, or published in any journal or conference. The CrossCheck/iThenticate report will show high similarity to that single Zenodo record and to my own first submission of this manuscript; both are my own earlier drafts, not duplicate publication. On acceptance I will update the Zenodo record to carry the IEEE citation and DOI.
 
 \textbf{Related disclosures.}
 \begin{itemize}
 \item The manuscript is not under consideration elsewhere and has never been submitted to another venue.
-\item Single author; no co-authors, no funding, no conflicts of interest to declare.
+\item Single author, unchanged from the first submission; no co-authors, no funding, no conflicts of interest to declare.
 \item Editing of the manuscript text, and the coding of the system and experiment harness, were assisted by Claude (Anthropic); this is disclosed in the Acknowledgment as IEEE policy requires. All technical content, experimental design, measurements, and conclusions are my own and were verified by me.
 \item Datasets: Stack Overflow Developer Survey 2023 (ODbL 1.0 / DbCL 1.0) and the Djinni candidate-profile corpus (MIT), both public and used as distributed; no new human-subject data were collected.
 \end{itemize}
 
-Suggested subject areas: artificial intelligence, computational and artificial intelligence, databases, data engineering, machine learning.
-
-Thank you for considering the manuscript.
+Thank you for considering the revised manuscript.
 
 Sincerely,\\[0.8em]
 Arjun Lohan\\

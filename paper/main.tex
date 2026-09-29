@@ -37,6 +37,8 @@
 
 \usepackage{amsmath,amssymb}
 \usepackage{booktabs}
+\usepackage{algorithm}
+\usepackage{algorithmic}
 \usepackage{pgfplots}
 \pgfplotsset{compat=1.18}
 \usetikzlibrary{arrows.meta, positioning, calc}
@@ -55,6 +57,7 @@
 \newcommand{\secref}[1]{\S\ref{#1}}
 \newcommand{\figref}[1]{Figure~\ref{#1}}
 \newcommand{\paperroot}{.}
+\newcommand{\venueappendix}{\appendix}
 \newcommand{\venueroadmap}{}
 
 \begin{document}
@@ -80,11 +83,11 @@ When the prompt is edited, deployed systems face a choice:
 recompute every cell, which is expensive and rate-limited, or silently
 reuse stale ones, which incurs unbounded error. We present \sivm{}, a
 maintenance layer that certifies which cached cells may be reused after
-a prompt edit, bounding the expected false-reuse rate of each certified
-stratum by a user budget $\alpha$ with probability at least $1-\delta$.
+a prompt edit, bounding the false-reuse rate of each certified stratum
+by a user budget $\alpha$ with probability at least $1-\delta$.
 \sivm{} freezes cached-value strata, samples adaptively on a doubling
-look schedule, and bounds each stratum's flip rate with
-empirical-Bernstein confidence bounds; a strict mode certifies at a
+look schedule, and bounds each stratum's flip rate with an exact
+finite-population confidence bound; a strict mode certifies at a
 deflated threshold to bound the error of the reused cells alone. We
 also establish an impossibility floor: a model's rate of disagreement
 with itself under the unedited prompt floors the certifiable
@@ -92,17 +95,19 @@ budget. On two
 public corpora (\corpusSO\ Stack Overflow developer profiles;
 \corpusDjinni\ Djinni candidate CVs) with \labeledCells+ labeled cells
 and a production table system, a formatting-only edit certifies
-\benchSavings\ call savings at $\alpha{=}0.2$, the loose end of a
-measured savings--budget frontier, and at deployment scale
-\deployOracle\ oracle calls certify reuse of \deployReused\ of
-\deployN\ cells (\deploySavings\ fewer model calls). Every certified
-stratum in every seeded sweep, sampling replication, and known-rate
-calibration trial (\calTrials\ runs) held its budget, as the bound's
-conservatism guarantees. Certification reproduces on
-\famCertifyingOf\ further model families we ran, while which edits are
-benign varies by family. We
-release the system, the labels, and a benchmark of versioned
-prompt-edit pairs.
+\benchSavings\ call savings at $\alpha{=}0.2$ with \benchRealized\
+realized false-reuse, and at deployment scale \deployOracle\ oracle
+calls certify reuse of \deployReused\ of \deployN\ cells. Across
+\calTrials\ calibration runs with planted flip rates, unsafe
+certificates occur in at most \calUnsafeWorst\ of runs in any
+configuration, against a nominal per-stratum budget of
+\calNominalDelta. A second certification \driftDaysLater\ days later,
+against the same cache, detected provider-side model drift, refused the
+tightest budget, and re-certified the others. Certification reproduces
+on \famCertifyingOf\ further model families we ran, while which edits
+are benign varies by family. We release the system under a
+source-available noncommercial license, with the labels and a benchmark
+of versioned prompt-edit pairs.
 \end{abstract}
 
 \maketitle

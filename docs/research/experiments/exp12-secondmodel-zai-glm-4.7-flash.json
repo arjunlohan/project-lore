@@ -2,6 +2,7 @@
   "experiment": "exp12-secondmodel",
   "model": "zai/glm-4.7-flash",
   "ranAt": "2026-08-15T00:00:00.000Z",
+  "bound": "exact",
   "n": 2000,
   "usableFloor": 2000,
   "usableEdit": 1999,
@@ -44,10 +45,10 @@
         "certifiedStrata": [
           "v=true"
         ],
-        "sampled": 765,
-        "reused": 514,
-        "realizedPresented": 0.03808752025931929,
-        "savings": 0.257386079118678
+        "sampled": 135,
+        "reused": 1144,
+        "realizedPresented": 0.09643435980551053,
+        "savings": 0.5728592889334001
       }
     ]
   },
@@ -14053,5 +14054,5 @@
       "a3": true
     }
   ],
-  "wallMs": 9
+  "wallMs": 8
 }

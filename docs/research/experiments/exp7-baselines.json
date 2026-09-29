@@ -3,12 +3,12 @@
   "results": [
     {
       "label": "formatting-only",
-      "flipRate": 0.06,
-      "aucInteraction": 0.40756648936170214,
-      "aucVcache": 0.4676595744680851,
+      "flipRate": 0.0635,
+      "aucInteraction": 0.4061066712629955,
+      "aucVcache": 0.45359459538993824,
       "vcacheSimRange": [
-        0.9608828945475721,
-        0.9859162553031959
+        0.9609164094825835,
+        0.9859121372887806
       ],
       "aggregate": {
         "alpha0.05": {
@@ -21,57 +21,57 @@
         },
         "alpha0.1": {
           "certified": true,
-          "sampled": 1440,
-          "reused": 560,
-          "realized": 0.060714285714285714,
-          "realizedTrueSubgroup": 0.4523809523809524,
-          "savings": 0.28
+          "sampled": 360,
+          "reused": 1640,
+          "realized": 0.06463414634146342,
+          "realizedTrueSubgroup": 0.35333333333333333,
+          "savings": 0.8200000000000001
         },
         "alpha0.2": {
           "certified": true,
-          "sampled": 180,
-          "reused": 1820,
-          "realized": 0.05989010989010989,
-          "realizedTrueSubgroup": 0.3609467455621302,
-          "savings": 0.91
+          "sampled": 45,
+          "reused": 1955,
+          "realized": 0.0639386189258312,
+          "realizedTrueSubgroup": 0.37158469945355194,
+          "savings": 0.9775
         }
       },
       "b3": {
-        "meanPromptSimilarity": 0.9751592562997002,
+        "meanPromptSimilarity": 0.9751602969265339,
         "simRange": [
-          0.9608828945475721,
-          0.9859162553031959
+          0.9609164094825835,
+          0.9859121372887806
         ],
         "tauSweep": [
           {
             "tau": 0.9,
             "reusedFraction": 1,
-            "realizedErrorAmongReused": 0.06
+            "realizedErrorAmongReused": 0.0635
           },
           {
             "tau": 0.94,
             "reusedFraction": 1,
-            "realizedErrorAmongReused": 0.06
+            "realizedErrorAmongReused": 0.0635
           },
           {
             "tau": 0.95,
             "reusedFraction": 1,
-            "realizedErrorAmongReused": 0.06
+            "realizedErrorAmongReused": 0.0635
           },
           {
             "tau": 0.96,
             "reusedFraction": 1,
-            "realizedErrorAmongReused": 0.06
+            "realizedErrorAmongReused": 0.0635
           },
           {
             "tau": 0.97,
             "reusedFraction": 0.9105,
-            "realizedErrorAmongReused": 0.06315211422295441
+            "realizedErrorAmongReused": 0.06644700713893466
           },
           {
             "tau": 0.98,
-            "reusedFraction": 0.104,
-            "realizedErrorAmongReused": 0.04807692307692308
+            "reusedFraction": 0.1065,
+            "realizedErrorAmongReused": 0.056338028169014086
           },
           {
             "tau": 0.99,
@@ -84,11 +84,11 @@
     {
       "label": "scope-widening",
       "flipRate": 0.0945,
-      "aucInteraction": 0.6690711378729048,
-      "aucVcache": 0.4986925870415655,
+      "aucInteraction": 0.6690360787544664,
+      "aucVcache": 0.49899058954829245,
       "vcacheSimRange": [
-        0.9396043481227191,
-        0.9666858942839621
+        0.9395735520146781,
+        0.966690170013364
       ],
       "aggregate": {
         "alpha0.05": {
@@ -109,18 +109,18 @@
         },
         "alpha0.2": {
           "certified": true,
-          "sampled": 720,
-          "reused": 1280,
-          "realized": 0.09453125,
-          "realizedTrueSubgroup": 0.4411764705882353,
-          "savings": 0.64
+          "sampled": 90,
+          "reused": 1910,
+          "realized": 0.093717277486911,
+          "realizedTrueSubgroup": 0.44559585492227977,
+          "savings": 0.955
         }
       },
       "b3": {
-        "meanPromptSimilarity": 0.9540923437561764,
+        "meanPromptSimilarity": 0.9540948421773106,
         "simRange": [
-          0.9396043481227191,
-          0.9666858942839621
+          0.9395735520146781,
+          0.966690170013364
         ],
         "tauSweep": [
           {
@@ -135,13 +135,13 @@
           },
           {
             "tau": 0.95,
-            "reusedFraction": 0.8415,
-            "realizedErrorAmongReused": 0.09863339275103981
+            "reusedFraction": 0.8405,
+            "realizedErrorAmongReused": 0.09815585960737656
           },
           {
             "tau": 0.96,
-            "reusedFraction": 0.0815,
-            "realizedErrorAmongReused": 0.07975460122699386
+            "reusedFraction": 0.081,
+            "realizedErrorAmongReused": 0.08024691358024691
           },
           {
             "tau": 0.97,

@@ -18,25 +18,34 @@ const src = readFileSync("paper/refs.bib", "utf8");
 // Entries never contain '@' internally, so a lazy [^@] scan cannot cross
 // into the next entry. Only arXiv @misc entries (eprint present; no other
 // locator field) need the howpublished line.
+// A reviewer asked which references are peer reviewed, so the arXiv-only
+// entries are labelled as preprints, not only located.
 let out = src.replace(/@misc\{[^@]*?\n\}/g, (entry) => {
   if (/howpublished|\burl\s*=|\bdoi\s*=/.test(entry)) return entry;
   const ep = entry.match(/eprint\s*=\s*\{([^}]+)\}/);
   if (!ep) return entry;
   return entry.replace(
     /(\n\s*eprint\s*=)/,
-    `\n  howpublished = {arXiv:${ep[1]}},$1`,
+    `\n  howpublished = {arXiv preprint arXiv:${ep[1]}},$1`,
   );
 });
 // IEEEtran.bst also has no doi field. IEEE reference style prints DOIs, so
-// carry each entry's DOI in its note (appended when a note exists).
+// carry each entry's DOI in its note (appended when a note exists). The note
+// value may contain one level of braces ("{SIGMOD} 2026"); the first
+// submission's regex stopped at the inner brace and printed
+// "SIGMOD; doi:... 2026", which a reviewer read as a DOI with the year
+// appended.
 let doisAdded = 0;
 out = out.replace(/@\w+\{[^@]*?\n\}/g, (entry) => {
-  const doi = entry.match(/\n\s*doi\s*=\s*\{([^}]+)\}/);
-  if (!doi) return entry;
+  const doiField = entry.match(/\n\s*doi\s*=\s*\{([^}]+)\}/);
+  if (!doiField) return entry;
   doisAdded++;
-  const note = entry.match(/\n(\s*)note\s*=\s*\{([^}]*)\}/);
+  // A DOI in a note is typeset as text: underscores must be escaped or
+  // pdfTeX opens math mode (10.1162/coli_a_00502 broke the build once).
+  const doi = [doiField[0], doiField[1]!.replace(/_/g, "\\_")];
+  const note = entry.match(/\n(\s*)note\s*=\s*\{((?:[^{}]|\{[^{}]*\})*)\}/);
   if (note) {
-    return entry.replace(note[0], `\n${note[1]}note = {${note[2]}; doi:${doi[1]}}`);
+    return entry.replace(note[0], `\n${note[1]}note = {${note[2]}, doi:${doi[1]}}`);
   }
   return entry.replace(/\n\}$/, `,\n  note = {doi:${doi[1]}}\n}`);
 });
@@ -46,5 +55,5 @@ const header = `% GENERATED from paper/refs.bib by scripts/gen-ieee-refs.ts; do 
 % howpublished here. Edit paper/refs.bib and re-run pnpm build:paper:ieee.
 `;
 writeFileSync("paper/ieee/refs.bib", header + out);
-const added = out.match(/howpublished = \{arXiv:/g)?.length ?? 0;
+const added = out.match(/howpublished = \{arXiv preprint arXiv:/g)?.length ?? 0;
 console.log(`paper/ieee/refs.bib written; arXiv locators added: ${added}; DOIs carried into notes: ${doisAdded}`);

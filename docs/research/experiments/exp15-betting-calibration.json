@@ -1,7 +1,7 @@
 {
   "experiment": "exp15-betting-calibration",
   "note": "validity of the WSR betting bound as implemented, against the same pinned procedure; nulls planted just above each budget. Compared head to head with Maurer-Pontil on identical planted data.",
-  "trials": 2000,
+  "trials": 1000,
   "perStratumDelta": 0.05,
   "summary": {
     "eb": {
@@ -19,6 +19,14 @@
       "worstViolationRate": 1,
       "certRateAtCleanBig": 1,
       "avgSampledAtCleanBig": 180
+    },
+    "exact": {
+      "worstNullCertificationRate": 0.063,
+      "nullsExceedingDelta": 0,
+      "nullConfigurations": 18,
+      "worstViolationRate": 1,
+      "certRateAtCleanBig": 1,
+      "avgSampledAtCleanBig": 90
     }
   },
   "results": [
@@ -30,7 +38,7 @@
       "isNull": false,
       "certificationRate": 1,
       "certificationCi": [
-        0.9980828823994872,
+        0.9961731014136096,
         1
       ],
       "exceedsDelta": false,
@@ -43,14 +51,14 @@
       "size": 600,
       "p": 0.02,
       "isNull": false,
-      "certificationRate": 0.0045,
+      "certificationRate": 0.009,
       "certificationCi": [
-        0.0023692536086107156,
-        0.008530609933497604
+        0.004742006589011481,
+        0.017016007822824013
       ],
       "exceedsDelta": false,
       "violationRate": 0,
-      "avgSampled": 559.515
+      "avgSampled": 558.555
     },
     {
       "bound": "eb",
@@ -61,11 +69,11 @@
       "certificationRate": 0,
       "certificationCi": [
         0,
-        0.0019171176005129348
+        0.003826898586390522
       ],
       "exceedsDelta": false,
       "violationRate": 0,
-      "avgSampled": 367.6125
+      "avgSampled": 375.315
     },
     {
       "bound": "eb",
@@ -76,11 +84,11 @@
       "certificationRate": 0,
       "certificationCi": [
         0,
-        0.0019171176005129348
+        0.003826898586390522
       ],
       "exceedsDelta": false,
       "violationRate": 0,
-      "avgSampled": 221.8125
+      "avgSampled": 228.525
     },
     {
       "bound": "eb",
@@ -91,11 +99,11 @@
       "certificationRate": 0,
       "certificationCi": [
         0,
-        0.0019171176005129348
+        0.003826898586390522
       ],
       "exceedsDelta": false,
       "violationRate": 0,
-      "avgSampled": 145.86
+      "avgSampled": 145.2
     },
     {
       "bound": "eb",
@@ -106,11 +114,11 @@
       "certificationRate": 0,
       "certificationCi": [
         0,
-        0.0019171176005129348
+        0.003826898586390522
       ],
       "exceedsDelta": false,
       "violationRate": 0,
-      "avgSampled": 56.67
+      "avgSampled": 57.105
     },
     {
       "bound": "eb",
@@ -120,7 +128,7 @@
       "isNull": false,
       "certificationRate": 1,
       "certificationCi": [
-        0.9980828823994872,
+        0.9961731014136096,
         1
       ],
       "exceedsDelta": false,
@@ -133,14 +141,14 @@
       "size": 1800,
       "p": 0.02,
       "isNull": false,
-      "certificationRate": 0.887,
+      "certificationRate": 0.888,
       "certificationCi": [
-        0.8723762504573735,
-        0.9001399005198295
+        0.8669495617556403,
+        0.9060807649413208
       ],
       "exceedsDelta": false,
       "violationRate": 0,
-      "avgSampled": 1161.4275
+      "avgSampled": 1172.475
     },
     {
       "bound": "eb",
@@ -148,14 +156,14 @@
       "size": 1800,
       "p": 0.04,
       "isNull": false,
-      "certificationRate": 0.0005,
+      "certificationRate": 0.006,
       "certificationCi": [
-        0.00008826546015058273,
-        0.0028269350227618393
+        0.0027526315709082323,
+        0.013028344232445607
       ],
       "exceedsDelta": false,
       "violationRate": 0,
-      "avgSampled": 833.1975
+      "avgSampled": 865.44
     },
     {
       "bound": "eb",
@@ -166,11 +174,11 @@
       "certificationRate": 0,
       "certificationCi": [
         0,
-        0.0019171176005129348
+        0.003826898586390522
       ],
       "exceedsDelta": false,
       "violationRate": 0,
-      "avgSampled": 395.82
+      "avgSampled": 375.795
     },
     {
       "bound": "eb",
@@ -181,11 +189,11 @@
       "certificationRate": 0,
       "certificationCi": [
         0,
-        0.0019171176005129348
+        0.003826898586390522
       ],
       "exceedsDelta": false,
       "violationRate": 0,
-      "avgSampled": 170.9775
+      "avgSampled": 178.29
     },
     {
       "bound": "eb",
@@ -196,11 +204,11 @@
       "certificationRate": 0,
       "certificationCi": [
         0,
-        0.0019171176005129348
+        0.003826898586390522
       ],
       "exceedsDelta": false,
       "violationRate": 0,
-      "avgSampled": 55.8675
+      "avgSampled": 57.465
     },
     {
       "bound": "eb",
@@ -210,7 +218,7 @@
       "isNull": false,
       "certificationRate": 1,
       "certificationCi": [
-        0.9980828823994872,
+        0.9961731014136096,
         1
       ],
       "exceedsDelta": false,
@@ -223,14 +231,14 @@
       "size": 600,
       "p": 0.04,
       "isNull": false,
-      "certificationRate": 0.3065,
+      "certificationRate": 0.304,
       "certificationCi": [
-        0.28668096927289755,
-        0.32706095523850093
+        0.27628477537948626,
+        0.33321536886637887
       ],
       "exceedsDelta": false,
       "violationRate": 0,
-      "avgSampled": 509.7825
+      "avgSampled": 508.62
     },
     {
       "bound": "eb",
@@ -241,11 +249,11 @@
       "certificationRate": 0,
       "certificationCi": [
         0,
-        0.0019171176005129348
+        0.003826898586390522
       ],
       "exceedsDelta": false,
       "violationRate": 0,
-      "avgSampled": 398.04
+      "avgSampled": 393.825
     },
     {
       "bound": "eb",
@@ -256,11 +264,11 @@
       "certificationRate": 0,
       "certificationCi": [
         0,
-        0.0019171176005129348
+        0.003826898586390522
       ],
       "exceedsDelta": false,
       "violationRate": 0,
-      "avgSampled": 200.1225
+      "avgSampled": 188.31
     },
     {
       "bound": "eb",
@@ -271,11 +279,11 @@
       "certificationRate": 0,
       "certificationCi": [
         0,
-        0.0019171176005129348
+        0.003826898586390522
       ],
       "exceedsDelta": false,
       "violationRate": 0,
-      "avgSampled": 105.765
+      "avgSampled": 101.01
     },
     {
       "bound": "eb",
@@ -286,11 +294,11 @@
       "certificationRate": 0,
       "certificationCi": [
         0,
-        0.0019171176005129348
+        0.003826898586390522
       ],
       "exceedsDelta": false,
       "violationRate": 0,
-      "avgSampled": 46.9575
+      "avgSampled": 47.61
     },
     {
       "bound": "eb",
@@ -300,7 +308,7 @@
       "isNull": false,
       "certificationRate": 1,
       "certificationCi": [
-        0.9980828823994872,
+        0.9961731014136096,
         1
       ],
       "exceedsDelta": false,
@@ -313,14 +321,14 @@
       "size": 1800,
       "p": 0.04,
       "isNull": false,
-      "certificationRate": 0.9675,
+      "certificationRate": 0.966,
       "certificationCi": [
-        0.9587880815196924,
-        0.9744194135238281
+        0.952864531539886,
+        0.9755687989775981
       ],
       "exceedsDelta": false,
       "violationRate": 0,
-      "avgSampled": 638.7075
+      "avgSampled": 630.27
     },
     {
       "bound": "eb",
@@ -328,14 +336,14 @@
       "size": 1800,
       "p": 0.08,
       "isNull": false,
-      "certificationRate": 0.046,
+      "certificationRate": 0.048,
       "certificationCi": [
-        0.03765688480093504,
-        0.056083857980330706
+        0.036393116113688354,
+        0.06306640020840869
       ],
       "exceedsDelta": false,
       "violationRate": 0,
-      "avgSampled": 901.53
+      "avgSampled": 901.305
     },
     {
       "bound": "eb",
@@ -346,11 +354,11 @@
       "certificationRate": 0,
       "certificationCi": [
         0,
-        0.0019171176005129348
+        0.003826898586390522
       ],
       "exceedsDelta": false,
       "violationRate": 0,
-      "avgSampled": 319.275
+      "avgSampled": 305.91
     },
     {
       "bound": "eb",
@@ -361,11 +369,11 @@
       "certificationRate": 0,
       "certificationCi": [
         0,
-        0.0019171176005129348
+        0.003826898586390522
       ],
       "exceedsDelta": false,
       "violationRate": 0,
-      "avgSampled": 112.5
+      "avgSampled": 108.18
     },
     {
       "bound": "eb",
@@ -376,11 +384,11 @@
       "certificationRate": 0,
       "certificationCi": [
         0,
-        0.0019171176005129348
+        0.003826898586390522
       ],
       "exceedsDelta": false,
       "violationRate": 0,
-      "avgSampled": 47.115
+      "avgSampled": 47.205
     },
     {
       "bound": "eb",
@@ -390,7 +398,7 @@
       "isNull": false,
       "certificationRate": 1,
       "certificationCi": [
-        0.9980828823994872,
+        0.9961731014136096,
         1
       ],
       "exceedsDelta": false,
@@ -403,14 +411,14 @@
       "size": 600,
       "p": 0.08,
       "isNull": false,
-      "certificationRate": 0.9895,
+      "certificationRate": 0.984,
       "certificationCi": [
-        0.9840009764885571,
-        0.9931221653805409
+        0.9741677180358003,
+        0.9901278441325738
       ],
       "exceedsDelta": false,
       "violationRate": 0,
-      "avgSampled": 310.1175
+      "avgSampled": 310.35
     },
     {
       "bound": "eb",
@@ -418,14 +426,14 @@
       "size": 600,
       "p": 0.16,
       "isNull": false,
-      "certificationRate": 0.0045,
+      "certificationRate": 0.004,
       "certificationCi": [
-        0.0023692536086107156,
-        0.008530609933497604
+        0.0015565629678934289,
+        0.010239720429805971
       ],
       "exceedsDelta": false,
       "violationRate": 0,
-      "avgSampled": 469.11
+      "avgSampled": 467.595
     },
     {
       "bound": "eb",
@@ -436,11 +444,11 @@
       "certificationRate": 0,
       "certificationCi": [
         0,
-        0.0019171176005129348
+        0.003826898586390522
       ],
       "exceedsDelta": false,
       "violationRate": 0,
-      "avgSampled": 194.295
+      "avgSampled": 172.665
     },
     {
       "bound": "eb",
@@ -451,11 +459,11 @@
       "certificationRate": 0,
       "certificationCi": [
         0,
-        0.0019171176005129348
+        0.003826898586390522
       ],
       "exceedsDelta": false,
       "violationRate": 0,
-      "avgSampled": 78.69
+      "avgSampled": 75.48
     },
     {
       "bound": "eb",
@@ -466,11 +474,11 @@
       "certificationRate": 0,
       "certificationCi": [
         0,
-        0.0019171176005129348
+        0.003826898586390522
       ],
       "exceedsDelta": false,
       "violationRate": 0,
-      "avgSampled": 45.18
+      "avgSampled": 45.135
     },
     {
       "bound": "eb",
@@ -480,7 +488,7 @@
       "isNull": false,
       "certificationRate": 1,
       "certificationCi": [
-        0.9980828823994872,
+        0.9961731014136096,
         1
       ],
       "exceedsDelta": false,
@@ -493,14 +501,14 @@
       "size": 1800,
       "p": 0.08,
       "isNull": false,
-      "certificationRate": 0.9955,
+      "certificationRate": 0.993,
       "certificationCi": [
-        0.9914693900665025,
-        0.9976307463913894
+        0.985621503073051,
+        0.996605174920768
       ],
       "exceedsDelta": false,
       "violationRate": 0,
-      "avgSampled": 309.9825
+      "avgSampled": 311.985
     },
     {
       "bound": "eb",
@@ -508,14 +516,14 @@
       "size": 1800,
       "p": 0.16,
       "isNull": false,
-      "certificationRate": 0.419,
+      "certificationRate": 0.401,
       "certificationCi": [
-        0.3975514603493293,
-        0.4407591127019538
+        0.3710579007277139,
+        0.43169982519239153
       ],
       "exceedsDelta": false,
       "violationRate": 0,
-      "avgSampled": 1080.045
+      "avgSampled": 1076.085
     },
     {
       "bound": "eb",
@@ -526,11 +534,11 @@
       "certificationRate": 0,
       "certificationCi": [
         0,
-        0.0019171176005129348
+        0.003826898586390522
       ],
       "exceedsDelta": false,
       "violationRate": 0,
-      "avgSampled": 272.3625
+      "avgSampled": 294.3
     },
     {
       "bound": "eb",
@@ -541,11 +549,11 @@
       "certificationRate": 0,
       "certificationCi": [
         0,
-        0.0019171176005129348
+        0.003826898586390522
       ],
       "exceedsDelta": false,
       "violationRate": 0,
-      "avgSampled": 80.82
+      "avgSampled": 77.715
     },
     {
       "bound": "eb",
@@ -556,11 +564,11 @@
       "certificationRate": 0,
       "certificationCi": [
         0,
-        0.0019171176005129348
+        0.003826898586390522
       ],
       "exceedsDelta": false,
       "violationRate": 0,
-      "avgSampled": 45.18
+      "avgSampled": 45.09
     },
     {
       "bound": "betting",
@@ -570,7 +578,7 @@
       "isNull": false,
       "certificationRate": 1,
       "certificationCi": [
-        0.9980828823994872,
+        0.9961731014136096,
         1
       ],
       "exceedsDelta": false,
@@ -583,14 +591,14 @@
       "size": 600,
       "p": 0.02,
       "isNull": false,
-      "certificationRate": 0.7425,
+      "certificationRate": 0.747,
       "certificationCi": [
-        0.7228841972749136,
-        0.7611860006888377
+        0.7191448530975133,
+        0.7729646590008098
       ],
       "exceedsDelta": false,
       "violationRate": 0,
-      "avgSampled": 311.28
+      "avgSampled": 314.19
     },
     {
       "bound": "betting",
@@ -598,14 +606,14 @@
       "size": 600,
       "p": 0.04,
       "isNull": false,
-      "certificationRate": 0.113,
+      "certificationRate": 0.12,
       "certificationCi": [
-        0.0998600994801706,
-        0.12762374954262642
+        0.101298942978377,
+        0.1416094999472798
       ],
       "exceedsDelta": false,
       "violationRate": 0,
-      "avgSampled": 336.975
+      "avgSampled": 334.95
     },
     {
       "bound": "betting",
@@ -613,14 +621,14 @@
       "size": 600,
       "p": 0.0525,
       "isNull": true,
-      "certificationRate": 0.012,
+      "certificationRate": 0.018,
       "certificationCi": [
-        0.008077096183779808,
-        0.017794010594320817
+        0.011415645858738456,
+        0.02827348437854201
       ],
       "exceedsDelta": false,
-      "violationRate": 0.041666666666666664,
-      "avgSampled": 216.195
+      "violationRate": 0,
+      "avgSampled": 219.48
     },
     {
       "bound": "betting",
@@ -628,14 +636,14 @@
       "size": 600,
       "p": 0.0625,
       "isNull": true,
-      "certificationRate": 0.0045,
+      "certificationRate": 0.001,
       "certificationCi": [
-        0.0023692536086107156,
-        0.008530609933497604
+        0.00017654182905727116,
+        0.0056427029601604705
       ],
       "exceedsDelta": false,
-      "violationRate": 0.2222222222222222,
-      "avgSampled": 144.375
+      "violationRate": 0,
+      "avgSampled": 135
     },
     {
       "bound": "betting",
@@ -646,11 +654,11 @@
       "certificationRate": 0,
       "certificationCi": [
         0,
-        0.0019171176005129348
+        0.003826898586390522
       ],
       "exceedsDelta": false,
       "violationRate": 0,
-      "avgSampled": 55.3725
+      "avgSampled": 56.295
     },
     {
       "bound": "betting",
@@ -660,7 +668,7 @@
       "isNull": false,
       "certificationRate": 1,
       "certificationCi": [
-        0.9980828823994872,
+        0.9961731014136096,
         1
       ],
       "exceedsDelta": false,
@@ -673,14 +681,14 @@
       "size": 1800,
       "p": 0.02,
       "isNull": false,
-      "certificationRate": 0.924,
+      "certificationRate": 0.922,
       "certificationCi": [
-        0.911555787775863,
-        0.9348184964989021
+        0.9037170163353195,
+        0.937053081257767
       ],
       "exceedsDelta": false,
       "violationRate": 0,
-      "avgSampled": 343.8
+      "avgSampled": 355.32
     },
     {
       "bound": "betting",
@@ -688,14 +696,14 @@
       "size": 1800,
       "p": 0.04,
       "isNull": false,
-      "certificationRate": 0.2275,
+      "certificationRate": 0.201,
       "certificationCi": [
-        0.20965956201002323,
-        0.24638526708225636
+        0.17732680168555334,
+        0.22696168366910827
       ],
       "exceedsDelta": false,
-      "violationRate": 0,
-      "avgSampled": 674.7975
+      "violationRate": 0.004975124378109453,
+      "avgSampled": 663.345
     },
     {
       "bound": "betting",
@@ -703,14 +711,14 @@
       "size": 1800,
       "p": 0.0525,
       "isNull": true,
-      "certificationRate": 0.019,
+      "certificationRate": 0.022,
       "certificationCi": [
-        0.013873705235344511,
-        0.025970561896348936
+        0.014572598673771597,
+        0.03308591637481774
       ],
       "exceedsDelta": false,
-      "violationRate": 0.13157894736842105,
-      "avgSampled": 383.445
+      "violationRate": 0.18181818181818182,
+      "avgSampled": 349.56
     },
     {
       "bound": "betting",
@@ -718,14 +726,14 @@
       "size": 1800,
       "p": 0.0625,
       "isNull": true,
-      "certificationRate": 0.0045,
+      "certificationRate": 0.006,
       "certificationCi": [
-        0.0023692536086107156,
-        0.008530609933497604
+        0.0027526315709082323,
+        0.013028344232445607
       ],
       "exceedsDelta": false,
-      "violationRate": 0.7777777777777778,
-      "avgSampled": 170.4825
+      "violationRate": 0.3333333333333333,
+      "avgSampled": 170.235
     },
     {
       "bound": "betting",
@@ -736,11 +744,11 @@
       "certificationRate": 0,
       "certificationCi": [
         0,
-        0.0019171176005129348
+        0.003826898586390522
       ],
       "exceedsDelta": false,
       "violationRate": 0,
-      "avgSampled": 56.475
+      "avgSampled": 55.08
     },
     {
       "bound": "betting",
@@ -750,7 +758,7 @@
       "isNull": false,
       "certificationRate": 1,
       "certificationCi": [
-        0.9980828823994872,
+        0.9961731014136096,
         1
       ],
       "exceedsDelta": false,
@@ -763,14 +771,14 @@
       "size": 600,
       "p": 0.04,
       "isNull": false,
-      "certificationRate": 0.9345,
+      "certificationRate": 0.934,
       "certificationCi": [
-        0.9228023836751214,
-        0.944531641130033
+        0.9168903772338006,
+        0.9477878747932126
       ],
       "exceedsDelta": false,
       "violationRate": 0,
-      "avgSampled": 187.4925
+      "avgSampled": 182.865
     },
     {
       "bound": "betting",
@@ -778,14 +786,14 @@
       "size": 600,
       "p": 0.08,
       "isNull": false,
-      "certificationRate": 0.1595,
+      "certificationRate": 0.156,
       "certificationCi": [
-        0.1441080153452353,
-        0.17619754174071403
+        0.13483095057810354,
+        0.17980195564933318
       ],
       "exceedsDelta": false,
       "violationRate": 0,
-      "avgSampled": 329.4825
+      "avgSampled": 333.765
     },
     {
       "bound": "betting",
@@ -793,14 +801,14 @@
       "size": 600,
       "p": 0.105,
       "isNull": true,
-      "certificationRate": 0.0205,
+      "certificationRate": 0.013,
       "certificationCi": [
-        0.01514707507911523,
-        0.027691440699776682
+        0.007612747122129775,
+        0.022114652101014598
       ],
       "exceedsDelta": false,
-      "violationRate": 0.04878048780487805,
-      "avgSampled": 193.905
+      "violationRate": 0.07692307692307693,
+      "avgSampled": 190.635
     },
     {
       "bound": "betting",
@@ -808,14 +816,14 @@
       "size": 600,
       "p": 0.125,
       "isNull": true,
-      "certificationRate": 0.002,
+      "certificationRate": 0.005,
       "certificationCi": [
-        0.0007780147254709095,
-        0.005131434404639974
+        0.00213750399576525,
+        0.011651125604761366
       ],
       "exceedsDelta": false,
-      "violationRate": 1,
-      "avgSampled": 101.0625
+      "violationRate": 0.4,
+      "avgSampled": 102.345
     },
     {
       "bound": "betting",
@@ -826,7 +834,7 @@
       "certificationRate": 0,
       "certificationCi": [
         0,
-        0.0019171176005129348
+        0.003826898586390522
       ],
       "exceedsDelta": false,
       "violationRate": 0,
@@ -840,7 +848,7 @@
       "isNull": false,
       "certificationRate": 1,
       "certificationCi": [
-        0.9980828823994872,
+        0.9961731014136096,
         1
       ],
       "exceedsDelta": false,
@@ -853,14 +861,14 @@
       "size": 1800,
       "p": 0.04,
       "isNull": false,
-      "certificationRate": 0.967,
+      "certificationRate": 0.957,
       "certificationCi": [
-        0.9582320514487254,
-        0.9739773607123955
+        0.9425806957803401,
+        0.967921518911699
       ],
       "exceedsDelta": false,
       "violationRate": 0,
-      "avgSampled": 188.145
+      "avgSampled": 188.955
     },
     {
       "bound": "betting",
@@ -868,14 +876,14 @@
       "size": 1800,
       "p": 0.08,
       "isNull": false,
-      "certificationRate": 0.322,
+      "certificationRate": 0.336,
       "certificationCi": [
-        0.3018802133435833,
-        0.3428022805221993
+        0.3074010775632927,
+        0.3658541451730435
       ],
       "exceedsDelta": false,
-      "violationRate": 0,
-      "avgSampled": 695.565
+      "violationRate": 0.002976190476190476,
+      "avgSampled": 721.935
     },
     {
       "bound": "betting",
@@ -883,14 +891,14 @@
       "size": 1800,
       "p": 0.105,
       "isNull": true,
-      "certificationRate": 0.025,
+      "certificationRate": 0.022,
       "certificationCi": [
-        0.019014328222153373,
-        0.032806933498333926
+        0.014572598673771597,
+        0.03308591637481774
       ],
       "exceedsDelta": false,
-      "violationRate": 0.38,
-      "avgSampled": 284.3325
+      "violationRate": 0.22727272727272727,
+      "avgSampled": 331.11
     },
     {
       "bound": "betting",
@@ -898,14 +906,14 @@
       "size": 1800,
       "p": 0.125,
       "isNull": true,
-      "certificationRate": 0.0045,
+      "certificationRate": 0.001,
       "certificationCi": [
-        0.0023692536086107156,
-        0.008530609933497604
+        0.00017654182905727116,
+        0.0056427029601604705
       ],
       "exceedsDelta": false,
-      "violationRate": 0.8888888888888888,
-      "avgSampled": 108.4275
+      "violationRate": 1,
+      "avgSampled": 115.695
     },
     {
       "bound": "betting",
@@ -916,7 +924,7 @@
       "certificationRate": 0,
       "certificationCi": [
         0,
-        0.0019171176005129348
+        0.003826898586390522
       ],
       "exceedsDelta": false,
       "violationRate": 0,
@@ -930,7 +938,7 @@
       "isNull": false,
       "certificationRate": 1,
       "certificationCi": [
-        0.9980828823994872,
+        0.9961731014136096,
         1
       ],
       "exceedsDelta": false,
@@ -943,14 +951,14 @@
       "size": 600,
       "p": 0.08,
       "isNull": false,
-      "certificationRate": 0.997,
+      "certificationRate": 0.998,
       "certificationCi": [
-        0.9934699962513177,
-        0.9986243888537725
+        0.9927370411104123,
+        0.9994513678975429
       ],
       "exceedsDelta": false,
       "violationRate": 0,
-      "avgSampled": 93.42
+      "avgSampled": 90.585
     },
     {
       "bound": "betting",
@@ -958,14 +966,14 @@
       "size": 600,
       "p": 0.16,
       "isNull": false,
-      "certificationRate": 0.2975,
+      "certificationRate": 0.282,
       "certificationCi": [
-        0.27786781900464125,
-        0.3179086136235664
+        0.2549855455295957,
+        0.3106829822540706
       ],
       "exceedsDelta": false,
       "violationRate": 0,
-      "avgSampled": 349.7325
+      "avgSampled": 360.57
     },
     {
       "bound": "betting",
@@ -973,14 +981,14 @@
       "size": 600,
       "p": 0.21,
       "isNull": true,
-      "certificationRate": 0.0215,
+      "certificationRate": 0.025,
       "certificationCi": [
-        0.01600069407034465,
-        0.02883398747334623
+        0.016990011790561223,
+        0.036645541866509784
       ],
       "exceedsDelta": false,
-      "violationRate": 0.27906976744186046,
-      "avgSampled": 176.715
+      "violationRate": 0.12,
+      "avgSampled": 183.9
     },
     {
       "bound": "betting",
@@ -990,12 +998,12 @@
       "isNull": true,
       "certificationRate": 0.002,
       "certificationCi": [
-        0.0007780147254709095,
-        0.005131434404639974
+        0.000548632102457155,
+        0.007262958889587807
       ],
       "exceedsDelta": false,
-      "violationRate": 0.75,
-      "avgSampled": 74.1525
+      "violationRate": 1,
+      "avgSampled": 77.19
     },
     {
       "bound": "betting",
@@ -1006,7 +1014,7 @@
       "certificationRate": 0,
       "certificationCi": [
         0,
-        0.0019171176005129348
+        0.003826898586390522
       ],
       "exceedsDelta": false,
       "violationRate": 0,
@@ -1020,7 +1028,7 @@
       "isNull": false,
       "certificationRate": 1,
       "certificationCi": [
-        0.9980828823994872,
+        0.9961731014136096,
         1
       ],
       "exceedsDelta": false,
@@ -1033,14 +1041,14 @@
       "size": 1800,
       "p": 0.08,
       "isNull": false,
-      "certificationRate": 0.998,
+      "certificationRate": 0.994,
       "certificationCi": [
-        0.9948685655953601,
-        0.9992219852745291
+        0.9869716557675544,
+        0.9972473684290917
       ],
       "exceedsDelta": false,
       "violationRate": 0,
-      "avgSampled": 90.72
+      "avgSampled": 91.17
     },
     {
       "bound": "betting",
@@ -1048,14 +1056,14 @@
       "size": 1800,
       "p": 0.16,
       "isNull": false,
-      "certificationRate": 0.645,
+      "certificationRate": 0.647,
       "certificationCi": [
-        0.6237685152192952,
-        0.6656755206765561
+        0.6168681093891878,
+        0.6760067824264134
       ],
       "exceedsDelta": false,
       "violationRate": 0,
-      "avgSampled": 638.235
+      "avgSampled": 635.67
     },
     {
       "bound": "betting",
@@ -1063,14 +1071,14 @@
       "size": 1800,
       "p": 0.21,
       "isNull": true,
-      "certificationRate": 0.0185,
+      "certificationRate": 0.02,
       "certificationCi": [
-        0.013451271532792346,
-        0.025394912716501614
+        0.012983581129037627,
+        0.03069024151389728
       ],
       "exceedsDelta": false,
-      "violationRate": 0.5675675675675675,
-      "avgSampled": 271.0125
+      "violationRate": 0.25,
+      "avgSampled": 276.48
     },
     {
       "bound": "betting",
@@ -1080,12 +1088,12 @@
       "isNull": true,
       "certificationRate": 0.002,
       "certificationCi": [
-        0.0007780147254709095,
-        0.005131434404639974
+        0.000548632102457155,
+        0.007262958889587807
       ],
       "exceedsDelta": false,
       "violationRate": 1,
-      "avgSampled": 73.7325
+      "avgSampled": 79.02
     },
     {
       "bound": "betting",
@@ -1096,12 +1104,552 @@
       "certificationRate": 0,
       "certificationCi": [
         0,
-        0.0019171176005129348
+        0.003826898586390522
       ],
       "exceedsDelta": false,
       "violationRate": 0,
-      "avgSampled": 45.1575
+      "avgSampled": 45.09
+    },
+    {
+      "bound": "exact",
+      "alpha": 0.05,
+      "size": 600,
+      "p": 0,
+      "isNull": false,
+      "certificationRate": 1,
+      "certificationCi": [
+        0.9961731014136096,
+        1
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "avgSampled": 90
+    },
+    {
+      "bound": "exact",
+      "alpha": 0.05,
+      "size": 600,
+      "p": 0.02,
+      "isNull": false,
+      "certificationRate": 0.882,
+      "certificationCi": [
+        0.8605274931519409,
+        0.9005487563280569
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "avgSampled": 240.48
+    },
+    {
+      "bound": "exact",
+      "alpha": 0.05,
+      "size": 600,
+      "p": 0.04,
+      "isNull": false,
+      "certificationRate": 0.206,
+      "certificationCi": [
+        0.18208097296652834,
+        0.2321692434022693
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "avgSampled": 295.02
+    },
+    {
+      "bound": "exact",
+      "alpha": 0.05,
+      "size": 600,
+      "p": 0.0525,
+      "isNull": true,
+      "certificationRate": 0.039,
+      "certificationCi": [
+        0.02865879919608807,
+        0.052869601300564
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0.02564102564102564,
+      "avgSampled": 209.175
+    },
+    {
+      "bound": "exact",
+      "alpha": 0.05,
+      "size": 600,
+      "p": 0.0625,
+      "isNull": true,
+      "certificationRate": 0.017,
+      "certificationCi": [
+        0.010640599663218203,
+        0.02705618437123505
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0.29411764705882354,
+      "avgSampled": 142.32
+    },
+    {
+      "bound": "exact",
+      "alpha": 0.05,
+      "size": 600,
+      "p": 0.1,
+      "isNull": true,
+      "certificationRate": 0,
+      "certificationCi": [
+        0,
+        0.003826898586390522
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "avgSampled": 55.845
+    },
+    {
+      "bound": "exact",
+      "alpha": 0.05,
+      "size": 1800,
+      "p": 0,
+      "isNull": false,
+      "certificationRate": 1,
+      "certificationCi": [
+        0.9961731014136096,
+        1
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "avgSampled": 90
+    },
+    {
+      "bound": "exact",
+      "alpha": 0.05,
+      "size": 1800,
+      "p": 0.02,
+      "isNull": false,
+      "certificationRate": 0.924,
+      "certificationCi": [
+        0.9059039930034635,
+        0.9388507969952776
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "avgSampled": 307.215
+    },
+    {
+      "bound": "exact",
+      "alpha": 0.05,
+      "size": 1800,
+      "p": 0.04,
+      "isNull": false,
+      "certificationRate": 0.491,
+      "certificationCi": [
+        0.46010846831005414,
+        0.5219604158645009
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "avgSampled": 630.63
+    },
+    {
+      "bound": "exact",
+      "alpha": 0.05,
+      "size": 1800,
+      "p": 0.0525,
+      "isNull": true,
+      "certificationRate": 0.063,
+      "certificationCi": [
+        0.049549444227037,
+        0.07979526513746833
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0.06349206349206349,
+      "avgSampled": 371.52
+    },
+    {
+      "bound": "exact",
+      "alpha": 0.05,
+      "size": 1800,
+      "p": 0.0625,
+      "isNull": true,
+      "certificationRate": 0.007,
+      "certificationCi": [
+        0.003394825079231997,
+        0.014378496926949058
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0.8571428571428571,
+      "avgSampled": 181.89
+    },
+    {
+      "bound": "exact",
+      "alpha": 0.05,
+      "size": 1800,
+      "p": 0.1,
+      "isNull": true,
+      "certificationRate": 0,
+      "certificationCi": [
+        0,
+        0.003826898586390522
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "avgSampled": 56.61
+    },
+    {
+      "bound": "exact",
+      "alpha": 0.1,
+      "size": 600,
+      "p": 0,
+      "isNull": false,
+      "certificationRate": 1,
+      "certificationCi": [
+        0.9961731014136096,
+        1
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "avgSampled": 45
+    },
+    {
+      "bound": "exact",
+      "alpha": 0.1,
+      "size": 600,
+      "p": 0.04,
+      "isNull": false,
+      "certificationRate": 0.96,
+      "certificationCi": [
+        0.9459900625744302,
+        0.9704891907260905
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "avgSampled": 154.2
+    },
+    {
+      "bound": "exact",
+      "alpha": 0.1,
+      "size": 600,
+      "p": 0.08,
+      "isNull": false,
+      "certificationRate": 0.349,
+      "certificationCi": [
+        0.32008546510610214,
+        0.3790702582669878
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "avgSampled": 287.145
+    },
+    {
+      "bound": "exact",
+      "alpha": 0.1,
+      "size": 600,
+      "p": 0.105,
+      "isNull": true,
+      "certificationRate": 0.046,
+      "certificationCi": [
+        0.03466231280457309,
+        0.06081251111186951
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0.021739130434782608,
+      "avgSampled": 193.26
+    },
+    {
+      "bound": "exact",
+      "alpha": 0.1,
+      "size": 600,
+      "p": 0.125,
+      "isNull": true,
+      "certificationRate": 0.001,
+      "certificationCi": [
+        0.00017654182905727116,
+        0.0056427029601604705
+      ],
+      "exceedsDelta": false,
+      "violationRate": 1,
+      "avgSampled": 104.91
+    },
+    {
+      "bound": "exact",
+      "alpha": 0.1,
+      "size": 600,
+      "p": 0.2,
+      "isNull": true,
+      "certificationRate": 0,
+      "certificationCi": [
+        0,
+        0.003826898586390522
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "avgSampled": 47.52
+    },
+    {
+      "bound": "exact",
+      "alpha": 0.1,
+      "size": 1800,
+      "p": 0,
+      "isNull": false,
+      "certificationRate": 1,
+      "certificationCi": [
+        0.9961731014136096,
+        1
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "avgSampled": 45
+    },
+    {
+      "bound": "exact",
+      "alpha": 0.1,
+      "size": 1800,
+      "p": 0.04,
+      "isNull": false,
+      "certificationRate": 0.967,
+      "certificationCi": [
+        0.9540184599711051,
+        0.9764072167492062
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "avgSampled": 166.725
+    },
+    {
+      "bound": "exact",
+      "alpha": 0.1,
+      "size": 1800,
+      "p": 0.08,
+      "isNull": false,
+      "certificationRate": 0.578,
+      "certificationCi": [
+        0.5471477640586073,
+        0.6082552397619158
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "avgSampled": 515.115
+    },
+    {
+      "bound": "exact",
+      "alpha": 0.1,
+      "size": 1800,
+      "p": 0.105,
+      "isNull": true,
+      "certificationRate": 0.035,
+      "certificationCi": [
+        0.0252721124850127,
+        0.0482869032003305
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0.2,
+      "avgSampled": 327.645
+    },
+    {
+      "bound": "exact",
+      "alpha": 0.1,
+      "size": 1800,
+      "p": 0.125,
+      "isNull": true,
+      "certificationRate": 0.002,
+      "certificationCi": [
+        0.000548632102457155,
+        0.007262958889587807
+      ],
+      "exceedsDelta": false,
+      "violationRate": 1,
+      "avgSampled": 114.435
+    },
+    {
+      "bound": "exact",
+      "alpha": 0.1,
+      "size": 1800,
+      "p": 0.2,
+      "isNull": true,
+      "certificationRate": 0,
+      "certificationCi": [
+        0,
+        0.003826898586390522
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "avgSampled": 47.655
+    },
+    {
+      "bound": "exact",
+      "alpha": 0.2,
+      "size": 600,
+      "p": 0,
+      "isNull": false,
+      "certificationRate": 1,
+      "certificationCi": [
+        0.9961731014136096,
+        1
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "avgSampled": 45
+    },
+    {
+      "bound": "exact",
+      "alpha": 0.2,
+      "size": 600,
+      "p": 0.08,
+      "isNull": false,
+      "certificationRate": 0.998,
+      "certificationCi": [
+        0.9927370411104123,
+        0.9994513678975429
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "avgSampled": 80.685
+    },
+    {
+      "bound": "exact",
+      "alpha": 0.2,
+      "size": 600,
+      "p": 0.16,
+      "isNull": false,
+      "certificationRate": 0.577,
+      "certificationCi": [
+        0.5461419226506689,
+        0.6072687349670269
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "avgSampled": 261.525
+    },
+    {
+      "bound": "exact",
+      "alpha": 0.2,
+      "size": 600,
+      "p": 0.21,
+      "isNull": true,
+      "certificationRate": 0.048,
+      "certificationCi": [
+        0.036393116113688354,
+        0.06306640020840869
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0.10416666666666667,
+      "avgSampled": 174.405
+    },
+    {
+      "bound": "exact",
+      "alpha": 0.2,
+      "size": 600,
+      "p": 0.25,
+      "isNull": true,
+      "certificationRate": 0.002,
+      "certificationCi": [
+        0.000548632102457155,
+        0.007262958889587807
+      ],
+      "exceedsDelta": false,
+      "violationRate": 1,
+      "avgSampled": 73.92
+    },
+    {
+      "bound": "exact",
+      "alpha": 0.2,
+      "size": 600,
+      "p": 0.4,
+      "isNull": true,
+      "certificationRate": 0,
+      "certificationCi": [
+        0,
+        0.003826898586390522
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "avgSampled": 45.09
+    },
+    {
+      "bound": "exact",
+      "alpha": 0.2,
+      "size": 1800,
+      "p": 0,
+      "isNull": false,
+      "certificationRate": 1,
+      "certificationCi": [
+        0.9961731014136096,
+        1
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "avgSampled": 45
+    },
+    {
+      "bound": "exact",
+      "alpha": 0.2,
+      "size": 1800,
+      "p": 0.08,
+      "isNull": false,
+      "certificationRate": 0.995,
+      "certificationCi": [
+        0.9883488743952387,
+        0.9978624960042348
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "avgSampled": 94.68
+    },
+    {
+      "bound": "exact",
+      "alpha": 0.2,
+      "size": 1800,
+      "p": 0.16,
+      "isNull": false,
+      "certificationRate": 0.761,
+      "certificationCi": [
+        0.7335998512741934,
+        0.7864025076637109
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "avgSampled": 438.345
+    },
+    {
+      "bound": "exact",
+      "alpha": 0.2,
+      "size": 1800,
+      "p": 0.21,
+      "isNull": true,
+      "certificationRate": 0.019,
+      "certificationCi": [
+        0.012196787737404147,
+        0.02948468870270354
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0.3157894736842105,
+      "avgSampled": 252.765
+    },
+    {
+      "bound": "exact",
+      "alpha": 0.2,
+      "size": 1800,
+      "p": 0.25,
+      "isNull": true,
+      "certificationRate": 0.001,
+      "certificationCi": [
+        0.00017654182905727116,
+        0.0056427029601604705
+      ],
+      "exceedsDelta": false,
+      "violationRate": 1,
+      "avgSampled": 74.43
+    },
+    {
+      "bound": "exact",
+      "alpha": 0.2,
+      "size": 1800,
+      "p": 0.4,
+      "isNull": true,
+      "certificationRate": 0,
+      "certificationCi": [
+        0,
+        0.003826898586390522
+      ],
+      "exceedsDelta": false,
+      "violationRate": 0,
+      "avgSampled": 45
     }
   ],
-  "wallMs": 21464
+  "wallMs": 6956
 }

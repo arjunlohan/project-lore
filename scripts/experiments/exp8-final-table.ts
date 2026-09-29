@@ -24,6 +24,7 @@ import {
   assignStrataWith,
   diffPrompts,
   seededShuffle,
+  type BoundKind,
   type SivmCellInput,
 } from "@lore/core/sivm";
 import {
@@ -47,6 +48,10 @@ if (STRATIFIER === "value-embed" && !process.env.EXP_OUT) {
   throw new Error("ablation runs must set EXP_OUT to a non-headline path");
 }
 const OUT = process.env.EXP_OUT ?? "docs/research/experiments/exp8-final-table.json";
+// The bound the pinned procedure certifies with. "exact" is the default of
+// the core certifier (IEEE Access resubmission); EXP_BOUND=eb reproduces the
+// first submission's Table 1 for the response letter.
+const BOUND = (process.env.EXP_BOUND ?? "exact") as BoundKind;
 const DELTA = 0.1;
 const MAIN_SEED = 42;
 const B = Number(process.env.EXP_B ?? 1000);
@@ -128,6 +133,7 @@ async function replay(
       45,
       6,
       estimand,
+      BOUND,
     );
     sampled += outcome.sampled;
     if (outcome.certified) {
@@ -182,20 +188,26 @@ async function main() {
     const flipOf = (id: string) =>
       JSON.stringify(cache.get(id)) !== JSON.stringify(truth.get(id)) ? 1 : 0;
 
-    // Pinned stratifier: value x embedding tertile.
-    const delta = diffPrompts(vFrom.prompt_template, vTo.prompt_template);
-    const deltaText = [...delta.added, ...delta.removed].join(" ") || "(none)";
-    const bound = usableRows.map(
-      (r) => bindTemplate(vFrom.prompt_template, r).text,
-    );
-    const [deltaEmb, ...rowEmbs] = await embedTexts([deltaText, ...bound]);
+    // Embedding-interaction tertiles, only for the value-embed ablation: the
+    // pinned value-only stratifier never reads them, and embedding 10,000
+    // bound rows for a stratifier that ignores them is paid API traffic.
     const score = new Map<string, number>();
-    usableRows.forEach((r, i) =>
-      score.set(String(r[pair.idField]), cosine(deltaEmb!, rowEmbs[i]!)),
-    );
-    const sortedScores = [...score.values()].sort((a, b) => a - b);
-    const t1 = sortedScores[Math.floor(sortedScores.length / 3)]!;
-    const t2 = sortedScores[Math.floor((2 * sortedScores.length) / 3)]!;
+    let t1 = 0;
+    let t2 = 0;
+    if (STRATIFIER !== "value-only") {
+      const delta = diffPrompts(vFrom.prompt_template, vTo.prompt_template);
+      const deltaText = [...delta.added, ...delta.removed].join(" ") || "(none)";
+      const bound = usableRows.map(
+        (r) => bindTemplate(vFrom.prompt_template, r).text,
+      );
+      const [deltaEmb, ...rowEmbs] = await embedTexts([deltaText, ...bound]);
+      usableRows.forEach((r, i) =>
+        score.set(String(r[pair.idField]), cosine(deltaEmb!, rowEmbs[i]!)),
+      );
+      const sortedScores = [...score.values()].sort((a, b) => a - b);
+      t1 = sortedScores[Math.floor(sortedScores.length / 3)]!;
+      t2 = sortedScores[Math.floor((2 * sortedScores.length) / 3)]!;
+    }
     const inputs: SivmCellInput[] = usableRows.map((r) => ({
       rowId: String(r[pair.idField]),
       cachedValue: cache.get(String(r[pair.idField])),
@@ -322,7 +334,8 @@ async function main() {
     JSON.stringify(
       {
         experiment: "exp8-final-table",
-        procedure: `strata=${STRATIFIER}; adaptive n0=45 maxLooks=6; delta=0.1; prng=mulberry32; seeds: main=42, bootstrap=1000..${1000 + B - 1}`,
+        procedure: `strata=${STRATIFIER}; bound=${BOUND}; adaptive n0=45 maxLooks=6; delta=0.1; prng=mulberry32; seeds: main=42, bootstrap=1000..${1000 + B - 1}`,
+        bound: BOUND,
         results: allResults,
         wallMs: Date.now() - started,
       },

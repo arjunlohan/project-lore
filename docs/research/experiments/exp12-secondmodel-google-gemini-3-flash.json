@@ -2,6 +2,7 @@
   "experiment": "exp12-secondmodel",
   "model": "google/gemini-3-flash",
   "ranAt": "2026-08-15T00:00:00.000Z",
+  "bound": "exact",
   "n": 2000,
   "usableFloor": 1999,
   "usableEdit": 1999,
@@ -14,20 +15,20 @@
       "certifiedStrata": [
         "v=false"
       ],
-      "sampled": 405,
-      "reused": 1349,
-      "realizedPresented": 0.006436512580456407,
-      "savings": 0.6748374187093547
+      "sampled": 225,
+      "reused": 1529,
+      "realizedPresented": 0.008777062609713282,
+      "savings": 0.7648824412206103
     },
     {
       "alpha": 0.2,
       "certifiedStrata": [
         "v=false"
       ],
-      "sampled": 225,
-      "reused": 1529,
-      "realizedPresented": 0.008777062609713282,
-      "savings": 0.7648824412206103
+      "sampled": 90,
+      "reused": 1664,
+      "realizedPresented": 0.010532475131655939,
+      "savings": 0.832416208104052
     }
   ],
   "synonym": {
@@ -40,20 +41,20 @@
         "certifiedStrata": [
           "v=false"
         ],
-        "sampled": 765,
-        "reused": 1007,
-        "realizedPresented": 0.01563404748118124,
-        "savings": 0.512207527975585
+        "sampled": 405,
+        "reused": 1367,
+        "realizedPresented": 0.01910828025477707,
+        "savings": 0.6953204476093591
       },
       {
         "alpha": 0.2,
         "certifiedStrata": [
           "v=false"
         ],
-        "sampled": 225,
-        "reused": 1547,
-        "realizedPresented": 0.02374059061957151,
-        "savings": 0.7868769074262462
+        "sampled": 90,
+        "reused": 1682,
+        "realizedPresented": 0.027793862188766647,
+        "savings": 0.8555442522889115
       }
     ]
   },
@@ -14059,5 +14060,5 @@
       "a3": false
     }
   ],
-  "wallMs": 4615584
+  "wallMs": 8
 }

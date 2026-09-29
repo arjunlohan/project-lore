@@ -2,6 +2,7 @@
   "experiment": "exp12-secondmodel",
   "model": "alibaba/qwen3.7-flash",
   "ranAt": "2026-08-15T00:00:00.000Z",
+  "bound": "exact",
   "n": 2000,
   "usableFloor": 2000,
   "usableEdit": 2000,
@@ -20,12 +21,13 @@
     {
       "alpha": 0.2,
       "certifiedStrata": [
-        "v=true"
+        "v=true",
+        "v=false"
       ],
-      "sampled": 1507,
-      "reused": 493,
-      "realizedPresented": 0.06096131301289566,
-      "savings": 0.2465
+      "sampled": 765,
+      "reused": 1235,
+      "realizedPresented": 0.0835,
+      "savings": 0.6175
     }
   ],
   "synonym": {
@@ -38,20 +40,20 @@
         "certifiedStrata": [
           "v=false"
         ],
-        "sampled": 765,
-        "reused": 316,
-        "realizedPresented": 0.01447876447876448,
-        "savings": 0.158
+        "sampled": 225,
+        "reused": 856,
+        "realizedPresented": 0.03667953667953668,
+        "savings": 0.428
       },
       {
         "alpha": 0.2,
         "certifiedStrata": [
           "v=false"
         ],
-        "sampled": 225,
-        "reused": 856,
-        "realizedPresented": 0.03667953667953668,
-        "savings": 0.428
+        "sampled": 90,
+        "reused": 991,
+        "realizedPresented": 0.04247104247104247,
+        "savings": 0.4955
       }
     ]
   },
@@ -14057,5 +14059,5 @@
       "a3": true
     }
   ],
-  "wallMs": 910629
+  "wallMs": 9
 }

@@ -53,7 +53,7 @@ export function bindTemplate(
 // Output schema per column type (+ exact-shape example for budget models)
 // ---------------------------------------------------------------------------
 
-function valueSchema(spec: ColumnOutputType): z.ZodType {
+export function valueSchema(spec: ColumnOutputType): z.ZodType {
   switch (spec.kind) {
     case "boolean":
       return z.boolean();
@@ -86,7 +86,12 @@ function exampleFor(spec: ColumnOutputType): string {
   return `{"value":${v},"rationale":"one short sentence of evidence"}`;
 }
 
-function systemFor(spec: ColumnOutputType): string {
+/**
+ * The system framing every cell is computed under. Exported so probe scripts
+ * that call a model directly (the model-family study) send the same framing
+ * the production runner sends, and their draws are comparable to stored cells.
+ */
+export function systemFor(spec: ColumnOutputType): string {
   return `You evaluate ONE row of a data table against the user's column
 instruction. Judge only from the provided row data; if the data is
 insufficient, still commit to the most defensible answer.

@@ -1,0 +1,652 @@
+{
+  "experiment": "exp11c-deployment-bounds",
+  "note": "deployment-scale certificates of the formatting edit re-derived under each bound from the live run's stored oracle draws (August 2026 snapshot); the eb arm reproduces exp11",
+  "pair": "lab formatting v1->v2, FULL corpus",
+  "toVersion": 2,
+  "snapshot": "2026-08-05",
+  "n": 89184,
+  "bounds": [
+    "eb",
+    "wor",
+    "exact",
+    "cp"
+  ],
+  "alphas": [
+    0.2,
+    0.1,
+    0.05
+  ],
+  "live": false,
+  "liveCalls": 0,
+  "ledgerSpendDeltaUsd": 0,
+  "sweeps": [
+    {
+      "bound": "eb",
+      "alpha": 0.2,
+      "status": "ok",
+      "n": 89184,
+      "oracleCalls": 225,
+      "liveDrawsThisArm": 0,
+      "reused": 81289,
+      "recompute": 7670,
+      "covered": 89184,
+      "savings": 0.9114751524937208,
+      "replayWallMs": 898,
+      "gtOverlapReused": 2686,
+      "gtOverlapFlips": 85,
+      "realizedOnOverlap": 0.03164556962025317,
+      "auditComposition": {
+        "fromReleasedVector": 1807,
+        "fromRunOracle": 879,
+        "releasedOnlyFlips": 58,
+        "releasedOnlyRealized": 0.032097399003873824
+      },
+      "strata": [
+        {
+          "stratumId": "v=false|o=0",
+          "size": 81469,
+          "sampled": 180,
+          "flips": 5,
+          "empiricalFlipRate": 0.027777777777777776,
+          "upperBound": 0.13988638630089897,
+          "certified": true,
+          "looks": [
+            {
+              "look": 1,
+              "n": 45,
+              "flips": 1,
+              "upperBound": 0.3864350997862271,
+              "certified": false
+            },
+            {
+              "look": 2,
+              "n": 90,
+              "flips": 3,
+              "upperBound": 0.24001654830487187,
+              "certified": false
+            },
+            {
+              "look": 3,
+              "n": 180,
+              "flips": 5,
+              "upperBound": 0.13988638630089897,
+              "certified": true
+            }
+          ]
+        },
+        {
+          "stratumId": "v=true|o=0",
+          "size": 7715,
+          "sampled": 45,
+          "flips": 13,
+          "empiricalFlipRate": 0.28888888888888886,
+          "upperBound": 0.805752690815382,
+          "certified": false,
+          "looks": [
+            {
+              "look": 1,
+              "n": 45,
+              "flips": 13,
+              "upperBound": 0.805752690815382,
+              "certified": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "bound": "eb",
+      "alpha": 0.1,
+      "status": "ok",
+      "n": 89184,
+      "oracleCalls": 765,
+      "liveDrawsThisArm": 0,
+      "reused": 80749,
+      "recompute": 7670,
+      "covered": 89184,
+      "savings": 0.9054202547542161,
+      "replayWallMs": 890,
+      "gtOverlapReused": 2146,
+      "gtOverlapFlips": 65,
+      "realizedOnOverlap": 0.030288909599254427,
+      "auditComposition": {
+        "fromReleasedVector": 1794,
+        "fromRunOracle": 352,
+        "releasedOnlyFlips": 58,
+        "releasedOnlyRealized": 0.032329988851727984
+      },
+      "strata": [
+        {
+          "stratumId": "v=false|o=0",
+          "size": 81469,
+          "sampled": 720,
+          "flips": 25,
+          "empiricalFlipRate": 0.034722222222222224,
+          "upperBound": 0.0751128149071266,
+          "certified": true,
+          "looks": [
+            {
+              "look": 1,
+              "n": 45,
+              "flips": 1,
+              "upperBound": 0.3864350997862271,
+              "certified": false
+            },
+            {
+              "look": 2,
+              "n": 90,
+              "flips": 3,
+              "upperBound": 0.24001654830487187,
+              "certified": false
+            },
+            {
+              "look": 3,
+              "n": 180,
+              "flips": 5,
+              "upperBound": 0.13988638630089897,
+              "certified": false
+            },
+            {
+              "look": 4,
+              "n": 360,
+              "flips": 12,
+              "upperBound": 0.10032108457616784,
+              "certified": false
+            },
+            {
+              "look": 5,
+              "n": 720,
+              "flips": 25,
+              "upperBound": 0.0751128149071266,
+              "certified": true
+            }
+          ]
+        },
+        {
+          "stratumId": "v=true|o=0",
+          "size": 7715,
+          "sampled": 45,
+          "flips": 13,
+          "empiricalFlipRate": 0.28888888888888886,
+          "upperBound": 0.805752690815382,
+          "certified": false,
+          "looks": [
+            {
+              "look": 1,
+              "n": 45,
+              "flips": 13,
+              "upperBound": 0.805752690815382,
+              "certified": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "bound": "eb",
+      "alpha": 0.05,
+      "status": "needs-live-draws",
+      "oracleCallsRequestedSoFar": 1440,
+      "missingFreshDraws": 699
+    },
+    {
+      "bound": "wor",
+      "alpha": 0.2,
+      "status": "ok",
+      "n": 89184,
+      "oracleCalls": 405,
+      "liveDrawsThisArm": 0,
+      "reused": 81109,
+      "recompute": 7670,
+      "covered": 89184,
+      "savings": 0.9094568532472193,
+      "replayWallMs": 889,
+      "gtOverlapReused": 2506,
+      "gtOverlapFlips": 78,
+      "realizedOnOverlap": 0.03112529928172386,
+      "auditComposition": {
+        "fromReleasedVector": 1803,
+        "fromRunOracle": 703,
+        "releasedOnlyFlips": 58,
+        "releasedOnlyRealized": 0.03216860787576262
+      },
+      "strata": [
+        {
+          "stratumId": "v=false|o=0",
+          "size": 81469,
+          "sampled": 360,
+          "flips": 12,
+          "empiricalFlipRate": 0.03333333333333333,
+          "upperBound": 0.14630129702888556,
+          "certified": true,
+          "looks": [
+            {
+              "look": 1,
+              "n": 45,
+              "flips": 1,
+              "upperBound": 0.7349331256664157,
+              "certified": false
+            },
+            {
+              "look": 2,
+              "n": 90,
+              "flips": 3,
+              "upperBound": 0.4179782311971837,
+              "certified": false
+            },
+            {
+              "look": 3,
+              "n": 180,
+              "flips": 5,
+              "upperBound": 0.22997569735987494,
+              "certified": false
+            },
+            {
+              "look": 4,
+              "n": 360,
+              "flips": 12,
+              "upperBound": 0.14630129702888556,
+              "certified": true
+            }
+          ]
+        },
+        {
+          "stratumId": "v=true|o=0",
+          "size": 7715,
+          "sampled": 45,
+          "flips": 13,
+          "empiricalFlipRate": 0.28888888888888886,
+          "upperBound": 1,
+          "certified": false,
+          "looks": [
+            {
+              "look": 1,
+              "n": 45,
+              "flips": 13,
+              "upperBound": 1,
+              "certified": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "bound": "wor",
+      "alpha": 0.1,
+      "status": "ok",
+      "n": 89184,
+      "oracleCalls": 765,
+      "liveDrawsThisArm": 0,
+      "reused": 80749,
+      "recompute": 7670,
+      "covered": 89184,
+      "savings": 0.9054202547542161,
+      "replayWallMs": 845,
+      "gtOverlapReused": 2146,
+      "gtOverlapFlips": 65,
+      "realizedOnOverlap": 0.030288909599254427,
+      "auditComposition": {
+        "fromReleasedVector": 1794,
+        "fromRunOracle": 352,
+        "releasedOnlyFlips": 58,
+        "releasedOnlyRealized": 0.032329988851727984
+      },
+      "strata": [
+        {
+          "stratumId": "v=false|o=0",
+          "size": 81469,
+          "sampled": 720,
+          "flips": 25,
+          "empiricalFlipRate": 0.034722222222222224,
+          "upperBound": 0.0986133027517272,
+          "certified": true,
+          "looks": [
+            {
+              "look": 1,
+              "n": 45,
+              "flips": 1,
+              "upperBound": 0.7349331256664157,
+              "certified": false
+            },
+            {
+              "look": 2,
+              "n": 90,
+              "flips": 3,
+              "upperBound": 0.4179782311971837,
+              "certified": false
+            },
+            {
+              "look": 3,
+              "n": 180,
+              "flips": 5,
+              "upperBound": 0.22997569735987494,
+              "certified": false
+            },
+            {
+              "look": 4,
+              "n": 360,
+              "flips": 12,
+              "upperBound": 0.14630129702888556,
+              "certified": false
+            },
+            {
+              "look": 5,
+              "n": 720,
+              "flips": 25,
+              "upperBound": 0.0986133027517272,
+              "certified": true
+            }
+          ]
+        },
+        {
+          "stratumId": "v=true|o=0",
+          "size": 7715,
+          "sampled": 45,
+          "flips": 13,
+          "empiricalFlipRate": 0.28888888888888886,
+          "upperBound": 1,
+          "certified": false,
+          "looks": [
+            {
+              "look": 1,
+              "n": 45,
+              "flips": 13,
+              "upperBound": 1,
+              "certified": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "bound": "wor",
+      "alpha": 0.05,
+      "status": "needs-live-draws",
+      "oracleCallsRequestedSoFar": 1440,
+      "missingFreshDraws": 699
+    },
+    {
+      "bound": "exact",
+      "alpha": 0.2,
+      "status": "ok",
+      "n": 89184,
+      "oracleCalls": 90,
+      "liveDrawsThisArm": 0,
+      "reused": 81424,
+      "recompute": 7670,
+      "covered": 89184,
+      "savings": 0.9129888769285971,
+      "replayWallMs": 846,
+      "gtOverlapReused": 2821,
+      "gtOverlapFlips": 89,
+      "realizedOnOverlap": 0.031549096065225095,
+      "auditComposition": {
+        "fromReleasedVector": 1812,
+        "fromRunOracle": 1009,
+        "releasedOnlyFlips": 58,
+        "releasedOnlyRealized": 0.03200883002207505
+      },
+      "strata": [
+        {
+          "stratumId": "v=false|o=0",
+          "size": 81469,
+          "sampled": 45,
+          "flips": 1,
+          "empiricalFlipRate": 0.022222222222222223,
+          "upperBound": 0.14261866476819404,
+          "certified": true,
+          "looks": [
+            {
+              "look": 1,
+              "n": 45,
+              "flips": 1,
+              "upperBound": 0.14261866476819404,
+              "certified": true
+            }
+          ]
+        },
+        {
+          "stratumId": "v=true|o=0",
+          "size": 7715,
+          "sampled": 45,
+          "flips": 13,
+          "empiricalFlipRate": 0.28888888888888886,
+          "upperBound": 0.4751782242384964,
+          "certified": false,
+          "looks": [
+            {
+              "look": 1,
+              "n": 45,
+              "flips": 13,
+              "upperBound": 0.4751782242384964,
+              "certified": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "bound": "exact",
+      "alpha": 0.1,
+      "status": "ok",
+      "n": 89184,
+      "oracleCalls": 225,
+      "liveDrawsThisArm": 0,
+      "reused": 81289,
+      "recompute": 7670,
+      "covered": 89184,
+      "savings": 0.9114751524937208,
+      "replayWallMs": 838,
+      "gtOverlapReused": 2686,
+      "gtOverlapFlips": 85,
+      "realizedOnOverlap": 0.03164556962025317,
+      "auditComposition": {
+        "fromReleasedVector": 1807,
+        "fromRunOracle": 879,
+        "releasedOnlyFlips": 58,
+        "releasedOnlyRealized": 0.032097399003873824
+      },
+      "strata": [
+        {
+          "stratumId": "v=false|o=0",
+          "size": 81469,
+          "sampled": 180,
+          "flips": 5,
+          "empiricalFlipRate": 0.027777777777777776,
+          "upperBound": 0.07259202886987688,
+          "certified": true,
+          "looks": [
+            {
+              "look": 1,
+              "n": 45,
+              "flips": 1,
+              "upperBound": 0.14261866476819404,
+              "certified": false
+            },
+            {
+              "look": 2,
+              "n": 90,
+              "flips": 3,
+              "upperBound": 0.1097718150462139,
+              "certified": false
+            },
+            {
+              "look": 3,
+              "n": 180,
+              "flips": 5,
+              "upperBound": 0.07259202886987688,
+              "certified": true
+            }
+          ]
+        },
+        {
+          "stratumId": "v=true|o=0",
+          "size": 7715,
+          "sampled": 45,
+          "flips": 13,
+          "empiricalFlipRate": 0.28888888888888886,
+          "upperBound": 0.4751782242384964,
+          "certified": false,
+          "looks": [
+            {
+              "look": 1,
+              "n": 45,
+              "flips": 13,
+              "upperBound": 0.4751782242384964,
+              "certified": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "bound": "exact",
+      "alpha": 0.05,
+      "status": "needs-live-draws",
+      "oracleCallsRequestedSoFar": 1440,
+      "missingFreshDraws": 699
+    },
+    {
+      "bound": "cp",
+      "alpha": 0.2,
+      "status": "ok",
+      "n": 89184,
+      "oracleCalls": 90,
+      "liveDrawsThisArm": 0,
+      "reused": 81424,
+      "recompute": 7670,
+      "covered": 89184,
+      "savings": 0.9129888769285971,
+      "replayWallMs": 921,
+      "gtOverlapReused": 2821,
+      "gtOverlapFlips": 89,
+      "realizedOnOverlap": 0.031549096065225095,
+      "auditComposition": {
+        "fromReleasedVector": 1812,
+        "fromRunOracle": 1009,
+        "releasedOnlyFlips": 58,
+        "releasedOnlyRealized": 0.03200883002207505
+      },
+      "strata": [
+        {
+          "stratumId": "v=false|o=0",
+          "size": 81469,
+          "sampled": 45,
+          "flips": 1,
+          "empiricalFlipRate": 0.022222222222222223,
+          "upperBound": 0.14265348098468972,
+          "certified": true,
+          "looks": [
+            {
+              "look": 1,
+              "n": 45,
+              "flips": 1,
+              "upperBound": 0.14265348098468972,
+              "certified": true
+            }
+          ]
+        },
+        {
+          "stratumId": "v=true|o=0",
+          "size": 7715,
+          "sampled": 45,
+          "flips": 13,
+          "empiricalFlipRate": 0.28888888888888886,
+          "upperBound": 0.47577647421460395,
+          "certified": false,
+          "looks": [
+            {
+              "look": 1,
+              "n": 45,
+              "flips": 13,
+              "upperBound": 0.47577647421460395,
+              "certified": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "bound": "cp",
+      "alpha": 0.1,
+      "status": "ok",
+      "n": 89184,
+      "oracleCalls": 225,
+      "liveDrawsThisArm": 0,
+      "reused": 81289,
+      "recompute": 7670,
+      "covered": 89184,
+      "savings": 0.9114751524937208,
+      "replayWallMs": 882,
+      "gtOverlapReused": 2686,
+      "gtOverlapFlips": 85,
+      "realizedOnOverlap": 0.03164556962025317,
+      "auditComposition": {
+        "fromReleasedVector": 1807,
+        "fromRunOracle": 879,
+        "releasedOnlyFlips": 58,
+        "releasedOnlyRealized": 0.032097399003873824
+      },
+      "strata": [
+        {
+          "stratumId": "v=false|o=0",
+          "size": 81469,
+          "sampled": 180,
+          "flips": 5,
+          "empiricalFlipRate": 0.027777777777777776,
+          "upperBound": 0.072649363801306,
+          "certified": true,
+          "looks": [
+            {
+              "look": 1,
+              "n": 45,
+              "flips": 1,
+              "upperBound": 0.14265348098468972,
+              "certified": false
+            },
+            {
+              "look": 2,
+              "n": 90,
+              "flips": 3,
+              "upperBound": 0.10982016366742327,
+              "certified": false
+            },
+            {
+              "look": 3,
+              "n": 180,
+              "flips": 5,
+              "upperBound": 0.072649363801306,
+              "certified": true
+            }
+          ]
+        },
+        {
+          "stratumId": "v=true|o=0",
+          "size": 7715,
+          "sampled": 45,
+          "flips": 13,
+          "empiricalFlipRate": 0.28888888888888886,
+          "upperBound": 0.47577647421460395,
+          "certified": false,
+          "looks": [
+            {
+              "look": 1,
+              "n": 45,
+              "flips": 13,
+              "upperBound": 0.47577647421460395,
+              "certified": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "bound": "cp",
+      "alpha": 0.05,
+      "status": "needs-live-draws",
+      "oracleCallsRequestedSoFar": 1440,
+      "missingFreshDraws": 699
+    }
+  ],
+  "wallMs": 12064
+}

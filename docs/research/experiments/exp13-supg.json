@@ -14,24 +14,24 @@
             "sivmPerTestDelta": 0.008333333333333333,
             "valueArmTests": 3,
             "valueArmPerTestDelta": 0.03333333333333333,
-            "embeddingArmTests": 756,
-            "embeddingArmPerTestDelta": 0.00013227513227513228
+            "embeddingArmTests": 81,
+            "embeddingArmPerTestDelta": 0.0012345679012345679
           },
           "supgValueProxy": {
-            "reused": 1235,
-            "realizedAmongReused": 0.06720647773279352,
-            "reusedTrueSubgroup": 118
+            "reused": 1910,
+            "realizedAmongReused": 0.06544502617801047,
+            "reusedTrueSubgroup": 183
           },
           "sivm": {
             "reusedTrueSubgroup": 0,
-            "oracle": 765,
-            "reused": 1094,
-            "realizedPresented": 0.016538037486218304,
-            "realizedAmongReused": 0.027422303473491772,
-            "savings": 0.5469999999999999
+            "oracle": 90,
+            "reused": 1769,
+            "realizedPresented": 0.03197353914002205,
+            "realizedAmongReused": 0.03278688524590164,
+            "savings": 0.8845
           },
           "supg": {
-            "oracle": 765,
+            "oracle": 90,
             "reused": 0,
             "realizedAmongReused": null,
             "savings": 0,
@@ -47,30 +47,30 @@
             "sivmPerTestDelta": 0.008333333333333333,
             "valueArmTests": 3,
             "valueArmPerTestDelta": 0.03333333333333333,
-            "embeddingArmTests": 126,
-            "embeddingArmPerTestDelta": 0.0007936507936507937
+            "embeddingArmTests": 81,
+            "embeddingArmPerTestDelta": 0.0012345679012345679
           },
           "supgValueProxy": {
-            "reused": 1865,
-            "realizedAmongReused": 0.06541554959785523,
-            "reusedTrueSubgroup": 180
+            "reused": 1910,
+            "realizedAmongReused": 0.06544502617801047,
+            "reusedTrueSubgroup": 183
           },
           "sivm": {
             "reusedTrueSubgroup": 0,
-            "oracle": 135,
-            "reused": 1724,
+            "oracle": 90,
+            "reused": 1769,
             "realizedPresented": 0.03197353914002205,
-            "realizedAmongReused": 0.033642691415313224,
-            "savings": 0.862
+            "realizedAmongReused": 0.03278688524590164,
+            "savings": 0.8845
           },
           "supg": {
-            "oracle": 135,
-            "reused": 0,
-            "realizedAmongReused": null,
-            "savings": 0,
-            "thresholdFound": false,
-            "reusedTrueSubgroup": 0,
-            "realizedTrueSubgroup": null
+            "oracle": 90,
+            "reused": 1899,
+            "realizedAmongReused": 0.06529752501316483,
+            "savings": 0.9495,
+            "thresholdFound": true,
+            "reusedTrueSubgroup": 180,
+            "realizedTrueSubgroup": 0.37222222222222223
           }
         }
       ]
@@ -86,30 +86,30 @@
             "sivmPerTestDelta": 0.008333333333333333,
             "valueArmTests": 3,
             "valueArmPerTestDelta": 0.03333333333333333,
-            "embeddingArmTests": 1476,
-            "embeddingArmPerTestDelta": 0.00006775067750677507
+            "embeddingArmTests": 396,
+            "embeddingArmPerTestDelta": 0.0002525252525252525
           },
           "supgValueProxy": {
-            "reused": 466,
-            "realizedAmongReused": 0.0536480686695279,
-            "reusedTrueSubgroup": 0
+            "reused": 1595,
+            "realizedAmongReused": 0.10156739811912226,
+            "reusedTrueSubgroup": 172
           },
           "sivm": {
             "reusedTrueSubgroup": 0,
-            "oracle": 1485,
-            "reused": 361,
-            "realizedPresented": 0.010549694614103275,
-            "realizedAmongReused": 0.05263157894736842,
-            "savings": 0.1805
+            "oracle": 405,
+            "reused": 1441,
+            "realizedPresented": 0.044975013881177126,
+            "realizedAmongReused": 0.056210964607911175,
+            "savings": 0.7204999999999999
           },
           "supg": {
-            "oracle": 1485,
-            "reused": 0,
-            "realizedAmongReused": null,
-            "savings": 0,
-            "thresholdFound": false,
-            "reusedTrueSubgroup": 0,
-            "realizedTrueSubgroup": null
+            "oracle": 405,
+            "reused": 1419,
+            "realizedAmongReused": 0.08456659619450317,
+            "savings": 0.7095,
+            "thresholdFound": true,
+            "reusedTrueSubgroup": 100,
+            "realizedTrueSubgroup": 0.61
           }
         },
         {
@@ -119,30 +119,30 @@
             "sivmPerTestDelta": 0.008333333333333333,
             "valueArmTests": 3,
             "valueArmPerTestDelta": 0.03333333333333333,
-            "embeddingArmTests": 216,
-            "embeddingArmPerTestDelta": 0.000462962962962963
+            "embeddingArmTests": 81,
+            "embeddingArmPerTestDelta": 0.0012345679012345679
           },
           "supgValueProxy": {
-            "reused": 1775,
-            "realizedAmongReused": 0.09690140845070423,
-            "reusedTrueSubgroup": 185
+            "reused": 1910,
+            "realizedAmongReused": 0.09581151832460733,
+            "reusedTrueSubgroup": 196
           },
           "sivm": {
             "reusedTrueSubgroup": 0,
-            "oracle": 225,
-            "reused": 1621,
-            "realizedPresented": 0.049416990560799554,
-            "realizedAmongReused": 0.054904380012338064,
-            "savings": 0.8105
+            "oracle": 90,
+            "reused": 1756,
+            "realizedPresented": 0.053303720155469185,
+            "realizedAmongReused": 0.05466970387243736,
+            "savings": 0.878
           },
           "supg": {
-            "oracle": 225,
-            "reused": 0,
-            "realizedAmongReused": null,
-            "savings": 0,
-            "thresholdFound": false,
-            "reusedTrueSubgroup": 0,
-            "realizedTrueSubgroup": null
+            "oracle": 90,
+            "reused": 1856,
+            "realizedAmongReused": 0.09213362068965517,
+            "savings": 0.928,
+            "thresholdFound": true,
+            "reusedTrueSubgroup": 168,
+            "realizedTrueSubgroup": 0.5059523809523809
           }
         }
       ]

@@ -55,7 +55,7 @@ import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { generateObject } from "ai";
 import mysql from "mysql2/promise";
 import { z } from "zod";
-import { adaptiveCertifyStratum, seededShuffle } from "@lore/core/sivm";
+import { adaptiveCertifyStratum, seededShuffle, type BoundKind } from "@lore/core/sivm";
 import { getColumnVersion, listColumns } from "../../lib/lore/column-store";
 import { bindTemplate } from "../../lib/lore/run-column";
 
@@ -73,6 +73,9 @@ const OUT =
 const CONCURRENCY = Number(process.env.EXP_CONCURRENCY ?? 24);
 const SEED = 42;
 const DELTA = 0.1;
+// Bound the pinned procedure certifies with (exact finite-population bound
+// from the IEEE Access resubmission on); recorded in the artifact.
+const BOUND = (process.env.EXP_BOUND ?? "exact") as BoundKind;
 const MYSQL_URL =
   process.env.LORE_MYSQL_URL ?? "mysql://root@localhost:3306/lore";
 
@@ -326,6 +329,8 @@ async function finish(x: {
         async (n) => order.slice(0, n).map((i) => st.flips[i]!),
         45,
         6,
+        "presented",
+        BOUND,
       );
       sampled += o.sampled;
       if (o.certified) {
@@ -391,6 +396,7 @@ async function finish(x: {
     experiment: "exp12-secondmodel",
     model: x.model,
     ranAt: x.ranAt,
+    bound: BOUND,
     n: rows.length,
     usableFloor: floorN,
     usableEdit: editN,

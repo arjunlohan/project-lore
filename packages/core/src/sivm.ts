@@ -1,21 +1,28 @@
 /**
- * sIVM v1 — statistically certified reuse-set selection for stochastic
+ * sIVM — statistically certified reuse-set selection for stochastic
  * LLM-computed views.
  *
- * Guarantee shape (v1, deliberately conservative and SOUND):
- * strata are frozen before sampling; each tested stratum gets an
- * empirical-Bernstein (Maurer-Pontil) upper confidence bound on its flip
- * rate at confidence 1 - delta/K (Bonferroni across the K tested strata).
- * A stratum is certified iff its upper bound <= alpha. Then, with
- * probability >= 1 - delta over the sampling, EVERY certified stratum's true
- * flip rate is <= alpha, hence the expected false-reuse fraction among all
- * reused cells (any size-weighted mixture of certified strata) is <= alpha.
+ * Guarantee shape: strata are frozen before sampling; each tested stratum
+ * gets an upper confidence bound on its flip rate at confidence
+ * 1 - delta/K/looks (Bonferroni across the K tested strata and the looks
+ * of the adaptive schedule). A stratum is certified iff its upper bound
+ * <= alpha. Then, with probability >= 1 - delta over sampling and oracle
+ * draws, EVERY certified stratum's whole-stratum flip count is <= alpha
+ * times its size, hence the false-reuse fraction among all reused cells
+ * (any size-weighted mixture of certified strata) is <= alpha.
  *
- * Known v1 limitations (tracked for the paper, do not silently claim more):
- * - Bonferroni, not e-BH: costs power, never validity.
- * - Sampling is without replacement but the bound assumes iid; negative
- *   association makes the bound conservative in the standard regimes we use
- *   (small sampling fractions); the paper upgrades to betting/WSR bounds.
+ * The default bound is the exact finite-population (hypergeometric) bound
+ * (`exactUpperBound`): flips are binary and the sample is drawn without
+ * replacement from a frozen stratum, which is exactly the setting that
+ * bound is exact for. The first submission certified with the Maurer-Pontil
+ * empirical-Bernstein bound, which is stated for independent draws and pays
+ * a range term binary data never needs; it, the Bardenet-Maillard
+ * without-replacement bound, the binomial Clopper-Pearson bound, and a
+ * betting confidence sequence remain as ablation arms (`BoundKind`).
+ *
+ * Known limitations (tracked for the paper, do not silently claim more):
+ * - Bonferroni across strata and looks, not e-BH or a confidence sequence:
+ *   costs power, never validity.
  * - No monotonicity shortcuts: every stratum is sampled (the
  *   scope-narrowing "deterministic safety" claim was refuted by our own
  *   adversarial review; direction is only a stratification HINT).
@@ -330,6 +337,140 @@ export function worUpperBound(
   return Math.min(1, bound);
 }
 
+// Log-factorial table, grown on demand; hypergeometric and binomial tails
+// below are sums of a few hundred terms of exact log-space probabilities,
+// which is both faster and more accurate than a Lanczos lgamma here.
+let logFact = new Float64Array([0]);
+function logFactorial(m: number): number {
+  if (m >= logFact.length) {
+    const next = new Float64Array(Math.max(m + 1, logFact.length * 2));
+    next.set(logFact);
+    for (let i = logFact.length; i < next.length; i++) {
+      next[i] = next[i - 1]! + Math.log(i);
+    }
+    logFact = next;
+  }
+  return logFact[m]!;
+}
+function logChoose(a: number, b: number): number {
+  if (b < 0 || b > a) return -Infinity;
+  return logFactorial(a) - logFactorial(b) - logFactorial(a - b);
+}
+
+/** P(X <= k) for X ~ Hypergeometric(population N, successes M, draws n). */
+export function hypergeometricCdf(
+  k: number,
+  N: number,
+  M: number,
+  n: number,
+): number {
+  const denom = logChoose(N, n);
+  let acc = 0;
+  for (let x = Math.max(0, n - (N - M)); x <= Math.min(k, M, n); x++) {
+    acc += Math.exp(logChoose(M, x) + logChoose(N - M, n - x) - denom);
+  }
+  return Math.min(1, acc);
+}
+
+/** P(X <= k) for X ~ Binomial(n, p). */
+export function binomialCdf(k: number, n: number, p: number): number {
+  if (p <= 0) return 1;
+  if (p >= 1) return k >= n ? 1 : 0;
+  let acc = 0;
+  for (let x = 0; x <= Math.min(k, n); x++) {
+    acc += Math.exp(
+      logChoose(n, x) + x * Math.log(p) + (n - x) * Math.log(1 - p),
+    );
+  }
+  return Math.min(1, acc);
+}
+
+/**
+ * Exact finite-population upper confidence bound on a stratum's flip rate:
+ * k flips observed among n cells drawn uniformly without replacement from
+ * the stratum's N cells.
+ *
+ * Model. Fix the N fresh-draw outcomes of the stratum (one hypothetical
+ * fresh draw per cell, the same coupling the presented-cells estimand is
+ * defined on); the sampling is independent of them, so conditional on that
+ * population with M flips the sampled count is Hypergeometric(N, M, n), and
+ * P(X <= k | M) is non-increasing in M. The (1 - delta) upper confidence
+ * bound for M is the largest M whose lower tail at k still exceeds delta
+ * (the Clopper-Pearson construction for a finite population); the rate
+ * bound is that M over N. Because it holds conditionally on every
+ * population realisation it holds unconditionally, over sampling and draw
+ * randomness together, and it bounds the REALISED whole-stratum flip count,
+ * not only its expectation. As N grows it tends to the binomial
+ * Clopper-Pearson bound (`binomialUpperBound`).
+ *
+ * This is the bound the pinned procedure certifies with from the IEEE
+ * Access resubmission on. Empirical-Bernstein bounds pay a range term of
+ * order log(1/delta)/n that a binary loss never needs; on a clean sample of
+ * 90 draws at the pinned per-look level they read 0.14 (Maurer-Pontil) and
+ * 0.32 (Bardenet-Maillard) where this bound reads 0.05.
+ */
+export function exactUpperBound(
+  k: number,
+  n: number,
+  N: number,
+  delta: number,
+): number {
+  if (n <= 0 || N <= 0) return 1;
+  if (n >= N) return k / N; // the whole population is observed
+  const tail = (M: number) => hypergeometricCdf(k, N, M, n);
+  let lo = k; // P(X <= k | M = k) = 1 > delta
+  let hi = N - (n - k); // every unsampled cell a flip
+  if (tail(hi) > delta) return hi / N;
+  while (hi - lo > 1) {
+    const mid = (lo + hi) >> 1;
+    if (tail(mid) > delta) lo = mid;
+    else hi = mid;
+  }
+  return lo / N;
+}
+
+/**
+ * Clopper-Pearson one-sided upper confidence bound for a binomial
+ * proportion (k of n), the infinite-population limit of `exactUpperBound`;
+ * kept as a comparison arm for the bound ablation.
+ */
+export function binomialUpperBound(k: number, n: number, delta: number): number {
+  if (n <= 0) return 1;
+  if (k >= n) return 1;
+  let lo = k / n;
+  let hi = 1;
+  for (let i = 0; i < 60; i++) {
+    const mid = (lo + hi) / 2;
+    if (binomialCdf(k, n, mid) > delta) lo = mid;
+    else hi = mid;
+  }
+  return hi;
+}
+
+export type BoundKind = "exact" | "cp" | "eb" | "betting" | "wor";
+
+/** Upper confidence bound on a stratum's flip rate under the named bound. */
+export function upperBoundFor(
+  bound: BoundKind,
+  flips: number[],
+  delta: number,
+  populationSize: number,
+): number {
+  const k = flips.reduce((a, b) => a + b, 0);
+  switch (bound) {
+    case "exact":
+      return exactUpperBound(k, flips.length, populationSize, delta);
+    case "cp":
+      return binomialUpperBound(k, flips.length, delta);
+    case "betting":
+      return bettingUpperBound(flips, delta);
+    case "wor":
+      return worUpperBound(flips, delta, populationSize);
+    case "eb":
+      return ebUpperBound(flips, delta);
+  }
+}
+
 export interface StratumResult {
   stratumId: string;
   size: number;
@@ -338,6 +479,8 @@ export interface StratumResult {
   empiricalFlipRate: number;
   upperBound: number;
   certified: boolean;
+  /** Per-look trace when the adaptive schedule produced it. */
+  looks?: AdaptiveLook[];
 }
 
 export interface CertifyMathInput {
@@ -347,11 +490,14 @@ export interface CertifyMathInput {
   delta: number;
 }
 
-export function selectReuse(input: CertifyMathInput): StratumResult[] {
+export function selectReuse(
+  input: CertifyMathInput,
+  bound: BoundKind = "exact",
+): StratumResult[] {
   const K = input.strata.length;
   const perStratumDelta = input.delta / Math.max(1, K);
   return input.strata.map((s) => {
-    const upper = ebUpperBound(s.flipSample, perStratumDelta);
+    const upper = upperBoundFor(bound, s.flipSample, perStratumDelta, s.size);
     const flips = s.flipSample.reduce((a, b) => a + b, 0);
     return {
       stratumId: s.id,
@@ -448,14 +594,16 @@ export async function adaptiveCertifyStratum(
    */
   estimand: "presented" | "reuse-set" = "presented",
   /**
-   * Which concentration bound to spend the budget on. Defaults to
-   * Maurer-Pontil, which is what the paper certifies with; exp14 swaps in the
-   * betting and without-replacement bounds so the "not uniformly tighter"
-   * claim in the proof sketch is measured rather than asserted. A confidence
-   * SEQUENCE (bound === "betting") is anytime-valid, so it is spent at the
+   * Which upper confidence bound to spend the budget on. The pinned
+   * procedure's default is the exact finite-population bound; the other
+   * arms exist so the bound ablation (exp14) measures the alternatives
+   * inside the same procedure over the same labels: Maurer-Pontil ("eb",
+   * the bound the first submission certified with), Bardenet-Maillard
+   * ("wor"), Clopper-Pearson ("cp"), and the betting confidence SEQUENCE
+   * ("betting"), which is anytime-valid and is therefore spent at the
    * per-stratum level rather than split across looks.
    */
-  bound: "eb" | "betting" | "wor" = "eb",
+  bound: BoundKind = "exact",
 ): Promise<{ certified: boolean; looks: AdaptiveLook[]; sampled: number }> {
   const schedule = lookSchedule(stratumSize, alpha, perStratumDelta, n0, maxLooks);
   const perLookDelta =
@@ -464,12 +612,7 @@ export async function adaptiveCertifyStratum(
   for (let j = 0; j < schedule.length; j++) {
     const n = schedule[j]!;
     const flips = await flipsPrefix(n);
-    const upper =
-      bound === "betting"
-        ? bettingUpperBound(flips, perLookDelta)
-        : bound === "wor"
-          ? worUpperBound(flips, perLookDelta, stratumSize)
-          : ebUpperBound(flips, perLookDelta);
+    const upper = upperBoundFor(bound, flips, perLookDelta, stratumSize);
     const threshold =
       estimand === "reuse-set"
         ? alpha * Math.max(0, stratumSize - n) / stratumSize
