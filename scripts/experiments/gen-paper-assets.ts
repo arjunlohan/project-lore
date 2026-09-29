@@ -81,7 +81,11 @@ const def = (name: string, value: string | number) => {
   }
   macros.push(`\\newcommand{\\${name}}{${value}}`);
 };
-const pct = (x: number, d = 1) => `${Number((x * 100).toPrecision(12)).toFixed(d)}\\%`;
+const pct = (x: number, d = 1) => `${(x * 100).toFixed(d)}\\%`;
+// A ratio printed from its integer counts, so the same k/n prints the same
+// digits whichever artifact carries it (one stores 1047/2000 as
+// 0.5235000000000001, another as 0.5235).
+const ratioPct = (k: number, n: number, d = 1) => pct(k / n, d);
 const num = (x: number) => x.toLocaleString("en-US").replace(/,/g, "{,}");
 /** Wilson score interval; every interval in the paper is Wilson. */
 const wilsonInterval = (k: number, n: number, z = 1.96): [number, number] => {
@@ -325,7 +329,7 @@ def("flipDjCriteria", pct(pick("dj-criteria", 0.2).trueFlipRate, 2));
 const bench = pick("so-formatting", 0.2);
 def("benchN", num(bench.n));
 def("benchSavings", `${(bench.bootstrap.savingsMean * 100).toFixed(1)}\\%`);
-def("benchSavingsMain", pct(bench.main.savings, 1));
+def("benchSavingsMain", ratioPct(bench.main.reused, bench.n, 1));
 const bci = bench.bootstrap as unknown as {
   savingsLo: number; savingsHi: number;
   realizedReuseCiLo: number; realizedReuseCiHi: number; B: number;
@@ -1453,13 +1457,13 @@ const outcome = (sw: Exp12["sweeps"] | undefined, alpha: number) => {
 // Primary model row from the main-seed benchmark artifact (exp8), same
 // pairs, same evaluation vector, so the table compares like with like.
 {
-  type R8 = { pair: string; alpha: number; estimand: string; n: number; trueFlipRate: number; main: { certifiedStrata: number; sampled: number; realizedPresented: number; savings: number } };
+  type R8 = { pair: string; alpha: number; estimand: string; n: number; trueFlipRate: number; main: { certifiedStrata: number; sampled: number; reused: number; realizedPresented: number; savings: number } };
   const r8 = (exp8.results as R8[]).filter((r) => r.estimand === "presented");
   const cell = (pair: string, alpha: number) => {
     const r = r8.find((x) => x.pair === pair && Math.abs(x.alpha - alpha) < 1e-9)!;
     return r.main.certifiedStrata === 0
       ? `refused (${r.main.sampled})`
-      : `${pct(r.main.savings, 1)} (${pct(r.main.realizedPresented, 2)})`;
+      : `${ratioPct(r.main.reused, r.n, 1)} (${pct(r.main.realizedPresented, 2)})`;
   };
   const fmtFlip = r8.find((x) => x.pair === "so-formatting")!.trueFlipRate;
   const synFlip = r8.find((x) => x.pair === "so-synonym")!.trueFlipRate;
@@ -1658,7 +1662,7 @@ if (exp17) {
 // Full bound-by-configuration grid (exp14) for the appendix: savings and
 // oracle calls per (pair, alpha, bound).
 {
-  type R14 = { bound: string; pair: string; alpha: number; oracle: number; savings: number; certifiedStrata: string[] };
+  type R14 = { bound: string; pair: string; alpha: number; n: number; oracle: number; reused: number; savings: number; certifiedStrata: string[] };
   const rows14 = exp14.results as R14[];
   const order = ["exact", "cp", "betting", "eb", "wor"];
   const lines: string[] = [];
@@ -1666,7 +1670,7 @@ if (exp17) {
     for (const alpha of [0.02, 0.05, 0.1, 0.2]) {
       const cells = order.map((b) => {
         const r = rows14.find((x) => x.bound === b && x.pair === pair && Math.abs(x.alpha - alpha) < 1e-9)!;
-        return r.certifiedStrata.length > 0 ? `${pct(r.savings, 1)} (${r.oracle})` : `refused (${r.oracle})`;
+        return r.certifiedStrata.length > 0 ? `${ratioPct(r.reused, r.n, 1)} (${r.oracle})` : `refused (${r.oracle})`;
       });
       lines.push(`${LABELS[pair]} & ${alpha.toFixed(2)} & ${cells.join(" & ")} \\\\`);
     }
@@ -1715,11 +1719,11 @@ ${lines.join("\n")}
     return `${pct(x.savings, 1)} (${x.realizedPresented === null ? "--" : pct(x.realizedPresented, 2)})`;
   };
   // Primary-model rows for the same three pairs, from the main seed of exp8.
-  type R8p = { pair: string; alpha: number; estimand: string; trueFlipRate: number; main: { certifiedStrata: number; sampled: number; realizedPresented: number; savings: number } };
+  type R8p = { pair: string; alpha: number; estimand: string; n: number; trueFlipRate: number; main: { certifiedStrata: number; sampled: number; reused: number; realizedPresented: number; savings: number } };
   const r8 = (exp8.results as R8p[]).filter((r) => r.estimand === "presented");
   const primaryCell = (pair: string, alpha: number) => {
     const r = r8.find((x) => x.pair === pair && Math.abs(x.alpha - alpha) < 1e-9)!;
-    return r.main.certifiedStrata === 0 ? `refused (${r.main.sampled})` : `${pct(r.main.savings, 1)} (${pct(r.main.realizedPresented, 2)})`;
+    return r.main.certifiedStrata === 0 ? `refused (${r.main.sampled})` : `${ratioPct(r.main.reused, r.n, 1)} (${pct(r.main.realizedPresented, 2)})`;
   };
   const flipOf = (pair: string) => pct(r8.find((x) => x.pair === pair)!.trueFlipRate, 1);
   const rows18: string[] = [];
