@@ -1042,8 +1042,10 @@ formatting pair only\fi.}
 \begin{table*}[t]
 \caption{The remaining three edit pairs on further model families
 (same protocol as Table~\ref{tab:fam}; floors are each family's
-self-flip rate on that column, measured in the same run). The primary
-row is the main seed of Table~\ref{tab:main}; its widening-column floor
+self-flip rate on that column, measured in the same run; the primary
+model's select-column floor is the $n{=}200$ probe of the noise-floor
+paragraph). The primary row is the main seed of Table~\ref{tab:main};
+its widening-column floor
 is not shown, because the primary model's self-flip rate under the
 production column's first version was not measured (the lab column's
 \floorBool\ is under the widened definition).}
@@ -1110,7 +1112,7 @@ everywhere else.
   label style={font=\small}, tick label style={font=\scriptsize},
   xtick={0.02,0.05,0.1,0.15,0.2},
   xticklabel style={/pgf/number format/fixed},
-  legend pos=north west, legend style={font=\scriptsize}, grid=major,
+  legend pos=south east, legend style={font=\scriptsize}, grid=major,
   grid style={opacity=0.2}]
 \frontierplots
 \end{axis}
@@ -1147,15 +1149,16 @@ realized population rate of a planted stratum often falls below
 $\alpha$ and certifying it is correct; the unconditional rate of
 certificates whose realized error exceeds $\alpha$ stays at or below
 \calUnsafeWorst\ in every configuration against the nominal
-\calNominalDelta. Power saturates once a stratum exceeds what the
-schedule can sample: the $n_j{=}1800$ and $n_j{=}5000$ curves nearly
-coincide because the six-look schedule caps both at the same sample
-size.}
+\calNominalDelta. The $n_j{=}1800$ curve sits above the other two at
+intermediate $p$ because the exact bound's finite-population correction
+tightens as the sampled fraction grows: the six-look schedule reaches
+most of an $n_j{=}1800$ stratum but a minority of an $n_j{=}5000$ one,
+and the $n_j{=}600$ stratum has smaller looks.}
 \Description{Line plot of certification rate against the planted flip
 rate for three stratum sizes. Every curve certifies always when the
 planted rate is zero, falls towards zero as the planted rate reaches
-the budget, and stays near zero above it; the two larger stratum sizes
-trace nearly the same curve.}
+the budget, and stays near zero above it; the middle stratum size
+traces the highest curve at intermediate planted rates.}
 \label{fig:power}
 \end{figure}
 
@@ -1323,8 +1326,8 @@ day and \sepLiveRequested\ were requested from the runner, of which
 cell against \perCellCost\ in August; the longer outputs are the
 difference). The drift measurement drew \driftLiveDraws\ more. A
 refusal here is the instrument reading correctly: a stratum whose flip
-rate against an aged cache exceeds the budget is identified at the cost
-of one look, and its cells are recomputed rather than served.
+rate against an aged cache exceeds the budget is identified within its
+first two looks, and its cells are recomputed rather than served.
 
 The comparison to the $n{=}\benchN$ benchmark run shows that sampling
 cost did not scale with $n$: at $\alpha{=}0.2$ the budget was drawn
@@ -1817,7 +1820,8 @@ equal, since a judge's miss rate is a property of the outputs it
 compares; the machinery of this article is otherwise unchanged, but its
 power under a noisy judge \ifnum\pilotAvailable=1\relax has one measurement so far\else is an open measurement\fi.
 \ifnum\pilotAvailable=1\relax
-\emph{A pilot.} We ran the recipe once, on a free-text column over
+
+\paragraph{A pilot.} We ran the recipe once, on a free-text column over
 \pilotRows\ SO profiles that names each respondent's primary technical
 specialty in a short phrase, with three prompt versions (a baseline, a
 formatting-only edit of it, and a synonym rewording) and the primary
@@ -1853,7 +1857,8 @@ $\alpha - \hat{m}$, which takes \pilotMissUcb\ off each budget
 (\pilotCategories\ categories, assigned once from the cache by the same
 model), the formatting edit \pilotFmtCalLoose\ at $\alpha{=}0.2$ and
 \pilotFmtCalTight\ at $\alpha{=}0.1$; the synonym edit
-\pilotSynCalLoose\ at $\alpha{=}0.2$. The composed guarantee holds with
+\pilotSynCalLoose\ at $\alpha{=}0.2$ and \pilotSynCalTight\ at
+$\alpha{=}0.1$. The composed guarantee holds with
 probability $1-\delta-\delta_{\mathrm{cal}}$ under the assumption
 stated above; the judge's price is the deflation plus the labels. The
 floor the certifier met is the judge's, not the model's. Under the
@@ -1946,7 +1951,7 @@ identifies, cheaply, reuse error that would otherwise go unmeasured.
 \section*{Availability and reproducibility}
 The system, the certifier, every experiment script, and every result
 artifact are public in a single repository,
-\url{https://github.com/arjunlohan/project-lore}, under a
+\mbox{\url{https://github.com/arjunlohan/project-lore}}, under a
 source-available license that permits research and noncommercial use.
 Released: the two corpora (already public and redistributable
 under ODbL~1.0/DbCL~1.0 and MIT), the five versioned edit pairs, the

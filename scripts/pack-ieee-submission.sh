@@ -97,18 +97,47 @@ elif [ -n "$LATEXDIFF" ] && git rev-parse -q --verify "$DIFF_BASE_TAG" >/dev/nul
   done
   # The prose gates optional studies on \ifnum<macro>=1\relax ... \else ... \fi;
   # latexdiff marks up inside the test and breaks it. Resolve the gates with
-  # the macro values of this build, so the diff shows what actually prints.
-  python3 - "$OUT/diff/new/body.tex" "$OUT/diff/new/macros.tex" <<'PY'
+  # each copy's own macro values, so the diff shows what actually prints, and
+  # then substitute every generated macro by its value in both copies: a
+  # number that changed under an unchanged macro name is a change the
+  # reviewer must see in blue, which latexdiff cannot know from the names.
+  for d in old new; do
+    for f in body.tex main.tex; do
+      python3 - "$OUT/diff/$d/$f" "$OUT/diff/$d/macros.tex" <<'PY'
 import re, sys
-body, macros = sys.argv[1], sys.argv[2]
+path, macros = sys.argv[1], sys.argv[2]
 vals = dict(re.findall(r'\\newcommand\{\\(\w+)\}\{(.*)\}', open(macros).read()))
-src = open(body).read()
+src = open(path).read()
 def resolve(m):
     name, yes, no = m.group(1), m.group(2), m.group(3) or ""
-    return yes if vals.get(name, "0").strip() == "1" else no
+    text = yes if vals.get(name, "0").strip() == "1" else no
+    # A gate that occupied its own lines must not leave a blank line behind,
+    # which TeX would read as a paragraph break the clean copy does not have.
+    if m.start() > 0 and src[m.start() - 1] == "\n" and text.startswith("\n"):
+        text = text[1:]
+    if text.endswith("\n") and src[m.end():m.end() + 1] == "\n":
+        text = text[:-1]
+    return text
 out = re.sub(r'\\ifnum\\(\w+)=1\\relax(.*?)(?:\\else(.*?))?\\fi', resolve, src, flags=re.S)
-open(body, "w").write(out)
+names = sorted(vals, key=len, reverse=True)
+if names:
+    pat = re.compile(r'\\(' + '|'.join(map(re.escape, names)) + r')(\\[ \n]|\{\}|(?=[^A-Za-z]))')
+    def expand(m):
+        tail = m.group(2)
+        return vals[m.group(1)] + (" " if tail.startswith("\\") else "")
+    out = pat.sub(expand, out)
+open(path, "w").write(out)
 PY
+    done
+  done
+  # Bibliographies: latexdiff --flatten inlines each side's main.bbl when it
+  # exists, so changed reference entries are marked too. The new one comes
+  # from this build; the old one is rebuilt from the tagged sources.
+  cp "$OUT/src/main.bbl" "$OUT/diff/new/main.bbl"
+  git show "$DIFF_BASE_TAG:paper/ieee/refs.bib" > "$OUT/diff/old/refs.bib" 2>/dev/null || cp "$OUT/src/refs.bib" "$OUT/diff/old/refs.bib"
+  cp "$OUT"/src/*.cls "$OUT"/src/*.bst "$OUT"/src/*.sty "$OUT"/src/*.pfb "$OUT"/src/*.tfm "$OUT"/src/*.map "$OUT"/src/*.fd "$OUT"/src/*.png "$OUT/diff/old/"
+  ( cd "$OUT/diff/old" && latexmk -pdf -interaction=nonstopmode -f main.tex >/dev/null 2>&1 ) || true
+  [ -f "$OUT/diff/old/main.bbl" ] || echo "note: old bibliography could not be rebuilt; the reference list will be compared as a block"
   # tikz/pgfplots pictures, the algorithm block and the abstract's own
   # environment are compared as wholes; math is not marked inside.
   if ! "$PERL" "$LATEXDIFF" --flatten --math-markup=0 \
@@ -128,6 +157,15 @@ p = sys.argv[1]
 s = open(p).read()
 s = s.replace(r"\providecommand{\DIFadd}[1]{\texorpdfstring{\DIFaddtex{#1}}{#1}}", r"\providecommand{\DIFadd}[1]{\DIFaddtex{#1}}")
 s = s.replace(r"\providecommand{\DIFdel}[1]{\texorpdfstring{\DIFdeltex{#1}}{}}", r"\providecommand{\DIFdel}[1]{\DIFdeltex{#1}}")
+import re
+# A word-internal edit leaves the source's own space after \DIFaddend, where
+# TeX swallows it (latexdiff always adds one separator space; two mean a
+# real one); keep the real space.
+s = re.sub(r"(\\DIF(?:add|del)end) {2,}(?=\S)", r"\1{} ", s)
+# In colour-only markup a deleted paragraph prints nothing, but the blank
+# line latexdiff keeps between its comment markers would still break the
+# paragraph the new text continues.
+s = re.sub(r"(%DIFDELCMD < [^\n]*\n)\n+(%DIFDELCMD < %%%\n)", r"\1\2", s)
 open(p, "w").write(s)
 PY
   # Compile the diff beside the vendored template files.

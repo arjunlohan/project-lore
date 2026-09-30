@@ -2,12 +2,13 @@
 title: "Response to Reviewers"
 subtitle: "Original Manuscript ID: Access-2026-41149"
 author: "Arjun Lohan (University of Southern California), corresponding author"
-date: "Resubmission, October 2026"
+date: "Resubmission, 30 September 2026"
 ---
 
 **Original Article Title:** "Reuse, but Verify: Certified Maintenance of Table Cells Computed by Large Language Models under Prompt Edits"
 
 **To:** IEEE Access Editor
+
 **Re:** Response to reviewers
 
 Dear Editor,
@@ -18,9 +19,10 @@ The reviewers' central concern, raised independently by Reviewers 1 and 3, was t
 
 Four further studies were added because the reviewers asked for evidence rather than assertion: the remaining edit pairs on further model families and a sixth family, so that five families carry all five pairs; a direct test of the cross-row independence assumption (sequential versus concurrent requests); a free-text pilot with a judge-based equivalence relation calibrated on hand labels; and a live re-certification of the deployment column 55 days after the original run, which measured provider-side model drift (the flip rate against the same cache rose on the same rows, McNemar p<0.001) and showed the certifier pricing it: the two budgets certified in August certified again, the tighter one a look deeper, and the tightest budget, on which the August draws are silent, was refused. While preparing these we also found and fixed a reproducibility defect in the earlier certifier (its sample path depended on the storage engine's row order); the manuscript discloses it, and the released replay reproduces the published run's every count.
 
-In the Highlighted PDF, produced by latexdiff against the source submitted in August, added or changed text is set in blue and deleted text is omitted, so the highlighted copy paginates like the clean one. Four things are not marked word by word: table bodies, Figure 1, Algorithm 1, and the bibliography, which latexdiff compares as whole blocks (their captions and the surrounding prose are marked, and every table was regenerated from the recomputed artifacts, so every table body should be read as changed); and the checker conditions that moved from the Availability section to Appendix A appear there without markup, because moved blocks are not tracked. Because the bound changed, almost every numerical value in the manuscript changed; each is regenerated mechanically from the released artifacts, and the guards described in Appendix A report zero findings on the revised draft.
+In the Highlighted PDF, produced by latexdiff against the source submitted in August, added or changed text is set in blue and deleted text is omitted, so the highlighted copy has the same page count as the clean one; every generated number is substituted by its value before the comparison, so a figure that changed under an unchanged macro name is marked like any other change. Three things are compared as whole blocks rather than word by word: table bodies, the figures, and Algorithm 1 (their captions and the surrounding prose are marked; every table was regenerated from the recomputed artifacts, so every table body should be read as changed, and Figures 2 and 3 are replotted from the new results). The reference list is compared entry by entry. The checker conditions that moved from the Availability section to Appendix A appear there without markup, because moved blocks are not tracked. Because the bound changed, almost every numerical value in the manuscript changed; each is regenerated mechanically from the released artifacts, and the guards described in Appendix A report zero findings on the revised draft.
 
 Best regards,
+
 Arjun Lohan
 
 ---
@@ -69,7 +71,7 @@ Arjun Lohan
 
 ## Reviewer 1, further remarks in the assessment
 
-The reviewer's assessment also noted that the deployment-scale run was a replay rather than a live timed run, and that the single-primary-model scope should be stated earlier than Section VIII. Both are addressed: the deployment column was re-certified live on 29 September 2026 under the exact bound, with the wall clock of the live decision reported (101 seconds for the loose budget including the oracle calls, 304 seconds for the tight budget), and the scope statement now appears in the setup paragraph of Section V.
+The reviewer's assessment (paraphrased here; it is not reproduced verbatim) also noted that the deployment-scale run was a replay rather than a live timed run, and that the single-primary-model scope should be stated earlier than Section VIII. Both are addressed: the deployment column was re-certified live on 29 September 2026 under the exact bound, with the wall clock of the live decision reported (101 seconds for the loose budget including the oracle calls, 304 seconds for the tight budget), and the scope statement now appears in the setup paragraph of Section V.
 
 ---
 
@@ -141,13 +143,17 @@ The reviewer's assessment also noted that the deployment-scale run was a replay 
 
 **Author response:** Agreed on all counts.
 
-**Author action:** Section II opens with a "Terminology" paragraph that defines stratum, look, floor, certificate, oracle draw, estimand, power, pinned, and the Bonferroni split before their first use in the technical sections, followed by a notation table (Table 1); the abstract and the Introduction gloss the terms they cannot avoid inline (strata in the running example, looks and peeking in Contribution 2, pinned, the noise floor, estimands, power, and certificates at their first mention). The nine checker conditions moved from the Availability section to Appendix A, and the Availability section now carries a one-sentence pointer. Algorithm 1 supplements the five-step summary of Section III with complete pseudocode. The Deployment section was restructured into three short subsections with a summary table (Table 8) so that the numbers live in the table and the prose interprets them; the calibration, main-results, and bound paragraphs were rewritten with shorter sentences; and Table 4 collects the flip-rate figures that had been scattered through the text. We revised sentence length throughout the sections we rewrote, while keeping the technical statements exact.
+**Author action:** Section II opens with a "Terminology" paragraph that defines stratum, look, floor, certificate, oracle draw, estimand, power, pinned, and the Bonferroni split before their first use in the technical sections, followed by a notation table (Table 1); the Introduction glosses the terms it cannot avoid inline (strata in the running example, looks and peeking in Contribution 2, pinned, the noise floor, estimands, power, and certificates at their first mention); the abstract uses "stratum" and "estimand" without a gloss, as an abstract must. The nine checker conditions moved from the Availability section to Appendix A, and the Availability section now carries a one-sentence pointer. Algorithm 1 supplements the five-step summary of Section III with complete pseudocode. The Deployment section was restructured into three short subsections with a summary table (Table 8) so that the numbers live in the table and the prose interprets them; the calibration, main-results, and bound paragraphs were rewritten with shorter sentences; and Table 4 collects the flip-rate figures that had been scattered through the text. We revised sentence length throughout the sections we rewrote, while keeping the technical statements exact.
 
 ## Reviewer 3, Minor 1: Page header "VOLUME 11, 2023"
+
+> The page header says "VOLUME 11, 2023." Please use the correct template.
 
 **Author response and action:** The vendored IEEE Access template (ACCESS_latex_template_20260513, the current one on the Access author page) sets that footer by default; it is now set to the 2026 volume. The class file is otherwise unmodified.
 
 ## Reviewer 3, Minor 2: The headline flip rate reported as 6.3%, 6.0%, 6.30%, and 7.2%
+
+> The flip rate for the headline edit is reported as 6.3%, 6.0%, 6.30%, and 7.2% in different places. A short table explaining what each figure measures would help.
 
 **Author response:** These are four different instruments on the same population quantity, and the first version explained them in one dense sentence that a reader could not be expected to parse.
 
@@ -155,37 +161,55 @@ The reviewer's assessment also noted that the deployment-scale run was a replay 
 
 ## Reviewer 3, Minor 3: The cached-TRUE flip rate reported as 45.7%, 45.2%, and 37.1%
 
+> The cached-TRUE flip rate is reported as 45.7%, 45.2%, and 37.1% in different sections. Please identify the edit and calculation behind each figure.
+
 **Author response and action:** Table 4 also lists these: 37.1% is the cached-TRUE stratum's flip rate under the formatting edit (single fresh draw against the cache); 45.7% is the cached-TRUE flip rate under the scope-widening edit on the production column (199 cells, with its Wilson interval); and the third figure was the realized error among the cached-TRUE cells the aggregate-only baseline (B2) reused at $\alpha=0.1$, an adversely selected subset rather than a population rate (35.3% in the regenerated numbers; the earlier 45.2% was the same quantity under the earlier bound). The text now names the edit and the calculation wherever such a figure appears.
 
 ## Reviewer 3, Minor 4: Define "SO"
+
+> Please define "SO" as Stack Overflow when it first appears.
 
 **Author action:** "Stack Overflow (SO)" is now defined at its first use, in the Introduction's running example, and the second definition in Section V, "Workloads", was removed.
 
 ## Reviewer 3, Minor 5: The "exceed." column of Table 1
 
+> Please explain the "exceed." column more clearly in the caption of Table 1.
+
 **Author action:** The caption of Table 2 (the former Table 1) now explains every column, including "cert." (the share of the 1,000 sampling replications that issued any certificate) and "exceed." (the share of those certifying replications, not of all 1,000, whose realized reuse-set rate exceeded $\alpha$, a metric the default mode does not certify).
 
 ## Reviewer 3, Minor 6: Fig. 1 text size
+
+> The text in Fig. 1 is difficult to read at print size.
 
 **Author action:** Figure 1 was redrawn with shorter labels so that it fits the text width at its natural size and no longer needs to be scaled down; its text is now set at the body font size.
 
 ## Reviewer 3, Minor 7: Exact model identifiers
 
+> Please give the exact snapshot or version identifiers for all models used, including the gpt-5-nano probe.
+
 **Author action:** A new Table 3 lists every model the article uses by its gateway identifier (deepseek/deepseek-v4-flash-0731; openai/text-embedding-3-small; google/gemini-2.5-flash-lite; google/gemini-3-flash; google/gemini-3.8-flash; zai/glm-4.7-flash; alibaba/qwen3.7-flash; openai/gpt-5-nano; meta/muse-spark-1.3-contributor), its role, and its run dates. The setup paragraph states that no decode parameter other than temperature 0 is set and that provider-side snapshots are dated, which the September re-certification shows is not a formality.
 
 ## Reviewer 3, Minor 8: References missing page numbers or DOIs; DOIs ending in "2026"
 
-**Author response and action:** Bardenet and Maillard now carries pages 1361–1385 and DOI 10.3150/14-BEJ605; Waudby-Smith and Ramdas carries volume 86, issue 1, pages 1–27, and DOI 10.1093/jrsssb/qkad009; Gupta, Mumick, and Ross carries pages 211–222 and DOI 10.1145/223784.223817; Maurer and Pontil (COLT 2009) has no DOI or page numbers assigned by the venue, which the entry now says, and its arXiv identifier is given; Wang and Ramdas (e-BH) carries pages 822–852 and DOI 10.1111/rssb.12489; the remaining journal and conference entries were checked for locators in the same pass. The "2026" that appeared after two DOIs was a defect of our bibliography generator (it carries DOIs into the note field because the IEEEtran style has no DOI field, and it mis-parsed a note containing a braced venue name, printing "SIGMOD; doi:… 2026"); the generator was fixed and those entries now read "SIGMOD 2026, doi:…".
+> References [6], [7], [9], and [29] are missing page numbers or DOIs. The DOIs in [16] and [18] appear to have "2026" added at the end. Please check them.
+
+**Author response and action:** Bardenet and Maillard now carries pages 1361–1385 and DOI 10.3150/14-BEJ605; Waudby-Smith and Ramdas carries volume 86, issue 1, pages 1–27, and DOI 10.1093/jrsssb/qkad009; Gupta, Mumick, and Ross carries pages 211–222 and DOI 10.1145/223784.223817; Maurer and Pontil (COLT 2009) has no DOI or page numbers assigned by the venue, which the entry now says, and its arXiv identifier is given; Wang and Ramdas (e-BH) carries pages 822–852 and DOI 10.1111/rssb.12489; in the same pass GPTCache gained its full title, pages 212–218, and DOI 10.18653/v1/2023.nlposs-1.24, and RETAIN its DOI 10.18653/v1/2024.emnlp-demo.31. The "2026" that appeared after two DOIs was a defect of our bibliography generator (it carries DOIs into the note field because the IEEEtran style has no DOI field, and it mis-parsed a note containing a braced venue name, printing "SIGMOD; doi:… 2026"); the generator was fixed and those entries now read "SIGMOD 2026, doi:…".
 
 ## Reviewer 3, Minor 9: Which references are peer reviewed
 
-**Author action:** Every arXiv-only reference is now labeled "arXiv preprint" in the bibliography; entries with a published version cite the published version. One entry carries both labels on purpose: SemBench is accepted to VLDB 2026 but not yet published, so it is cited as the arXiv preprint with the acceptance noted.
+> Many cited 2026 papers are arXiv preprints. Please make clear which references have been peer reviewed.
+
+**Author action:** Every arXiv-only reference is now labeled "arXiv preprint" in the bibliography; entries with a published version cite the published version. SPADE, which appeared in Proc. VLDB Endow. 17(12), is now cited as the journal article rather than the preprint. One entry carries both labels on purpose: SemBench (arXiv, November 2025) is accepted to VLDB 2026 but not yet published, so it is cited as the preprint with the acceptance noted.
 
 ## Reviewer 3, Minor 10: The code license
+
+> The code has a noncommercial, source-available license. Please state that clearly in the abstract or contributions section when describing the code release.
 
 **Author action:** The abstract now says the system is released under a source-available noncommercial license; Contribution 3 says the same, and the Availability section already did.
 
 ## Reviewer 3, suggested references
+
+> Suggested references: Clopper and Pearson (1934), Biometrika 26(4):404–413; Howard, Ramdas, McAuliffe, Sekhon (2021), Ann. Statist. 49(2):1055–1080.
 
 **Author response:** Both are relevant and both are now cited: Clopper and Pearson (1934) where the exact bound is introduced (Section III, "The bound") and in the related-work discussion of the bound; Howard et al. (2021) where time-uniform confidence sequences are discussed as the alternative that would remove the Bonferroni split across looks (Sections III, V, and VIII).
 
@@ -197,8 +221,8 @@ The reviewer's assessment also noted that the deployment-scale run was a replay 
 
 2. **Snapshots as versions.** Oracle draws taken after a provider-side change are now stored under a prompt version of their own carrying the same template, so draws from two snapshots never share a key and cannot be mixed in one certification path. This is how the September re-certification was run cleanly against the August cache (Section IV).
 
-3. **Calibration restated as a rate.** Under an exact bound that spends its budget, "no unsafe certification in any trial" is no longer the right claim (nor was it the right claim to make of a bound that left almost all of $\delta$ unspent). The calibration study now reports the unconditional rate of certificates whose realized flip count exceeds the budget, the event Theorem 1 bounds: at most 1.00% of runs in any configuration (95% CI [0.65, 1.54]%) against a nominal per-stratum $\delta$ of 5%, averaging 0.35% over the 54 tight nulls (the presented-cells rate, which leaves out the sampled flips, peaks at 0.70%); Table 2 likewise reports the one configuration (scope widening at $\alpha=0.05$, a stratum whose flip rate sits just above the budget) in which 1.2% of replications certify and 75% of those exceed, an unconditional 0.90% against $\delta=0.1.$
+3. **Calibration restated as a rate.** Under an exact bound that spends its budget, "no unsafe certification in any trial" is no longer the right claim (nor was it the right claim to make of a bound that left almost all of $\delta$ unspent). The calibration study now reports the unconditional rate of certificates whose realized flip count exceeds the budget, the event Theorem 1 bounds: at most 1.00% of runs in any configuration (95% CI [0.65, 1.54]%) against a nominal per-stratum $\delta$ of 5%, averaging 0.35% over the 54 tight nulls (the presented-cells rate, which leaves out the sampled flips, peaks at 0.70%); the text accompanying Table 2 (Section V, "Main results") reports the one configuration (scope widening at $\alpha=0.05$, a stratum whose flip rate sits just above the budget) in which 1.2% of replications certify and 75% of those exceed, an unconditional 0.90% against $\delta=0.1.$
 
 4. **Erratum relative to the preprint.** The Zenodo preprint reported the Bardenet–Maillard bound as slightly tighter than Maurer–Pontil; that replay used the Maurer–Pontil linear constant inside the Serfling form, and the published constant $\kappa$ = 7/3 + 3/$\sqrt{2}$ is what the numbers here use (this was already corrected in the first IEEE Access submission and is restated in the revision).
 
-5. **Minor.** Boolean capitalized throughout; the acknowledgment and author biography unchanged; an enlarged model-identifier table; appendices lettered.
+5. **Minor.** Boolean capitalized throughout; the acknowledgment and author biography unchanged; a new model-identifier table (Table 3); appendices lettered.

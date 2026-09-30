@@ -171,8 +171,8 @@ const texRows = rows.map((r) => {
       LABELS[r.pair] ?? r.pair,
       r.alpha.toFixed(2),
       pct(r.trueFlipRate),
-      String(m.sampled),
-      cert ? String(m.reused) : "0",
+      num(m.sampled),
+      cert ? num(m.reused) : "0",
       cert ? pct(m.realizedPresented, 2) : "--",
       cert
         ? `${(m.realizedReuse * 100).toFixed(2)} [${(((b as unknown as {realizedReuseCiLo:number}).realizedReuseCiLo) * 100).toFixed(1)},${(((b as unknown as {realizedReuseCiHi:number}).realizedReuseCiHi) * 100).toFixed(1)}]`
@@ -1508,7 +1508,7 @@ const outcome = (sw: Exp12["sweeps"] | undefined, alpha: number) => {
   const cell = (pair: string, alpha: number) => {
     const r = r8.find((x) => x.pair === pair && Math.abs(x.alpha - alpha) < 1e-9)!;
     return r.main.certifiedStrata === 0
-      ? `refused (${r.main.sampled})`
+      ? `refused (${num(r.main.sampled)})`
       : `${ratioPct(r.main.reused, r.n, 1)} (${pct(r.main.realizedPresented, 2)})`;
   };
   const fmtFlip = r8.find((x) => x.pair === "so-formatting")!.trueFlipRate;
@@ -1672,9 +1672,11 @@ if (exp17) {
   def("indepAgreeFalseN", String(e.betweenArmAgreement.byCachedValue.false?.n ?? 0));
   def("indepAgreeTrueN", String(e.betweenArmAgreement.byCachedValue.true?.n ?? 0));
   const lagP = (x: number) => (x < 0.001 ? "<0.001" : x.toFixed(2));
-  def("indepSeqLag", e.sequential.serial.lag1.toFixed(3));
+  // A negative sign printed as a text hyphen is a line-break point; set it in math.
+  const signed = (x: number) => (x < 0 ? `$${x.toFixed(3)}$` : x.toFixed(3));
+  def("indepSeqLag", signed(e.sequential.serial.lag1));
   def("indepSeqLagP", lagP(e.sequential.serial.lag1PermutationP));
-  def("indepConcLag", e.concurrent.serial.lag1.toFixed(3));
+  def("indepConcLag", signed(e.concurrent.serial.lag1));
   def("indepConcLagP", lagP(e.concurrent.serial.lag1PermutationP));
   def("indepSeqDispersion", (e.sequential.serial.blockVarianceRatio ?? 0).toFixed(2));
   def("indepConcDispersion", (e.concurrent.serial.blockVarianceRatio ?? 0).toFixed(2));
@@ -1716,7 +1718,7 @@ if (exp17) {
     for (const alpha of [0.02, 0.05, 0.1, 0.2]) {
       const cells = order.map((b) => {
         const r = rows14.find((x) => x.bound === b && x.pair === pair && Math.abs(x.alpha - alpha) < 1e-9)!;
-        return r.certifiedStrata.length > 0 ? `${ratioPct(r.reused, r.n, 1)} (${r.oracle})` : `refused (${r.oracle})`;
+        return r.certifiedStrata.length > 0 ? `${ratioPct(r.reused, r.n, 1)} (${num(r.oracle)})` : `refused (${num(r.oracle)})`;
       });
       lines.push(`${LABELS[pair]} & ${alpha.toFixed(2)} & ${cells.join(" & ")} \\\\`);
     }
@@ -1770,7 +1772,7 @@ ${lines.join("\n")}
   const r8 = (exp8.results as R8p[]).filter((r) => r.estimand === "presented");
   const primaryCell = (pair: string, alpha: number) => {
     const r = r8.find((x) => x.pair === pair && Math.abs(x.alpha - alpha) < 1e-9)!;
-    return r.main.certifiedStrata === 0 ? `refused (${r.main.sampled})` : `${ratioPct(r.main.reused, r.n, 1)} (${pct(r.main.realizedPresented, 2)})`;
+    return r.main.certifiedStrata === 0 ? `refused (${num(r.main.sampled)})` : `${ratioPct(r.main.reused, r.n, 1)} (${pct(r.main.realizedPresented, 2)})`;
   };
   const flipOf = (pair: string) => pct(r8.find((x) => x.pair === pair)!.trueFlipRate, 2);
   const rows18: string[] = [];
@@ -1971,6 +1973,7 @@ if (pilotReady && exp19) {
   def("pilotFmtCalLoose", outcome("formatting", "category@0.2:calibrated"));
   def("pilotFmtCalTight", outcome("formatting", "category@0.1:calibrated"));
   def("pilotSynCalLoose", outcome("synonym", "category@0.2:calibrated"));
+  def("pilotSynCalTight", outcome("synonym", "category@0.1:calibrated"));
 }
 
 // ---------------------------------------------------------------------------
@@ -2038,7 +2041,7 @@ ${rowsM.join("\n")}
     const x = w as W11c & { gtOverlapFlips: number };
     const f = x.strata.find((s) => s.stratumId.startsWith("v=false"))!;
     const audit = x.realizedOnOverlap === null ? "--" : `${pct(x.realizedOnOverlap, 2)} (${num(x.gtOverlapFlips)}/${num(x.gtOverlapReused)})`;
-    return `${label} & ${x.oracleCalls} & ${f.sampled} / ${f.flips}${f.certified ? "" : " (refused)"} & ${num(x.reused)} & ${pct(x.savings, 1)} & ${audit}${applied ? " (applied)" : ""} \\\\`;
+    return `${label} & ${num(x.oracleCalls)} & ${num(f.sampled)} / ${f.flips}${f.certified ? "" : " (refused)"} & ${num(x.reused)} & ${pct(x.savings, 1)} & ${audit}${applied ? " (applied)" : ""} \\\\`;
   };
   const find = (file: { sweeps: W11c[] }, bound: string, alpha: number) =>
     file.sweeps.find((s) => s.bound === bound && Math.abs(s.alpha - alpha) < 1e-9) as W11c | undefined;
