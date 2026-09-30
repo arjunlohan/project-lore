@@ -780,9 +780,9 @@ assumed~\cite{gilardi,ziems,pangakis,tornberg}. Ledgered model spend across ever
 cost ledger. That figure is a lower bound, not a total: the ledger
 records only cells written through the column runner, and a further
 \offLedgerCells\ cells were computed by probe scripts that call the
-model directly (the self-flip probes, the vote-of-3 study, the
-multi-draw relabeling, the model-family runs, and the independence
-check).
+model directly (the self-flip probes, the vote-of-3 study, the multi-draw relabeling,
+the model-family runs, the independence check, and the free-text
+pilot's draws).
 
 \begin{table*}[t]
 \caption{Every model the article uses, by gateway identifier.}
@@ -1835,6 +1835,16 @@ model), the formatting edit \pilotFmtCalLoose\ at $\alpha{=}0.2$ and
 with probability $1-\delta-\delta_{\mathrm{cal}}$, and the judge's
 price is the deflation (\pilotFmtMissBound\ of budget on the formatting
 edit, $\hat{q}$ times the judge's equivalent share) plus the labels.
+The pilot lands on the impossibility floor of \secref{sec:problem}: a
+free-text column whose same-prompt re-draws the judge calls different
+in \pilotFloorRate\ of pairs cannot be certified at any budget a user
+would set, and the certifier finds that out at its first looks. The
+labels split that floor between the model and the judge: of the
+\pilotLabeledDiff\ judge-DIFFERENT pairs a reader called \pilotFalseFlips\
+the same specialty, which is the judge's own strictness; the rest is
+the model's instability under a free-text prompt, which no judge
+calibration removes and which the floor of Section~\ref{sec:problem}
+predicts.
 \fi The main evaluation's five author-written edit pairs, one per class
 per column, are enough to show that surface class can fail to predict
 flip rate,

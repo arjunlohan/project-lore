@@ -57,6 +57,7 @@ const exp11c = J("exp11c-deployment-bounds.json"); // August draws, every bound
 const exp11cSep = J("exp11c-deployment-bounds-v4.json"); // September snapshot, live
 const exp16 = J("exp16-snapshot-drift.json");
 const exp17 = JOpt("exp17-independence.json");
+const exp19 = JOpt("exp19-freetext.json") as Exp19 | undefined;
 const exp18Files = readdirSync("docs/research/experiments")
   .filter((f) => /^exp18-families-(widening|djinni)-.*\.json$/.test(f) && !f.endsWith(".partial.json"))
   .sort();
@@ -1351,6 +1352,7 @@ const offLedgerCells =
   // Independence check (two arms, direct calls) and the remaining-pair
   // family runs, both off the ledger.
   (exp17 ? Number(exp17.n) * 2 : 0) +
+  (exp19 ? Number(exp19.n) * 4 : 0) +
   exp18Files.reduce((acc, f) => {
     const d = J(f) as { draws: Array<Record<string, unknown>> };
     return acc + d.draws.reduce((a, r) => a + ["a1", "b1", "a2", "a3"].filter((k) => r[k] !== undefined && r[k] !== null).length, 0);
@@ -1847,7 +1849,6 @@ type Exp19 = {
   };
   results: Record<string, { usable: number; judgeFlips: number; judgeFlipRate: number; wilson95: [number, number]; judgeSameShare: number; missBound: number | null; sweeps: Record<string, Exp19Sweep> }>;
 };
-const exp19 = JOpt("exp19-freetext.json") as Exp19 | undefined;
 const pilotReady = !!exp19 && !!exp19.calibrationSummary && exp19.calibrationSummary.humanLabeled > 0 && exp19.calibrationSummary.missUcbConditional !== null;
 def("pilotAvailable", pilotReady ? "1" : "0");
 if (pilotReady && exp19) {
