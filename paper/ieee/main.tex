@@ -122,35 +122,30 @@ by Large Language Models under Prompt Edits}
 %% material. Differs from the acmart abstract only where those rules bind
 %% (symbols worded out; "CVs" expanded); every quantity is still macro-cited.
 \begin{abstract}
-Modern data tables let users define columns in natural language: each cell
-is computed by a language model from a versioned prompt over its row. When
-the prompt is edited, systems face a choice: recompute every cell,
-expensive and rate-limited, or silently reuse stale ones, with unbounded
-error. We present semantic incremental view maintenance (\sivm{}), a
-layer that certifies which cached cells may be reused after a prompt
-edit, bounding the false-reuse rate of each certified stratum by a
-user-chosen error budget with stated confidence. \sivm{} freezes
-cached-value strata, samples adaptively on a doubling look schedule, and
-bounds each stratum's flip rate with an exact finite-population
-confidence bound; a strict mode certifies at a deflated threshold to
-bound the error of the reused cells alone. An impossibility floor
-follows for this estimand: a model's rate of disagreement with itself
-under the unedited prompt limits the certifiable budget. On two public corpora (\corpusSO\
-Stack Overflow developer profiles; \corpusDjinni\ Djinni candidate
-profiles) with \labeledCells\ labeled cells, a formatting-only edit certifies \benchSavingsMain\ call savings at an error budget of 0.2 with
+Modern data tables let users define columns in natural language: a language model computes each cell from a versioned
+prompt over its row. When the prompt is edited, systems either recompute
+every cell or reuse stale ones, with unbounded error. We present semantic incremental
+view maintenance (\sivm{}), which certifies which cached cells may be
+reused after a prompt edit, bounding each certified stratum's
+false-reuse rate by a user-chosen error budget with stated confidence.
+\sivm{} freezes cached-value strata, samples adaptively on a doubling
+schedule, and bounds each stratum's flip rate with an exact
+finite-population confidence bound; a strict mode bounds the error of
+the reused cells alone. An impossibility floor follows for this
+estimand: a model's rate of disagreement with itself under the unedited
+prompt limits the certifiable budget. On two public corpora with
+\labeledCells\ labeled cells, a formatting-only edit certifies
+\benchSavingsMain\ call savings at an error budget of 0.2 with
 \benchRealized\ realized false-reuse, and at deployment scale
 \deployOracle\ oracle calls certify reuse of \deployReused\ of \deployN\
 cells. Across \calTrials\ calibration runs with planted flip rates,
 unsafe certificates occur in at most \calUnsafeWorst\ of runs in any
-configuration, against a nominal per-stratum budget of \calNominalDelta.
-A second certification \driftDaysLater\ days later, against the same
-cache, measured provider-side model drift as a higher flip rate and
-re-certified the same budgets, the tighter one a look deeper than on
-the August draws. Certification reproduces on
-\famCertCount\ of \famCount\ further model families, while which edits
-are benign varies by family. We release the system under a source-available
-noncommercial license, with the labels and a benchmark of versioned
-prompt-edit pairs.
+configuration, against a nominal \calNominalDelta. A second
+certification \driftDaysLater\ days later, against the same cache,
+measured provider-side model drift and re-certified the same budgets.
+Certification reproduces on \famCertCount\ of \famCount\ further model
+families, while which edits are benign varies by family. The system is released under a source-available noncommercial license,
+with labels and a benchmark of versioned prompt-edit pairs.
 \end{abstract}
 
 \begin{keywords}

@@ -326,7 +326,7 @@ async function main() {
         c.adjudicator = verdicts[i]!;
       });
             console.log(`adjudicator labeled ${verdicts.filter((v) => v !== null).length}/${need.length}`);
-      art.adjudicatedAt = new Date().toISOString();
+            if (need.length > 0) art.adjudicatedAt = new Date().toISOString();
     }
   }
 
@@ -359,8 +359,12 @@ async function main() {
     const ps = pairs.filter((p) => p.comparison === name && p.judge !== null);
     const flips: number[] = ps.map((p) => (p.judge ? 0 : 1));
     const cache = name === "synonym" ? cats.a2 : cats.a1;
-    const judgeSameShare = ps.filter((p) => p.judge === true).length / Math.max(1, ps.length);
-    const missBound = missUcb === null ? null : missUcb * judgeSameShare;
+        const judgeSameShare = ps.filter((p) => p.judge === true).length / Math.max(1, ps.length);
+    // Deflate by the conditional miss bound itself. A stratum's share of
+    // judge-equivalent pairs can be anything up to 1 (a certified stratum's
+    // is at least 1 - alpha), so scaling the bound by the comparison-wide
+    // share would not be conservative for the per-stratum guarantee.
+    const missBound = missUcb;
     const run = async (strata: Array<{ id: string; flips: number[] }>, alpha: number, deflate: number) => {
       const aEff = alpha - deflate;
       if (aEff <= 0) return { alpha, alphaEffective: aEff, certifiedStrata: [], sampled: 0, reused: 0, savings: 0, realizedJudge: null };

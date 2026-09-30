@@ -1797,66 +1797,77 @@ are an open lever with guaranteed validity (Assumption~\ref{as:frozen}).
 is exact match, and the columns are two Boolean columns and one four-way
 ordinal select; numeric and free-text columns, which the introduction's
 product examples also serve, are not evaluated there. A free-text column needs a
-judge, and the judge's own error enters the budget. Let $q$ be the
-share of pairs the judge calls equivalent although a reader would not
-(a missed flip). The flip rate the judge reports is then at least the
-true rate minus $q$, so certifying at $\alpha - \hat{q}$, with $\hat{q}$
-an upper confidence bound on $q$ at level $\delta_{\mathrm{cal}}$ from
-human-labeled pairs of the same column, keeps a certified stratum's
-true rate at most $\alpha$ whenever the calibration bound and the
-certificate both hold, which they do with probability at least
-$1 - \delta - \delta_{\mathrm{cal}}$. Errors in the other direction
-(calling equivalent cells different) only raise the reported rate and
-cost power. $\hat{q}$ is estimated on the pairs the judge calls
-equivalent and scaled by their share, and it belongs to the (edit,
-column) it was drawn from or to a pool of comparisons on one column,
-since a judge's miss rate is a property of the outputs it compares; the
-machinery of this article is otherwise unchanged, but its power under a
-noisy judge \ifnum\pilotAvailable=1\relax has one measurement so far\else is an open measurement\fi.
+judge, and the judge's own error enters the budget. In a stratum, let $q$
+be the share of pairs the judge calls equivalent although a reader would
+not (missed flips). The flip rate the judge reports for the stratum is
+then at least the true rate minus $q$, and $q$ is at most the judge's
+miss rate among the pairs it calls equivalent. So let $\hat{m}$ be an
+upper confidence bound on that conditional miss rate at level
+$\delta_{\mathrm{cal}}$, from human-labeled pairs of the same column,
+and certify at $\alpha - \hat{m}$: a certified stratum's true rate is at
+most $\alpha$ whenever the calibration bound and the certificate both
+hold, which they do with probability at least
+$1 - \delta - \delta_{\mathrm{cal}}$, provided the judge's conditional
+miss rate in the certified stratum is no higher than in the calibration
+pool. Errors in the other direction (calling equivalent cells
+different) only raise the reported rate and cost power. The calibration
+belongs to the (edit, column) it was drawn from, or to a pool of
+comparisons on one column if their conditional miss rates are taken as
+equal, since a judge's miss rate is a property of the outputs it
+compares; the machinery of this article is otherwise unchanged, but its
+power under a noisy judge \ifnum\pilotAvailable=1\relax has one measurement so far\else is an open measurement\fi.
 \ifnum\pilotAvailable=1\relax
 \emph{A pilot.} We ran the recipe once, on a free-text column over
 \pilotRows\ SO profiles that names each respondent's primary technical
 specialty in a short phrase, with three prompt versions (a baseline, a
 formatting-only edit of it, and a synonym rewording) and the primary
 model as judge (\pilotJudgeModel), asked in both orders whether two
-phrases name the same specialty. A pair with a failed draw (no
-schema-valid phrase within the timeout) is excluded: \pilotFloorUsable,
-\pilotFmtUsable, and \pilotSynUsable\ of the \pilotRows\ pairs are
-usable for the floor, the formatting edit, and the synonym edit. Under
-that judge the column's own floor, two draws of the same prompt, is
-\pilotFloorRate\ (Wilson \pilotFloorCi); the formatting edit flips
-\pilotFmtRate\ (\pilotFmtCi) and the synonym edit \pilotSynRate\
-(\pilotSynCi). We hand-labeled \pilotLabeled\ calibration pairs (one
-labeler, the author), drawn evenly from the three comparisons and
-pooled: \pilotLabeledSame\ the
-judge had called equivalent and \pilotLabeledDiff\ it had called
-different. The judge missed \pilotMisses\ true differences among the
-\pilotLabeledSame, an upper confidence bound of \pilotMissUcb\ on its
-miss rate among the pairs it calls equivalent at
-$\delta_{\mathrm{cal}}{=}\pilotDeltaCal$, and called \pilotFalseFlips\
-equivalent pairs different. A second model (\pilotAdjudicator) labeled
-the same pairs and agreed with the hand labels on \pilotAdjAgree\ of
-them; the judge itself agreed on \pilotJudgeAgree. Certifying at
-$\alpha - \hat{q}$, with $\hat{q}$ that bound times the judge's
-equivalent share (\pilotFmtMissBound\ of budget on the formatting edit)
-and one pooled bound for the three comparisons, with strata by the
-cached phrase's category (\pilotCategories\ categories, assigned once
-from the cache by the same model), the formatting edit
-\pilotFmtCalLoose\ at $\alpha{=}0.2$ and \pilotFmtCalTight\ at
-$\alpha{=}0.1$; the synonym edit \pilotSynCalLoose\ at $\alpha{=}0.2$.
-The composed guarantee holds with probability
-$1-\delta-\delta_{\mathrm{cal}}$; the judge's price is the deflation
-plus the labels. The floor the certifier met is the judge's, not the
-model's. A reader called \pilotFalseFlips\ of the \pilotLabeledDiff\
-judge-DIFFERENT pairs the same specialty, across the three comparisons,
-and \pilotMisses\ of the \pilotLabeledSame\ judge-equivalent pairs
-different; weighting the judge's verdicts by those label shares puts
-the reader-level disagreement of two same-prompt draws near
-\pilotImpliedFloor\ (band \pilotImpliedFloorBand\ from the Wilson
-intervals of the two shares), inside the loose budget. The recipe is
-therefore safe and nearly free on the side it controls, and powerless
-on the side it does not: a judge stricter than the reader inflates the
-measured flip rate, and the certifier, which sees only the judge,
+phrases name the same specialty. A pair either of whose requests
+failed (errored or timed out; the failures came in bursts of
+consecutive rows and did not recur on the same rows across versions) is
+excluded: \pilotFloorUsable, \pilotFmtUsable, and \pilotSynUsable\ of
+the \pilotRows\ pairs are usable for the floor, the formatting edit, and
+the synonym edit. Under that judge the column's own floor, two draws of
+the same prompt, is \pilotFloorRate\ (Wilson \pilotFloorCi); the
+formatting edit flips \pilotFmtRate\ (\pilotFmtCi) and the synonym edit
+\pilotSynRate\ (\pilotSynCi). We hand-labeled \pilotLabeled\ calibration
+pairs (one labeler, the author), drawn evenly from the three
+comparisons and pooled: \pilotLabeledSame\ the judge had called
+equivalent and \pilotLabeledDiff\ it had called different. The judge
+missed \pilotMisses\ true differences among the \pilotLabeledSame, an
+upper confidence bound of \pilotMissUcb\ on its miss rate among the
+pairs it calls equivalent at $\delta_{\mathrm{cal}}{=}\pilotDeltaCal$
+(pooled across the three comparisons; each comparison's
+\pilotLabeledSamePerComparison\ labels alone give
+\pilotMissUcbPerComparison), and called \pilotFalseFlips\ equivalent
+pairs different. A second model (\pilotAdjudicator) labeled the same
+pairs and agreed with the hand labels on \pilotAdjAgree\ of them; the
+judge itself agreed on \pilotJudgeAgree. The second model called
+\pilotAdjMissesOnJudgeSame\ of the \pilotLabeledSame\ judge-equivalent
+pairs different, every one of them a pair the author called the same;
+under its labels the miss bound would be \pilotAdjMissUcb, so the clean
+side of this calibration rests on the author's reading. Certifying at
+$\alpha - \hat{m}$, which takes \pilotMissUcb\ off each budget
+($\alpha{=}0.2$ becomes \pilotAlphaLooseEff\ and $\alpha{=}0.1$ becomes
+\pilotAlphaTightEff), with strata by the cached phrase's category
+(\pilotCategories\ categories, assigned once from the cache by the same
+model), the formatting edit \pilotFmtCalLoose\ at $\alpha{=}0.2$ and
+\pilotFmtCalTight\ at $\alpha{=}0.1$; the synonym edit
+\pilotSynCalLoose\ at $\alpha{=}0.2$. The composed guarantee holds with
+probability $1-\delta-\delta_{\mathrm{cal}}$ under the assumption
+stated above; the judge's price is the deflation plus the labels. The
+floor the certifier met is the judge's, not the model's. Under the
+author's labels a reader called \pilotFalseFlips\ of the
+\pilotLabeledDiff\ judge-DIFFERENT pairs the same specialty, across the
+three comparisons, and \pilotMisses\ of the \pilotLabeledSame\
+judge-equivalent pairs different; weighting the judge's verdicts by
+those label shares puts the reader-level disagreement of two
+same-prompt draws near \pilotImpliedFloor\ (band \pilotImpliedFloorBand\
+from the Wilson intervals of the two shares), inside the loose budget.
+On the side it controls the recipe is therefore safe, at a price of
+\pilotMissUcb\ of budget under the author's labels; on the side it does
+not control it is powerless: a judge stricter than the reader inflates
+the measured flip rate, and the certifier, which sees only the judge,
 refuses. The second model, under the same instruction, was no closer to
 the reader, which suggests that the strictness sits in the instruction
 (it counts a difference in specificity as a difference) and not in the

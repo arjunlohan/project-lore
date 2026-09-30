@@ -58099,7 +58099,7 @@
         0.4255852963230898
       ],
       "judgeSameShare": 0.5986267166042447,
-      "missBound": 0.01183690836439675,
+      "missBound": 0.01977343816450844,
       "categoryStrata": [
         {
           "id": "c=backend services",
@@ -58163,7 +58163,7 @@
         },
         "single@0.1:calibrated": {
           "alpha": 0.1,
-          "alphaEffective": 0.08816309163560325,
+          "alphaEffective": 0.08022656183549157,
           "certifiedStrata": [],
           "sampled": 45,
           "reused": 0,
@@ -58172,7 +58172,7 @@
         },
         "category@0.1:calibrated": {
           "alpha": 0.1,
-          "alphaEffective": 0.08816309163560325,
+          "alphaEffective": 0.08022656183549157,
           "certifiedStrata": [],
           "sampled": 360,
           "reused": 0,
@@ -58199,7 +58199,7 @@
         },
         "single@0.2:calibrated": {
           "alpha": 0.2,
-          "alphaEffective": 0.18816309163560327,
+          "alphaEffective": 0.18022656183549157,
           "certifiedStrata": [],
           "sampled": 45,
           "reused": 0,
@@ -58208,7 +58208,7 @@
         },
         "category@0.2:calibrated": {
           "alpha": 0.2,
-          "alphaEffective": 0.18816309163560327,
+          "alphaEffective": 0.18022656183549157,
           "certifiedStrata": [],
           "sampled": 360,
           "reused": 0,
@@ -58226,7 +58226,7 @@
         0.4451219446940116
       ],
       "judgeSameShare": 0.5777045579352005,
-      "missBound": 0.011423205353686369,
+      "missBound": 0.01977343816450844,
       "categoryStrata": [
         {
           "id": "c=backend services",
@@ -58290,7 +58290,7 @@
         },
         "single@0.1:calibrated": {
           "alpha": 0.1,
-          "alphaEffective": 0.08857679464631364,
+          "alphaEffective": 0.08022656183549157,
           "certifiedStrata": [],
           "sampled": 45,
           "reused": 0,
@@ -58299,7 +58299,7 @@
         },
         "category@0.1:calibrated": {
           "alpha": 0.1,
-          "alphaEffective": 0.08857679464631364,
+          "alphaEffective": 0.08022656183549157,
           "certifiedStrata": [],
           "sampled": 360,
           "reused": 0,
@@ -58326,7 +58326,7 @@
         },
         "single@0.2:calibrated": {
           "alpha": 0.2,
-          "alphaEffective": 0.18857679464631363,
+          "alphaEffective": 0.18022656183549157,
           "certifiedStrata": [],
           "sampled": 45,
           "reused": 0,
@@ -58335,7 +58335,7 @@
         },
         "category@0.2:calibrated": {
           "alpha": 0.2,
-          "alphaEffective": 0.18857679464631363,
+          "alphaEffective": 0.18022656183549157,
           "certifiedStrata": [],
           "sampled": 360,
           "reused": 0,
@@ -58353,7 +58353,7 @@
         0.5222485585330778
       ],
       "judgeSameShare": 0.5008337965536409,
-      "missBound": 0.009903206106849418,
+      "missBound": 0.01977343816450844,
       "categoryStrata": [
         {
           "id": "c=other",
@@ -58417,7 +58417,7 @@
         },
         "single@0.1:calibrated": {
           "alpha": 0.1,
-          "alphaEffective": 0.09009679389315059,
+          "alphaEffective": 0.08022656183549157,
           "certifiedStrata": [],
           "sampled": 45,
           "reused": 0,
@@ -58426,7 +58426,7 @@
         },
         "category@0.1:calibrated": {
           "alpha": 0.1,
-          "alphaEffective": 0.09009679389315059,
+          "alphaEffective": 0.08022656183549157,
           "certifiedStrata": [],
           "sampled": 360,
           "reused": 0,
@@ -58453,7 +58453,7 @@
         },
         "single@0.2:calibrated": {
           "alpha": 0.2,
-          "alphaEffective": 0.1900967938931506,
+          "alphaEffective": 0.18022656183549157,
           "certifiedStrata": [],
           "sampled": 45,
           "reused": 0,
@@ -58462,7 +58462,7 @@
         },
         "category@0.2:calibrated": {
           "alpha": 0.2,
-          "alphaEffective": 0.1900967938931506,
+          "alphaEffective": 0.18022656183549157,
           "certifiedStrata": [],
           "sampled": 360,
           "reused": 0,
@@ -58472,6 +58472,6 @@
       }
     }
   },
-  "wallMs": 443178,
+  "wallMs": 16,
   "adjudicatedAt": "2026-09-30T16:50:15.912Z"
 }

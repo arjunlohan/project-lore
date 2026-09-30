@@ -97,6 +97,35 @@ const fmtRunDate = (iso: string) => {
   const dateOnly = !/T/.test(iso) || /T00:00:00(\.0+)?Z$/.test(iso);
   return new Date(iso).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric", timeZone: dateOnly ? "UTC" : "America/Los_Angeles" });
 };
+// One-sided Clopper-Pearson upper bound at level delta: the largest p whose
+// binomial lower tail at k still exceeds delta (bisection on the exact CDF).
+const lnGammaFn = (z: number): number => {
+  const c = [76.18009172947146, -86.50532032941677, 24.01409824083091, -1.231739572450155, 0.1208650973866179e-2, -0.5395239384953e-5];
+  let y = z;
+  let t = z + 5.5;
+  t -= (z + 0.5) * Math.log(t);
+  let ser = 1.000000000190015;
+  for (const cj of c) ser += cj / ++y;
+  return -t + Math.log((2.5066282746310005 * ser) / z);
+};
+const binomialLowerTail = (k: number, n: number, p: number): number => {
+  if (p <= 0) return 1;
+  if (p >= 1) return k >= n ? 1 : 0;
+  let s = 0;
+  for (let i = 0; i <= k; i++) s += Math.exp(lnGammaFn(n + 1) - lnGammaFn(i + 1) - lnGammaFn(n - i + 1) + i * Math.log(p) + (n - i) * Math.log(1 - p));
+  return Math.min(1, s);
+};
+const cpUpper = (k: number, n: number, delta: number): number => {
+  if (k >= n) return 1;
+  let lo = 0;
+  let hi = 1;
+  for (let i = 0; i < 200; i++) {
+    const mid = (lo + hi) / 2;
+    if (binomialLowerTail(k, n, mid) > delta) lo = mid;
+    else hi = mid;
+  }
+  return hi;
+};
 /** Wilson score interval; every interval in the paper is Wilson. */
 const wilsonInterval = (k: number, n: number, z = 1.96): [number, number] => {
   if (n === 0) return [0, 1];
@@ -1349,7 +1378,7 @@ const offLedgerCells =
   Number(exp12.n) * 3 +
   // Model-family runs (IEEE Access revision): 3 draws for floor+formatting,
   // +1 for the synonym pair, +2 for the decomposition where run.
-  FAMILY_FILES.reduce((acc, f) => {
+    [...FAMILY_FILES, ...(nanoPromoted ? [NANO_FULL] : []), ...(gemini38Present ? [GEMINI38_FULL] : [])].reduce((acc, f) => {
     const d = J(f) as { draws: Array<Record<string, unknown>> };
     return acc + d.draws.reduce((a, r) =>
       a + ["a1", "b1", "a2", "a3", "a4", "a5"].filter((k) => r[k] !== undefined && r[k] !== null).length, 0);
@@ -1848,7 +1877,8 @@ type Exp19 = {
   n: number;
   categories: string[];
   deltaCal: number;
-  draws: Record<string, Array<string | null>>;
+    draws: Record<string, Array<string | null>>;
+  calibration: Array<{ comparison: string; judge: boolean | null; human?: string | null; adjudicator?: boolean | null }>;
   calibrationSummary: {
     labeledJudgeSame: number;
     missesAmongJudgeSame: number;
@@ -1892,7 +1922,29 @@ if (pilotReady && exp19) {
   def("pilotFalseFlips", String(cs.falseFlipsAmongJudgeDifferent));
   def("pilotAdjAgree", pct(cs.adjudicatorVsHuman.rate ?? 0, 1));
   def("pilotJudgeAgree", pct(cs.judgeVsHuman.rate ?? 0, 1));
-    def("pilotFmtMissBound", pct(res("formatting").missBound ?? 0, 1));
+      {
+    // The pooled bound against each comparison's own labels, the second
+    // labeler's verdicts on the judge-equivalent pairs, and the budgets the
+    // deflation leaves.
+    const calE = exp19.calibration;
+    const labeled = (x: { human?: string | null }) => x.human === "SAME" || x.human === "DIFFERENT";
+    const byComp = ["floor", "formatting", "synonym"].map((c) => {
+      const same = calE.filter((x) => x.comparison === c && x.judge === true && labeled(x));
+      return { c, n: same.length, misses: same.filter((x) => x.human === "DIFFERENT").length };
+    });
+    def("pilotLabeledSamePerComparison", [...new Set(byComp.map((b) => b.n))].join("/"));
+    def("pilotMissUcbPerComparison", pct(Math.max(...byComp.map((b) => cpUpper(b.misses, b.n, exp19.deltaCal))), 1));
+    const adjMissOnSame = calE.filter((x) => x.judge === true && labeled(x) && x.adjudicator === false).length;
+    def("pilotAdjMissesOnJudgeSame", String(adjMissOnSame));
+    def("pilotAdjMissUcb", pct(cpUpper(adjMissOnSame, cs.labeledJudgeSame, exp19.deltaCal), 1));
+    const eff = (key: string) => {
+      const s = res("formatting").sweeps[key];
+      if (!s) throw new Error(`exp19 formatting has no sweep ${key}`);
+      return s.alphaEffective.toFixed(3);
+    };
+    def("pilotAlphaLooseEff", eff("category@0.2:calibrated"));
+    def("pilotAlphaTightEff", eff("category@0.1:calibrated"));
+  }
   {
     // What the labels say the judge's verdicts are worth: the share of
     // judge-DIFFERENT pairs a reader also calls different, and of
