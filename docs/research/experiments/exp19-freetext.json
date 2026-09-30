@@ -56048,7 +56048,9 @@
       "index": 1435,
       "a": "Java Spring backend developer on AWS",
       "b": "back-end Java development with AWS and PostgreSQL",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": true
     },
     {
       "calId": 2,
@@ -56056,7 +56058,9 @@
       "index": 1460,
       "a": "Back-end development with databases and AWS",
       "b": "back-end engineering with databases and AWS",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": true
     },
     {
       "calId": 3,
@@ -56064,7 +56068,9 @@
       "index": 493,
       "a": "Back-end developer specializing in databases and AWS",
       "b": "Java backend developer with Spring and SQL",
-      "judge": false
+      "judge": false,
+      "human": "SAME",
+      "adjudicator": false
     },
     {
       "calId": 4,
@@ -56072,7 +56078,9 @@
       "index": 1477,
       "a": "full-stack development with AWS and databases",
       "b": "Full-stack development on AWS with multiple databases",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": true
     },
     {
       "calId": 5,
@@ -56080,7 +56088,9 @@
       "index": 1837,
       "a": "back-end development with AWS, Docker, Kubernetes",
       "b": "Back-end developer on AWS with Docker and Kubernetes",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": true
     },
     {
       "calId": 6,
@@ -56088,7 +56098,9 @@
       "index": 799,
       "a": "full-stack development with Spring Framework",
       "b": "Full-stack Java developer with Spring Framework",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": true
     },
     {
       "calId": 7,
@@ -56096,7 +56108,9 @@
       "index": 1015,
       "a": "unknown",
       "b": "not determinable",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": true
     },
     {
       "calId": 8,
@@ -56104,7 +56118,9 @@
       "index": 1554,
       "a": "AWS cloud infrastructure engineering",
       "b": "Cloud infrastructure engineer on AWS",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": true
     },
     {
       "calId": 9,
@@ -56112,7 +56128,9 @@
       "index": 1223,
       "a": "full-stack development with PostgreSQL and Kubernetes",
       "b": "full-stack developer with PostgreSQL and Kubernetes",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": true
     },
     {
       "calId": 10,
@@ -56120,7 +56138,9 @@
       "index": 911,
       "a": "SQLite database specialist",
       "b": "SQLite database development",
-      "judge": false
+      "judge": false,
+      "human": "SAME",
+      "adjudicator": true
     },
     {
       "calId": 11,
@@ -56128,7 +56148,9 @@
       "index": 1761,
       "a": "unknown",
       "b": "unknown specialty",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": true
     },
     {
       "calId": 12,
@@ -56136,7 +56158,9 @@
       "index": 730,
       "a": "Full-stack development with Spring and Oracle",
       "b": "Full-stack Java developer with Spring and Oracle",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": true
     },
     {
       "calId": 13,
@@ -56144,7 +56168,9 @@
       "index": 1900,
       "a": "full-stack developer with Firebase and databases",
       "b": "full-stack developer with database expertise",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": false
     },
     {
       "calId": 14,
@@ -56152,7 +56178,9 @@
       "index": 1049,
       "a": "Ansible automation",
       "b": "DevOps automation with Ansible",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": true
     },
     {
       "calId": 15,
@@ -56160,7 +56188,9 @@
       "index": 740,
       "a": "back-end development with .NET and databases",
       "b": "back-end development with databases and cloud",
-      "judge": false
+      "judge": false,
+      "human": "SAME",
+      "adjudicator": false
     },
     {
       "calId": 16,
@@ -56168,7 +56198,9 @@
       "index": 1144,
       "a": "full-stack .NET developer",
       "b": "full-stack .NET development",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": true
     },
     {
       "calId": 17,
@@ -56176,7 +56208,9 @@
       "index": 1270,
       "a": "Back-end development with databases and cloud",
       "b": "Backend developer with database and cloud expertise",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": true
     },
     {
       "calId": 18,
@@ -56184,7 +56218,9 @@
       "index": 438,
       "a": "full-stack developer with database and cloud expertise",
       "b": "full-stack development with cloud and databases",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": true
     },
     {
       "calId": 19,
@@ -56192,7 +56228,9 @@
       "index": 928,
       "a": "full-stack developer with MariaDB and MySQL",
       "b": "full-stack development with MariaDB and MySQL",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": true
     },
     {
       "calId": 20,
@@ -56200,7 +56238,9 @@
       "index": 1954,
       "a": "unspecified",
       "b": "not specified",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": true
     },
     {
       "calId": 21,
@@ -56208,7 +56248,9 @@
       "index": 1215,
       "a": "full-stack web development with JavaScript",
       "b": "full-stack JavaScript web development",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": true
     },
     {
       "calId": 22,
@@ -56216,7 +56258,9 @@
       "index": 1440,
       "a": "full-stack web development with databases and cloud",
       "b": "full-stack developer with database and cloud expertise",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": true
     },
     {
       "calId": 23,
@@ -56224,7 +56268,9 @@
       "index": 73,
       "a": "embedded systems development in C/C++",
       "b": "embedded applications development",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": false
     },
     {
       "calId": 24,
@@ -56232,7 +56278,9 @@
       "index": 1062,
       "a": "Cloud-native .NET developer",
       "b": "full-stack .NET developer with cloud expertise",
-      "judge": false
+      "judge": false,
+      "human": "SAME",
+      "adjudicator": false
     },
     {
       "calId": 25,
@@ -56240,7 +56288,9 @@
       "index": 1025,
       "a": "Cloud infrastructure engineer with database expertise",
       "b": "cloud infrastructure and database engineering",
-      "judge": false
+      "judge": false,
+      "human": "SAME",
+      "adjudicator": true
     },
     {
       "calId": 26,
@@ -56248,7 +56298,9 @@
       "index": 360,
       "a": "Database administration with npm and Visual Studio",
       "b": "database administration",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": false
     },
     {
       "calId": 27,
@@ -56256,7 +56308,9 @@
       "index": 1755,
       "a": "Back-end .NET development on Azure",
       "b": "back-end .NET developer on Azure",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": true
     },
     {
       "calId": 28,
@@ -56264,7 +56318,9 @@
       "index": 1488,
       "a": "back-end development with Spring Framework",
       "b": "Back-end development with Spring Framework",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": true
     },
     {
       "calId": 29,
@@ -56272,7 +56328,9 @@
       "index": 56,
       "a": "full-stack development with Microsoft Azure and SQL Server",
       "b": "full-stack developer with Microsoft Azure",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": false
     },
     {
       "calId": 30,
@@ -56280,7 +56338,9 @@
       "index": 115,
       "a": "back-end development with .NET and cloud",
       "b": "back-end .NET developer on AWS and Azure",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": true
     },
     {
       "calId": 31,
@@ -56288,7 +56348,9 @@
       "index": 871,
       "a": "unknown",
       "b": "not specified",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": true
     },
     {
       "calId": 32,
@@ -56296,7 +56358,9 @@
       "index": 798,
       "a": "Full-stack .NET development with AWS and Azure",
       "b": "full-stack .NET developer",
-      "judge": false
+      "judge": false,
+      "human": "SAME",
+      "adjudicator": true
     },
     {
       "calId": 33,
@@ -56304,7 +56368,9 @@
       "index": 513,
       "a": "machine learning and data science",
       "b": "Python machine learning and data science",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": true
     },
     {
       "calId": 34,
@@ -56312,7 +56378,9 @@
       "index": 858,
       "a": "Full-stack development with Spring, Docker, and Kubernetes",
       "b": "full-stack development in Java and .NET",
-      "judge": false
+      "judge": false,
+      "human": "SAME",
+      "adjudicator": false
     },
     {
       "calId": 35,
@@ -56320,7 +56388,9 @@
       "index": 1450,
       "a": "back-end developer with database and cloud expertise",
       "b": "back-end development with databases and cloud",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": true
     },
     {
       "calId": 36,
@@ -56328,7 +56398,9 @@
       "index": 1198,
       "a": "full-stack .NET developer with database expertise",
       "b": "full-stack .NET development with multiple databases",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": true
     },
     {
       "calId": 37,
@@ -56336,7 +56408,9 @@
       "index": 1858,
       "a": "enterprise .NET development with Azure",
       "b": "enterprise .NET applications on Azure",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": true
     },
     {
       "calId": 38,
@@ -56344,7 +56418,9 @@
       "index": 181,
       "a": "Unity 3D game development with .NET",
       "b": "Unity 3D game developer",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": true
     },
     {
       "calId": 39,
@@ -56352,7 +56428,9 @@
       "index": 123,
       "a": "project management on Google Cloud",
       "b": "Google Cloud project management",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": true
     },
     {
       "calId": 40,
@@ -56360,7 +56438,9 @@
       "index": 1541,
       "a": "back-end development with MySQL and build tools",
       "b": "back-end development with MySQL",
-      "judge": false
+      "judge": false,
+      "human": "SAME",
+      "adjudicator": false
     },
     {
       "calId": 41,
@@ -56368,7 +56448,9 @@
       "index": 130,
       "a": "full-stack web development with AWS and PostgreSQL",
       "b": "cloud database management on AWS",
-      "judge": false
+      "judge": false,
+      "human": "DIFFERENT",
+      "adjudicator": false
     },
     {
       "calId": 42,
@@ -56376,7 +56458,9 @@
       "index": 182,
       "a": "full-stack .NET developer with SQL Server",
       "b": "full-stack .NET and SQL Server developer",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": true
     },
     {
       "calId": 43,
@@ -56384,7 +56468,9 @@
       "index": 1307,
       "a": "Google Cloud data engineer with Terraform",
       "b": "Google Cloud data engineering with BigQuery",
-      "judge": false
+      "judge": false,
+      "human": "SAME",
+      "adjudicator": false
     },
     {
       "calId": 44,
@@ -56392,7 +56478,9 @@
       "index": 555,
       "a": "Full-stack development with cloud and databases",
       "b": "full-stack web development with cloud databases",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": true
     },
     {
       "calId": 45,
@@ -56400,7 +56488,9 @@
       "index": 1313,
       "a": "data science and machine learning with Python",
       "b": "data science and machine learning",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": true
     },
     {
       "calId": 46,
@@ -56408,7 +56498,9 @@
       "index": 716,
       "a": "cloud and big data technologies",
       "b": "cloud-native big data engineering",
-      "judge": false
+      "judge": false,
+      "human": "SAME",
+      "adjudicator": false
     },
     {
       "calId": 47,
@@ -56416,7 +56508,9 @@
       "index": 1022,
       "a": "Backend engineer for AWS and databases",
       "b": "Backend engineer specializing in AWS and databases",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": true
     },
     {
       "calId": 48,
@@ -56424,7 +56518,9 @@
       "index": 1571,
       "a": "full-stack JavaScript web development",
       "b": "full-stack web development with SQL and JS tools",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": false
     },
     {
       "calId": 49,
@@ -56432,7 +56528,9 @@
       "index": 412,
       "a": "full-stack .NET developer",
       "b": "full-stack .NET development",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": true
     },
     {
       "calId": 50,
@@ -56440,7 +56538,9 @@
       "index": 1,
       "a": "React Native and Firebase development",
       "b": "React Native and Firebase developer",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": true
     },
     {
       "calId": 51,
@@ -56448,7 +56548,9 @@
       "index": 578,
       "a": "Full-stack development with PostgreSQL and Docker",
       "b": "full-stack development with PostgreSQL, Docker",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": true
     },
     {
       "calId": 52,
@@ -56456,7 +56558,9 @@
       "index": 896,
       "a": "no specialty identified",
       "b": "unknown",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": true
     },
     {
       "calId": 53,
@@ -56464,7 +56568,9 @@
       "index": 379,
       "a": "Full-stack web development with cloud and databases",
       "b": "full-stack development with cloud and databases",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": true
     },
     {
       "calId": 54,
@@ -56472,7 +56578,9 @@
       "index": 629,
       "a": "full-stack development with databases and cloud",
       "b": "full-stack development with .NET and Python",
-      "judge": false
+      "judge": false,
+      "human": "SAME",
+      "adjudicator": false
     },
     {
       "calId": 55,
@@ -56480,7 +56588,9 @@
       "index": 1685,
       "a": "unknown",
       "b": "unknown specialization",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": true
     },
     {
       "calId": 56,
@@ -56488,7 +56598,9 @@
       "index": 453,
       "a": "full-stack .NET developer",
       "b": "Full-stack .NET developer with database expertise",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": false
     },
     {
       "calId": 57,
@@ -56496,7 +56608,9 @@
       "index": 57,
       "a": "Unity 3D game developer",
       "b": "Unity 3D game development with .NET",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": true
     },
     {
       "calId": 58,
@@ -56504,7 +56618,9 @@
       "index": 557,
       "a": "back-end development with AWS and DynamoDB",
       "b": "backend development on AWS with DynamoDB",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": true
     },
     {
       "calId": 59,
@@ -56512,7 +56628,9 @@
       "index": 291,
       "a": "full-stack development with Gradle, Maven, Terraform",
       "b": "Full-stack development with Gradle, Maven, Terraform",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": true
     },
     {
       "calId": 60,
@@ -56520,7 +56638,9 @@
       "index": 985,
       "a": "full-stack web development on cloud platforms",
       "b": "full-stack web development with PostgreSQL and cloud",
-      "judge": false
+      "judge": false,
+      "human": "SAME",
+      "adjudicator": false
     },
     {
       "calId": 61,
@@ -56528,7 +56648,9 @@
       "index": 1763,
       "a": "machine learning with Python and TensorFlow",
       "b": "machine learning using Python and TensorFlow",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": true
     },
     {
       "calId": 62,
@@ -56536,7 +56658,9 @@
       "index": 1080,
       "a": "full-stack development with PostgreSQL and AWS",
       "b": "full-stack web development with PostgreSQL and AWS",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": true
     },
     {
       "calId": 63,
@@ -56544,7 +56668,9 @@
       "index": 1944,
       "a": "front-end web development in JavaScript",
       "b": "front-end web development",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": true
     },
     {
       "calId": 64,
@@ -56552,7 +56678,9 @@
       "index": 1126,
       "a": "cloud data pipelines using Kafka and MySQL",
       "b": "Marketing analytics using MySQL and Google Cloud",
-      "judge": false
+      "judge": false,
+      "human": "DIFFERENT",
+      "adjudicator": false
     },
     {
       "calId": 65,
@@ -56560,7 +56688,9 @@
       "index": 895,
       "a": "full-stack developer with cloud and database expertise",
       "b": "full-stack developer",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": false
     },
     {
       "calId": 66,
@@ -56568,7 +56698,9 @@
       "index": 162,
       "a": "Back-end developer with databases and cloud",
       "b": "Backend developer specializing in databases and cloud",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": true
     },
     {
       "calId": 67,
@@ -56576,7 +56708,9 @@
       "index": 1639,
       "a": "cloud and database engineering with Google Cloud",
       "b": "cloud data engineering and infrastructure",
-      "judge": false
+      "judge": false,
+      "human": "SAME",
+      "adjudicator": false
     },
     {
       "calId": 68,
@@ -56584,7 +56718,9 @@
       "index": 1164,
       "a": "front-end development with Flutter",
       "b": "Flutter front-end development",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": true
     },
     {
       "calId": 69,
@@ -56592,7 +56728,9 @@
       "index": 262,
       "a": "Back-end developer with .NET and cloud",
       "b": "Back-end development with .NET and cloud",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": true
     },
     {
       "calId": 70,
@@ -56600,7 +56738,9 @@
       "index": 466,
       "a": "Data analysis with Pandas and Scikit-Learn",
       "b": "data analysis with Python and R",
-      "judge": false
+      "judge": false,
+      "human": "SAME",
+      "adjudicator": false
     },
     {
       "calId": 71,
@@ -56608,7 +56748,9 @@
       "index": 158,
       "a": "full-stack .NET developer",
       "b": "full-stack .NET development",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": true
     },
     {
       "calId": 72,
@@ -56616,7 +56758,9 @@
       "index": 1521,
       "a": "back-end development with multiple databases and cloud platforms",
       "b": "back-end developer",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": true
     },
     {
       "calId": 73,
@@ -56624,7 +56768,9 @@
       "index": 1269,
       "a": "mobile game developer using Unity 3D",
       "b": "mobile game development with Unity 3D",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": true
     },
     {
       "calId": 74,
@@ -56632,7 +56778,9 @@
       "index": 1676,
       "a": "game development with Unity and .NET",
       "b": "3D game development with Unity",
-      "judge": false
+      "judge": false,
+      "human": "SAME",
+      "adjudicator": true
     },
     {
       "calId": 75,
@@ -56640,7 +56788,9 @@
       "index": 599,
       "a": "Back-end developer specializing in databases and cloud",
       "b": "backend development with databases and cloud",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": true
     },
     {
       "calId": 76,
@@ -56648,7 +56798,9 @@
       "index": 993,
       "a": "front-end development",
       "b": "front-end web development",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": true
     },
     {
       "calId": 77,
@@ -56656,7 +56808,9 @@
       "index": 451,
       "a": "Full-stack developer with JavaScript, MySQL, SQLite",
       "b": "full-stack web developer",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": true
     },
     {
       "calId": 78,
@@ -56664,7 +56818,9 @@
       "index": 1480,
       "a": "Full-stack development with cloud platforms",
       "b": "full-stack web development with cloud platforms",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": true
     },
     {
       "calId": 79,
@@ -56672,7 +56828,9 @@
       "index": 1566,
       "a": "full-stack development with databases and Vercel",
       "b": "full-stack web development",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": true
     },
     {
       "calId": 80,
@@ -56680,7 +56838,9 @@
       "index": 435,
       "a": "PostgreSQL database and npm/Pip tools",
       "b": "PostgreSQL database management for marketing",
-      "judge": false
+      "judge": false,
+      "human": "SAME",
+      "adjudicator": false
     },
     {
       "calId": 81,
@@ -56688,7 +56848,9 @@
       "index": 1343,
       "a": "Full-stack .NET developer",
       "b": "full-stack .NET development with SQL databases",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": true
     },
     {
       "calId": 82,
@@ -56696,7 +56858,9 @@
       "index": 1632,
       "a": "full-stack .NET developer on Azure",
       "b": "full-stack .NET development on Azure",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": true
     },
     {
       "calId": 83,
@@ -56704,7 +56868,9 @@
       "index": 1843,
       "a": "full-stack development with Spring Framework",
       "b": "Full-stack Java development with Spring",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": true
     },
     {
       "calId": 84,
@@ -56712,7 +56878,9 @@
       "index": 1794,
       "a": "Front-end development with Vite and Docker",
       "b": "front-end developer",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": true
     },
     {
       "calId": 85,
@@ -56720,7 +56888,9 @@
       "index": 749,
       "a": "front-end development",
       "b": "Front-end development with .NET and Firebase",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": true
     },
     {
       "calId": 86,
@@ -56728,7 +56898,9 @@
       "index": 720,
       "a": "Cloud database and container orchestration",
       "b": "React Native mobile development with Firebase",
-      "judge": false
+      "judge": false,
+      "human": "DIFFERENT",
+      "adjudicator": false
     },
     {
       "calId": 87,
@@ -56736,7 +56908,9 @@
       "index": 440,
       "a": "Full-stack development with AWS and databases",
       "b": "full-stack development with AWS and databases",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": true
     },
     {
       "calId": 88,
@@ -56744,7 +56918,9 @@
       "index": 188,
       "a": "Desktop application development with Qt and CMake",
       "b": "Qt-based desktop and enterprise application development",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": true
     },
     {
       "calId": 89,
@@ -56752,7 +56928,9 @@
       "index": 181,
       "a": "Unity 3D game developer",
       "b": "Unity 3D game development with .NET",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": true
     },
     {
       "calId": 90,
@@ -56760,7 +56938,9 @@
       "index": 13,
       "a": "full-stack web development with databases and AWS",
       "b": "full-stack development with AWS and relational databases",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": true
     },
     {
       "calId": 91,
@@ -56768,7 +56948,9 @@
       "index": 1476,
       "a": "Oracle database and .NET developer",
       "b": "Oracle database engineering with Docker",
-      "judge": false
+      "judge": false,
+      "human": "SAME",
+      "adjudicator": false
     },
     {
       "calId": 92,
@@ -56776,7 +56958,9 @@
       "index": 487,
       "a": "Full-stack development with Firebase and AWS",
       "b": "full-stack development with cloud databases",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": false
     },
     {
       "calId": 93,
@@ -56784,7 +56968,9 @@
       "index": 1800,
       "a": "full-stack web and mobile developer",
       "b": "full-stack web and mobile development",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": true
     },
     {
       "calId": 94,
@@ -56792,7 +56978,9 @@
       "index": 1279,
       "a": "cloud platform development with Firebase and Google Cloud",
       "b": "cloud development with Firebase and Google Cloud",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": true
     },
     {
       "calId": 95,
@@ -56800,7 +56988,9 @@
       "index": 802,
       "a": "database and build tool specialist",
       "b": "build tools for Rust and Java",
-      "judge": false
+      "judge": false,
+      "human": "DIFFERENT",
+      "adjudicator": false
     },
     {
       "calId": 96,
@@ -56808,7 +56998,9 @@
       "index": 203,
       "a": "full-stack development with databases and cloud",
       "b": "full-stack developer",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": true
     },
     {
       "calId": 97,
@@ -56816,7 +57008,9 @@
       "index": 498,
       "a": "Full-stack development on AWS with MariaDB",
       "b": "Full-stack PHP development on AWS",
-      "judge": false
+      "judge": false,
+      "human": "SAME",
+      "adjudicator": false
     },
     {
       "calId": 98,
@@ -56824,7 +57018,9 @@
       "index": 146,
       "a": "deep learning with TensorFlow and PyTorch",
       "b": "machine learning with Python and C++",
-      "judge": false
+      "judge": false,
+      "human": "SAME",
+      "adjudicator": false
     },
     {
       "calId": 99,
@@ -56832,7 +57028,9 @@
       "index": 855,
       "a": "Full-stack .NET developer",
       "b": "full-stack .NET development on AWS",
-      "judge": false
+      "judge": false,
+      "human": "SAME",
+      "adjudicator": false
     },
     {
       "calId": 100,
@@ -56840,7 +57038,9 @@
       "index": 599,
       "a": "Back-end development with databases and cloud platforms",
       "b": "Back-end developer specializing in databases and cloud",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": true
     },
     {
       "calId": 101,
@@ -56848,7 +57048,9 @@
       "index": 32,
       "a": "Full-stack development with databases and Webpack",
       "b": "full-stack web development with Webpack",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": false
     },
     {
       "calId": 102,
@@ -56856,7 +57058,9 @@
       "index": 1271,
       "a": "Backend .NET development on AWS",
       "b": "Full-stack .NET development on AWS",
-      "judge": false
+      "judge": false,
+      "human": "DIFFERENT",
+      "adjudicator": false
     },
     {
       "calId": 103,
@@ -56864,7 +57068,9 @@
       "index": 1508,
       "a": "enterprise .NET application development",
       "b": ".NET desktop and enterprise application development",
-      "judge": false
+      "judge": false,
+      "human": "SAME",
+      "adjudicator": false
     },
     {
       "calId": 104,
@@ -56872,7 +57078,9 @@
       "index": 610,
       "a": "Cloud project management with MySQL",
       "b": "cloud and mobile project management",
-      "judge": false
+      "judge": false,
+      "human": "SAME",
+      "adjudicator": false
     },
     {
       "calId": 105,
@@ -56880,7 +57088,9 @@
       "index": 1514,
       "a": "Full-stack developer with Spring Framework",
       "b": "full-stack Java development with Spring",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": true
     },
     {
       "calId": 106,
@@ -56888,7 +57098,9 @@
       "index": 1470,
       "a": "unknown specialty",
       "b": "insufficient data",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": false
     },
     {
       "calId": 107,
@@ -56896,7 +57108,9 @@
       "index": 117,
       "a": "full-stack development with AWS and MySQL",
       "b": "Full-stack development with MySQL, Redis, and AWS",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": false
     },
     {
       "calId": 108,
@@ -56904,7 +57118,9 @@
       "index": 841,
       "a": "data analysis with Python and Oracle",
       "b": "Python-based data analysis",
-      "judge": false
+      "judge": false,
+      "human": "SAME",
+      "adjudicator": false
     },
     {
       "calId": 109,
@@ -56912,7 +57128,9 @@
       "index": 1734,
       "a": ".NET desktop and enterprise application development",
       "b": "Desktop and enterprise .NET development",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": true
     },
     {
       "calId": 110,
@@ -56920,7 +57138,9 @@
       "index": 1459,
       "a": "cloud data engineer with Python and SQL",
       "b": "Cloud data engineering with Python",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": true
     },
     {
       "calId": 111,
@@ -56928,7 +57148,9 @@
       "index": 789,
       "a": "full-stack development with AWS and PostgreSQL",
       "b": "full-stack development on AWS",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": true
     },
     {
       "calId": 112,
@@ -56936,7 +57158,9 @@
       "index": 938,
       "a": "Android mobile development with cloud databases",
       "b": "Android developer with Firebase and SQL databases",
-      "judge": false
+      "judge": false,
+      "human": "SAME",
+      "adjudicator": true
     },
     {
       "calId": 113,
@@ -56944,7 +57168,9 @@
       "index": 1579,
       "a": "back-end developer with databases and build tools",
       "b": "back-end development with databases and build tools",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": true
     },
     {
       "calId": 114,
@@ -56952,7 +57178,9 @@
       "index": 1272,
       "a": "Desktop and enterprise .NET development with SQL Server",
       "b": ".NET desktop and enterprise application development",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": false
     },
     {
       "calId": 115,
@@ -56960,7 +57188,9 @@
       "index": 884,
       "a": "Full-stack development with React Native and databases",
       "b": "full-stack development using React Native and diverse databases",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": true
     },
     {
       "calId": 116,
@@ -56968,7 +57198,9 @@
       "index": 1849,
       "a": "full-stack .NET developer",
       "b": "full-stack development with .NET and Firebase",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": false
     },
     {
       "calId": 117,
@@ -56976,7 +57208,9 @@
       "index": 157,
       "a": "cloud database management with MySQL and AWS",
       "b": "C/C++ backend development with MySQL and AWS",
-      "judge": false
+      "judge": false,
+      "human": "DIFFERENT",
+      "adjudicator": false
     },
     {
       "calId": 118,
@@ -56984,7 +57218,9 @@
       "index": 105,
       "a": "Full-stack developer with DynamoDB and AWS",
       "b": "full-stack development with AWS DynamoDB",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": true
     },
     {
       "calId": 119,
@@ -56992,7 +57228,9 @@
       "index": 853,
       "a": "Game development with multiple engines",
       "b": "game development in Unity, Unreal, and Godot",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": true
     },
     {
       "calId": 120,
@@ -57000,7 +57238,9 @@
       "index": 1292,
       "a": "web development with databases",
       "b": "cross-platform mobile and desktop developer",
-      "judge": false
+      "judge": false,
+      "human": "DIFFERENT",
+      "adjudicator": false
     },
     {
       "calId": 121,
@@ -57008,7 +57248,9 @@
       "index": 1212,
       "a": "full-stack web development with relational databases and AWS",
       "b": "Full-stack developer with cloud platforms and databases",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": false
     },
     {
       "calId": 122,
@@ -57016,7 +57258,9 @@
       "index": 855,
       "a": "Full-stack .NET developer with cloud expertise",
       "b": "Full-stack .NET development with cloud platforms",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": true
     },
     {
       "calId": 123,
@@ -57024,7 +57268,9 @@
       "index": 1491,
       "a": "Oracle database administration on OCI",
       "b": "database administration for Oracle and MongoDB on OCI",
-      "judge": false
+      "judge": false,
+      "human": "SAME",
+      "adjudicator": false
     },
     {
       "calId": 124,
@@ -57032,7 +57278,9 @@
       "index": 874,
       "a": "Mobile app development with Flutter and Firebase",
       "b": "mobile app development with Flutter and Firebase",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": true
     },
     {
       "calId": 125,
@@ -57040,7 +57288,9 @@
       "index": 424,
       "a": "mobile developer using Docker and Gradle",
       "b": "mobile and database development",
-      "judge": false
+      "judge": false,
+      "human": "SAME",
+      "adjudicator": false
     },
     {
       "calId": 126,
@@ -57048,7 +57298,9 @@
       "index": 103,
       "a": "Full-stack .NET developer on Azure",
       "b": "Full-stack .NET development on Azure",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": true
     },
     {
       "calId": 127,
@@ -57056,7 +57308,9 @@
       "index": 1501,
       "a": "deep learning with PyTorch",
       "b": "machine learning with PyTorch",
-      "judge": false
+      "judge": false,
+      "human": "SAME",
+      "adjudicator": false
     },
     {
       "calId": 128,
@@ -57064,7 +57318,9 @@
       "index": 1260,
       "a": "BigQuery and Firebase database engineering",
       "b": "Google Cloud database engineering",
-      "judge": false
+      "judge": false,
+      "human": "SAME",
+      "adjudicator": false
     },
     {
       "calId": 129,
@@ -57072,7 +57328,9 @@
       "index": 962,
       "a": "full-stack web development with databases",
       "b": "full-stack development with SQL databases",
-      "judge": false
+      "judge": false,
+      "human": "SAME",
+      "adjudicator": false
     },
     {
       "calId": 130,
@@ -57080,7 +57338,9 @@
       "index": 869,
       "a": "Full-stack development with databases and cloud",
       "b": "full-stack development with databases and cloud",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": true
     },
     {
       "calId": 131,
@@ -57088,7 +57348,9 @@
       "index": 1558,
       "a": "Full-stack development with Spring Framework",
       "b": "full-stack Java development with Spring and relational databases",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": true
     },
     {
       "calId": 132,
@@ -57096,7 +57358,9 @@
       "index": 367,
       "a": "full-stack development with cloud and databases",
       "b": "full-stack cloud development with DevOps",
-      "judge": false
+      "judge": false,
+      "human": "SAME",
+      "adjudicator": false
     },
     {
       "calId": 133,
@@ -57104,7 +57368,9 @@
       "index": 608,
       "a": "full-stack development with cloud and databases",
       "b": "full-stack web development with PostgreSQL and AWS",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": true
     },
     {
       "calId": 134,
@@ -57112,7 +57378,9 @@
       "index": 697,
       "a": "Unity 3D game development",
       "b": "game development with Unity 3D",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": true
     },
     {
       "calId": 135,
@@ -57120,7 +57388,9 @@
       "index": 1255,
       "a": "Backend development on AWS with Docker and Kubernetes",
       "b": "back-end development on AWS with Docker and Kubernetes",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": true
     },
     {
       "calId": 136,
@@ -57128,7 +57398,9 @@
       "index": 1740,
       "a": "data science with cloud and databases",
       "b": "data science with Python and R",
-      "judge": false
+      "judge": false,
+      "human": "SAME",
+      "adjudicator": false
     },
     {
       "calId": 137,
@@ -57136,7 +57408,9 @@
       "index": 51,
       "a": "unknown",
       "b": "insufficient data",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": true
     },
     {
       "calId": 138,
@@ -57144,7 +57418,9 @@
       "index": 1222,
       "a": "unknown",
       "b": "unspecified technical specialization",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": true
     },
     {
       "calId": 139,
@@ -57152,7 +57428,9 @@
       "index": 177,
       "a": "iOS developer using SwiftUI and AWS",
       "b": "iOS development with SwiftUI and AWS",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": true
     },
     {
       "calId": 140,
@@ -57160,7 +57438,9 @@
       "index": 1630,
       "a": "embedded systems developer",
       "b": "embedded applications developer",
-      "judge": false
+      "judge": false,
+      "human": "SAME",
+      "adjudicator": false
     },
     {
       "calId": 141,
@@ -57168,7 +57448,9 @@
       "index": 1997,
       "a": "cloud infrastructure and DevOps engineering",
       "b": "cloud infrastructure and DevOps engineer",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": true
     },
     {
       "calId": 142,
@@ -57176,7 +57458,9 @@
       "index": 1826,
       "a": "Full-stack development with PostgreSQL, Redis, AWS",
       "b": "full-stack web development on AWS",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": true
     },
     {
       "calId": 143,
@@ -57184,7 +57468,9 @@
       "index": 1645,
       "a": "full-stack development with MySQL",
       "b": "full-stack web development with MySQL",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": true
     },
     {
       "calId": 144,
@@ -57192,7 +57478,9 @@
       "index": 30,
       "a": "game developer with Unity and Unreal",
       "b": "game development with Unity and Unreal Engine",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": true
     },
     {
       "calId": 145,
@@ -57200,7 +57488,9 @@
       "index": 632,
       "a": "Android development with Dagger and Gradle",
       "b": "Android app development using Dagger and Gradle",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": true
     },
     {
       "calId": 146,
@@ -57208,7 +57498,9 @@
       "index": 879,
       "a": "Backend development with Spring, AWS, and NoSQL databases",
       "b": "Back-end development with Spring, AWS, and NoSQL",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": true
     },
     {
       "calId": 147,
@@ -57216,7 +57508,9 @@
       "index": 1587,
       "a": "Front-end web developer with cloud platforms",
       "b": "front-end web development",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": false
     },
     {
       "calId": 148,
@@ -57224,7 +57518,9 @@
       "index": 1493,
       "a": "full-stack .NET developer on Azure",
       "b": "Full-stack .NET development on Azure",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": true
     },
     {
       "calId": 149,
@@ -57232,7 +57528,9 @@
       "index": 1779,
       "a": "Back-end development with databases and cloud platforms",
       "b": "back-end developer with database and cloud expertise",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": true
     },
     {
       "calId": 150,
@@ -57240,7 +57538,9 @@
       "index": 1662,
       "a": "data science and cloud infrastructure",
       "b": "machine learning engineer",
-      "judge": false
+      "judge": false,
+      "human": "SAME",
+      "adjudicator": false
     },
     {
       "calId": 151,
@@ -57248,7 +57548,9 @@
       "index": 1968,
       "a": "game and graphics development with C++ and .NET",
       "b": "modern .NET application development",
-      "judge": false
+      "judge": false,
+      "human": "DIFFERENT",
+      "adjudicator": false
     },
     {
       "calId": 152,
@@ -57256,7 +57558,9 @@
       "index": 1482,
       "a": "embedded application development with SQLite and GCC",
       "b": "embedded applications using SQLite and GCC",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": true
     },
     {
       "calId": 153,
@@ -57264,7 +57568,9 @@
       "index": 1135,
       "a": "Java back-end development on Microsoft Azure",
       "b": "back-end Java developer on Azure",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": true
     },
     {
       "calId": 154,
@@ -57272,7 +57578,9 @@
       "index": 1202,
       "a": "Desktop and enterprise application development with .NET",
       "b": "desktop and enterprise applications in .NET",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": true
     },
     {
       "calId": 155,
@@ -57280,7 +57588,9 @@
       "index": 1990,
       "a": "cloud infrastructure and DevOps engineering",
       "b": "Cloud and DevOps engineer",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": true
     },
     {
       "calId": 156,
@@ -57288,7 +57598,9 @@
       "index": 450,
       "a": "Machine learning and computer vision with Python",
       "b": "machine learning with Python and TensorFlow",
-      "judge": false
+      "judge": false,
+      "human": "SAME",
+      "adjudicator": false
     },
     {
       "calId": 157,
@@ -57296,7 +57608,9 @@
       "index": 228,
       "a": "back-end development with databases and AWS",
       "b": "back-end development with databases and cloud",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": true
     },
     {
       "calId": 158,
@@ -57304,7 +57618,9 @@
       "index": 1300,
       "a": "Java enterprise application developer",
       "b": "desktop and enterprise Java developer",
-      "judge": false
+      "judge": false,
+      "human": "SAME",
+      "adjudicator": false
     },
     {
       "calId": 159,
@@ -57312,7 +57628,9 @@
       "index": 1597,
       "a": "back-end development with databases and AWS",
       "b": "Back-end developer with database and cloud expertise",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": true
     },
     {
       "calId": 160,
@@ -57320,7 +57638,9 @@
       "index": 244,
       "a": "Full-stack .NET development on Azure",
       "b": "full-stack .NET developer with Azure",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": true
     },
     {
       "calId": 161,
@@ -57328,7 +57648,9 @@
       "index": 83,
       "a": "front-end web development",
       "b": "Front-end development with modern JavaScript tooling",
-      "judge": false
+      "judge": false,
+      "human": "SAME",
+      "adjudicator": true
     },
     {
       "calId": 162,
@@ -57336,7 +57658,9 @@
       "index": 225,
       "a": "Full-stack development with MongoDB and Heroku",
       "b": "Backend web services using Node.js and Python",
-      "judge": false
+      "judge": false,
+      "human": "DIFFERENT",
+      "adjudicator": false
     },
     {
       "calId": 163,
@@ -57344,7 +57668,9 @@
       "index": 921,
       "a": "Java backend engineer with cloud databases",
       "b": "Java backend engineer with PostgreSQL and AWS",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": false
     },
     {
       "calId": 164,
@@ -57352,7 +57678,9 @@
       "index": 452,
       "a": "full-stack .NET developer on Azure",
       "b": "full-stack .NET development on Azure",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": true
     },
     {
       "calId": 165,
@@ -57360,7 +57688,9 @@
       "index": 1759,
       "a": "Front-end development with .NET and build tools",
       "b": "front-end web development",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": true
     },
     {
       "calId": 166,
@@ -57368,7 +57698,9 @@
       "index": 1541,
       "a": "back-end development with MySQL, Clang, and MSBuild",
       "b": "back-end development with MySQL and build tools",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": true
     },
     {
       "calId": 167,
@@ -57376,7 +57708,9 @@
       "index": 1130,
       "a": "database development with Access and SQLite",
       "b": "database development using Access and SQLite",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": true
     },
     {
       "calId": 168,
@@ -57384,7 +57718,9 @@
       "index": 505,
       "a": "Back-end .NET developer on AWS",
       "b": "back-end development with .NET and SQL",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": false
     },
     {
       "calId": 169,
@@ -57392,7 +57728,9 @@
       "index": 634,
       "a": "full-stack developer with relational databases and cloud services",
       "b": "full-stack development with SQL databases and cloud platforms",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": true
     },
     {
       "calId": 170,
@@ -57400,7 +57738,9 @@
       "index": 136,
       "a": "back-end .NET development on Azure",
       "b": "back-end .NET developer with Azure",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": true
     },
     {
       "calId": 171,
@@ -57408,7 +57748,9 @@
       "index": 933,
       "a": "full-stack .NET developer on Azure",
       "b": "Full-stack .NET development on Azure",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": true
     },
     {
       "calId": 172,
@@ -57416,7 +57758,9 @@
       "index": 348,
       "a": "back-end development with PostgreSQL and AWS",
       "b": "backend development with PostgreSQL and AWS",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": true
     },
     {
       "calId": 173,
@@ -57424,7 +57768,9 @@
       "index": 509,
       "a": "data scientist with cloud and database skills",
       "b": "cloud data science and engineering",
-      "judge": false
+      "judge": false,
+      "human": "SAME",
+      "adjudicator": true
     },
     {
       "calId": 174,
@@ -57432,7 +57778,9 @@
       "index": 1472,
       "a": "front-end development",
       "b": "full-stack web development",
-      "judge": false
+      "judge": false,
+      "human": "DIFFERENT",
+      "adjudicator": false
     },
     {
       "calId": 175,
@@ -57440,7 +57788,9 @@
       "index": 1644,
       "a": "full-stack .NET development on AWS",
       "b": "Full-stack .NET development on AWS",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": true
     },
     {
       "calId": 176,
@@ -57448,7 +57798,9 @@
       "index": 1877,
       "a": "DevOps and cloud infrastructure",
       "b": "multi-cloud DevOps with Kubernetes and Terraform",
-      "judge": false
+      "judge": false,
+      "human": "SAME",
+      "adjudicator": true
     },
     {
       "calId": 177,
@@ -57456,7 +57808,9 @@
       "index": 1778,
       "a": "database and cloud infrastructure management",
       "b": "Database and cloud infrastructure management",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": true
     },
     {
       "calId": 178,
@@ -57464,7 +57818,9 @@
       "index": 817,
       "a": ".NET desktop and enterprise application developer",
       "b": ".NET desktop and enterprise development",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": true
     },
     {
       "calId": 179,
@@ -57472,7 +57828,9 @@
       "index": 1172,
       "a": "unknown",
       "b": "unknown specialty",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": true
     },
     {
       "calId": 180,
@@ -57480,7 +57838,9 @@
       "index": 1693,
       "a": "backend development with .NET and databases",
       "b": ".NET development with relational and NoSQL databases",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": true
     },
     {
       "calId": 181,
@@ -57488,7 +57848,9 @@
       "index": 30,
       "a": "game developer with Unity and Unreal",
       "b": "game development with Unity and Unreal Engine",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": true
     },
     {
       "calId": 182,
@@ -57496,7 +57858,9 @@
       "index": 722,
       "a": "full-stack developer",
       "b": "full-stack development",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": true
     },
     {
       "calId": 183,
@@ -57504,7 +57868,9 @@
       "index": 955,
       "a": "front-end and database .NET developer",
       "b": "full-stack .NET web development",
-      "judge": false
+      "judge": false,
+      "human": "SAME",
+      "adjudicator": true
     },
     {
       "calId": 184,
@@ -57512,7 +57878,9 @@
       "index": 1927,
       "a": "Back-end .NET developer with SQL databases",
       "b": "back-end development with .NET and SQL",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": true
     },
     {
       "calId": 185,
@@ -57520,7 +57888,9 @@
       "index": 67,
       "a": "Android development with Dagger and Gradle",
       "b": "Android mobile development with Google Cloud",
-      "judge": false
+      "judge": false,
+      "human": "SAME",
+      "adjudicator": false
     },
     {
       "calId": 186,
@@ -57528,7 +57898,9 @@
       "index": 1964,
       "a": "full-stack development with AWS and Kubernetes",
       "b": "Full-stack cloud-native development on AWS",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": true
     },
     {
       "calId": 187,
@@ -57536,7 +57908,9 @@
       "index": 831,
       "a": "Backend development with Spring Framework and AWS",
       "b": "Back-end Spring developer on AWS",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": true
     },
     {
       "calId": 188,
@@ -57544,7 +57918,9 @@
       "index": 52,
       "a": "Full-stack developer specializing in databases and AWS",
       "b": "full-stack developer with AWS and databases",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": true
     },
     {
       "calId": 189,
@@ -57552,7 +57928,9 @@
       "index": 1654,
       "a": "Oracle and MySQL database engineer",
       "b": "Oracle and MySQL database engineering",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": true
     },
     {
       "calId": 190,
@@ -57560,7 +57938,9 @@
       "index": 1935,
       "a": "data analysis with Python and SQL",
       "b": "Data analysis with SQL and Python",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": true
     },
     {
       "calId": 191,
@@ -57568,7 +57948,9 @@
       "index": 1221,
       "a": "Full-stack mobile development with Firebase and React Native",
       "b": "Full-stack development with Firebase and React Native",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": true
     },
     {
       "calId": 192,
@@ -57576,7 +57958,9 @@
       "index": 941,
       "a": "data science with R, Hadoop, and Google Cloud",
       "b": "data science with Hadoop and Tidyverse",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": false
     },
     {
       "calId": 193,
@@ -57584,7 +57968,9 @@
       "index": 267,
       "a": "Full-stack development with AWS and databases",
       "b": "full-stack development with AWS and databases",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": true
     },
     {
       "calId": 194,
@@ -57592,7 +57978,9 @@
       "index": 1424,
       "a": "Full-stack .NET development with SQL Server",
       "b": "Full-stack .NET and SQL Server developer",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": true
     },
     {
       "calId": 195,
@@ -57600,7 +57988,9 @@
       "index": 603,
       "a": "front-end developer with MongoDB and AWS",
       "b": "front-end web development",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": false
     },
     {
       "calId": 196,
@@ -57608,7 +57998,9 @@
       "index": 1768,
       "a": "full-stack development",
       "b": "full-stack web development",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": true
     },
     {
       "calId": 197,
@@ -57616,7 +58008,9 @@
       "index": 687,
       "a": "Full-stack .NET developer with databases",
       "b": "full-stack .NET developer",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": true
     },
     {
       "calId": 198,
@@ -57624,7 +58018,9 @@
       "index": 1547,
       "a": "Front-end development with AWS and Docker",
       "b": "front-end web development with AWS integration",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": false
     },
     {
       "calId": 199,
@@ -57632,7 +58028,9 @@
       "index": 1249,
       "a": "Full-stack PHP and MySQL development",
       "b": "full-stack development with MariaDB and MySQL",
-      "judge": false
+      "judge": false,
+      "human": "SAME",
+      "adjudicator": false
     },
     {
       "calId": 200,
@@ -57640,7 +58038,9 @@
       "index": 1467,
       "a": "full-stack development with databases and cloud platforms",
       "b": "full-stack developer with AWS and database expertise",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": true
     },
     {
       "calId": 201,
@@ -57648,7 +58048,9 @@
       "index": 663,
       "a": "front-end web development",
       "b": "front-end development",
-      "judge": true
+      "judge": true,
+      "human": "SAME",
+      "adjudicator": true
     }
   ],
   "poolSizes": {
@@ -57670,21 +58072,21 @@
   },
   "deltaCal": 0.05,
   "calibrationSummary": {
-    "labeledJudgeSame": 0,
+    "labeledJudgeSame": 150,
     "missesAmongJudgeSame": 0,
-    "missUcbConditional": null,
-    "labeledJudgeDifferent": 0,
-    "falseFlipsAmongJudgeDifferent": 0,
-    "humanLabeled": 0,
+    "missUcbConditional": 0.01977343816450844,
+    "labeledJudgeDifferent": 51,
+    "falseFlipsAmongJudgeDifferent": 41,
+    "humanLabeled": 201,
     "adjudicatorVsHuman": {
-      "n": 0,
-      "agree": 0,
-      "rate": null
+      "n": 201,
+      "agree": 149,
+      "rate": 0.7412935323383084
     },
     "judgeVsHuman": {
-      "n": 0,
-      "agree": 0,
-      "rate": null
+      "n": 201,
+      "agree": 160,
+      "rate": 0.7960199004975125
     }
   },
   "results": {
@@ -57697,7 +58099,7 @@
         0.4255852963230898
       ],
       "judgeSameShare": 0.5986267166042447,
-      "missBound": null,
+      "missBound": 0.01183690836439675,
       "categoryStrata": [
         {
           "id": "c=backend services",
@@ -57759,6 +58161,24 @@
           "savings": 0,
           "realizedJudge": null
         },
+        "single@0.1:calibrated": {
+          "alpha": 0.1,
+          "alphaEffective": 0.08816309163560325,
+          "certifiedStrata": [],
+          "sampled": 45,
+          "reused": 0,
+          "savings": 0,
+          "realizedJudge": null
+        },
+        "category@0.1:calibrated": {
+          "alpha": 0.1,
+          "alphaEffective": 0.08816309163560325,
+          "certifiedStrata": [],
+          "sampled": 360,
+          "reused": 0,
+          "savings": 0,
+          "realizedJudge": null
+        },
         "single@0.2": {
           "alpha": 0.2,
           "alphaEffective": 0.2,
@@ -57776,6 +58196,24 @@
           "reused": 0,
           "savings": 0,
           "realizedJudge": null
+        },
+        "single@0.2:calibrated": {
+          "alpha": 0.2,
+          "alphaEffective": 0.18816309163560327,
+          "certifiedStrata": [],
+          "sampled": 45,
+          "reused": 0,
+          "savings": 0,
+          "realizedJudge": null
+        },
+        "category@0.2:calibrated": {
+          "alpha": 0.2,
+          "alphaEffective": 0.18816309163560327,
+          "certifiedStrata": [],
+          "sampled": 360,
+          "reused": 0,
+          "savings": 0,
+          "realizedJudge": null
         }
       }
     },
@@ -57788,7 +58226,7 @@
         0.4451219446940116
       ],
       "judgeSameShare": 0.5777045579352005,
-      "missBound": null,
+      "missBound": 0.011423205353686369,
       "categoryStrata": [
         {
           "id": "c=backend services",
@@ -57850,6 +58288,24 @@
           "savings": 0,
           "realizedJudge": null
         },
+        "single@0.1:calibrated": {
+          "alpha": 0.1,
+          "alphaEffective": 0.08857679464631364,
+          "certifiedStrata": [],
+          "sampled": 45,
+          "reused": 0,
+          "savings": 0,
+          "realizedJudge": null
+        },
+        "category@0.1:calibrated": {
+          "alpha": 0.1,
+          "alphaEffective": 0.08857679464631364,
+          "certifiedStrata": [],
+          "sampled": 360,
+          "reused": 0,
+          "savings": 0,
+          "realizedJudge": null
+        },
         "single@0.2": {
           "alpha": 0.2,
           "alphaEffective": 0.2,
@@ -57867,6 +58323,24 @@
           "reused": 0,
           "savings": 0,
           "realizedJudge": null
+        },
+        "single@0.2:calibrated": {
+          "alpha": 0.2,
+          "alphaEffective": 0.18857679464631363,
+          "certifiedStrata": [],
+          "sampled": 45,
+          "reused": 0,
+          "savings": 0,
+          "realizedJudge": null
+        },
+        "category@0.2:calibrated": {
+          "alpha": 0.2,
+          "alphaEffective": 0.18857679464631363,
+          "certifiedStrata": [],
+          "sampled": 360,
+          "reused": 0,
+          "savings": 0,
+          "realizedJudge": null
         }
       }
     },
@@ -57879,7 +58353,7 @@
         0.5222485585330778
       ],
       "judgeSameShare": 0.5008337965536409,
-      "missBound": null,
+      "missBound": 0.009903206106849418,
       "categoryStrata": [
         {
           "id": "c=other",
@@ -57941,6 +58415,24 @@
           "savings": 0,
           "realizedJudge": null
         },
+        "single@0.1:calibrated": {
+          "alpha": 0.1,
+          "alphaEffective": 0.09009679389315059,
+          "certifiedStrata": [],
+          "sampled": 45,
+          "reused": 0,
+          "savings": 0,
+          "realizedJudge": null
+        },
+        "category@0.1:calibrated": {
+          "alpha": 0.1,
+          "alphaEffective": 0.09009679389315059,
+          "certifiedStrata": [],
+          "sampled": 360,
+          "reused": 0,
+          "savings": 0,
+          "realizedJudge": null
+        },
         "single@0.2": {
           "alpha": 0.2,
           "alphaEffective": 0.2,
@@ -57958,9 +58450,28 @@
           "reused": 0,
           "savings": 0,
           "realizedJudge": null
+        },
+        "single@0.2:calibrated": {
+          "alpha": 0.2,
+          "alphaEffective": 0.1900967938931506,
+          "certifiedStrata": [],
+          "sampled": 45,
+          "reused": 0,
+          "savings": 0,
+          "realizedJudge": null
+        },
+        "category@0.2:calibrated": {
+          "alpha": 0.2,
+          "alphaEffective": 0.1900967938931506,
+          "certifiedStrata": [],
+          "sampled": 360,
+          "reused": 0,
+          "savings": 0,
+          "realizedJudge": null
         }
       }
     }
   },
-  "wallMs": 18647850
+  "wallMs": 443178,
+  "adjudicatedAt": "2026-09-30T16:50:15.912Z"
 }

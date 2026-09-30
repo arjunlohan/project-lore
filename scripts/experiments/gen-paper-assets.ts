@@ -1892,14 +1892,29 @@ if (pilotReady && exp19) {
   def("pilotFalseFlips", String(cs.falseFlipsAmongJudgeDifferent));
   def("pilotAdjAgree", pct(cs.adjudicatorVsHuman.rate ?? 0, 1));
   def("pilotJudgeAgree", pct(cs.judgeVsHuman.rate ?? 0, 1));
-  def("pilotFmtMissBound", pct(res("formatting").missBound ?? 0, 1));
+    def("pilotFmtMissBound", pct(res("formatting").missBound ?? 0, 1));
+  {
+    // What the labels say the judge's verdicts are worth: the share of
+    // judge-DIFFERENT pairs a reader also calls different, and of
+    // judge-equivalent pairs a reader calls different, applied to the
+    // judge's floor. A label-weighted estimate, not a certificate; the band
+    // takes the Wilson limits of the two shares.
+    const confirmed = cs.labeledJudgeDifferent - cs.falseFlipsAmongJudgeDifferent;
+    const pD = confirmed / cs.labeledJudgeDifferent;
+    const pS = cs.missesAmongJudgeSame / cs.labeledJudgeSame;
+    const [pDlo, pDhi] = wilsonInterval(confirmed, cs.labeledJudgeDifferent);
+    const [, pShi] = wilsonInterval(cs.missesAmongJudgeSame, cs.labeledJudgeSame);
+    const F = res("floor").judgeFlipRate;
+    def("pilotImpliedFloor", pct(F * pD + (1 - F) * pS, 1));
+    def("pilotImpliedFloorBand", `[${(F * pDlo * 100).toFixed(1)}, ${((F * pDhi + (1 - F) * pShi) * 100).toFixed(1)}]\\%`);
+  }
   const outcome = (name: string, key: string) => {
     const s = res(name).sweeps[key];
         if (!s) throw new Error(`exp19 ${name} has no sweep ${key}`);
     if (s.alphaEffective <= 0) return "is not attempted, since the deflation alone exceeds the budget";
     return s.certifiedStrata.length > 0
       ? `certifies ${pct(s.savings, 1)} savings (realized judge-scored error ${s.realizedJudge === null ? "--" : pct(s.realizedJudge, 2)}, ${s.sampled} oracle calls)`
-      : `refuses every stratum after ${s.sampled} oracle calls`;
+      : `is refused on every stratum after ${s.sampled} oracle calls`;
   };
   def("pilotFmtCalLoose", outcome("formatting", "category@0.2:calibrated"));
   def("pilotFmtCalTight", outcome("formatting", "category@0.1:calibrated"));

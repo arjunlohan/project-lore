@@ -133,7 +133,7 @@ deployment run that measures provider-side drift (a higher flip rate
 against the same cache) and shows the certifier pricing it: the budgets
 certified in August certify again, the tight one a look deeper than on
 the August draws, and the tightest budget, on which the August draws
-are silent, is refused.
+are silent, is refused\ifnum\pilotAvailable=1\relax; and a free-text pilot in which a judge's error is calibrated on hand labels and folded into the budget\fi.
 \item \textbf{A reusable benchmark} (\secref{sec:benchmark}): versioned
 prompt-edit pairs with full ground-truth flip labels over public
 corpora redistributable under the Open Database License (ODbL) and the
@@ -1826,8 +1826,9 @@ usable for the floor, the formatting edit, and the synonym edit. Under
 that judge the column's own floor, two draws of the same prompt, is
 \pilotFloorRate\ (Wilson \pilotFloorCi); the formatting edit flips
 \pilotFmtRate\ (\pilotFmtCi) and the synonym edit \pilotSynRate\
-(\pilotSynCi). We hand-labeled \pilotLabeled\ calibration pairs, drawn
-evenly from the three comparisons and pooled: \pilotLabeledSame\ the
+(\pilotSynCi). We hand-labeled \pilotLabeled\ calibration pairs (one
+labeler, the author), drawn evenly from the three comparisons and
+pooled: \pilotLabeledSame\ the
 judge had called equivalent and \pilotLabeledDiff\ it had called
 different. The judge missed \pilotMisses\ true differences among the
 \pilotLabeledSame, an upper confidence bound of \pilotMissUcb\ on its
@@ -1845,17 +1846,23 @@ from the cache by the same model), the formatting edit
 $\alpha{=}0.1$; the synonym edit \pilotSynCalLoose\ at $\alpha{=}0.2$.
 The composed guarantee holds with probability
 $1-\delta-\delta_{\mathrm{cal}}$; the judge's price is the deflation
-plus the labels. The pilot lands on the impossibility floor of
-\secref{sec:problem}: a free-text column whose same-prompt re-draws the
-judge calls different in \pilotFloorRate\ of pairs cannot be certified
-at any budget a user would set, and the certifier finds that out at
-its first looks. The labels split that floor between the model and the
-judge: across the three comparisons, of the \pilotLabeledDiff\
-judge-DIFFERENT pairs a reader called \pilotFalseFlips\ the same
-specialty, which is the judge's own strictness; the rest is the
-model's instability under a free-text prompt, which no judge
-calibration removes and which the floor of Section~\ref{sec:problem}
-predicts.
+plus the labels. The floor the certifier met is the judge's, not the
+model's. A reader called \pilotFalseFlips\ of the \pilotLabeledDiff\
+judge-DIFFERENT pairs the same specialty, across the three comparisons,
+and \pilotMisses\ of the \pilotLabeledSame\ judge-equivalent pairs
+different; weighting the judge's verdicts by those label shares puts
+the reader-level disagreement of two same-prompt draws near
+\pilotImpliedFloor\ (band \pilotImpliedFloorBand\ from the Wilson
+intervals of the two shares), inside the loose budget. The recipe is
+therefore safe and nearly free on the side it controls, and powerless
+on the side it does not: a judge stricter than the reader inflates the
+measured flip rate, and the certifier, which sees only the judge,
+refuses. The second model, under the same instruction, was no closer to
+the reader, which suggests that the strictness sits in the instruction
+(it counts a difference in specificity as a difference) and not in the
+model. Making a judge-based column certifiable is a matter of aligning
+the judge's equivalence with the reader's and calibrating it in both
+directions; the guarantee already holds for whatever judge is used.
 \fi The main evaluation's five author-written edit pairs, one per class
 per column, are enough to show that surface class can fail to predict
 flip rate,
