@@ -88,6 +88,14 @@ const pct = (x: number, d = 1) => `${(x * 100).toFixed(d)}\\%`;
 // 0.5235000000000001, another as 0.5235).
 const ratioPct = (k: number, n: number, d = 1) => pct(k / n, d);
 const num = (x: number) => x.toLocaleString("en-US").replace(/,/g, "{,}");
+// Run dates: a stamp that carries a time of day is printed in the paper's
+// own time zone (an evening run must not read as the next day), while a
+// date-only stamp (midnight UTC, or a bare YYYY-MM-DD) is a calendar date
+// and is printed as such.
+const fmtRunDate = (iso: string) => {
+  const dateOnly = !/T/.test(iso) || /T00:00:00(\.0+)?Z$/.test(iso);
+  return new Date(iso).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric", timeZone: dateOnly ? "UTC" : "America/Los_Angeles" });
+};
 /** Wilson score interval; every interval in the paper is Wilson. */
 const wilsonInterval = (k: number, n: number, z = 1.96): [number, number] => {
   if (n === 0) return [0, 1];
@@ -1320,10 +1328,7 @@ def("totalSpend", `\\$${Number(led.s).toFixed(2)}`);
   // Off-ledger family runs: date range from the artifacts' own ranAt stamps
   // (the lab-pair runs, the gpt-5-nano completion if present, and the
   // remaining-pair runs if present).
-  // Run dates in the paper's own time zone (the runs are timestamped in UTC;
-  // an evening run must not print as the next day).
-  const fmtDate = (iso: string) =>
-    new Date(iso).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric", timeZone: "America/Los_Angeles" });
+  const fmtDate = fmtRunDate;
   const stamps = [
     ...FAMILY_FILES.map((f) => String((J(f) as { ranAt: string }).ranAt)),
     ...exp18Files.map((f) => String((J(f) as { ranAt: string }).ranAt)),
@@ -1897,8 +1902,7 @@ if (pilotReady && exp19) {
 // Model identifiers and run dates, one row per model the paper uses.
 // ---------------------------------------------------------------------------
 {
-  const fmt = (iso: string) =>
-    new Date(iso).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric", timeZone: "America/Los_Angeles" });
+  const fmt = fmtRunDate;
   const pairsOf = (model: string) => {
     const has18 = exp18Files.filter((f) => (J(f) as { model: string }).model === model);
     const sets = new Set(has18.map((f) => (J(f) as { pairset: string }).pairset));
