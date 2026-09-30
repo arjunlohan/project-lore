@@ -58,6 +58,7 @@ const exp11cSep = J("exp11c-deployment-bounds-v4.json"); // September snapshot, 
 const exp16 = J("exp16-snapshot-drift.json");
 const exp17 = JOpt("exp17-independence.json");
 const exp19 = JOpt("exp19-freetext.json") as Exp19 | undefined;
+const pilotReady = !!exp19 && !!exp19.calibrationSummary && exp19.calibrationSummary.humanLabeled > 0 && exp19.calibrationSummary.missUcbConditional !== null;
 const exp18Files = readdirSync("docs/research/experiments")
   .filter((f) => /^exp18-families-(widening|djinni)-.*\.json$/.test(f) && !f.endsWith(".partial.json"))
   .sort();
@@ -1335,7 +1336,7 @@ def("totalSpend", `\\$${Number(led.s).toFixed(2)}`);
   ].sort();
   const first = fmtDate(stamps[0]!);
   const last = fmtDate(stamps[stamps.length - 1]!);
-  def("famRunDate", first === last ? first : `${first} to ${last}`);
+  def("famRunDate", first === last ? `on ${first}` : `from ${first} to ${last}`);
 }
 def("totalCells", num(Number(led.c)));
 // r8/M9: the ledger only sees cells written through the column runner. The
@@ -1359,7 +1360,9 @@ const offLedgerCells =
   // Independence check (two arms, direct calls) and the remaining-pair
   // family runs, both off the ledger.
   (exp17 ? Number(exp17.n) * 2 : 0) +
-  (exp19 ? Number(exp19.n) * 4 : 0) +
+    // The pilot's draws count once the pilot ships (its labels applied), and
+  // only the draws that returned a phrase.
+  (exp19 && pilotReady ? Object.values(exp19.draws).reduce((a, arr) => a + arr.filter((x) => x !== null).length, 0) : 0) +
   exp18Files.reduce((acc, f) => {
     const d = J(f) as { draws: Array<Record<string, unknown>> };
     return acc + d.draws.reduce((a, r) => a + ["a1", "b1", "a2", "a3"].filter((k) => r[k] !== undefined && r[k] !== null).length, 0);
@@ -1533,13 +1536,13 @@ for (const f of FAMILIES) {
 def("famCount", String(FAMILIES.length));
 def("famCertCount", String(famCertifying));
 def("famRefusedClause", famRefused.length ? ` (every stratum refused on ${famRefused.join(", ")})` : "");
-{
-  const out = (m: string) => prices.models[m]?.outputPerToken ?? 0;
-  const inp = (m: string) => prices.models[m]?.inputPerToken ?? 0;
-  const cheapest = Math.min(...FAMILIES.map((f) => out(String((J(f.file) as { model: string }).model))).filter((x) => x > 0));
-  def("famGeminiThreePriceMultiple", (out("google/gemini-3-flash") / cheapest).toFixed(0));
-  def("priceFetchedAt", new Date(prices.fetchedAt).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric", timeZone: "America/Los_Angeles" }));
-  void inp;
+def("priceFetchedAt", new Date(prices.fetchedAt).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric", timeZone: "America/Los_Angeles" }));
+if (gemini38Present) {
+  // The sixth family's flip and floor round to the same digit; the counts
+  // behind them are cited so the relation stays visible.
+  const d38 = J(GEMINI38_FULL) as { n: number; usableFloor?: number; selfFlipFloor: number; formattingEditFlip: number };
+  def("famGeminiEightFmtCount", String(Math.round(d38.formattingEditFlip * d38.n)));
+  def("famGeminiEightFloorCount", String(Math.round(d38.selfFlipFloor * (d38.usableFloor ?? d38.n))));
 }
 def("famFloorLo", pct(Math.min(...famFloors), 1));
 def("famFloorHi", pct(Math.max(...famFloors), 1));
@@ -1740,7 +1743,7 @@ ${lines.join("\n")}
     const r = r8.find((x) => x.pair === pair && Math.abs(x.alpha - alpha) < 1e-9)!;
     return r.main.certifiedStrata === 0 ? `refused (${r.main.sampled})` : `${ratioPct(r.main.reused, r.n, 1)} (${pct(r.main.realizedPresented, 2)})`;
   };
-  const flipOf = (pair: string) => pct(r8.find((x) => x.pair === pair)!.trueFlipRate, 1);
+  const flipOf = (pair: string) => pct(r8.find((x) => x.pair === pair)!.trueFlipRate, 2);
   const rows18: string[] = [];
   rows18.push(
     `DeepSeek V4 Flash (primary) & -- & ${flipOf("so-widening")} & ${primaryCell("so-widening", 0.1)} & ${primaryCell("so-widening", 0.2)} & ${pct(exp0b.selfFlipRate, 1)} & ${flipOf("dj-formatting")} & ${primaryCell("dj-formatting", 0.1)} & ${primaryCell("dj-formatting", 0.2)} & ${flipOf("dj-criteria")} & ${primaryCell("dj-criteria", 0.1)} & ${primaryCell("dj-criteria", 0.2)} \\\\`,
@@ -1840,10 +1843,12 @@ type Exp19 = {
   model: string;
   judge: string;
   adjudicator: string;
-  ranAt: string;
+    ranAt: string;
+  adjudicatedAt?: string;
   n: number;
   categories: string[];
   deltaCal: number;
+  draws: Record<string, Array<string | null>>;
   calibrationSummary: {
     labeledJudgeSame: number;
     missesAmongJudgeSame: number;
@@ -1856,7 +1861,6 @@ type Exp19 = {
   };
   results: Record<string, { usable: number; judgeFlips: number; judgeFlipRate: number; wilson95: [number, number]; judgeSameShare: number; missBound: number | null; sweeps: Record<string, Exp19Sweep> }>;
 };
-const pilotReady = !!exp19 && !!exp19.calibrationSummary && exp19.calibrationSummary.humanLabeled > 0 && exp19.calibrationSummary.missUcbConditional !== null;
 def("pilotAvailable", pilotReady ? "1" : "0");
 if (pilotReady && exp19) {
   const cs = exp19.calibrationSummary;
@@ -1877,6 +1881,9 @@ if (pilotReady && exp19) {
   def("pilotFmtCi", wil(res("formatting").wilson95));
   def("pilotSynRate", pct(res("synonym").judgeFlipRate, 1));
   def("pilotSynCi", wil(res("synonym").wilson95));
+    def("pilotFloorUsable", num(res("floor").usable));
+  def("pilotFmtUsable", num(res("formatting").usable));
+  def("pilotSynUsable", num(res("synonym").usable));
   def("pilotLabeled", String(cs.humanLabeled));
   def("pilotLabeledSame", String(cs.labeledJudgeSame));
   def("pilotMisses", String(cs.missesAmongJudgeSame));
@@ -1888,7 +1895,8 @@ if (pilotReady && exp19) {
   def("pilotFmtMissBound", pct(res("formatting").missBound ?? 0, 1));
   const outcome = (name: string, key: string) => {
     const s = res(name).sweeps[key];
-    if (!s) throw new Error(`exp19 ${name} has no sweep ${key}`);
+        if (!s) throw new Error(`exp19 ${name} has no sweep ${key}`);
+    if (s.alphaEffective <= 0) return "is not attempted, since the deflation alone exceeds the budget";
     return s.certifiedStrata.length > 0
       ? `certifies ${pct(s.savings, 1)} savings (realized judge-scored error ${s.realizedJudge === null ? "--" : pct(s.realizedJudge, 2)}, ${s.sampled} oracle calls)`
       : `refuses every stratum after ${s.sampled} oracle calls`;
@@ -1934,7 +1942,7 @@ if (pilotReady && exp19) {
     rowsM.push(`\\texttt{${String(exp12.model).replace(/_/g, "\\_")}} & earlier probe, formatting pair only ($n{=}\\altModelN$) & August 2026 & ${priceOf(String(exp12.model))} \\\\`);
   }
   if (pilotReady && exp19) {
-    rowsM.push(`\\texttt{${exp19.adjudicator.replace(/_/g, "\\_")}} & free-text pilot: second labeler of the calibration pairs, reported beside the hand labels & ${fmt(exp19.ranAt)} & ${priceOf(exp19.adjudicator)} \\\\`);
+    rowsM.push(`\\texttt{${exp19.adjudicator.replace(/_/g, "\\_")}} & free-text pilot: second labeler of the calibration pairs, reported beside the hand labels & ${fmt(exp19.adjudicatedAt ?? exp19.ranAt)} & ${priceOf(exp19.adjudicator)} \\\\`);
   }
   writeFileSync(
     "paper/tablemodels.tex",

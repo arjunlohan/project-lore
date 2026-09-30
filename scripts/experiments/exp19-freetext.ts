@@ -325,7 +325,8 @@ async function main() {
       need.forEach((c, i) => {
         c.adjudicator = verdicts[i]!;
       });
-      console.log(`adjudicator labeled ${verdicts.filter((v) => v !== null).length}/${need.length}`);
+            console.log(`adjudicator labeled ${verdicts.filter((v) => v !== null).length}/${need.length}`);
+      art.adjudicatedAt = new Date().toISOString();
     }
   }
 

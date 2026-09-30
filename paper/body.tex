@@ -734,7 +734,7 @@ primary program uses DeepSeek V4 Flash (gateway identifier
 Gateway between \ledgerStart\ and \ledgerEnd, and again on
 \sepSnapshotDate\ for the re-certification and the assumption checks;
 the model-family study calls further families through the same gateway
-on \famRunDate. Every call passes temperature $0$ and no other decode
+\famRunDate. Every call passes temperature $0$ and no other decode
 parameter (maximum output length and reasoning effort stay at the
 provider's defaults; no decode seed is sent, since the seeds in this
 paper govern row sampling: mulberry32, main seed 42, sampling
@@ -781,11 +781,13 @@ cost ledger. That figure is a lower bound, not a total: the ledger
 records only cells written through the column runner, and a further
 \offLedgerCells\ cells were computed by probe scripts that call the
 model directly (the self-flip probes, the vote-of-3 study, the multi-draw relabeling,
-the model-family runs, the independence check, and the free-text
-pilot's draws).
+the model-family runs\ifnum\pilotAvailable=1\relax, the independence
+check, and the free-text pilot's draws\else, and the independence
+check\fi).
 
 \begin{table*}[t]
-\caption{Every model the article uses, by gateway identifier.}
+\caption{Every model the article uses, by gateway identifier, with the
+gateway's list prices as fetched on \priceFetchedAt.}
 \label{tab:models}
 \centering\footnotesize
 \input{\paperroot/tablemodels}
@@ -946,7 +948,7 @@ that is.
 
 \paragraph{Other model families.} Every measurement above uses one
 model, so we ran the lab column's two pairs on \famCount\ further
-budget-class families from different providers%
+budget-class families from other providers%
 \ifnum\famProbeRow=1\relax, and keep the weaker probe of an earlier
 draft (\texttt{\altModelName}, formatting pair only, $n{=}\altModelN$)
 beside them\fi: same seeded rows as the primary evaluation vector, same
@@ -967,10 +969,11 @@ budget after most of the schedule; and on the three families whose
 formatting edit is not benign, the synonym pair certifies a stratum
 instead: the cached-FALSE stratum on Gemini~2.5 Flash-Lite, and the
 cached-TRUE stratum on GLM-4.7-Flash and on GPT-5 nano, where it is the
-one stratum the loose budget admits. Gemini~3.8 Flash, the family added
-in this revision, certifies both strata at both budgets under the
-formatting edit, which flips \famGeminiEightFmt\ of its cells. Its floor
-is \famGeminiEightFloor. Certification reproduces on \famCertCount\
+one stratum the loose budget admits. Gemini~3.8 Flash, the family added in this revision, certifies both
+strata at both budgets under the formatting edit, which flips
+\famGeminiEightFmt\ of its cells (\famGeminiEightFmtCount\ of
+\benchN). Its floor is \famGeminiEightFloor\ (\famGeminiEightFloorCount\
+of \benchN). Certification reproduces on \famCertCount\
 of the \famCount\ families\famRefusedClause, and in every certified cell of
 Table~\ref{tab:fam} the realized presented-cells error is inside the
 budget. Third, refusals stay conservative: a refused stratum is never
@@ -1024,9 +1027,9 @@ $T{=}0$). Cells give certified savings with the realized presented-cells
 error in parentheses, or ``refused'' with the oracle calls spent before
 the futility stop. The primary row is the main seed of
 Table~\ref{tab:main} (whose savings are replication means). Gemini~3
-Flash, priced at \famGeminiThreePriceMultiple\ times the output-token
-rate of the cheapest family here (gateway list prices,
-\priceFetchedAt), ran these two pairs only%
+Flash ran these two pairs only: in its reasoning regime the remaining
+pairs would have been the costliest runs of the study, and they were
+left out%
 \ifnum\famProbeRow=1\relax; the \texttt{\altModelName} probe ran the
 formatting pair only\fi.}
 \label{tab:fam}
@@ -1794,17 +1797,19 @@ are an open lever with guaranteed validity (Assumption~\ref{as:frozen}).
 is exact match, and the columns are two Boolean columns and one four-way
 ordinal select; numeric and free-text columns, which the introduction's
 product examples also serve, are not evaluated there. A free-text column needs a
-judge, and the judge's own error enters the budget. Let the judge miss
-a fraction $q$ of true flips (call a fresh draw equivalent to the cache
-when a reader would not). Calibrate $q$ on human-labeled pairs from the
-same (edit, column) with an upper confidence bound $\hat{q}$ at level
-$\delta_{\mathrm{cal}}$, and certify at $\alpha - \hat{q}$: the flip
-rate the judge reports is at least the true rate minus $q$, so a
-certified stratum's true rate is at most $\alpha$ whenever the
-calibration bound and the certificate both hold, which they do with
-probability at least $1 - \delta - \delta_{\mathrm{cal}}$. Errors in
-the other direction (calling equivalent cells different) only raise the
-reported rate and cost power. The calibration is per (edit, column),
+judge, and the judge's own error enters the budget. Let $q$ be the
+share of pairs the judge calls equivalent although a reader would not
+(a missed flip). The flip rate the judge reports is then at least the
+true rate minus $q$, so certifying at $\alpha - \hat{q}$, with $\hat{q}$
+an upper confidence bound on $q$ at level $\delta_{\mathrm{cal}}$ from
+human-labeled pairs of the same column, keeps a certified stratum's
+true rate at most $\alpha$ whenever the calibration bound and the
+certificate both hold, which they do with probability at least
+$1 - \delta - \delta_{\mathrm{cal}}$. Errors in the other direction
+(calling equivalent cells different) only raise the reported rate and
+cost power. $\hat{q}$ is estimated on the pairs the judge calls
+equivalent and scaled by their share, and it belongs to the (edit,
+column) it was drawn from or to a pool of comparisons on one column,
 since a judge's miss rate is a property of the outputs it compares; the
 machinery of this article is otherwise unchanged, but its power under a
 noisy judge \ifnum\pilotAvailable=1\relax has one measurement so far\else is an open measurement\fi.
@@ -1812,36 +1817,43 @@ noisy judge \ifnum\pilotAvailable=1\relax has one measurement so far\else is an 
 \emph{A pilot.} We ran the recipe once, on a free-text column over
 \pilotRows\ SO profiles that names each respondent's primary technical
 specialty in a short phrase, with three prompt versions (a baseline, a
-formatting-only edit of it, and a synonym rewording) and the primary model
-as judge (\pilotJudgeModel), asked in both orders whether two phrases
-name the same specialty. Under that judge the column's own floor, two
-draws of the same prompt, is \pilotFloorRate\ (Wilson \pilotFloorCi);
-the formatting edit flips \pilotFmtRate\ (\pilotFmtCi) and the synonym
-edit \pilotSynRate\ (\pilotSynCi). We hand-labeled \pilotLabeled\
-calibration pairs, \pilotLabeledSame\ the judge had called equivalent
-and \pilotLabeledDiff\ it had called different. The judge missed
-\pilotMisses\ true differences among the \pilotLabeledSame, an upper
-confidence bound of \pilotMissUcb\ on its miss rate at
+formatting-only edit of it, and a synonym rewording) and the primary
+model as judge (\pilotJudgeModel), asked in both orders whether two
+phrases name the same specialty. A pair with a failed draw (no
+schema-valid phrase within the timeout) is excluded: \pilotFloorUsable,
+\pilotFmtUsable, and \pilotSynUsable\ of the \pilotRows\ pairs are
+usable for the floor, the formatting edit, and the synonym edit. Under
+that judge the column's own floor, two draws of the same prompt, is
+\pilotFloorRate\ (Wilson \pilotFloorCi); the formatting edit flips
+\pilotFmtRate\ (\pilotFmtCi) and the synonym edit \pilotSynRate\
+(\pilotSynCi). We hand-labeled \pilotLabeled\ calibration pairs, drawn
+evenly from the three comparisons and pooled: \pilotLabeledSame\ the
+judge had called equivalent and \pilotLabeledDiff\ it had called
+different. The judge missed \pilotMisses\ true differences among the
+\pilotLabeledSame, an upper confidence bound of \pilotMissUcb\ on its
+miss rate among the pairs it calls equivalent at
 $\delta_{\mathrm{cal}}{=}\pilotDeltaCal$, and called \pilotFalseFlips\
 equivalent pairs different. A second model (\pilotAdjudicator) labeled
 the same pairs and agreed with the hand labels on \pilotAdjAgree\ of
 them; the judge itself agreed on \pilotJudgeAgree. Certifying at
-$\alpha - \hat{q}$, with strata by the cached phrase's category
-(\pilotCategories\ categories, assigned once from the cache by the same
-model), the formatting edit \pilotFmtCalLoose\ at $\alpha{=}0.2$ and
-\pilotFmtCalTight\ at $\alpha{=}0.1$; the synonym edit
-\pilotSynCalLoose\ at $\alpha{=}0.2$. The composed guarantee holds
-with probability $1-\delta-\delta_{\mathrm{cal}}$, and the judge's
-price is the deflation (\pilotFmtMissBound\ of budget on the formatting
-edit, $\hat{q}$ times the judge's equivalent share) plus the labels.
-The pilot lands on the impossibility floor of \secref{sec:problem}: a
-free-text column whose same-prompt re-draws the judge calls different
-in \pilotFloorRate\ of pairs cannot be certified at any budget a user
-would set, and the certifier finds that out at its first looks. The
-labels split that floor between the model and the judge: of the
-\pilotLabeledDiff\ judge-DIFFERENT pairs a reader called \pilotFalseFlips\
-the same specialty, which is the judge's own strictness; the rest is
-the model's instability under a free-text prompt, which no judge
+$\alpha - \hat{q}$, with $\hat{q}$ that bound times the judge's
+equivalent share (\pilotFmtMissBound\ of budget on the formatting edit)
+and one pooled bound for the three comparisons, with strata by the
+cached phrase's category (\pilotCategories\ categories, assigned once
+from the cache by the same model), the formatting edit
+\pilotFmtCalLoose\ at $\alpha{=}0.2$ and \pilotFmtCalTight\ at
+$\alpha{=}0.1$; the synonym edit \pilotSynCalLoose\ at $\alpha{=}0.2$.
+The composed guarantee holds with probability
+$1-\delta-\delta_{\mathrm{cal}}$; the judge's price is the deflation
+plus the labels. The pilot lands on the impossibility floor of
+\secref{sec:problem}: a free-text column whose same-prompt re-draws the
+judge calls different in \pilotFloorRate\ of pairs cannot be certified
+at any budget a user would set, and the certifier finds that out at
+its first looks. The labels split that floor between the model and the
+judge: across the three comparisons, of the \pilotLabeledDiff\
+judge-DIFFERENT pairs a reader called \pilotFalseFlips\ the same
+specialty, which is the judge's own strictness; the rest is the
+model's instability under a free-text prompt, which no judge
 calibration removes and which the floor of Section~\ref{sec:problem}
 predicts.
 \fi The main evaluation's five author-written edit pairs, one per class
