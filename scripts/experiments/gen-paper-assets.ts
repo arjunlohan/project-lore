@@ -1320,8 +1320,10 @@ def("totalSpend", `\\$${Number(led.s).toFixed(2)}`);
   // Off-ledger family runs: date range from the artifacts' own ranAt stamps
   // (the lab-pair runs, the gpt-5-nano completion if present, and the
   // remaining-pair runs if present).
+  // Run dates in the paper's own time zone (the runs are timestamped in UTC;
+  // an evening run must not print as the next day).
   const fmtDate = (iso: string) =>
-    new Date(iso).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" });
+    new Date(iso).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric", timeZone: "America/Los_Angeles" });
   const stamps = [
     ...FAMILY_FILES.map((f) => String((J(f) as { ranAt: string }).ranAt)),
     ...exp18Files.map((f) => String((J(f) as { ranAt: string }).ranAt)),
@@ -1896,7 +1898,7 @@ if (pilotReady && exp19) {
 // ---------------------------------------------------------------------------
 {
   const fmt = (iso: string) =>
-    new Date(iso).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" });
+    new Date(iso).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric", timeZone: "America/Los_Angeles" });
   const pairsOf = (model: string) => {
     const has18 = exp18Files.filter((f) => (J(f) as { model: string }).model === model);
     const sets = new Set(has18.map((f) => (J(f) as { pairset: string }).pairset));
