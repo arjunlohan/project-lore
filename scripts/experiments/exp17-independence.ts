@@ -27,6 +27,12 @@
  * called with the runner's own framing). Cost: 2 x EXP_ROWS calls.
  *
  * Run: set -a; source .env.local; set +a; pnpm tsx scripts/experiments/exp17-independence.ts
+ *
+ * Extension (EXP_EXTEND_CONCURRENT=<rows>): a concurrent arm alone on the
+ * next <rows> rows of the same seeded order, disjoint from the main run's
+ * rows, so the block-dispersion test has enough blocks to resolve modest
+ * overdispersion; written to exp17-independence-ext.json and compared
+ * against the main run's sequential arm.
  */
 import { mkdirSync, writeFileSync } from "node:fs";
 import { generateObject } from "ai";
@@ -45,7 +51,9 @@ const CONC = Number(process.env.EXP_CONCURRENCY ?? 32);
 // error (null) and excluded, exactly like a schema failure.
 const CALL_TIMEOUT_MS = Number(process.env.EXP_CALL_TIMEOUT_MS ?? 90000);
 const SEED = 42;
-const OUT = "docs/research/experiments/exp17-independence.json";
+const EXTEND = Number(process.env.EXP_EXTEND_CONCURRENT ?? 0);
+const MAIN_OUT = "docs/research/experiments/exp17-independence.json";
+const OUT = EXTEND > 0 ? "docs/research/experiments/exp17-independence-ext.json" : MAIN_OUT;
 const MYSQL_URL = process.env.LORE_MYSQL_URL ?? "mysql://root@localhost:3306/lore";
 
 type Row = Record<string, unknown>;
@@ -148,7 +156,8 @@ async function main() {
     }
     return out;
   });
-  const rows = seededShuffle(all, SEED + 17).slice(0, N);
+  const order = seededShuffle(all, SEED + 17);
+  const rows = EXTEND > 0 ? order.slice(N, N + EXTEND) : order.slice(0, N);
   const ids = rows.map((r) => String(r[PROFILE_ID_FIELD]));
   const cache = new Map(
     (await getCellsForVersion(lab.id, 1, ids))
@@ -196,6 +205,55 @@ async function main() {
     return calls;
   };
   console.log(`rows ${rows.length}; cached v1 present ${cache.size}; model ${lab.model}`);
+  const rand = mulberry32(20260929);
+  if (EXTEND > 0) {
+    // Concurrent arm only, on rows disjoint from the main run; the main
+    // run's sequential arm is the comparison for the rate.
+    const { readFileSync } = await import("node:fs");
+    const main = JSON.parse(readFileSync(MAIN_OUT, "utf8")) as { sequential: { flips: number; usable: number }; concurrency: { concurrent: number } };
+    const tConc = Date.now();
+    const concurrent = await arm(CONC, "concurrent-ext");
+    const concMs = Date.now() - tConc;
+    const byCompletion = [...concurrent].sort((a, b) => a.endedAt - b.endedAt);
+    const usable = byCompletion.filter((c) => c.value !== null && cache.has(c.id));
+    const flips = usable.map((c) => (cache.get(c.id) !== c.value ? 1 : 0));
+    const k = flips.reduce((a, b) => a + b, 0);
+    const p2 = usable.length > 0 ? k / usable.length : 0;
+    const p1 = main.sequential.flips / Math.max(1, main.sequential.usable);
+    const pooled = (main.sequential.flips + k) / Math.max(1, main.sequential.usable + usable.length);
+    const se = Math.sqrt(pooled * (1 - pooled) * (1 / Math.max(1, main.sequential.usable) + 1 / Math.max(1, usable.length)));
+    const zStat = se > 0 ? (p1 - p2) / se : 0;
+    const out = {
+      experiment: "exp17-independence-ext",
+      note: `concurrent arm only, on the ${rows.length} rows of the seeded order after the main run's ${N}; same v2 prompt, same model, T=0; flips against the August v1 cache`,
+      model: lab.model,
+      rowsOffset: N,
+      n: rows.length,
+      concurrency: CONC,
+      callTimeoutMs: CALL_TIMEOUT_MS,
+      wallMs: concMs,
+      ranAt: new Date().toISOString(),
+      concurrent: {
+        calls: concurrent.length,
+        errors: concurrent.filter((c) => c.value === null).length,
+        usable: usable.length,
+        flips: k,
+        flipRate: usable.length > 0 ? p2 : null,
+        wilson95: wilson(k, usable.length),
+        medianLatencyMs: [...concurrent].sort((a, b) => a.latencyMs - b.latencyMs)[Math.floor(concurrent.length / 2)]?.latencyMs ?? null,
+        serial: serialTests(flips, rand),
+      },
+      againstMainSequential: { sequentialRate: p1, z: zStat, twoSidedP: normalTwoSided(zStat) },
+      draws: ids.map((id) => ({ id, cached: cache.get(id) ?? null, concurrent: concurrent.find((c) => c.id === id)?.value ?? null })),
+      completionOrder: byCompletion.map((c) => ({ id: c.id, startedAt: c.startedAt, endedAt: c.endedAt, latencyMs: c.latencyMs })),
+      totalWallMs: Date.now() - started,
+    };
+    mkdirSync("docs/research/experiments", { recursive: true });
+    writeFileSync(OUT, JSON.stringify(out, null, 2));
+    console.log(JSON.stringify({ rate: out.concurrent.flipRate, serial: out.concurrent.serial, againstMainSequential: out.againstMainSequential }, null, 1));
+    console.log("EXP17_EXT_DONE");
+    process.exit(0);
+  }
   const tSeq = Date.now();
   const sequential = await arm(1, "sequential");
   const seqMs = Date.now() - tSeq;
@@ -205,7 +263,6 @@ async function main() {
   const concMs = Date.now() - tConc;
   console.log(`concurrent arm done in ${(concMs / 1000).toFixed(0)}s`);
 
-  const rand = mulberry32(20260929);
   const summarize = (calls: Call[]) => {
     const byCompletion = [...calls].sort((a, b) => a.endedAt - b.endedAt);
     const usable = byCompletion.filter((c) => c.value !== null && cache.has(c.id));

@@ -23,6 +23,8 @@
 \usepackage{textcomp}
 \usepackage{amsthm}
 \usepackage{booktabs}
+\usepackage{needspace}% a heading must not be stranded at the foot of a column
+\usepackage{array}% ragged-right paragraph columns in the prose tables
 \usepackage{algorithm}
 \usepackage{algorithmic}
 %% ieeeaccess.cls:512 redefines the TeX primitive \year as a one-argument
@@ -68,6 +70,13 @@
 %% Long documentation URLs in the bibliography (product citations) need
 %% break points hyperref's url does not offer.
 \usepackage{xurl}
+%% IEEEtran's starred sections (References, Acknowledgment) step hyperref's
+%% anchor counter without writing the anchor, so their bookmarks pointed at
+%% page 1; write the anchor after each starred heading.
+\makeatletter
+\let\IEEE@orig@ssect\@ssect
+\def\@ssect#1#2#3#4#5{\IEEE@orig@ssect{#1}{#2}{#3}{#4}{#5}\phantomsection}
+\makeatother
 
 \newcommand{\sivm}{\textsc{sIVM}}
 %% Venue dialect hooks consumed by ../body.tex.
@@ -122,11 +131,11 @@ by Large Language Models under Prompt Edits}
 %% material. Differs from the acmart abstract only where those rules bind
 %% (symbols worded out; "CVs" expanded); every quantity is still macro-cited.
 \begin{abstract}
-Modern data tables let users define columns in natural language: a language model computes each cell from a versioned
+Modern tables let users define columns in natural language: a language model computes each cell from a versioned
 prompt over its row. When the prompt is edited, systems either recompute
 every cell or reuse stale ones, with unbounded error. We present semantic incremental
-view maintenance (\sivm{}), which certifies which cached cells may be
-reused after a prompt edit, bounding each certified stratum's
+view maintenance (\sivm{}), which certifies the cached cells that may
+be reused after a prompt edit, bounding each certified stratum's
 false-reuse rate by a user-chosen error budget with stated confidence.
 \sivm{} freezes cached-value strata, samples adaptively on a doubling
 schedule, and bounds each stratum's flip rate with an exact
@@ -135,9 +144,10 @@ the reused cells alone. An impossibility floor follows for this
 estimand: a model's rate of disagreement with itself under the unedited
 prompt limits the certifiable budget. On two public corpora with
 \labeledCells\ labeled cells, a formatting-only edit certifies
-\benchSavingsMain\ call savings at an error budget of 0.2 with
-\benchRealized\ realized false-reuse, and at deployment scale
-\deployOracle\ oracle calls certify reuse of \deployReused\ of \deployN\
+\benchSavingsMain\ call savings (\benchSavings\ mean over \bootB\
+sampling replications) at an error budget of 0.2 with
+\benchRealized\ realized false-reuse; at deployment scale,
+\deployOracle\ fresh calls certify reuse of \deployReused\ of \deployN\
 cells. Across \calTrials\ calibration runs with planted flip rates,
 unsafe certificates occur in at most \calUnsafeWorst\ of runs in any
 configuration, against a nominal \calNominalDelta. A second
@@ -176,6 +186,7 @@ conclusions were specified, reviewed, and verified by the author.
 %% author's choice.
 %% The end-of-article mark otherwise lands alone on a fresh page.
 \enlargethispage{3\baselineskip}
+\phantomsection
 \begin{IEEEbiographynophoto}{Arjun Lohan}
 received the B.S. degree in chemical engineering from the University of
 California San Diego, La Jolla, CA, USA, in 2019, and the M.S. degree in financial

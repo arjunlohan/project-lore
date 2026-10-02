@@ -24,6 +24,10 @@ sed -e 's#\\input{\.\./#\\input{#g' \
 cp paper/body.tex paper/macros.tex paper/figdata.tex paper/table1.tex paper/tablefam.tex \
    paper/tablebounds.tex paper/tablerates.tex paper/tablemodels.tex paper/tabledeploy.tex \
    paper/tablefampairs.tex paper/tableboundsgrid.tex "$OUT/src/"
+# The prose gates optional studies on \ifnum<macro>=1\relax ... \else ... \fi;
+# the shipped source carries only the branch that prints, so nobody editing
+# it at the publisher meets dead text. Macros stay macros here.
+python3 scripts/resolve-tex-gates.py "$OUT/src/body.tex" "$OUT/src/macros.tex"
 # 3. Vendored template (class, bst, fonts, maps, fd, logos) and the IEEE bib.
 cp paper/ieee/ieeeaccess.cls paper/ieee/IEEEtran.cls paper/ieee/IEEEtran.bst paper/ieee/spotcolor.sty \
    paper/ieee/t1-*.pfb paper/ieee/t1-*.tfm paper/ieee/t1-*.map paper/ieee/t1*.fd \
@@ -95,49 +99,30 @@ elif [ -n "$LATEXDIFF" ] && git rev-parse -q --verify "$DIFF_BASE_TAG" >/dev/nul
     sed -i '' -e 's#\\input{\\paperroot/#\\input{#g' "$OUT/diff/$d/body.tex"
     sed -i '' -e '/\\enlargethispage/d' "$OUT/diff/$d/main.tex"
   done
-  # The prose gates optional studies on \ifnum<macro>=1\relax ... \else ... \fi;
-  # latexdiff marks up inside the test and breaks it. Resolve the gates with
-  # each copy's own macro values, so the diff shows what actually prints, and
-  # then substitute every generated macro by its value in both copies: a
-  # number that changed under an unchanged macro name is a change the
+  # latexdiff marks up inside the prose gates and breaks them. Resolve the
+  # gates with each copy's own macro values, so the diff shows what actually
+  # prints, and substitute every generated macro by its value in both copies:
+  # a number that changed under an unchanged macro name is a change the
   # reviewer must see in blue, which latexdiff cannot know from the names.
   for d in old new; do
     for f in body.tex main.tex; do
-      python3 - "$OUT/diff/$d/$f" "$OUT/diff/$d/macros.tex" <<'PY'
-import re, sys
-path, macros = sys.argv[1], sys.argv[2]
-vals = dict(re.findall(r'\\newcommand\{\\(\w+)\}\{(.*)\}', open(macros).read()))
-src = open(path).read()
-def resolve(m):
-    name, yes, no = m.group(1), m.group(2), m.group(3) or ""
-    text = yes if vals.get(name, "0").strip() == "1" else no
-    # A gate that occupied its own lines must not leave a blank line behind,
-    # which TeX would read as a paragraph break the clean copy does not have.
-    if m.start() > 0 and src[m.start() - 1] == "\n" and text.startswith("\n"):
-        text = text[1:]
-    if text.endswith("\n") and src[m.end():m.end() + 1] == "\n":
-        text = text[:-1]
-    return text
-out = re.sub(r'\\ifnum\\(\w+)=1\\relax(.*?)(?:\\else(.*?))?\\fi', resolve, src, flags=re.S)
-names = sorted(vals, key=len, reverse=True)
-if names:
-    pat = re.compile(r'\\(' + '|'.join(map(re.escape, names)) + r')(\\[ \n]|\{\}|(?=[^A-Za-z]))')
-    def expand(m):
-        tail = m.group(2)
-        return vals[m.group(1)] + (" " if tail.startswith("\\") else "")
-    out = pat.sub(expand, out)
-open(path, "w").write(out)
-PY
+      python3 scripts/resolve-tex-gates.py "$OUT/diff/$d/$f" "$OUT/diff/$d/macros.tex" --expand-macros
     done
   done
-  # Bibliographies: latexdiff --flatten inlines each side's main.bbl when it
-  # exists, so changed reference entries are marked too. The new one comes
-  # from this build; the old one is rebuilt from the tagged sources.
-  cp "$OUT/src/main.bbl" "$OUT/diff/new/main.bbl"
+  # Bibliography: latexdiff --flatten inlines the main.bbl beside each side's
+  # main.tex. Letting it compare the two lists word by word breaks the
+  # numbering (a deleted entry keeps a live \bibitem and prints as an empty
+  # number; a moved key is defined twice), so the highlighted copy carries the
+  # NEW list only, numbered as in the clean copy, with every entry that is
+  # new or changed since the tagged submission set in blue as a whole. The
+  # old list is rebuilt from the tagged sources for that comparison, and both
+  # sides then carry the same marked file.
   git show "$DIFF_BASE_TAG:paper/ieee/refs.bib" > "$OUT/diff/old/refs.bib" 2>/dev/null || cp "$OUT/src/refs.bib" "$OUT/diff/old/refs.bib"
   cp "$OUT"/src/*.cls "$OUT"/src/*.bst "$OUT"/src/*.sty "$OUT"/src/*.pfb "$OUT"/src/*.tfm "$OUT"/src/*.map "$OUT"/src/*.fd "$OUT"/src/*.png "$OUT/diff/old/"
   ( cd "$OUT/diff/old" && latexmk -pdf -interaction=nonstopmode -f main.tex >/dev/null 2>&1 ) || true
-  [ -f "$OUT/diff/old/main.bbl" ] || echo "note: old bibliography could not be rebuilt; the reference list will be compared as a block"
+  [ -f "$OUT/diff/old/main.bbl" ] || { echo "old bibliography could not be rebuilt"; exit 1; }
+  python3 scripts/mark-bbl-changes.py "$OUT/diff/old/main.bbl" "$OUT/src/main.bbl" "$OUT/diff/new/main.bbl"
+  cp "$OUT/diff/new/main.bbl" "$OUT/diff/old/main.bbl"
   # tikz/pgfplots pictures, the algorithm block and the abstract's own
   # environment are compared as wholes; math is not marked inside.
   if ! "$PERL" "$LATEXDIFF" --flatten --math-markup=0 \
@@ -151,10 +136,53 @@ PY
   # latexdiff wraps \DIFadd/\DIFdel in \texorpdfstring when it sees hyperref,
   # for headings; headings are excluded from markup above, and the wrapper
   # cannot span a paragraph break, so restore the plain definitions.
-  python3 - "$OUT/diff/main.tex" <<'PY'
+  python3 - "$OUT/diff/main.tex" "$OUT/diff/old/main.tex" "$OUT/diff/new/main.tex" <<'PY'
 import sys
 p = sys.argv[1]
 s = open(p).read()
+# The roadmap paragraph lives in a preamble macro of the shell, which latexdiff
+# does not compare. Diff the two definitions token by token here and wrap the
+# added tokens in \DIFadd, so the highlighted copy marks that paragraph too.
+import difflib
+def definition(src, name):
+    start = src.find("\\newcommand{\\" + name + "}{")
+    if start < 0:
+        return None
+    i = start + len("\\newcommand{\\" + name + "}{")
+    depth = 1
+    j = i
+    body = []
+    while j < len(src) and depth:
+        c = src[j]
+        if c == "%" and src[j - 1] != "\\":
+            # a TeX comment (latexdiff leaves %DIF markers here); skip it
+            j = src.find("\n", j)
+            if j < 0:
+                j = len(src)
+            continue
+        if c == "{":
+            depth += 1
+        elif c == "}":
+            depth -= 1
+        if depth:
+            body.append(c)
+        j += 1
+    return "".join(body), start, j
+old_def = definition(open(sys.argv[2]).read(), "venueroadmap")
+new_def = definition(open(sys.argv[3]).read(), "venueroadmap")
+if old_def and new_def:
+    a = old_def[0].split()
+    b = new_def[0].split()
+    out = []
+    for tag, i1, i2, j1, j2 in difflib.SequenceMatcher(None, a, b, autojunk=False).get_opcodes():
+        if tag == "equal":
+            out.extend(b[j1:j2])
+        elif tag in ("insert", "replace"):
+            out.append("\\DIFadd{" + " ".join(b[j1:j2]) + "}")
+    marked = " ".join(out)
+    cur = definition(s, "venueroadmap")
+    if cur:
+        s = s[: cur[1]] + "\\newcommand{\\venueroadmap}{" + marked + "}" + s[cur[2] :]
 s = s.replace(r"\providecommand{\DIFadd}[1]{\texorpdfstring{\DIFaddtex{#1}}{#1}}", r"\providecommand{\DIFadd}[1]{\DIFaddtex{#1}}")
 s = s.replace(r"\providecommand{\DIFdel}[1]{\texorpdfstring{\DIFdeltex{#1}}{}}", r"\providecommand{\DIFdel}[1]{\DIFdeltex{#1}}")
 import re
@@ -166,6 +194,43 @@ s = re.sub(r"(\\DIF(?:add|del)end) {2,}(?=\S)", r"\1{} ", s)
 # line latexdiff keeps between its comment markers would still break the
 # paragraph the new text continues.
 s = re.sub(r"(%DIFDELCMD < [^\n]*\n)\n+(%DIFDELCMD < %%%\n)", r"\1\2", s)
+# Blocks latexdiff compares as wholes (table bodies, the figures, the
+# algorithm) carry only the empty \DIFaddbegin markers, so an added block
+# would print black. Colour them: a float whose caption is entirely new is
+# a new float and is set in blue throughout (the colour goes inside the
+# float, where the float box is built); a replaced block inside an existing
+# float is wrapped in a colour group of its own.
+def colour_float(m):
+    head, body, tail = m.group(1), m.group("body"), m.group(5)
+    if re.search(r"\\caption\{\\DIFaddFL\{", body) and not re.search(r"\\DIFdel", body):
+        return head + r"\color{blue}" + body + tail
+    body = re.sub(
+        r"\\DIFaddbeginFL (\\begin\{tabular\}|\\begin\{tikzpicture\}|\\resizebox)(.*?)\\DIFaddendFL",
+        lambda k: r"\DIFaddbeginFL {\color{blue}" + k.group(1) + k.group(2) + r"}\DIFaddendFL",
+        body,
+        flags=re.S,
+    )
+    return head + body + tail
+s = re.sub(
+    r"(\\begin\{(table\*?|figure\*?|algorithm)\}(\[[^\]]*\])?)(?P<body>.*?)(\\end\{\2\})",
+    colour_float,
+    s,
+    flags=re.S,
+)
+# A lone number that latexdiff matched between a deletion and an addition
+# is the same digits meaning something else (a changed sentence whose old
+# and new values coincide); mark it as changed rather than let it print
+# black between blue neighbours.
+s = re.sub(r"(\\DIFaddend )(\d[\d.,{}]*(?:\\%)?)(\\DIFdelbegin )", r"\1\\DIFadd{\2}\3", s)
+s = re.sub(r"(\\DIFdelend )(\d[\d.,{}]*(?:\\%)?)(\\DIFaddbegin )", r"\1\\DIFadd{\2}\3", s)
+# Displayed math is excluded from markup; a display sitting between two
+# added text spans is itself added, so colour it.
+s = re.sub(
+    r"(\}\s*)(\\begin\{equation\}.*?\\end\{equation\})(\s*\\DIFadd\{)",
+    lambda m: m.group(1) + r"{\color{blue}" + m.group(2) + "}" + m.group(3),
+    s,
+    flags=re.S,
+)
 open(p, "w").write(s)
 PY
   # Compile the diff beside the vendored template files.
@@ -178,6 +243,30 @@ PY
   else
     echo "highlighted PDF FAILED: $DIFF_ERRORS TeX errors in $OUT/diff/main.log"; exit 1
   fi
+  # The highlighted copy must read as the clean copy: same page count, no
+  # doubly defined labels, the same citation numbers in the same
+  # multiplicity, and no empty reference entry (each of which happened once).
+  MULT=$(/usr/bin/grep -c 'multiply defined' "$OUT/diff/main.log" || true)
+  [ "$MULT" = "0" ] || { echo "highlighted build has $MULT multiply-defined labels"; exit 1; }
+  python3 - "$OUT/manuscript.pdf" "$OUT/highlighted.pdf" <<'PY'
+import re, subprocess, sys
+def text(pdf):
+    return subprocess.run(["pdftotext", pdf, "-"], check=True, capture_output=True, text=True).stdout
+clean, marked = text(sys.argv[1]), text(sys.argv[2])
+pages = lambda t: t.count("\f")
+if pages(clean) != pages(marked):
+    sys.exit(f"highlighted copy has {pages(marked)} pages against {pages(clean)}")
+cites = lambda t: sorted(re.findall(r"\[(\d+)\]", t))
+if cites(clean) != cites(marked):
+    sys.exit("highlighted copy's citation numbers differ from the clean copy's")
+# An empty entry is a label followed directly by the next label (a label
+# alone on its line is normal when its text is set in another colour).
+lines = [l.strip() for l in marked.splitlines() if l.strip()]
+blank = [l for i, l in enumerate(lines[:-1]) if re.fullmatch(r"\[\d+\]", l) and re.match(r"\[\d+\]", lines[i + 1])]
+if blank:
+    sys.exit(f"highlighted copy has {len(blank)} empty reference entries: {' '.join(blank)}")
+print("highlighted copy checked: pages, citation numbers, and reference entries match the clean copy")
+PY
 else
   echo "highlighted PDF skipped (latexdiff or tag $DIFF_BASE_TAG missing)"
 fi

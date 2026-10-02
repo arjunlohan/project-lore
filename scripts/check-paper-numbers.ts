@@ -412,9 +412,53 @@ for (const m of suspects.slice(0, 25)) {
 console.log(`\nmacros defined: ${defined.length}, unused: ${orphans.length}`);
 if (orphans.length > 0) console.log(`  ${orphans.join(", ")}`);
 
+// IEEE Access review round 1, Reviewer 3: "Many sentences are long and
+// contain several numbers or points in parentheses. Please shorten the
+// sentences." The prose of body.tex (tables, figures, the algorithm,
+// displayed math, the appendix enumerations, and the theorem environments
+// removed; macros expanded) must contain no sentence longer than
+// MAX_SENTENCE_WORDS words; the offenders are listed so the writer can split
+// them rather than argue with the count.
+const MAX_SENTENCE_WORDS = 60;
+const macroValues = new Map(
+  [...macroSrc.matchAll(/\\newcommand\{\\(\w+)\}\{(.*)\}/g)].map((m) => [m[1]!, m[2]!]),
+);
+const proseOnly = (() => {
+  let s = readFileSync("paper/body.tex", "utf8");
+  for (const env of ["table\\*?", "figure\\*?", "algorithm", "equation", "tikzpicture", "enumerate", "theorem", "assumption", "proof"]) {
+    s = s.replace(new RegExp(`\\\\begin\\{${env}\\}[\\s\\S]*?\\\\end\\{${env}\\}`, "g"), " ");
+  }
+  s = s
+    .split("\n")
+    .filter((l) => !l.trimStart().startsWith("%"))
+    .join("\n")
+    .replace(/\\ifnum\\\w+=1\\relax|\\else|\\fi/g, " ")
+    .replace(/\\sivm\{\}/g, "sIVM")
+    .replace(/\\(section|subsection|paragraph)\*?\{[^}]*\}/g, " ")
+    .replace(/\\(cite|ref|secref|figref|eqref|label|texttt|url)\{[^}]*\}/g, "X")
+    .replace(/\\\[[\s\S]*?\\\]/g, " X ")
+    .replace(/\$[^$]*\$/g, "X")
+    .replace(/\{,\}/g, ",");
+  const names = [...macroValues.keys()].sort((a, b) => b.length - a.length);
+  if (names.length) {
+    s = s.replace(new RegExp(`\\\\(${names.join("|")})(\\\\ |\\{\\}|(?=[^A-Za-z]))`, "g"), (_m, n: string) => `${macroValues.get(n)} `);
+  }
+  return s.replace(/\\[A-Za-z]+\*?/g, " ").replace(/[{}~]/g, " ").replace(/\s+/g, " ");
+})();
+const proseSentences = proseOnly.split(/(?<=[.?!])\s+(?=[A-Z(\[`]|sIVM)/).filter((x) => x.split(" ").length > 2);
+const longSentences = proseSentences.filter((x) => x.split(" ").length > MAX_SENTENCE_WORDS);
+{
+  const lens = proseSentences.map((x) => x.split(" ").length);
+  const mean = lens.reduce((a, b) => a + b, 0) / Math.max(1, lens.length);
+  const over45 = lens.filter((x) => x > 45).length;
+  console.log(`\nprose sentences: ${lens.length}, mean ${mean.toFixed(1)} words, over 45 words: ${over45} (${((over45 / lens.length) * 100).toFixed(0)}%), over ${MAX_SENTENCE_WORDS}: ${longSentences.length}`);
+  for (const x of longSentences.slice(0, 20)) console.log(`  (${x.split(" ").length}) ${x.slice(0, 110)}...`);
+}
+
 const ok =
   suspects.length === 0 &&
   orphans.length === 0 &&
+  longSentences.length === 0 &&
   genHardcodes.length === 0 &&
   swallowed.length === 0 &&
   badCompare.length === 0 &&

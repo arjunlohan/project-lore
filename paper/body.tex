@@ -10,19 +10,19 @@
 \label{sec:intro}
 
 Interactive artificial intelligence (AI) tables turn a natural-language
-prompt into a \emph{materialized view}: a column $V = (\pi, M, \theta)$
-with prompt $\pi$, model $M$, and pinned (held fixed) decode parameters
+prompt into a \emph{materialized view}: a column $V = (\pi, \mathcal{M}, \theta)$
+with prompt $\pi$, model $\mathcal{M}$, and pinned (held fixed) decode parameters
 $\theta$,
 materialized as cells $c_i = f_V(r_i)$ over rows $r_1,\dots,r_n$. The
-category is now a product surface rather than a research proposal:
+category is now a product surface rather than a research proposal.
 Google Sheets evaluates an \texttt{AI()} formula per row and offers AI
 columns in tables~\cite{sheetsai}, Airtable computes AI fields per
 record~\cite{airtableai}, Notion autofills database properties with a
 model~\cite{notionautofill}, and Snowflake Cortex applies
 \texttt{AI\_COMPLETE} and \texttt{AI\_CLASSIFY} to table columns in
-SQL~\cite{snowflakecortex} (Microsoft's Excel \texttt{COPILOT} function
+SQL~\cite{snowflakecortex}. Microsoft's Excel \texttt{COPILOT} function
 shipped as a preview and was withdrawn in September 2026, a measure of
-how quickly this surface is moving~\cite{excelcopilot}). These views are
+how quickly this surface is moving~\cite{excelcopilot}. These views are
 edited constantly: users iterate on prompts the way they iterate on
 spreadsheet formulas. Every edit invalidates the cache by construction,
 and today's systems invalidate it wholesale: an edit to an
@@ -37,14 +37,15 @@ and tools. Its owner edits the prompt to insert two paragraph breaks
 and lowercase one word, changing no content word (the
 \emph{formatting-only} edit of \secref{sec:experiments};
 Table~\ref{tab:pairs} shows every edit we study). Recomputing costs
-\corpusSO\ model calls; keeping every cached value silently carries the
-edit's flip rate, \flipSoFormatting\ on this pair, into the table.
+\corpusSO\ model calls. Keeping every cached value silently carries the
+edit's flip rate into the table: the share of cells a recompute would
+change, \flipSoFormatting\ on this pair.
 \sivm{} instead groups the cached cells by their cached value (the two
 \emph{strata}, cached-TRUE and cached-FALSE), recomputes a small seeded
 sample from each, and reuses a stratum only when a statistical bound on
-its flip rate clears the user's error budget: on this column at
+its flip rate clears the user's error budget. On this column at
 deployment scale, \deployOracle\ fresh calls certified reuse of
-\deployReused\ of \deployN\ cells, and the same \sepOracleLoose-call
+\deployReused\ of \deployN\ cells. The same \sepOracleLoose-call
 budget did so again \driftDaysLater\ days later against a model that
 had drifted in the meantime.
 
@@ -61,11 +62,11 @@ Three measurements reframe the problem (\secref{sec:experiments}).
 First, large language model (LLM) cells are stochastic even at
 temperature zero~\cite{ouyang,atil}: the same
 prompt on the same row disagrees with itself \floorBool\ of the time on
-our Boolean workload (within-version draw pairs on $n{=}\benchN$; an
-earlier $n{=}200$ two-draw probe read \floorTzeroProbe) and
-\floorDefaultT\ at default temperature, so ``did the edit change this
-cell?'' is only meaningful relative to a noise floor, the rate at which
-the model disagrees with itself under the unedited prompt. Second, edit
+our Boolean workload and \floorDefaultT\ at default temperature
+(\secref{sec:experiments} gives the instruments). ``Did the edit change
+this cell?'' is therefore only meaningful relative to a noise floor, the
+rate at which the model disagrees with itself under the unedited
+prompt. Second, edit
 direction is not monotone: under a strictly scope-\emph{widening} edit,
 \wideningTrueFlip\ of
 cached-TRUE cells flipped (\wideningTrueCi\ over \wideningTrueN\
@@ -79,7 +80,7 @@ formatting-only edit flipped \flipDjFormatting\ against
 indistinguishable. Neither pair orders the way the edits' labels
 suggest. These are five author-written edits, one per class per column,
 so they show that class can fail to predict flip rate, not how often it
-does; the certifier below never consults the class, and
+does. The certifier below never consults the class, and
 \secref{sec:experiments} shows the same edit's flip rate varying widely
 across model families. Both comparisons hold the column fixed
 deliberately: across columns, the column's own stability dominates the
@@ -92,22 +93,23 @@ what clears the user's error budget.
 \subsection{Contributions}
 \begin{enumerate}
 \item \textbf{Problem formalization} (\secref{sec:problem}): certified
-cross-version reuse for stochastic prompt-defined views, with a pair of
-estimands (the population quantities a guarantee is about) that are
-well-defined under decode pinning: the realized false-reuse rate over
-the cells a certified stratum presents, which we certify by default,
-and over the reused cells alone, which the strict mode certifies at a
-deflated threshold; and its impossibility floor (the intrinsic flip
-rate).
+cross-version reuse for stochastic prompt-defined views. Two estimands
+(the population quantities a guarantee is about) are well-defined under
+decode pinning. One is the realized false-reuse rate over the cells a
+certified stratum presents, which we certify by default. The other is
+the same rate over the reused cells alone, which the strict mode
+certifies at a deflated threshold. An impossibility floor follows: the model's intrinsic flip
+rate bounds the certifiable error budget $\alpha$.
 \item \textbf{The \sivm{} procedure} (\emph{semantic incremental view
 maintenance}; \secref{sec:system}): frozen cached-value stratification
-(with optional interaction refinement), grid-adaptive sampling on a
+(with optional interaction refinement), adaptive sampling on a
 doubling schedule of \emph{looks} (points at which the sample is
-inspected; deciding at several looks is the \emph{peeking} the validity
-theorem must survive, handled by splitting $\delta$ across looks),
-futility stopping, per-stratum certification with an exact
-finite-population confidence bound, and two guarantee targets
-(presented cells; strict reuse set). Any frozen stratifier affects power
+inspected), and futility stopping (giving up on a stratum whose sample
+already exceeds the budget). Certification is per-stratum with an
+exact finite-population confidence bound, and the procedure offers two
+guarantee targets (presented cells; strict reuse set). Deciding at several looks is
+\emph{peeking}; the validity theorem survives it by splitting the
+failure probability $\delta$ across the looks. Any frozen stratifier affects power
 only, never validity, where power is the chance of certifying a stratum
 that does meet the budget. The bound is a pluggable component: the exact
 bound is proven for the without-replacement sampling the procedure
@@ -115,25 +117,27 @@ performs, and four alternatives (two empirical-Bernstein bounds, the
 binomial Clopper--Pearson bound, and a betting confidence sequence) are
 measured inside the same procedure.
 \item \textbf{A production implementation} (\secref{sec:impl}) inside a
-working AI-table system (per-cell runner, content-hash cache, cost
-ledger, certificates, the persisted records of what cleared the budget,
-surfaced in the user interface (UI)), released
-under a source-available noncommercial license, not a simulation
-harness.
+working AI-table system, released under a source-available
+noncommercial license, not a simulation harness. The system has a
+per-cell runner, a content-hash cache, a cost ledger, and certificates,
+the persisted records of what cleared the budget, surfaced in the user
+interface (UI).
 \item \textbf{An empirical anatomy} (\secref{sec:experiments}) on two
-real corpora with \labeledCells\ labeled cells: the noise floor, the
-edit-class savings curve, the $\alpha$-cost frontier, minority-stratum
-volatility and its vote-of-$k$ diagnosis, a stratifier ablation showing
-that refinement is validity-free but costs power on this benchmark, a
-calibration study that measures the rate of unsafe certificates against
-the nominal budget, \ifnum\indepAvailable=1\relax a check of the cross-row
-independence assumption, \fi a model-family study on \famCount\ further
-families, and a re-certification \driftDaysLater\ days after the
-deployment run that measures provider-side drift (a higher flip rate
-against the same cache) and shows the certifier pricing it: the budgets
-certified in August certify again, the tight one a look deeper than on
-the August draws, and the tightest budget, on which the August draws
-are silent, is refused\ifnum\pilotAvailable=1\relax; and a free-text pilot in which a judge's error is calibrated on hand labels and folded into the budget\fi.
+real corpora with \labeledCells\ labeled cells. It measures the noise
+floor, the savings frontier over the error budget, and minority-stratum
+volatility, along with how much of it majority voting at write time
+removes. It includes a stratifier ablation (refinement is validity-free
+but costs power on this benchmark), a calibration study of the rate of
+unsafe certificates against the nominal budget, \ifnum\indepAvailable=1\relax a check of the
+cross-row independence assumption, \fi and a model-family study on
+\famCount\ further families. It also reports a re-certification
+\driftDaysLater\ days after the deployment run. The re-certification
+measured provider-side drift as a higher flip rate against the same
+cache and showed the certifier pricing it. The same budgets certify
+again, the tight one a look deeper, and the tightest budget, on which
+the August draws are silent, is refused.\ifnum\pilotAvailable=1\relax\ A free-text
+pilot calibrates a judge's error on hand labels and folds it into the
+budget.\fi
 \item \textbf{A reusable benchmark} (\secref{sec:benchmark}): versioned
 prompt-edit pairs with full ground-truth flip labels over public
 corpora redistributable under the Open Database License (ODbL) and the
@@ -143,6 +147,7 @@ systems.
 
 \venueroadmap
 
+\needspace{6\baselineskip}
 \section{Problem}
 \label{sec:problem}
 
@@ -152,9 +157,16 @@ share a cached value). A \emph{look} is a point in the sampling schedule
 at which the sample drawn so far is inspected and a decision may be
 taken. A stratum's \emph{floor} is its self-flip rate, the rate at
 which the model disagrees with its own earlier answer when nothing has
-changed; no budget below the floor is certifiable. A \emph{certificate}
+changed. Under the unedited prompt no budget below the floor is
+certifiable, and the impossibility-floor paragraph below says how far
+that carries to edits. A \emph{certificate}
 is the persisted record that a stratum cleared the budget, with the
-evidence it cleared it on. A few statistical terms recur as well. An
+evidence it cleared it on. Three verbs recur with them. A cell
+\emph{flips} when a fresh draw under the edited prompt disagrees with
+its cached value. A stratum that is not certified is \emph{refused},
+and its unsampled cells are recomputed. Sampling stops for
+\emph{futility} when the sample's own flip rate already exceeds the
+budget. A few statistical terms recur as well. An
 \emph{oracle draw} (or oracle call) is one fresh model call under the
 edited prompt for one row. An \emph{estimand} is the population
 quantity a guarantee is about. \emph{Power} is the chance that a stratum
@@ -172,25 +184,28 @@ past it. Table~\ref{tab:notation} collects the symbols.
 \toprule
 Symbol & Meaning \\
 \midrule
-$V=(\pi,M,\theta)$ & a view: prompt template, model, pinned decode parameters; $V'=(\pi',M,\theta)$ after the edit \\
+$V=(\pi,\mathcal{M},\theta)$ & a view: prompt template, model, pinned decode parameters; $V'=(\pi',\mathcal{M},\theta)$ after the edit \\
 $r_i$, $c_i$ & row $i$ and its cached cell, one draw from $f_V(r_i)$ \\
-$X_i'$, $F_i$, $p_i$ & a fresh draw under $V'$; the flip indicator $\mathbb{1}[c_i \not\equiv X_i']$; its mean \\
+$X_i'$, $F_i$, $p_i$ & a fresh draw under $V'$; the flip indicator $\mathbf{1}[c_i \not\equiv X_i']$; its mean \\
 $\equiv$ & the column's equivalence relation (exact match here) \\
-$j$, $n_j$, $s_j$ & a stratum, its size, its self-flip rate (floor) \\
+$j$, $n_j$, $s_j$, $p_j$ & a stratum, its size, its self-flip rate (floor), its flip rate (the mean of $p_i$ over $i \in j$) \\
+$\Delta$, $\beta(\pi)$ & the prompt delta (content terms added or removed); the row fields $\pi$ interpolates \\
 $\mathcal{S}$, $m_j$ & the sampled (freshly recomputed) cells; those in stratum $j$ \\
 $\mathcal{R}$ & the reuse set: cached cells kept under a certificate \\
-$L_j$, $t$ & stratum $j$'s look schedule and a look in it \\
+$L_j$, $t$ & stratum $j$'s look schedule and a look in it; $n_0$ is the first look and $\ell$ the most looks allowed \\
+$N$, $n$, $k$ & in the bound: the stratum's size ($N = n_j$), the cells drawn at a look, and the flips among them \\
 $u_{j,t}$ & the upper confidence bound on stratum $j$'s flip rate at look $t$ \\
-$\alpha$, $\delta$ & error budget on the false-reuse rate; probability that any certificate is wrong \\
-$K$, $\delta_j$ & number of strata; the per-stratum budget $\delta/K$, split evenly over looks \\
+$\alpha$, $\delta$ & error budget on the false-reuse rate; upper bound on the probability that any certificate is wrong \\
+$K$, $\delta_j$, $\delta'$ & number of strata; the per-stratum budget $\delta/K$; the per-look level $\delta_j/|L_j|$ \\
+$M_j$, $k_j$ & stratum $j$'s realized flip count; the flips observed in its sample \\
 $\mathrm{FR}^{\mathrm{pres}}_j$ & realized false-reuse of stratum $j$ over the cells it presents \\
 $\mathrm{FR}^{\mathrm{reuse}}_j$ & the same over its reused cells alone \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-\paragraph{Views and cells.} An AI column is a view $V=(\pi, M, \theta)$:
-a prompt template $\pi$ with typed output contract, a model $M$, and
+\paragraph{Views and cells.} An AI column is a view $V=(\pi, \mathcal{M}, \theta)$:
+a prompt template $\pi$ with typed output contract, a model $\mathcal{M}$, and
 pinned decode parameters $\theta$. For row $r_i$, the bound prompt
 $\pi(r_i)$ interpolates only the fields $\beta(\pi)$ that $\pi$
 references; the stored cell $c_i$ is \emph{one draw} from the output
@@ -198,13 +213,13 @@ distribution $f_V(r_i)$. Even at temperature zero this distribution is
 not degenerate: providers are nondeterministic across calls, as prior
 measurements of hosted models document~\cite{ouyang,atil}, in part
 because the floating-point reduction order inside serving kernels
-changes with the co-batched load~\cite{yuan,tml}, so every quantity
-below is defined over draw randomness.
+changes with the co-batched load~\cite{yuan,tml}. Every quantity
+below is therefore defined over draw randomness.
 
 \paragraph{The maintenance event.} The user edits the definition,
-$V \to V' = (\pi', M, \theta)$. For each cached cell define the flip
+$V \to V' = (\pi', \mathcal{M}, \theta)$. For each cached cell define the flip
 indicator
-$F_i \;=\; \mathbb{1}\!\left[\, c_i \not\equiv X_i' \,\right]$,
+$F_i \;=\; \mathbf{1}\!\left[\, c_i \not\equiv X_i' \,\right]$,
 where $X_i' \sim f_{V'}(r_i)$ is a fresh draw under the new definition
 and $\equiv$ is the column's equivalence relation (exact match for the
 Boolean and select columns studied here). $F_i$ is Bernoulli with
@@ -225,7 +240,7 @@ a certified stratum $j$ is
 \]
 of all $n_j$ cells the user now sees from that stratum, the fraction
 that would flip if recomputed (sampled cells are fresh and contribute
-zero); a flip is any disagreement with one fresh draw, decode noise
+zero). A flip is any disagreement with one fresh draw, decode noise
 included, as the previous paragraph defines it.
 That zero is a convention of the single-draw estimand, not a property
 of recomputed cells: a recomputed cell is itself one draw, and a
@@ -233,9 +248,9 @@ further draw disagrees with it at the stratum's self-flip rate
 (\floorTrueStratum\ and \floorFalseStratum\ on our Boolean column,
 \secref{sec:experiments}). The estimand charges reuse for exactly what
 the user would see change on recomputation, which is the operational
-question, and the impossibility floor below is the price of that
+question. The impossibility floor below is the price of that
 choice: an excess-over-floor target, $p_j - s_j$, would certify the
-identity edit for free, and we deliberately do not certify it, because
+identity edit for free. We deliberately do not certify it, because
 a user who recomputes sees one draw and lives with it.
 The \emph{reuse-set} rate
 \[
@@ -246,9 +261,10 @@ normalizes by the $n_j{-}m_j$ reused cells alone and is never
 smaller. A certificate bounds the stratum's whole flip count, and hence
 $\mathrm{FR}^{\mathrm{pres}}_j$, but not $\mathrm{FR}^{\mathrm{reuse}}_j$:
 the remainder is adversely selected, because certification happens
-exactly when the sample looked clean (on the headline pair at
-$\alpha{=}0.2$ the two read \benchRealized\ and the reuse-set rate whose
-interval is \benchRealizedCi, Table~\ref{tab:main}). \sivm{} therefore
+exactly when the sample looked clean. On the headline pair at
+$\alpha{=}0.2$ (Table~\ref{tab:main}) the two rates read
+\benchRealized\ and \benchRealizedReuse, the latter with 95\% CI
+\benchRealizedCi. \sivm{} therefore
 certifies the presented-cells estimand by default, and offers a strict
 reuse-set mode that certifies at the deflated threshold
 $\alpha (n_j - m_j)/n_j$, which bounds $\mathrm{FR}^{\mathrm{reuse}}_j$
@@ -261,11 +277,25 @@ aggregate (baseline B2 in \secref{sec:experiments}, aggregate-only
 certification, shows why the aggregate alone is operationally
 misleading).
 
+\sivm{} makes no decision about an individual cell. Whether one cached
+cell would change under the edited prompt can be learned only by
+recomputing it, which spends exactly the call that reuse would save.
+The per-cell signals that cost less than a call carry no usable
+information across a definition change (prompt similarity predicts
+flips at chance; baseline B1 in \secref{sec:experiments}). The unit of
+decision is therefore the stratum: a cached cell is reused if and only
+if the upper confidence bound on its stratum's flip rate clears the
+budget at some look. That is the correctness criterion for reuse, and it
+is a statement about recomputation, not about ground truth. A
+certificate says that recomputing the stratum now would change at most
+an $\alpha$ share of its cells, with probability at least $1-\delta$,
+not that the cells are right.
+
 \paragraph{Reading the budget.} A certificate says: with probability
 at least $1-\delta$ over this run's sampling and oracle draws, at most an
 $\alpha$ fraction of the certified stratum's cells would flip if
 recomputed (default mode), or at most an $\alpha$ fraction of its reused
-cells alone (strict mode). $\alpha$ is that share; $\delta$ is the
+cells alone (strict mode). $\alpha$ is that share; $\delta$ bounds the
 probability that any certificate of the run is wrong at all. Both are the user's to set, and the
 right values are workload-specific: a recruiter screen that a person
 reviews row by row tolerates a looser $\alpha$ than a column that feeds
@@ -273,25 +303,26 @@ a downstream aggregate, and the strict mode exists for the latter. The
 realized error under a certificate is typically far below $\alpha$
 (\benchRealized\ against $\alpha{=}0.2$ on the headline pair,
 Table~\ref{tab:main}), because the bound must cover the worst
-population compatible with the sample; the frontier of
+population compatible with the sample. The frontier of
 \secref{sec:experiments} shows what tightening $\alpha$ costs in
 certifiable savings, and the floor below shows where tightening it
 becomes impossible.
 
 \paragraph{Assumptions.}
 \begin{assumption}[Pinned snapshot]\label{as:pin}
-$M$ and $\theta$ are fixed during certification; oracle draws are
+$\mathcal{M}$ and $\theta$ are fixed during certification. Oracle draws are
 distributed as $f_{V'}(r_i)$ throughout the certification window and
-are independent \emph{across rows} (provider-side batching that
+are independent \emph{across rows}. Provider-side batching that
 correlates concurrent responses~\cite{yuan,tml} would violate this; our
 runner issues independent requests\ifnum\indepAvailable=1\relax, and
 \secref{sec:experiments}, ``Independence across rows,'' compares
-sequential with concurrent requests\fi). The validity proof uses independence only through
+sequential with concurrent requests\fi. The validity proof uses independence only through
 non-interference: a sampled cell's draw must not depend on which other
 cells were sampled or in flight. Certificates are scoped
 to the snapshot the oracle draws came from; the cache may be older. A
-provider-side model change ends the snapshot, and \secref{sec:experiments}
-measures one (change-of-world maintenance is complementary work).
+provider-side model change ends the snapshot, and \secref{sec:experiments},
+``Deployment scale'' (the September run), measures one (change-of-world
+maintenance is complementary work).
 \end{assumption}
 \begin{assumption}[Frozen stratification]\label{as:frozen}
 The stratifier is a deterministic function of the cache, the edit, and
@@ -302,9 +333,12 @@ preserves validity; its quality affects only power
 \begin{assumption}[Uniform within-stratum sampling]\label{as:sample}
 Sampled rows are drawn by a seeded uniform shuffle within each stratum,
 without replacement, and each sampled row receives one fresh oracle
-draw, independent across rows (Assumption~\ref{as:pin}). The
-calibration study of \secref{sec:experiments} probes this assumption
-where it matters, at planted rates just above the budget.
+draw, independent across rows (Assumption~\ref{as:pin}). The sampling
+itself is fixed by the seeded canonical shuffle of \secref{sec:impl}.
+The calibration study of \secref{sec:experiments} checks that the
+implemented test holds the level Theorem~\ref{thm:valid} states under
+this sampling, at planted rates just above the budget, where the level
+is hardest to hold.
 \end{assumption}
 
 \paragraph{No monotonicity shortcuts.} Folk reasoning suggests
@@ -320,14 +354,16 @@ stratification hint; any directional certificate must be
 stratum $j$'s self-flip rate: the probability that two independent draws
 of the \emph{same} cell disagree, \emph{conditional on the cached draw
 that put the cell in stratum $j$}. For the identity edit $\pi'{=}\pi$,
-$p_j$ equals $s_j$, so no procedure whose oracle is a single fresh draw
-can certify stratum $j$ at $\alpha < s_j$: the certifiable budget is
-floored by model stability. Two scoping notes apply.
+$p_j$ equals $s_j$. Hence no valid procedure whose oracle is a single fresh
+draw can certify stratum $j$ at $\alpha < s_j$, except with probability
+at most $\delta_j$ plus the chance that the realized flip count falls
+below $\alpha n_j$, which vanishes as $n_j$ grows. The certifiable
+budget is floored by model stability. Two scoping notes apply.
 The conditioning is not incidental. Because
 membership is decided by one draw, a minority-value stratum is
 selected partly \emph{for} having flipped that way, so $s_j$ is a
-property of the (cache, stratifier) pair, not of the column, and
-recomputing the cache with vote-of-$k$ at write time lowers it
+property of the (cache, stratifier) pair, not of the column.
+Recomputing the cache with vote-of-$k$ at write time lowers it
 (\secref{sec:experiments}, ``Minority-stratum anatomy''). And the
 edit-independence is derived for the identity edit only; an edit that
 sharpens the output distribution can drive $p_j$ below $s_j$, so we
@@ -344,10 +380,10 @@ value the certifier itself stratifies on, and the interval resamples
 rows, since draw-pairs from one row are dependent. Three otherwise
 separate observations follow from this single measurement. The FALSE
 stratum is the only one that certifies at all, and it is certifiable in
-principle down to budgets near its own floor; at $\alpha{=}0.05$ it
-certifies in \edgeCertRate\ of replications, at the deepest look of the
-schedule, for \edgeSavingsMean\ mean savings (Table~\ref{tab:main}):
-there, power rather than the floor is what binds. The TRUE stratum is
+principle down to budgets near its own floor. At $\alpha{=}0.05$ it
+certifies in \edgeCertRate\ of replications, by the deepest look of the
+schedule, for \edgeSavingsMean\ mean savings (Table~\ref{tab:main}).
+There, power rather than the floor is what binds. The TRUE stratum is
 never certified at any budget we tried: its floor exceeds every budget
 we ran. Its size sets the deployment-scale savings
 ceiling: with \deployTrueStratum\ of \deployN\ cells cached TRUE, reuse
@@ -411,7 +447,7 @@ the column.
 Stratification is frozen before any oracle call, so it moves power
 but never validity (Assumption~\ref{as:frozen}); only steps 3--4 spend
 model calls, and they stop on evidence about a stratum's \emph{rate},
-which is independent of the stratum's size. The two lanes are the
+so their cost is bounded independently of the stratum's size. The two lanes are the
 outcome we measure throughout: the stable stratum certifies and is
 reused under a certificate, while the volatile one is refused at every
 budget we tried and recomputed. A refusal is a stability diagnosis of
@@ -438,30 +474,34 @@ Given the edit $\pi\to\pi'$ and cached cells for the affected rows
 (the \emph{delta}). The delta is recorded in the certificate for
 provenance and consumed only by the optional refinement in step~2; it
 never enters the reuse decision itself.
-\item \textbf{Stratify (frozen).} Partition rows by cached value. We
-adopt the skeleton of proxy-certified selection~\cite{supg} deliberately
-here: with a binary proxy this step is their reduction,
-transported from one-shot selection to maintenance. What we change is
-the guarantee it carries, from one aggregate bound over the selected set
-to a bound per stratum, which is the only difference
-\secref{sec:experiments} (B2$'$) isolates and the only one that
-protects a subgroup whose floor differs from the column's.
-Optionally refine each value stratum by an interaction bucket (lexical
-delta-term overlap or embedding cosine between the delta text and the
-row's bound content, tertile-bucketed): a validity-free refinement
-that pays only when within-value flip risk is heterogeneous, and
-otherwise costs power through the $\delta/K$ split
-(\secref{sec:experiments}).
+\item \textbf{Stratify (frozen).} Partition rows by cached value and
+freeze the partition before any oracle call
+(Assumption~\ref{as:frozen}). With a binary proxy this step is the
+stratification of proxy-certified selection~\cite{supg}, transported
+from one-shot selection to maintenance. What changes is the guarantee
+it carries: a bound per stratum instead of one aggregate bound over
+the selected set (\secref{sec:experiments}, B2$'$, isolates exactly
+that difference). Optionally refine each value stratum by an
+interaction bucket (lexical delta-term overlap or embedding cosine
+between the delta text and the row's bound content,
+tertile-bucketed). This refinement is validity-free. It pays only when
+within-value flip risk is heterogeneous, and otherwise costs power
+through the $\delta/K$ split (\secref{sec:experiments}).
 \item \textbf{Schedule.} For stratum $j$ of size $n_j$, fix a doubling
 look schedule $L_j = (45, 90, 180, \dots)$ capped at $n_j$, with at most
-six looks; split the stratum's error budget $\delta_j = \delta/K$
+six looks. Split the stratum's error budget $\delta_j = \delta/K$
 evenly across looks. Every experiment here pins $n_0{=}45$, at most six
-looks, $\delta{=}0.1$, and $K{=}2$ value strata, so a look on a large
-stratum is tested at $\delta' = 0.1/12$; a small stratum has fewer
-looks and a correspondingly larger per-look level.
+looks, and $\delta{=}0.1$. $K$ is the number of cached values: 2 on the
+Boolean columns and 4 on the select column. In the free-text pilot of
+\secref{sec:limits} there are 8 category strata. A look on a large
+Boolean stratum is therefore tested at the per-look level
+$\delta' = \delta_j/|L_j| = 0.1/12$, and a look on a large select
+stratum at $0.1/24$. A small stratum has fewer looks and a
+correspondingly larger per-look level.
 \item \textbf{Sample and test.} Order the stratum's rows canonically,
-shuffle them once with the seed, and at each look $t$ reveal fresh
-draws for the prefix. Compute the exact finite-population upper
+shuffle them once with the seed (Assumption~\ref{as:sample}), and at
+each look $t$ reveal one fresh draw for each row of the prefix
+(Assumption~\ref{as:pin}). Compute the exact finite-population upper
 confidence bound $u_{j,t}$ of Eq.~\eqref{eq:exact} on the stratum flip
 rate at level $\delta_j/|L_j|$; \emph{certify and stop} if
 $u_{j,t} \le \alpha$; \emph{stop for futility} if the empirical rate
@@ -478,7 +518,8 @@ Algorithm~\ref{alg:sivm} states the procedure in full.
 \begin{algorithmic}[1]
 \REQUIRE cached cells $\{(r_i, c_i)\}$; edit $\pi \to \pi'$; budget
 $\alpha$; confidence $\delta$; first look $n_0$; at most $\ell$ looks;
-mode $\in \{\text{presented}, \text{reuse-set}\}$
+mode $\in \{\text{presented}, \text{reuse-set}\}$;
+Assumptions~\ref{as:pin}--\ref{as:sample}
 \ENSURE reuse set $\mathcal{R}$, recompute set, certificate record
 \STATE $\Delta \leftarrow$ word-level LCS diff of $\pi$ and $\pi'$
 \STATE strata $1, \dots, K \leftarrow$ partition of the cells by cached
@@ -492,9 +533,9 @@ value, optionally refined by an interaction bucket of $\Delta$; freeze
     yet drawn; $k \leftarrow |\{ i \le n : c_i \not\equiv X_i' \}|$
     \STATE $u \leftarrow$ exact upper bound of Eq.~\eqref{eq:exact} at
     $(k, n, n_j, \delta')$
-    \STATE $\tau \leftarrow \alpha$ if presented mode, else
+    \STATE $\alpha' \leftarrow \alpha$ if presented mode, else
     $\alpha (n_j - n)/n_j$
-    \IF{$n < n_j$ \AND $u \le \tau$}
+    \IF{$n < n_j$ \AND $u \le \alpha'$}
       \STATE certify stratum $j$; \textbf{break}
     \ENDIF
     \IF{$k / n > \alpha$}
@@ -512,7 +553,7 @@ and apply $\mathcal{R}$ additively
 
 \paragraph{The bound.} Fix a stratum of $N$ cells ($N = n_j$), and give
 every cell one hypothetical fresh draw under $V'$, the coupling on which
-the presented-cells estimand is defined; let $M$ be the number of cells
+the presented-cells estimand is defined. Let $M$ be the number of cells
 whose fresh draw flips. The sample of $n$ cells is drawn uniformly
 without replacement and independently of those draws, and shows $k$
 flips. Conditional on the $N$ outcomes, $k$ is
@@ -530,20 +571,20 @@ unconditionally over sampling and draw randomness together, and it
 bounds the realized flip count $M$, not only its expectation. This is
 the natural bound for a binary loss under the sampling the procedure
 performs. On a clean sample its cost is $\ln(1/\delta')/n$ to first
-order; the empirical-Bernstein bounds pay range terms with constants of
+order. The empirical-Bernstein bounds pay range terms with constants of
 $7/3$ (Maurer--Pontil, on $\ln(2/\delta')$) and $7/3 + 3/\sqrt{2}$
 (Bardenet--Maillard, on $\ln(5/\delta')$) that a binary loss does not
 need. On a clean sample of $n{=}90$ from a stratum of
 \boundExactAtNStratum\ cells at the pinned per-look level, the exact
-bound reads \boundExactAtN\ (\boundExactAtNLarge\ in the
-\deployFalseStratum-cell deployment stratum, where it coincides with
-the binomial limit to three digits), the Maurer--Pontil
+bound reads \boundExactAtN. In the \deployFalseStratum-cell deployment
+stratum it reads \boundExactAtNLarge; there it coincides with the
+binomial limit to three digits. On the same sample, the Maurer--Pontil
 bound~\cite{maurer} that an earlier version of this article certified
 with reads \boundEbAtN, and the Bardenet--Maillard without-replacement
-bound~\cite{bardenet} reads \boundWorAtN\ (\secref{sec:experiments}
+bound~\cite{bardenet} reads \boundWorAtN. \secref{sec:experiments}
 measures the difference on every configuration and prices a betting
 confidence sequence~\cite{wsr} and time-uniform
-alternatives~\cite{howard}). The system exposes the alternatives as
+alternatives~\cite{howard}. The system exposes the alternatives as
 ablation arms.
 
 \begin{theorem}[Validity under peeking]\label{thm:valid}
@@ -557,7 +598,8 @@ consequently $\mathrm{FR}^{\mathrm{pres}}_j \le \alpha$ for every
 certified stratum and for every union of certified strata (the empty
 certification is vacuously valid). In reuse-set mode, where
 certification at sample size $m_j$ requires
-$u_{j,t} \le \alpha\,(n_j{-}m_j)/n_j$, the same event implies
+$u_{j,t} \le \alpha\,(n_j{-}m_j)/n_j$, the same argument gives
+$M_j \le \alpha (n_j - m_j)$, hence
 $\mathrm{FR}^{\mathrm{reuse}}_j \le \alpha$. The statements hold for any
 per-look bound that is a valid upper confidence bound at that level for
 uniform without-replacement draws, including the Bardenet--Maillard
@@ -571,7 +613,12 @@ $u_{j,t} \le \alpha < M_j/n_j$, i.e., the observed count to fall in the
 lower tail that Eq.~\eqref{eq:exact} rejects at level $\delta_j/|L_j|$;
 by the monotonicity of the hypergeometric tail in $M$, that event has
 probability at most $\delta_j/|L_j|$ over the sampling, for every
-population realization, hence unconditionally. A union bound over the
+population realization, hence unconditionally. Because the looks are
+prefixes of one shuffle fixed before sampling, the prefix of size $n_t$
+is a uniform without-replacement sample of that size whatever happened
+at earlier looks, so the bound holds at every scheduled look, and a
+union over all of them covers whichever look the data stops at. That
+union bound over the
 $|L_j|$ looks and the $K$ strata gives $\delta$; this is the Bonferroni
 instance of Learn then Test~\cite{ltt}, each (stratum, look) pair
 testing the null $M_j > \alpha n_j$ with a certificate as the
@@ -590,47 +637,63 @@ same whichever cells the shuffle selects.
 same uniform without-replacement draws (its Serfling factor shrinks the
 variance term as the sampled fraction grows; its constants are those of
 their Theorem~4.3), so the argument transfers to it unchanged. The
-Maurer--Pontil bound is stated for independent draws, and whether it
-remains valid at the sampled fractions our runs reach (\sampleFracHi)
-is not something we prove, which is why it is no longer the pinned
-bound.
+Maurer--Pontil bound is stated for independent draws. Whether it
+remains valid at the sampled fractions our runs reach is not something
+we prove, which is why it is no longer the pinned bound. Those fractions
+are large: the schedule's deepest look draws \deployAugustFiveLook\
+cells of a stratum, most of a benchmark stratum, and the certifier
+samples up to \sampleFracHi\ of a benchmark table.
 
 \paragraph{Power.} In a large stratum a clean sample certifies once
 $(1-\alpha)^n \le \delta'$, i.e., at $n^{*} = \lceil \ln \delta' /
-\ln(1-\alpha) \rceil$: \minZeroFlipSample\ at $\alpha{=}0.05$ under the
-pinned procedure ($K{=}2$, six looks), against \minZeroFlipSampleEb\
-for the Maurer--Pontil bound. The doubling schedule cannot stop on
-$n^{*}$: the first look at or above it is the one it takes, so a clean
-stratum of $n_j{=}5000$ pays \minZeroFlipRealizedLarge\ draws in
-calibration, while one of $n_j{=}600$ pays \minZeroFlipRealizedSmall,
-because its finite-population correction and its shorter schedule's
-larger per-look level bring the earlier look under $\alpha$. Either way, savings require
-strata much larger than $n^{*}$, i.e., large tables, which is precisely
-the deployment regime. Near the frontier, certifying a stratum with true
+\ln(1-\alpha) \rceil$. Under the pinned procedure on a Boolean column
+($K{=}2$, six looks), this gives \minZeroFlipSample\ at $\alpha{=}0.05$,
+against \minZeroFlipSampleEb\ for the Maurer--Pontil bound. The
+doubling schedule cannot stop on $n^{*}$: the first look at or above it
+is the one it takes. A clean stratum of $n_j{=}5000$ therefore pays
+\minZeroFlipRealizedLarge\ draws in calibration. A clean stratum of
+$n_j{=}600$ pays \minZeroFlipRealizedSmall, because its
+finite-population correction and its shorter schedule's larger per-look
+level bring the earlier look under $\alpha$. Either way, savings require strata much
+larger than $n^{*}$, i.e., large tables, which is precisely the
+deployment regime. Near the frontier, certifying a stratum with true
 rate $p$ requires roughly $n \gtrsim z_{\delta'}^2\, p(1-p) /
-(\alpha-p)^2$ samples (the normal approximation to the exact test),
-which explains the measured collapse of savings as $\alpha \downarrow
-p$ (Table~\ref{tab:main}, SO formatting: \frontierA, \frontierB, and
-\frontierC\ mean savings at $\alpha = 0.2$, $0.1$, and $0.05$, and
-refusal at $0.02$).
+(\alpha-p)^2$ samples (the normal approximation to the exact test).
+This explains the measured collapse of savings as $\alpha \downarrow
+p$. On SO formatting (Table~\ref{tab:main}), mean savings are
+\frontierA, \frontierB, and \frontierC\ at $\alpha = 0.2$, $0.1$, and
+$0.05$, with refusal at $0.02$.
 
 \section{Implementation}
 \label{sec:impl}
 
-\sivm{} runs inside \emph{lore}, a working AI-table system: a
+\sivm{} runs inside \emph{lore}, a working AI-table system. Its
 natural-language search bar compiles to a
 versioned filter specification executed identically on MySQL and
 Elasticsearch (conformance-tested for count, page, sort, aggregation,
-and hydration parity on \corpusSO\ rows); AI columns are per-cell jobs
+and hydration parity on \corpusSO\ rows). AI columns are per-cell jobs
 with typed structured outputs, bounded concurrency, retry, and a
 content-hash cache keyed on \emph{only the bound fields}
-$\beta(\pi)$, so unrelated row changes never invalidate the cache and
-content-duplicate rows share one computation. Every run passes a
+$\beta(\pi)$. Unrelated row changes therefore never invalidate the
+cache, and content-duplicate rows share one computation. Every run passes a
 pre-run cost gate and lands in a ledger; prompt edits create
 immutable versions (the \sivm{} substrate); certificates persist with
 full strata evidence, and reused cells carry visible provenance in the
 UI. Decode is pinned ($T{=}0$) for all cell computation per
 Assumption~\ref{as:pin}.
+
+\paragraph{What the user sees.} In the table view a reused cell
+carries a shield mark beside its value. Its tooltip shows the
+cell's stored rationale with the note that it was reused from the
+previous version under a statistical certificate. A cache hit is
+annotated as one in the same place. Certifying a column version
+returns the certificate's summary to the user: the rows in scope,
+$\alpha$, the cells sampled, reused, and to be recomputed, and the
+flips observed in the sample. A refused stratum has no mark of its own:
+its cells are recomputed and served as ordinary fresh cells, and the
+refusal is visible in the certificate record. Whether this surface
+changes how a person acts on the column was not studied
+(\secref{sec:limits}).
 
 \paragraph{Storage model.} Cells are keyed by
 (column, row, prompt version), so versions of a column \emph{coexist}
@@ -638,7 +701,7 @@ instead of replacing one another, and a secondary index on
 (column, version, model, content hash) serves the cache. This is the one
 design decision \sivm{} depends on. Systems that key a cell by
 row alone, or that hash the prompt into the cache key, destroy the old
-materialization at the moment of the edit, and the question this paper
+materialization at the moment of the edit. The question this paper
 asks cannot then be posed: there is nothing left to certify. Keeping
 versions side by side turns ``which cached cells still transfer?'' into
 a join between two versions of one table, which is why the certifier is
@@ -646,14 +709,14 @@ a query over the store, not a service beside it. Two details of that
 query matter for reproducibility and for Assumption~\ref{as:pin}. The
 certifier orders each stratum's rows canonically (by content hash, then
 row identifier) before the seeded shuffle, so the sample path is a
-function of the seed and the data alone; an earlier version took the
-order the storage engine happened to return, which changed when the
-query planner switched indexes, and the same seed then drew a different
-sample (\secref{sec:experiments}). And a model snapshot is a version of
-its own: oracle draws taken after a provider-side change are stored
-under a new prompt version carrying the same template, so draws from
-two snapshots never share a key and cannot be mixed in one
-certification path.
+function of the seed and the data alone. An earlier version took the
+order the storage engine happened to return. That order changed when
+the query planner switched indexes, and the same seed then drew a
+different sample (\secref{sec:experiments}). And a model snapshot is a
+version of its own: oracle draws taken after a provider-side change are
+stored under a new prompt version carrying the same template. Draws
+from two snapshots therefore never share a key and cannot be mixed in
+one certification path.
 
 \paragraph{Certificates are records, not decisions.} A certificate
 persists the budget $\alpha$, the prompt delta, the per-stratum evidence
@@ -670,11 +733,11 @@ That insert carries an anti-join against the target version, so reuse is
 strictly \emph{additive}: a certificate can supply a value where none
 was computed, and can never overwrite one that was. An earlier
 implementation used an upsert, which is the obvious way to write it and
-is silently destructive: applying a certificate
+is silently destructive. Applying a certificate
 after a partial recompute reverted freshly computed cells to the stale
 values the certificate had been asked to reuse. The bug is invisible in
 aggregate error, because a reverted cell and a reused cell are the same
-row with the same value; it surfaces only if something outside the
+row with the same value. It surfaces only if something outside the
 certifier knows what that cell should have said. Any system that
 maintains stochastic cells across versions has this hazard, and the
 guard belongs in the write path, not in code review.
@@ -710,8 +773,8 @@ not headline numbers.}
 three prompt-defined columns (Table~\ref{tab:pairs}). On the SO
 Developer Survey (\corpusSO\ respondent rows) a Boolean
 column asks whether the respondent is a data-platform specialist, judged from
-structured facets of the row (role, databases, platforms, tools); it
-exists twice, as the production column and as a lab replica seeded
+structured facets of the row (role, databases, platforms, tools). The
+column exists twice, as the production column and as a lab replica seeded
 from the production column's second version, so that edits can be
 studied without touching the deployed table. On Djinni English
 candidate profiles (\corpusDjinni\ rows) a four-way ordinal select
@@ -725,44 +788,54 @@ vector.
 budget-class reasoning model carries the full experimental program;
 \famCount\ further families from other providers replicate the lab
 column's two pairs\ifnum\famPairsAvailable=1\relax, \famFivePairFamilies\
-of them all five pairs\fi, and the quantitative frontier reported below is specific to the (edit,
-model) pair while the qualitative structure is what the family study
-tests (\secref{sec:limits}). Table~\ref{tab:models} lists every model
-identifier and run date. \emph{Models and decoding.} Every cell in the
-primary program uses DeepSeek V4 Flash (gateway identifier
-\texttt{deepseek/deepseek-v4-flash-0731}), called through the Vercel AI
-Gateway between \ledgerStart\ and \ledgerEnd, and again on
-\sepSnapshotDate\ for the re-certification and the assumption checks;
-the model-family study calls further families through the same gateway
+of them all five pairs\fi. The quantitative frontier reported below is
+specific to the (edit, model) pair while the qualitative structure is
+what the family study tests (\secref{sec:limits}). Table~\ref{tab:models} lists every model
+identifier and run date. The gateway exposes no snapshot identifier
+finer than these names (the primary model's carries a date suffix; the
+others do not), so the run dates are the snapshot record. The
+September re-certification below shows one identifier moving under
+them.
+
+\paragraph{Models and decoding.} Every cell in the
+primary program uses DeepSeek V4 Flash, called through the Vercel AI
+Gateway (gateway identifier \texttt{deepseek/deepseek-v4-flash-0731}).
+Those calls were made between \ledgerStart\ and \ledgerEnd, and
+again on \sepSnapshotDate\ for the re-certification and the assumption
+checks\ifnum\indepExtAvailable=1\relax\ (and on \indepExtDate\ for the
+larger concurrent arm of the independence check)\fi.
+The model-family study calls further families through the same gateway
 \famRunDate. Every call passes temperature $0$ and no other decode
-parameter (maximum output length and reasoning effort stay at the
-provider's defaults; no decode seed is sent, since the seeds in this
+parameter. Maximum output length and reasoning effort stay at the
+provider's defaults. No decode seed is sent, since the seeds in this
 paper govern row sampling: mulberry32, main seed 42, sampling
-replications 1000 to 1999). Cells are requested as typed structured
-outputs against a JSON schema through the same client library; a call
+replications 1000 to 1999. Cells are requested as typed structured
+outputs against a JSON schema through the same client library. A call
 whose output fails the schema or whose request errors is retried by
-the client, and a cell that still fails is stored with an error status
-and excluded from labels and from every rate in this paper (no such
+the client. A cell that still fails is stored with an error status
+and excluded from labels and from every rate in this paper. No such
 cell exists among the cells written through the column runner; the
 probe scripts that call the model directly report their own exclusions
-where they occur). The embedding proxy in
+where they occur. The embedding proxy in
 baselines B1 and B3 and in the interaction stratifier is
 \texttt{openai/text-embedding-3-small}, also through the gateway. Every
 ground-truth pass, sample, and replay is seeded and reproducible from
-released scripts. Flip labels come
+released scripts.
+
+\paragraph{Labels and spend.} Flip labels come
 from single fresh draws under the new version, which matches the estimand
 (a label answers ``would a recompute differ from the cache now?''). A
 three-draw relabeling of the headline pair quantifies the instrument's
-own variance: with fresh labels on
+own variance. With fresh labels on
 both sides the edit flips \editFlipFreshBoth\ of cells, versus
 \floorBoolStored\ when only the v2 side is drawn fresh against the
 frozen evaluation vector, and \floorBoolVote\ under majority-vote
-labels; \labelChurn\ of rows relabel between instruments. That
+labels. Between instruments, \labelChurn\ of rows relabel. That
 \floorBoolStored\ is the same population quantity Table~\ref{tab:main}
 reports as \flipSoFormatting\ for this edit, measured on the same
-\benchN\ rows with a different v2 draw; the two differ by
+\benchN\ rows with a different v2 draw. The two differ by
 \flipInstrumentGapRows\ rows, which is what single-draw labeling
-costs, and we report the churn instead of picking whichever instrument
+costs. We report the churn instead of picking whichever instrument
 flatters the result. (The within-version floor, \floorBool, is
 the separate quantity that bounds certifiability.)
 Table~\ref{tab:rates} reconciles every flip-rate figure quoted for the
@@ -770,15 +843,15 @@ headline pair and its cached-TRUE stratum with the edit, the cells, and
 the instrument behind it. Labels
 are individually noisy with about a point of draw-to-draw spread in the
 aggregate, which the replication standard deviations in
-Table~\ref{tab:main} dominate, and it is population functionals, not
-labels, that the guarantee addresses; this is the same picture the
+Table~\ref{tab:main} dominate. It is population functionals, not
+labels, that the guarantee addresses. This is the same picture the
 LLM-as-annotator literature draws, where model labels reach
 crowd-worker or expert agreement on many tasks but with task-specific
 noise that has to be validated rather than
 assumed~\cite{gilardi,ziems,pangakis,tornberg}. Ledgered model spend across every experiment in this paper is
 \totalSpend\ for \totalCells\ billed cells, read from the system's own
-cost ledger. That figure is a lower bound, not a total: the ledger
-records only cells written through the column runner, and a further
+cost ledger. That figure is a lower bound, not a total. The ledger
+records only cells written through the column runner. A further
 \offLedgerCells\ cells were computed by probe scripts that call the
 model directly (the self-flip probes, the vote-of-3 study, the multi-draw relabeling,
 the model-family runs\ifnum\pilotAvailable=1\relax, the independence
@@ -807,25 +880,25 @@ same quantity; none is a restatement of another.}
 per-row similarity between the v1-bound and v2-bound prompts, the
 quantity a verified semantic cache thresholds, predicts cell flips at chance
 as measured by the area under the receiver-operating-characteristic
-curve (AUC \aucVcacheF\ formatting, \aucVcacheW\ widening; on the
+curve (AUC \aucVcacheF\ formatting, \aucVcacheW\ widening). On the
 formatting edit the score's entire range is \simLo--\simHi, because
-shared row text dominates). Adding
+shared row text dominates. Adding
 ``a version key'' to such a cache therefore cannot produce a sound
 cross-version policy. Our interaction score carries real signal
 exactly when the edit is semantic (AUC \aucInterW\ on widening) and
 none above chance when flips are noise-driven (AUC \aucInterF\ on
-formatting), which is why
+formatting). That is why
 the cached-\emph{value} dimension of stratification carries the
 formatting case. \emph{(B2) Aggregate-only certification (no strata)}, run with the
 \emph{same} schedule and budgets as the pinned procedure, is valid for
 its aggregate estimand and silently corrupts subgroups. On the
 formatting edit it \aggTightCertF\ at $\alpha{=}0.1$
 (\aggFtSavings\ savings, \aggFtRealized\ aggregate error) while the
-reused cached-TRUE subgroup carries \aggFtSubgroup\ error, and at
-$\alpha{=}0.2$ it certifies \aggFsavings\ at \aggFrealized\ aggregate
-with \aggFsubgroup\ subgroup error; on the widening edit it
-\aggTightCertW\ at $\alpha{=}0.1$ and certifies \aggWsavings\ at
-$\alpha{=}0.2$ with \aggWsubgroup\ subgroup error. Per-stratum bounds
+reused cached-TRUE subgroup carries \aggFtSubgroup\ error. At
+$\alpha{=}0.2$ on the same edit it certifies \aggFsavings\ at
+\aggFrealized\ aggregate with \aggFsubgroup\ subgroup error. On the
+widening edit it \aggTightCertW\ at $\alpha{=}0.1$ and certifies
+\aggWsavings\ at $\alpha{=}0.2$ with \aggWsubgroup\ subgroup error. Per-stratum bounds
 are what make the guarantee mean something for every user-visible slice
 of the table, and the effect is not an artifact of giving the baseline a
 shorter schedule. \emph{(B2$'$) A SUPG-style competitor, matched.} The closest existing
@@ -833,35 +906,37 @@ method is proxy-certified selection~\cite{supg}: score rows with a cheap
 proxy, spend an oracle budget labeling a sample, threshold the proxy so
 the selected set's error clears the target. We transported it to
 maintenance with the proxy the reduction in \secref{sec:system} names,
-the cached value itself, and matched it to \sivm{} on every axis we
+the cached value itself. We matched it to \sivm{} on every axis we
 could: identical oracle budget, identical labels, identical error
 target, the same exact bound on the selected population, the same
-total error budget $\delta$, each split across the number of tests its
-own procedure performs (\sivm{} across strata and looks,
-$\hhSivmPerTest$ per test; the competitor across its candidate
-thresholds, $\hhValuePerTest$), and the same reported quantity (error
-among reused cells, not the presented-cells rate \sivm{} certifies).
+total error budget $\delta$, and the same reported quantity. Each
+method's total error budget is split across the number of tests its
+own procedure performs: \sivm{} across the Boolean column's two strata
+and six looks, $\hhSivmPerTest$ per test; the competitor across its candidate
+thresholds, $\hhValuePerTest$. The reported quantity is the error
+among reused cells, not the presented-cells rate \sivm{} certifies.
 
 Matched this way it is a live competitor that wins on volume and loses
 on where its errors land. At $\alpha{=}0.2$ on the formatting edit it
 reused \hhSupgReused\ cells to \sivm{}'s \hhSivmReused\ from the same
-\hhBudget\ labels, and at \hhSupgErr\ realized error it satisfies the
+\hhBudget\ labels. At \hhSupgErr\ realized error it satisfies the
 bound it was given, against \sivm{}'s \hhSivmErr. On the widening edit
 the same pattern holds: \hhSupgReusedW\ reuses at \hhSupgErrW\ versus
 \hhSivmReusedW\ at \hhSivmErrW. The extra volume is drawn from the
 volatile stratum, \hhSupgTrueRows\ cached-TRUE cells on the formatting
-edit and \hhSupgTrueRowsW\ on the widening edit, where the per-stratum
-floor is \floorTrueStratum\ and no aggregate target can make reuse safe;
-\sivm{} reuses none of them. \secref{sec:problem} predicts this
+edit and \hhSupgTrueRowsW\ on the widening edit. That stratum's floor on
+the lab column is \floorTrueStratum, and no aggregate target can make
+reuse safe.
+\sivm{} reuses none of those cells. \secref{sec:problem} predicts this
 behavior: an aggregate target
 is satisfied by any mixture that averages out, so it buys volume with
-the correctness of the least stable subgroup, and per-stratum bounds
+the correctness of the least stable subgroup. Per-stratum bounds
 are what extend the guarantee to that part of the table.
 
 With
 the cached value as the proxy there are only three candidate
 thresholds, and at $\alpha{=}0.2$ the aggregate bound clears at the
-loosest one, so the arm selects \hhSupgSelFrac\ of the rows it was
+loosest one. The arm therefore selects \hhSupgSelFrac\ of the rows it was
 allowed to on the formatting edit and \hhSupgSelFracW\ on the widening
 edit. Matched this way, the competitor reduces to B3, reuse everything,
 with a certificate attached: its bound is satisfied, its aggregate
@@ -873,35 +948,35 @@ spend.
 We note two caveats on the same experiment. First,
 run with an embedding-interaction proxy instead of the cached value the
 reduction names, and with its much larger threshold search corrected
-accordingly, the competitor certifies nothing at any budget we tried: a
+accordingly, the competitor certifies nothing at any budget we tried. A
 proxy that does not separate flipping rows from stable ones cannot be
 rescued by the selection procedure wrapped around it, which is what our
 own stratifier ablation teaches from the other direction. Second, the
 competitor's per-test level is looser than \sivm{}'s because it runs
-fewer tests, and its volume advantage is sensitive to that: the
+fewer tests, and its volume advantage is sensitive to that. The
 comparison is matched on the quantity a user sets ($\delta$ in total),
-not on the level of any individual test, and we report both so the
+not on the level of any individual test. We report both so the
 reader can see which one the result rests on.
 
 \emph{(B3) Guarantee-free embedding transfer}
 (GPTCache-style~\cite{gptcache}, $\tau{=}0.95$) reuses every cell on the
 formatting edit and \bThreeReuseW\ of them on the widening edit,
 silently absorbing error at roughly the population flip rates
-(\flipSoFormatting; \flipSoWidening): the
+(\flipSoFormatting; \flipSoWidening). This is the
 deployed status quo. That $\tau$ sits on the shoulder of the widening
 edit's collapse, quantified in the threshold sweep below.
 Table~\ref{tab:policies} lines these policies up beside the two trivial
 ones, always recompute and always reuse, on the two headline edits at
-$\alpha{=}0.2$: the trivial policies bracket the design space (zero error
-at full cost; full savings at the population flip rate), the aggregate
+$\alpha{=}0.2$. The trivial policies bracket the design space (zero error
+at full cost; full savings at the population flip rate). The aggregate
 methods buy volume from the unstable subgroup, and \sivm{} is the only
 row whose reused cells carry a per-stratum bound.
 
 \begin{table*}[t]
 \caption{Reuse policies on the SO formatting and scope-widening edits at
 $\alpha{=}0.2$ ($n{=}\benchN$, main seed). Realized error is the flip rate
-among reused cells; the trivial policies are exact by construction
-(always-reuse error is the population flip rate). B2 additionally reports
+among reused cells; the trivial policies' errors follow by construction
+(always-recompute has none; always-reuse carries the population flip rate). B2 additionally reports
 the error of its reused cached-TRUE subgroup in parentheses. B2$'$ is
 matched to the \hhBudget\ labels \sivm{} spent; B2 runs the pinned
 schedule without strata and stopped after \aggFsampled\ labels on the
@@ -915,7 +990,7 @@ on the widening edit.}
 \cmidrule(lr){3-4}\cmidrule(lr){5-6}
 Policy & Guarantee & reused & error & reused & error \\
 \midrule
-Always recompute & exact & $0.0\%$ & $0.0\%$ & $0.0\%$ & $0.0\%$ \\
+Always recompute & none needed (zero error) & $0.0\%$ & $0.0\%$ & $0.0\%$ & $0.0\%$ \\
 Always reuse (status quo) & none & $100\%$ & \flipSoFormatting & $100\%$ & \flipSoWidening \\
 B3 GPTCache, $\tau{=}0.95$ & none & $100\%$ & \flipSoFormatting & \bThreeReuseW & $\approx$\flipSoWidening \\
 B2 aggregate-only & aggregate & \aggFsavings & \aggFrealized\ (\aggFsubgroup) & \aggWsavings & \aggWrealized\ (\aggWsubgroup) \\
@@ -925,25 +1000,25 @@ B2$'$ SUPG-style, matched & aggregate & \hhSupgReusedFrac & \hhSupgErr & \hhSupg
 \end{tabular}
 \end{table*}
 
-\paragraph{Noise floors and the stability law.} Replicate self-runs give
+\paragraph{Noise floors and column stability.} Replicate self-runs give
 the two column types' intrinsic self-flip rates. The Boolean column's floor
 is \floorBool, measured from within-version draw pairs over $n{=}\benchN$
 rows (an initial $n{=}200$ two-draw probe read \floorTzeroProbe\ and is
-superseded); the
+superseded). The
 4-way select's floor is \floorSelect\ ($n{=}200$ probe, a smaller
-sample than the Boolean floor's and stated as such; every observed
-self-flip was between adjacent tiers). At default temperature the Boolean
+sample than the Boolean floor's and stated as such). Every observed
+self-flip was between adjacent tiers. At default temperature the Boolean
 floor rises to \floorDefaultT\ on that same $n{=}200$ probe, whose
-$T{=}0$ arm read \floorTzeroProbe: the claim rests on the
+$T{=}0$ arm read \floorTzeroProbe. The claim rests on the
 within-instrument contrast, and the default-temperature floor alone
 exceeds a $5\%$ budget, which motivates decode pinning. Formatting-only
 edit flip rates sit above each floor (\flipSoFormatting\ over
-\floorBool; \flipDjFormatting\ over \floorSelect): on the Boolean
-column formatting flips are floor-dominated, and on these two columns
+\floorBool; \flipDjFormatting\ over \floorSelect). On the Boolean
+column, formatting flips are floor-dominated. On these two columns
 the flip rate tracks the column's own floor more closely than the
 edit's semantic class (the Djinni criteria change lands at
 \flipDjCriteria, indistinguishable from its formatting edit at
-\flipDjFormatting); five author-written pairs cannot say how general
+\flipDjFormatting). Five author-written pairs cannot say how general
 that is.
 
 \paragraph{Other model families.} Every measurement above uses one
@@ -951,48 +1026,57 @@ model, so we ran the lab column's two pairs on \famCount\ further
 budget-class families from other providers%
 \ifnum\famProbeRow=1\relax, and keep the weaker probe of an earlier
 draft (\texttt{\altModelName}, formatting pair only, $n{=}\altModelN$)
-beside them\fi: same seeded rows as the primary evaluation vector, same
-prompts, $T{=}0$, one fresh draw per cell, the pinned procedure
-(Table~\ref{tab:fam}). Three properties transfer across families; one
-does not. First, every family has a measurable self-flip floor, from
-\famFloorLo\ to \famFloorHi\ across them%
+beside them\fi. The family runs use the same seeded rows as the primary
+evaluation vector, the same prompts, $T{=}0$, one fresh draw per cell,
+and the pinned procedure (Table~\ref{tab:fam}). Each family's cache is
+its own draw under the old version and its floor a second draw of that
+version. A flip is therefore the family disagreeing with itself across
+the edit, never a comparison
+with the primary model. Three properties transfer across families; one
+does not.
+
+\paragraph{What transfers.} First, every family has a measurable
+self-flip floor, from \famFloorLo\ to \famFloorHi\ across them%
 \ifnum\famProbeRow=1\relax\ and \altModelFloor\ on the probe\fi, and
-the floor bounds certifiability as \secref{sec:problem} predicts: GPT-5
+the floor bounds certifiability as \secref{sec:problem} predicts. GPT-5
 nano, whose floor of \famNanoFloor\ sits above every budget in the grid,
 flips \famNanoFmt\ of cells under the formatting edit, barely above that
-floor, and is refused on every stratum of that edit after 90 oracle
+floor. It is refused on every stratum of that edit after 90 oracle
 calls. Second, certified reuse is not a property of the primary model. On Gemini~3 Flash (floor \famGeminiThreeFloor,
 formatting flip \famGeminiThreeFmt) the formatting edit certifies the
-cached-FALSE stratum at both budgets; on Qwen3.7-Flash (floor
+cached-FALSE stratum at both budgets. On Qwen3.7-Flash (floor
 \famQwenFloor, flip \famQwenFmt) it certifies both strata at the loose
-budget after most of the schedule; and on the three families whose
+budget after most of the schedule. On the three families whose
 formatting edit is not benign, the synonym pair certifies a stratum
-instead: the cached-FALSE stratum on Gemini~2.5 Flash-Lite, and the
+instead. It is the cached-FALSE stratum on Gemini~2.5 Flash-Lite, and the
 cached-TRUE stratum on GLM-4.7-Flash and on GPT-5 nano, where it is the
-one stratum the loose budget admits. Gemini~3.8 Flash, the family added in this revision, certifies both
-strata at both budgets under the formatting edit, which flips
-\famGeminiEightFmt\ of its cells (\famGeminiEightFmtCount\ of
-\benchN). Its floor is \famGeminiEightFloor\ (\famGeminiEightFloorCount\
-of \benchN). Certification reproduces on \famCertCount\
+one stratum the loose budget admits. Gemini~3.8 Flash, the sixth family, certifies both
+strata at both budgets under the formatting edit. That edit flips
+\famGeminiEightFmtFine\ of the family's cells (\famGeminiEightFmtCount\
+of \benchN), just under the family's floor of \famGeminiEightFloorFine\
+(\famGeminiEightFloorCount\ of \benchN). Table~\ref{tab:fam} rounds
+the flip to \famGeminiEightFmt\ and the floor to \famGeminiEightFloor. Certification reproduces on \famCertCount\
 of the \famCount\ families\famRefusedClause, and in every certified cell of
 Table~\ref{tab:fam} the realized presented-cells error is inside the
 budget. Third, refusals stay conservative: a refused stratum is never
-reused, and where a family refuses a stratum whose flip rate is below
+reused. Where a family refuses a stratum whose flip rate is below
 the budget (GLM-4.7-Flash's cached-FALSE stratum on the formatting
 edit, \famGlmFmtFalseStratum\ against $\alpha{=}0.2$), the futility
 rule stopped at the first look because the sample rate exceeded the
-budget, a power miss the frontier of \figref{fig:frontier} predicts
-near the budget, not a validity failure. What does not transfer is
-which edits are benign. The
-formatting-only edit that is floor-dominated on the primary model
-(\flipSoFormatting\ over \floorBool) flips \famGeminiFmt\ of cells on
-Gemini~2.5 Flash-Lite (floor \famGeminiFloor) and \famGlmFmt\ on
-GLM-4.7-Flash (floor \famGlmFloor), in both cached-value strata
-(cached-TRUE and cached-FALSE flip \famGeminiFmtTrueStratum\ and
-\famGeminiFmtFalseStratum\ on the former, \famGlmFmtTrueStratum\ and
-\famGlmFmtFalseStratum\ on the latter). Decomposed on Gemini~2.5
+budget. That is a power miss the frontier of \figref{fig:frontier}
+predicts near the budget, not a validity failure.
+
+\paragraph{Benign edits by family.} What does not transfer is
+which edits are benign. On the primary model the formatting-only edit
+is floor-dominated (\flipSoFormatting\ over \floorBool). The same edit
+flips \famGeminiFmt\ of cells on Gemini~2.5 Flash-Lite (floor
+\famGeminiFloor) and \famGlmFmt\ on GLM-4.7-Flash (floor \famGlmFloor).
+It does so in both cached-value strata: cached-TRUE and cached-FALSE
+flip \famGeminiFmtTrueStratum\ and \famGeminiFmtFalseStratum\ on the
+former, \famGlmFmtTrueStratum\ and \famGlmFmtFalseStratum\ on the
+latter. Decomposed on Gemini~2.5
 Flash-Lite, the two paragraph breaks alone flip \famGeminiSpaceOnlyFlip\
-and the one-word case change alone \famGeminiCaseOnlyFlip, and the
+and the one-word case change alone \famGeminiCaseOnlyFlip. The
 flips run one way (\famGeminiFmtToFalseShare\ of them TRUE$\to$FALSE on
 Gemini~2.5 Flash-Lite, \famGlmFmtToFalseShare\ on GLM-4.7-Flash): a
 shift of the model's decision threshold, in opposite directions on the
@@ -1001,22 +1085,23 @@ fails it is the synonym rewording, semantically a tightening of the
 definition, that certifies a stratum, because its flips concentrate in
 one cached value and leave the other reusable. The label ordering that intuition suggests
 (formatting benign, semantic edits not) therefore inverts on some
-families and holds on others; benignness is a property of the (edit,
+families and holds on others. Benignness is a property of the (edit,
 model) pair, and the certifier measures it per stratum without ever
 consulting the label. \sivm{}'s value is a function of the model's
 self-consistency and of the edit's effect on that model, both of which
 it measures before reusing anything.
 \ifnum\famPairsAvailable=1\relax
-The remaining three pairs (the production column's scope widening and
-the two Djinni select pairs) were run on \famPairsFamilies\ of these
-families with the same protocol (Table~\ref{tab:fampairs}), so that
-all five pairs are complete on \famFivePairFamilies\ of these families
-(\famFivePairList);
-\famPairsCertifying\ of the \famPairsFamilies\ certify at least one
-stratum on those pairs, and the same reading holds: which pair is
-benign, and on which stratum, is a property of the family, and the
-per-stratum floor of the select column varies across families in the
-same way the Boolean column's does.
+
+\paragraph{Beyond the lab column.} The remaining three pairs (the
+production column's scope widening and the two Djinni select pairs)
+were run on \famPairsFamilies\ of these families with the same protocol
+(Table~\ref{tab:fampairs}). All five pairs are therefore complete on
+\famFivePairFamilies\ of these families (\famFivePairList). On those
+pairs, \famPairsCertifying\ of the \famPairsFamilies\ certify at least
+one stratum, and the same reading holds: which pair is benign, and on
+which stratum, is a property of the family. The select column's floor
+varies across families (Table~\ref{tab:fampairs}) in the same way the
+Boolean column's does.
 \fi
 
 \begin{table*}[t]
@@ -1048,7 +1133,7 @@ paragraph). The primary row is the main seed of Table~\ref{tab:main};
 its widening-column floor
 is not shown, because the primary model's self-flip rate under the
 production column's first version was not measured (the lab column's
-\floorBool\ is under the widened definition).}
+\floorBool\ is under the widened definition).\famPairsSmallStrataNote}
 \label{tab:fampairs}
 \centering\scriptsize
 \setlength{\tabcolsep}{3pt}
@@ -1057,63 +1142,90 @@ production column's first version was not measured (the lab column's
 \fi
 
 \paragraph{Main results.} Table~\ref{tab:main} reads as follows. On the
-stable Boolean column, the certifier reuses aggressively where safe
-(formatting at $\alpha{\ge}0.1$: \benchSavings\ mean savings, interval
-\benchSavingsPi, at $\alpha{=}0.2$, with realized presented-cells error
-\benchRealized\ and a reuse-set rate whose Wilson interval is
-\benchRealizedCi, the FR$_{\text{pres}}$ and FR$_{\text{reuse}}$
-columns of the table; \frontierB\ mean savings at $\alpha{=}0.1$, where
-the main seed certifies at its first look, \benchOracleTight\ oracle
-calls, and the replications span \benchOracleTightRange), certifies the
-formatting edit at $\alpha{=}0.05$ in \edgeCertRate\ of replications
-by the deepest look, and refuses semantic edits at tight budgets; on the less stable select
-column it certifies at $\alpha{=}0.2$, and at $\alpha{=}0.1$ in most
-replications, and treats formatting and criteria edits alike, as their
-flip rates warrant. \certifyingConfigs\ of the \tableConfigs\
-default-mode configurations certify in at least one replication;
-budgets below a stratum's intrinsic rate are refused, and the refusals
+stable Boolean column the certifier reuses aggressively where it is
+safe. The formatting edit certifies at $\alpha{=}0.2$ with
+\benchSavings\ mean savings (interval \benchSavingsPi). The main
+seed's realized presented-cells error is \benchRealized\ and
+its reuse-set error \benchRealizedReuse\ (Wilson interval
+\benchRealizedCi), the FR$_{\text{pres}}$ and FR$_{\text{reuse}}$
+columns of the table. At $\alpha{=}0.1$ the same edit certifies with
+\frontierB\ mean savings; the main seed certifies at its first look,
+\benchOracleTight\ oracle calls, and the replications span
+\benchOracleTightRange. At $\alpha{=}0.05$ it certifies in
+\edgeCertRate\ of replications, by the deepest look. Semantic edits
+are refused at tight budgets. On the less stable select column the
+certifier certifies at $\alpha{=}0.2$, and at $\alpha{=}0.1$ in most
+replications; it treats the formatting and criteria edits alike, as
+their flip rates warrant. Of the \tableConfigs\ default-mode
+configurations, \certifyingConfigs\ certify in at least one replication.
+Budgets below a stratum's intrinsic rate are refused, and the refusals
 are the frontier of \figref{fig:frontier}, not failures of the
 procedure. Realized presented-cells error is inside $\alpha$ in every
-main-seed certification. Across the \bootB\ replications of every
-configuration, a certificate whose realized presented-cells error
-exceeds $\alpha$ occurs in \tableUnsafeConfigs\ configuration
-(\tableUnsafeWorstPair\ at $\alpha{=}\tableUnsafeWorstAlpha$, where the
-certified stratum's flip rate sits just above the budget): it certifies
-in \tableUnsafeWorstCert\ of replications and \tableUnsafeWorstViol\ of
-those exceed, an unconditional rate of \tableUnsafeWorst\ against the
-$\delta{=}0.1$ the run was given. That is an exact test spending its
-budget at a tight null, the behavior the calibration study below
-measures at scale, not a defect; the Maurer--Pontil bound of the earlier
-version never produced such a cell because it left almost all of
-$\delta$ unspent (\secref{sec:experiments}, ``The bound''). The
-reuse-set metric evaluated on presented-mode certifications exceeds
-$\alpha$ in \tableExceedConfigs\ frontier cells (\tableExceedList).
-This does not violate $\delta$, which bounds the presented-cells event,
-nor Theorem~1, whose reuse-set guarantee applies only to certifications
-made in reuse-set mode. The strict reuse-set mode, whose deflated threshold shrinks with
-sampling depth, prices the stronger guarantee, and the price varies
-widely across the grid. On the headline edit at $\alpha{=}0.2$ it is
-nearly free: \reuseSetSavingsMain\ savings on the main seed against
-\benchSavingsMain\ in the default mode, still certifying in essentially
-every replication. One budget tighter it
-collapses, to \reuseSetSavingsTight\ savings certified in
-\reuseSetCertTight\ of replications, and on the unstable select column
-it never certifies reliably: no Djinni configuration at any budget
-certifies in more than \reuseSetDjCertMax\ of replications.
-Guaranteeing the stale subset alone is therefore affordable exactly
-where the column is stable and the budget is loose, and unaffordable
-everywhere else.
+main-seed certification.
+
+\paragraph{Certificates that exceed the budget.} Across the
+\bootB\ replications of every configuration, a certificate
+whose realized presented-cells error exceeds $\alpha$ occurs in
+\tableUnsafeConfigs\ configuration (\tableUnsafeWorstPair\ at
+$\alpha{=}\tableUnsafeWorstAlpha$, where the certified
+stratum's flip rate sits just above the budget). It certifies
+in \tableUnsafeWorstCert\ of replications. Because that stratum's
+realized flip rate sits above the budget, every one of those
+certificates is unsafe in the sense of Theorem~\ref{thm:valid}: an
+unconditional rate of \tableUnsafeWorstCert\ against the per-stratum
+$\delta_j = \delta/K = 0.05$ of that column. In \tableUnsafeWorstViol\
+of them the presented-cells rate also exceeds $\alpha$, an unconditional
+\tableUnsafeWorst. That is an exact test spending its budget at a
+tight null (a stratum whose flip rate sits just above the budget),
+the behavior the calibration study below measures at scale, not
+a defect. The Maurer--Pontil bound of the earlier version never
+produced such a cell because it left almost all of $\delta$ unspent
+(\secref{sec:experiments}, ``The bounds compared''). The reuse-set
+metric evaluated on presented-mode certifications exceeds $\alpha$ in
+\tableExceedConfigs\ frontier cells: \tableExceedList. The exceed.\ and
+cert.\ columns of Table~\ref{tab:main} give the shares. This
+does not violate $\delta$, which bounds the presented-cells event, nor
+Theorem~1, whose reuse-set guarantee applies only to certifications made
+in reuse-set mode.
+
+\paragraph{The strict mode.} The strict reuse-set mode,
+whose deflated threshold shrinks with sampling depth, prices
+the stronger guarantee, and the price depends on where the
+stratum's flip rate sits relative to the budget. On the
+headline edit at $\alpha{=}0.2$ it is free: \reuseSetSavingsMain\
+mean savings against \benchSavings\ in the default mode
+(\reuseSetSavingsMainSeed\ on the main seed, as in the default
+mode), certifying in every replication. One budget tighter it costs two
+points of savings and little reliability: \reuseSetSavingsTight\
+mean savings against \frontierB, certified in \reuseSetCertTight\ of
+replications against \benchCertTight. At $\alpha{=}0.05$, where the
+default mode certifies in \edgeCertRate\ of replications, the strict
+mode certifies in \reuseSetCertEdge. The two semantic edits behave the
+same way: within a point of the default mode at $\alpha{=}0.2$
+(\reuseSetSynLoose\ and \reuseSetWidLoose\ mean savings against
+\defaultSynLoose\ and \defaultWidLoose) and far below it at
+$\alpha{=}0.1$. On the less stable select column at $\alpha{=}0.2$ it
+certifies in \reuseSetDjFmtCertLoose\ and \reuseSetDjCritCertLoose\ of
+replications but at \reuseSetDjFmtSavLoose\ and
+\reuseSetDjCritSavLoose\ mean savings against \defaultDjFmtSavLoose\ and
+\defaultDjCritSavLoose. At $\alpha{=}0.1$ it certifies in at most
+\reuseSetDjCertTightMax\ of replications. Guaranteeing the stale
+subset alone is therefore cheap wherever a stratum's flip rate sits
+well below the budget, and its price rises steeply as the budget
+approaches the flip rate, one budget step before the default mode's
+own frontier.
 
 \begin{figure}[t]
 \centering
 \begin{tikzpicture}
-\begin{axis}[width=\linewidth, height=5.2cm, xlabel={error budget $\alpha$},
+\begin{axis}[width=\linewidth, height=5.6cm, xlabel={error budget $\alpha$},
   ylabel={certified savings (\%)}, xmin=0, xmax=0.22, ymin=-5, ymax=100,
   label style={font=\small}, tick label style={font=\scriptsize},
   xtick={0.02,0.05,0.1,0.15,0.2},
   xticklabel style={/pgf/number format/fixed},
-  legend pos=south east, legend style={font=\scriptsize}, grid=major,
-  grid style={opacity=0.2}]
+  legend style={at={(0.5,-0.3)}, anchor=north, legend columns=2,
+    font=\scriptsize, /tikz/every even column/.append style={column sep=6pt}},
+  grid=major, grid style={opacity=0.2}]
 \frontierplots
 \end{axis}
 \end{tikzpicture}
@@ -1153,7 +1265,8 @@ certificates whose realized error exceeds $\alpha$ stays at or below
 intermediate $p$ because the exact bound's finite-population correction
 tightens as the sampled fraction grows: the six-look schedule reaches
 most of an $n_j{=}1800$ stratum but a minority of an $n_j{=}5000$ one,
-and the $n_j{=}600$ stratum has smaller looks.}
+and the $n_j{=}600$ stratum's final look is the whole stratum, which
+cannot certify, so its deepest certifying look is its fourth.}
 \Description{Line plot of certification rate against the planted flip
 rate for three stratum sizes. Every curve certifies always when the
 planted rate is zero, falls towards zero as the planted rate reaches
@@ -1169,172 +1282,186 @@ analysis predicts; below the floor the certifier refuses. The doubling
 schedule prices both directions: uncertifiable edits are refused after
 90 oracle calls, whereas a fixed plan pays the full zero-flip minimum,
 and near-frontier certifications escalate sampling only while the data
-stays consistent with certifiability. A single refusal near the
-frontier is not evidence that the stratum exceeds the budget: the
-synonym edit at $\alpha{=}0.1$ is refused on the main seed and
-certified in \synTightCertRate\ of the sampling replications, a power
-miss the futility rule trades for its early stops.
+stays consistent with certifiability. A single refusal near the frontier
+is not evidence that the stratum exceeds the budget. The synonym
+edit at $\alpha{=}0.1$ is refused on the main seed and certified in
+\synTightCertRate\ of the sampling replications, a power miss the
+futility rule trades for its early stops.
 
 \paragraph{Deployment scale.} To test the claim that sample cost is
 table-size-independent, we materialized the Boolean column across the
-\emph{entire} \deployN-row corpus: \deployMatCells\ billed cells in a
-single ledgered run costing \deployMatCost\ at \perCellCost\ per cell
-(the remaining \deployFreeRows\ rows cost nothing, served by
-content-hash caching or already materialized by earlier passes), and
-\deployMatHours\ hours of model time reconstructed from the stored
-per-cell latencies at \deployConcurrency-way concurrency. We then
-certified the formatting edit against that materialized column with the
-real model as oracle, in three regimes over one sample path
-(Table~\ref{tab:deploy}): live in August 2026 under the Maurer--Pontil
-bound of the earlier version, which is the certificate the system
-applied; on the oracle draws that run stored, re-certified under the
-exact bound; and live again on \sepSnapshotDate, \driftDaysLater\ days
-later, under the exact bound, against the same cache.
+\emph{entire} \deployN-row corpus. That came to \deployMatCells\ billed
+cells in a single ledgered run costing \deployMatCost\ at
+\perCellCost\ per cell. The remaining \deployFreeRows\ rows cost
+nothing, served by content-hash caching or already materialized by
+earlier passes. The run took an estimated \deployMatHours\ hours of wall
+clock at its \deployConcurrency-way concurrency. The estimate is the
+stored per-cell latencies, which average \deployMatMeanLatencyS\ seconds
+per call, summed and divided by the concurrency. We then certified the
+formatting edit against that materialized column with the real model as
+oracle, in three regimes over one sample path (Table~\ref{tab:deploy}).
+The first was live in August 2026 under the Maurer--Pontil bound of
+the earlier version, which is the certificate the system applied.
+The second was on the oracle draws that run stored, re-certified
+under the exact bound. The third was live again on \sepSnapshotDate,
+\driftDaysLater\ days later, under the exact bound, against the same
+cache.
 
 \begin{table*}[t]
 \caption{Deployment-scale certification of the formatting edit on the
 \deployN-row column, one sample path, three regimes. ``FALSE look /
 flips'' is the look at which the cached-FALSE stratum was decided and
 the flips observed there; audited error is the flip rate among reused
-rows that hold an oracle cell of that snapshot.}
+rows that hold an oracle cell of that snapshot. The Maurer--Pontil rows
+are outside Theorem~\ref{thm:valid}'s coverage (\secref{sec:system})
+and are kept for the record: the certificate the system applied in
+August, and the same bound on the September draws.}
 \label{tab:deploy}
 \centering\small
 \input{\paperroot/tabledeploy}
 \end{table*}
 
-\emph{The August run.} Under Maurer--Pontil, at $\alpha{=}0.2$ the
-procedure spent \deployMpOracle\ oracle calls (certifying the
-cached-FALSE stratum at look \deployMpLookLoose\ with
-\deployMpFlipsLoose\ flips) to reuse \deployMpReused\ cells
-(\deployMpSavings\ fewer calls; audited error \deployMpRealized\ over
-\deployMpAuditRows\ audited reused rows),
-refusing the \deployTrueStratum-row cached-TRUE stratum and so
-recomputing the \deployRecompute\ of its cells that the futility stop
-had not already drawn fresh; at $\alpha{=}0.1$ it escalated to
+\emph{The August run.} Theorem~\ref{thm:valid} does not cover this
+run, which used the Maurer--Pontil bound; it is reported because it is
+the certificate the system applied. Under Maurer--Pontil, at $\alpha{=}0.2$
+the procedure spent \deployMpOracle\ oracle calls to reuse
+\deployMpReused\ cells (\deployMpSavings\ fewer calls). It
+certified the cached-FALSE stratum at look \deployMpLookLoose\ with
+\deployMpFlipsLoose\ flips. Audited error was \deployMpRealized\ over
+\deployMpAuditRows\ audited reused rows. It refused the
+\deployTrueStratum-row cached-TRUE stratum and so recomputed
+the \deployRecompute\ of its cells that the futility stop had
+not already drawn fresh. At $\alpha{=}0.1$ it escalated to
 \deployMpOracleTight\ calls (\deployMpFlipsTight\ flips in
-\deployMpLookTight) for \deployMpSavingsTight\ savings. The run
-applied the loose certificate, persisting a \texttt{reuse\_certificate}
+\deployMpLookTight) for \deployMpSavingsTight\ savings. The run applied
+the loose certificate, persisting a \texttt{reuse\_certificate}
 row and stamping its identifier on \deployStamped\ of the
-\deployMpReused\ reused cells, which is what the table then served; the
-\deployUnstamped\ it did not stamp are the audited rows already
-recomputed for ground truth, because the apply step refuses to write
-over a freshly computed cell. A reviewer of the earlier version
-re-derived the loose certificate's evidence (\deployMpFlipsLoose\ flips
-in \deployMpLookLoose\ draws from the \deployFalseStratum-row
-cached-FALSE stratum) under the Bardenet--Maillard bound and found
-\deployWorLoose, which \deployWorLooseClears\ the budget at the look it
-was issued; that is correct, and the exact bound reads
-\deployExactLoose\ on the same evidence, which \deployExactLooseClears\
-$\alpha{=}0.2$ and $\alpha{=}0.1$ alike. The tight certificate's
+\deployMpReused\ reused cells, which is what the table then
+served. The \deployUnstamped\ it did not stamp are the audited
+rows already recomputed for ground truth, because the apply
+step refuses to write over a freshly computed cell. Under the
+Bardenet--Maillard bound the loose certificate's evidence
+(\deployMpFlipsLoose\ flips in \deployMpLookLoose\ draws from the
+\deployFalseStratum-row cached-FALSE stratum) reads \deployWorLoose,
+which \deployWorLooseClears\ the budget at the look it was issued.
+The exact bound reads \deployExactLoose\ on the same evidence, which
+\deployExactLooseClears\ $\alpha{=}0.2$ and $\alpha{=}0.1$ alike. The
+tight certificate's
 \deployMpFlipsTight\ flips in \deployMpLookTight\ read
 \deployExactTight\ under the exact bound, which
 \deployExactTightClears\ $\alpha{=}0.1$, and \deployWorTight\ under
 Bardenet--Maillard, which \deployWorTightClears\ it.
 
-\emph{The same draws under the exact bound.} Replayed over the stored
-August draws, the exact bound certifies the cached-FALSE stratum at
-look \deployLookLoose\ (flips \deployFlipsLoose, bound
-\deployBoundLoose), so the whole certification costs
-\textbf{\deployOracle\ oracle calls} and reuses
-\textbf{\deployReused\ cells}: \deploySavings\ fewer model calls
-(\deployMaintCells\ calls against \deployN), against a ceiling of
-\deployCeiling\ set by the cached-TRUE stratum the certifier never
-certifies, so the procedure captures essentially all the reuse
-available to capture and the residue is a property of the column. At
+\emph{The same draws under the exact bound.} Replayed over the
+stored August draws, the exact bound certifies the cached-FALSE
+stratum at look \deployLookLoose\ (flips \deployFlipsLoose,
+bound \deployBoundLoose). The whole certification therefore
+costs \textbf{\deployOracle\ oracle calls} and reuses
+\textbf{\deployReused\ cells}. That is \deploySavings\ fewer model
+calls (\deployMaintCells\ calls against \deployN), against a ceiling
+of \deployCeiling\ set by the cached-TRUE stratum the certifier never
+certifies. The procedure thus captures essentially all the reuse
+available to capture, and the residue is a property of the column. At
 $\alpha{=}0.1$ it certifies at look \deployLookTight\
 (\deployFlipsTight\ flips, bound \deployBoundTight) for
 \deployOracleTight\ calls, the count the Maurer--Pontil run needed for
 the loose budget, reusing \deployReusedTight\ cells
-(\deploySavingsTight\ savings). At $\alpha{=}0.05$ the stored draws run out before
-the schedule's deepest look (that look reaches \deployAugustFiveLook\
-rows of the stratum, \deployAugustFiveMissing\ of which hold no August
-draw), and
-drawing them later would mix two snapshots, so the August evidence is
-silent there. Realized error was
-audited against oracle-computed cells of that snapshot only (status
-\texttt{done}/\texttt{cached}; certificate copies are excluded by
-construction, as verbatim v1 values would register as non-flips):
-\deployAuditFlips\ flips in \deployOverlap\ audited reused rows,
-\deployRealized, of which \deployAuditReleased\ rows belong to the
-released $n{=}\benchN$ evaluation vector and show
-\deployAuditReleasedErr\ on their own; the released
-subset is a consistency check with Table~\ref{tab:main}, and the
-remainder is independent evidence. A separate verifier script
+(\deploySavingsTight\ savings). At $\alpha{=}0.05$ the stored draws
+run out before the schedule's deepest look. That look reaches
+\deployAugustFiveLook\ rows of the stratum, \deployAugustFiveMissing\ of
+which hold no August draw. Drawing them later would mix two
+snapshots, so the August evidence is silent there. Realized error
+was audited against oracle-computed cells of that snapshot only
+(status \texttt{done}/\texttt{cached}). Certificate copies are
+excluded by construction, as verbatim v1 values would register
+as non-flips. The audit found \deployAuditFlips\ flips in
+\deployOverlap\ audited reused rows, \deployRealized. Of these,
+\deployAuditReleased\ rows belong to the released $n{=}\benchN$
+evaluation vector and show \deployAuditReleasedErr\ on their own. The
+released subset is a consistency check with Table~\ref{tab:main}, and
+the remainder is independent evidence. A separate verifier script
 recomputes the audit from the persisted reuse-set row identifiers.
-Priced at the ledger's measured \perCellCost\ per cell, the maintenance
-workload would cost \deployMaintCost\ and about \deployMaintMinutes\
-minutes of model time (per-call latencies summed, the same measure as
-the \deployMatHours\ hours; at \deployConcurrency-way concurrency the
-wall clock is a fraction of it), against the \deployMatCost\ the corpus
-cost to materialize; we price the recompute leg without executing it.
+Priced at the ledger's measured \perCellCost\ per cell, the
+maintenance workload would cost \deployMaintCost\ and about
+\deployMaintMinutes\ minutes of wall clock on the same estimate,
+against the \deployMatCost\ the corpus cost to materialize. That
+estimate uses the materialization's mean per-call latency at the same
+\deployConcurrency-way concurrency. We price the recompute leg without
+executing it.
 
 \emph{The September run: drift, measured.} Assumption~\ref{as:pin}
 scopes a certificate to the model snapshot its oracle draws came from.
 We re-ran the certification live on \sepSnapshotDate: same model
 identifier, same gateway, same prompts, same cache, same seeded path,
 with the oracle draws stored under a version of their own. The snapshot
-had moved. On the \driftFalseRows\ cached-FALSE rows the August run had
-sampled, the edit's flip rate against the cache read \driftFalseAugEdit\
-in August and \driftFalseSepEdit\ in September; \driftFalseOnlySep\ rows
-flipped only in September against \driftFalseOnlyAug\ only in August
-(McNemar $p\driftFalseMcNemarP$). A like-for-like comparison separates
-the model from the edit: the v1 prompt re-drawn in September disagreed
-with its own August draws, the cache, on \driftFalseCache\ of those rows
-(Wilson \driftFalseCacheCi), where the same prompt's within-snapshot
-self-disagreement is \floorFalseStratum\ (\floorFalseCi); the v2 prompt
-re-drawn disagreed with its August draw on \driftFalsePrompt\
-(\driftFalsePromptCi); and the edit's flip rate with both sides drawn in
-September was \driftFalseFresh\ (\driftFalseFreshCi), above its August
+had moved. On the \driftFalseRows\ cached-FALSE rows the August
+run had sampled, the edit's flip rate against the cache read
+\driftFalseAugEdit\ in August and \driftFalseSepEdit\ in September.
+Of those rows, \driftFalseOnlySep\ flipped only in September against
+\driftFalseOnlyAug\ only in August (McNemar $p\driftFalseMcNemarP$).
+A like-for-like comparison separates the model from the edit. The
+v1 prompt re-drawn in September disagreed with its own August
+draws, the cache, on \driftFalseCache\ of those rows (Wilson
+\driftFalseCacheCi). The same prompt's within-snapshot self-disagreement
+is \floorFalseStratum\ (\floorFalseCi). The v2 prompt re-drawn disagreed
+with its August draw on \driftFalsePrompt\ (\driftFalsePromptCi).
+The edit's flip rate with both sides drawn in September was
+\driftFalseFresh\ (\driftFalseFreshCi), above its August
 value. The ledger shows the same change: \driftTokensSep\ output tokens
 per cell against \driftTokensAug\ in August, at \driftLatencySep\
-seconds per call against \driftLatencyAug. On the \driftTrueRows\
-cached-TRUE rows the edit's flip rate read \driftTrueAugEdit\ in August
-and \driftTrueSepEdit\ in September (\driftTrueOnlyAug\ rows flipped
-only in August, \driftTrueOnlySep\ only in September, McNemar
-$p{=}\driftTrueMcNemarP$), and the v2 prompt re-drawn disagreed with
-its August draw on \driftTruePrompt\ of them (\driftTruePromptCi;
-the stratum's floor is \floorTrueStratum): too few rows to resolve a
-shift.
+seconds per call against \driftLatencyAug. On the
+\driftTrueRows\ cached-TRUE rows the edit's flip rate read
+\driftTrueAugEdit\ in August and \driftTrueSepEdit\ in September.
+Of those rows, \driftTrueOnlyAug\ flipped only in August and
+\driftTrueOnlySep\ only in September (McNemar $p{=}\driftTrueMcNemarP$).
+The v2 prompt re-drawn disagreed with its August draw on
+\driftTruePrompt\ of them (\driftTruePromptCi). The same stratum's
+floor on the lab column is \floorTrueStratum. These rows are too few to
+resolve a shift.
 
 The certifier measures the sum of these effects against the cache it is
 asked to reuse, which is the quantity a user is exposed to, and it
-priced the drift as the theory says it should. At $\alpha{=}0.2$ it
-certified the cached-FALSE stratum at look \sepLookLoose\
-(\sepFlipsLoose\ flips, against \deployFlipsLoose\ in August):
-\sepOracleLoose\ calls in all, \sepReusedLoose\ cells reused
-(\sepSavingsLoose), \sepWallLoose\ seconds of wall clock including the
-oracle calls; the cached-TRUE stratum was refused at look \sepTrueLook\
-with \sepTrueFlips\ flips. At $\alpha{=}0.1$ it escalated to look
-\sepLookTight\ (\sepFlipsTight\ flips, bound \sepBoundTight), one look
-deeper than the exact bound's replay of the August draws:
-\sepOracleTight\ calls, \sepReusedTight\ cells
-(\sepSavingsTight), \sepWallTight\ seconds. At $\alpha{=}0.05$, where
+priced the drift as the theory says it should. At
+$\alpha{=}0.2$ it certified the cached-FALSE stratum
+at look \sepLookLoose\ (\sepFlipsLoose\ flips, against
+\deployFlipsLoose\ in August). In all it spent \sepOracleLoose\ calls
+and reused \sepReusedLoose\ cells (\sepSavingsLoose), in
+\sepWallLoose\ seconds of wall clock including the oracle calls.
+The cached-TRUE stratum was refused at look \sepTrueLook\ with
+\sepTrueFlips\ flips. At $\alpha{=}0.1$ it escalated to look
+\sepLookTight\ (\sepFlipsTight\ flips, bound \sepBoundTight), one
+look deeper than the exact bound's replay of the August draws. It
+spent \sepOracleTight\ calls and reused \sepReusedTight\ cells
+(\sepSavingsTight), in \sepWallTight\ seconds. At $\alpha{=}0.05$, where
 the August draws are silent, the futility rule refused the stratum at
 look \sepLookFive\ (\sepFlipsFive\ flips, \sepRateFive) after
 \sepOracleFive\ calls. Under Maurer--Pontil the same September draws
 certify the loose budget after \sepMpOracleLoose\ calls and the tight
-budget \sepMpTightOutcome. Audited against every September oracle cell,
-the reused rows flip at \sepRealizedLoose\ (\sepAuditRowsLoose\ rows)
-under the loose certificate and \sepRealizedTight\ (\sepAuditRowsTight\
-rows) under the tight one: inside both budgets, and well above the
-August figure of \deployRealized, which is the drift once more. The
-sample path needed \sepOracleCellsNeeded\ September oracle cells across
-the arms; \sepStoredBefore\ were already held from a pass earlier that
-day and \sepLiveRequested\ were requested from the runner, of which
-\sepLiveCached\ were served by the content-hash cache and
-\sepLiveDraws\ were drawn fresh for \sepLedgerUsd\ (\sepPerCell\ per
-cell against \perCellCost\ in August; the longer outputs are the
-difference). The drift measurement drew \driftLiveDraws\ more. A
+budget \sepMpTightOutcome. Audited against every September oracle
+cell, the reused rows flip at \sepRealizedLoose\ under the loose
+certificate and \sepRealizedTight\ under the tight one: inside both
+budgets, and well above the August figure of \deployRealized, which is
+the drift once more. The audit covers \sepAuditRowsLoose\ rows under
+the loose certificate and \sepAuditRowsTight\ rows under the tight
+one. The sample path needed \sepOracleCellsNeeded\ September oracle
+cells across the arms. Of these, \sepStoredBefore\ were already held
+from a pass earlier that day and \sepLiveRequested\ were requested
+from the runner. Of the requested cells, \sepLiveCached\ were
+served by the content-hash cache and \sepLiveDraws\ were
+drawn fresh for \sepLedgerUsd. That is \sepPerCell\ per cell
+against \perCellCost\ in August. The longer outputs are the
+difference. The drift measurement drew \driftLiveDraws\ more. A
 refusal here is the instrument reading correctly: a stratum whose flip
 rate against an aged cache exceeds the budget is identified within its
 first two looks, and its cells are recomputed rather than served.
 
-The comparison to the $n{=}\benchN$ benchmark run shows that sampling
-cost did not scale with $n$: at $\alpha{=}0.2$ the budget was drawn
-from the same distribution at both scales (\benchOracleRange\ calls,
-mean \benchOracleMean, against \benchN\ rows; \deployOracle\ against
-\deployN), because the doubling schedule stops on evidence about a
-stratum's \emph{rate}, which is size-independent, not on its size. The
+The comparison to the $n{=}\benchN$ benchmark run shows that
+sampling cost did not scale with $n$. At $\alpha{=}0.2$ the
+budget was drawn from the same distribution at both scales
+(\benchOracleRange\ calls, mean \benchOracleMean, against \benchN\ rows;
+\deployOracle\ against \deployN). This is because the doubling
+schedule stops on evidence about a stratum's \emph{rate}, not on
+its size, so its cost is bounded independently of the size. The
 budget is a draw, since a schedule stops at the first look whose bound
 clears $\alpha$. At $\alpha{=}0.2$ the benchmark's main seed spent
 \benchOracleMain\ calls, with a replication median of
@@ -1350,77 +1477,86 @@ list changes which rows a seeded \texttt{ORDER BY RAND} returns, so the
 evaluation sample is defined by an exact query string, not by the seed
 alone. And the certifier of the earlier version shuffled each stratum
 in the order the cell query returned, which the query planner served
-through one index in August and another afterwards; the published run
+through one index in August and another afterwards. The published run
 walked the content-hash order, the certifier now sorts by content hash
-before shuffling, and the replay reproduces the August run's every
-count under the Maurer--Pontil arm (the released script asserts it).
+before shuffling, and the replay reproduces the August run's every count
+under the Maurer--Pontil arm (the released script asserts it).
 
 \paragraph{The stratification hierarchy.} Aggregate-only certification
 (one stratum) is valid for its aggregate estimand yet conceals
-\aggFtSubgroup\ realized error in the reused cached-TRUE subgroup on the
-formatting edit at $\alpha{=}0.1$ and \aggWsubgroup\ on the widening
-edit at $\alpha{=}0.2$: it buys its aggregate with the stratum whose
-floor is \floorTrueStratum, which per-value strata quarantine by
-construction.
-Refining further by embedding-interaction tertiles helps only when
-within-value risk is heterogeneous and otherwise
-costs power through the $\delta/K$ split: on the headline
-configuration the
-value$\times$embedding-tertile refinement certifies strictly less than
-value strata alone (\ablationSavings\ vs \benchSavings\ savings on SO
-formatting at $\alpha{=}0.2$), because the split outweighs its
-discrimination gain. Across all \ablationTotal\ shared configurations of
+\aggFtSubgroup\ realized error in the reused cached-TRUE subgroup
+on the formatting edit at $\alpha{=}0.1$ and \aggWsubgroup\ on the
+widening edit at $\alpha{=}0.2$. It buys its aggregate with the
+stratum whose floor on the lab column is \floorTrueStratum, which
+per-value strata quarantine by construction. Refining further by
+embedding-interaction tertiles helps only when within-value risk is
+heterogeneous and otherwise costs power through the $\delta/K$ split.
+On the headline configuration the value$\times$embedding-tertile
+refinement certifies strictly less than value strata alone
+(\ablationSavings\ vs \benchSavings\ savings on SO formatting at
+$\alpha{=}0.2$), because the split outweighs its discrimination
+gain. Across all \ablationTotal\ shared configurations of
 the released ablation the refinement is better in \ablationBetter\ and
-worse in \ablationWorse, and the single win is a fraction of a point at
-a budget where both stratifiers certify essentially nothing. We report
-this as a negative result instead of tuning until it inverts: the
-refinement's validity is unconditional (Assumption~\ref{as:frozen}), its
-power is not, and on these columns within-value risk is homogeneous
-enough that the $\delta/K$ split is never repaid.
+worse in \ablationWorse, with \ablationTies\ ties where neither
+certifies. Every win sits at a budget where value strata alone certify
+in at most \ablationWinBaseCertMax\ of replications. The largest,
+\ablationTopWinLabel, lifts mean savings from \ablationTopWinBase\ to
+\ablationTopWinFine\ by certifying in \ablationTopWinFineCert\ of
+replications against \ablationTopWinBaseCert. It does so because the
+finer strata isolate a slice of a value stratum whose rate clears
+a budget the whole stratum does not. We report this as a negative
+result instead of tuning until it inverts. The refinement's validity
+is unconditional (Assumption~\ref{as:frozen}), its power is not, and
+on these columns within-value risk is homogeneous enough that the
+$\delta/K$ split is repaid only where the value strata certify almost
+nothing.
 
-\paragraph{Minority-stratum anatomy.} The cached-TRUE stratum of the
-Boolean column flips \minoritySingle\ under a formatting edit; vote-of-3 on
-both sides reduces this to \minorityVote\ and shows that \minorityNoise\ of cached TRUE
-values were single-draw noise; the flips that survive vote-3 are
-genuine boundary volatility. Quarantine-and-recompute is therefore the correct systemic
+\paragraph{Minority-stratum anatomy.} The cached-TRUE stratum
+of the Boolean column flips \minoritySingle\ under a formatting
+edit; vote-of-3 on both sides reduces this to \minorityVote\ and
+shows that \minorityNoise\ of cached-TRUE values were single-draw
+noise. The flips that survive vote-of-3 are genuine boundary
+volatility. Quarantine-and-recompute is therefore the correct systemic
 response, and the actionable upstream knob is vote-based computation of
 boundary-stratum cells at write time.
 
-\paragraph{Calibration.} (\figref{fig:power}.) With planted flip rates
-across $p \in \calPRange$, budgets $\alpha \in \{\calAlphaGrid\}$
-(including the one every headline result uses), stratum sizes
-$\{600, 1800, 5000\}$, both estimands, and \calConfigs\ configurations
-(\calTrials\ runs), the quantity Theorem~\ref{thm:valid} bounds is
-the rate of unsafe certificates: certifications of a stratum whose
-realized flip count exceeds $\alpha n_j$ (in strict mode,
-$\alpha(n_j - m_j)$). The worst such rate over all configurations is
-\calUnsafeWorst\ (95\% CI
-\calUnsafeWorstCi; $\alpha{=}\calUnsafeWorstAlpha$,
-$p{=}\calUnsafeWorstP$, $n_j{=}\calUnsafeWorstSize$,
-\calUnsafeWorstEstimand\ mode) against the per-stratum
-$\delta_j{=}\calNominalDelta$ the study plants; the presented-cells
-rate, which leaves out the sampled flips, exceeds $\alpha$ in at most
+\paragraph{Calibration.} (\figref{fig:power}.) The calibration
+study covers planted flip rates across $p \in \calPRange$, budgets
+$\alpha \in \{\calAlphaGrid\}$ (including the one every headline
+result uses), stratum sizes $\{600, 1800, 5000\}$, both estimands,
+and \calConfigs\ configurations (\calTrials\ runs). The quantity
+Theorem~\ref{thm:valid} bounds is the rate of unsafe certificates:
+certifications of a stratum whose realized flip count exceeds
+$\alpha n_j$ (in strict mode, $\alpha(n_j - m_j)$). The worst
+such rate over all configurations is \calUnsafeWorst\ (95\% CI
+\calUnsafeWorstCi) against the per-stratum $\delta_j{=}\calNominalDelta$
+the study plants. It occurs at $\alpha{=}\calUnsafeWorstAlpha$,
+$p{=}\calUnsafeWorstP$, $n_j{=}\calUnsafeWorstSize$, in
+\calUnsafeWorstEstimand\ mode. The presented-cells rate, which
+leaves out the sampled flips, exceeds $\alpha$ in at most
 \calUnsafePresentedWorst\ of runs. Of the configurations,
 \calTightNulls\ are \emph{tight} nulls, planted just above the budget at
 $1.05$ to $1.25$ times $\alpha$, where the futility rule cannot dispose
-of the stratum at the first look and the sampling fraction climbs; the
-unsafe rate averages \calUnsafeTightMean\ over them, and the
-certification rate itself reaches \calTightCertWorst, most of it
-correct, because at $p$ just above $\alpha$ the realized population
-rate of a planted stratum falls below $\alpha$ in a large share of
-trials and the exact bound certifies what is actually there. This is
-the regime that probes Assumption~\ref{as:sample}, and the bound holds
-its level in it with room to spare: the gap between \calUnsafeWorst\
-and \calNominalDelta\ is the Bonferroni split across looks plus the
-discreteness of the test, and it is not budget that can be reclaimed
-without a sequential bound. The reuse-set rate evaluated on
-presented-mode certifications fluctuates past $\alpha$ in rarely
-certifying frontier configurations (worst \calWorstReuseMetric\ of
-certified runs at $p{=}\calWorstP$, $\alpha{=}\calWorstAlpha$,
-certified \calWorstCertRate\ of the time), as expected, since
-presented-mode does not certify that metric; the strict reuse-set mode
-holds it, with certification power rising smoothly as $p$ falls below
-$\alpha$ and with stratum size.
+of the stratum at the first look and the sampling fraction climbs. Over
+these the unsafe rate averages \calUnsafeTightMean. Their certification
+rate reaches \calTightCertWorst, and most of those certificates are
+correct. At $p$ just above $\alpha$ the realized population rate of a
+planted stratum falls below $\alpha$ in a large share of trials, and
+the exact bound certifies what is actually there. This is the regime
+in which the level is hardest to hold, and the implemented procedure
+holds it with room to spare. The gap between \calUnsafeWorst\ and
+\calNominalDelta\ has three sources: the Bonferroni split across looks,
+the discreteness of the test, and the trials whose realized count falls
+below $\alpha n_j$, in which no certificate can be unsafe.
+It is not budget that can be reclaimed
+without a sequential bound. The reuse-set rate evaluated
+on presented-mode certifications fluctuates past $\alpha$
+in rarely certifying frontier configurations. The worst is
+\calWorstReuseMetric\ of certified runs at $p{=}\calWorstP$,
+$\alpha{=}\calWorstAlpha$, certified \calWorstCertRate\ of the time.
+That is expected, since presented-mode does not certify that metric. The
+strict reuse-set mode holds it, with certification power rising smoothly
+as $p$ falls below $\alpha$ and with stratum size.
 
 \ifnum\indepAvailable=1\relax
 \paragraph{Independence across rows.} Assumption~\ref{as:pin} asks
@@ -1428,124 +1564,160 @@ that oracle draws be independent across rows, and provider-side
 batching could in principle correlate concurrent
 requests~\cite{yuan,tml}. We tested the consequence the proof needs,
 non-interference, on \indepN\ rows of the evaluation vector, drawing
-the formatting edit's new version twice for every row on
-\sepSnapshotDate: once with a single request in flight
+the formatting edit's new version twice for every row. The draws
+were made on \sepSnapshotDate, once with a single request in flight
 (\indepSeqMinutes\ minutes of wall clock) and once at the deployment
 run's concurrency of \indepConcurrency\ (\indepConcMinutes\ minutes),
 against the same cache. Requests that errored or exceeded a
 \indepCallCeiling-second ceiling are excluded from their arm:
 \indepSeqErrors\ sequential and \indepConcErrors\ concurrent, where the
-ceiling binds more often. The falsification criterion was fixed in
-advance, at the \indepLevel\ level throughout: a two-proportion test
-rejecting equal flip rates, a lag-one permutation test rejecting in the
-concurrent arm, or a 95\% CI on the concurrent arm's block variance
-ratio that excludes 1. The rates agree: \indepSeqRate\ (Wilson
+ceiling binds more often. The exclusions do not hide a flip-prone
+subset. On the \indepBothRows\ rows both arms kept, the rates are
+\indepBothSeqRate\ sequential and \indepBothConcRate\ concurrent.
+Of those rows, \indepOnlySeqFlips\ flipped only sequentially and
+\indepOnlyConcFlips\ only concurrently (exact McNemar
+$p{=}\indepPairedP$). Of the \indepConcDroppedRows\ rows the
+concurrent arm dropped, \indepConcDroppedSeqFlips\ flipped in the
+sequential arm.
+
+\paragraph{Rate, lag, and dispersion tests.} Three tests were
+planned, each reported against its reference distribution at
+the \indepLevel\ level: a two-proportion test on the flip
+rates, a lag-one permutation test in the concurrent arm, and
+a dispersion test of flip counts over consecutive blocks of
+\indepBlockSize\ completions. The rates agree: \indepSeqRate\ (Wilson
 \indepSeqCi) sequential against \indepConcRate\ (\indepConcCi)
 concurrent, two-proportion $p{=}\indepDiffP$, a test whose minimum
 detectable difference at \indepPowerTarget\ power is \indepMdd\
-absolute. The two arms disagree with each other on \indepAgreeDisagree\
-of rows (\indepAgreeCi), the same-prompt self-disagreement of the
-September snapshot (\indepAgreeFalse\ on \indepAgreeFalseN\
-cached-FALSE rows, \indepAgreeTrue\ on \indepAgreeTrueN\ cached-TRUE
-rows); the August floors belong to another snapshot and are not the
+absolute. The two arms disagree with each other on
+\indepAgreeDisagree\ of rows (\indepAgreeCi), the
+same-prompt self-disagreement of the September snapshot
+(\indepAgreeFalse\ on \indepAgreeFalseN\ cached-FALSE rows,
+\indepAgreeTrue\ on \indepAgreeTrueN\ cached-TRUE rows). The
+August floors belong to another snapshot and are not the
 comparison. In completion order, the lag-one autocorrelation of the
 flip indicator is \indepConcLag\ in the concurrent arm (permutation
 $p{=}\indepConcLagP$) and \indepSeqLag\ in the sequential arm
 ($p{=}\indepSeqLagP$). The variance of flip counts over consecutive
 blocks of \indepBlockSize\ completions is \indepConcDispersion\ times
-its binomial value in the concurrent arm (\indepBlocks\ blocks; 95\% CI
-\indepConcDispersionCi, which covers 1; upper-tail chi-square
-$p{=}\indepConcDispersionP$) against \indepSeqDispersion\ in the
-sequential arm (\indepSeqBlocks\ blocks; $p{=}\indepSeqDispersionP$).
-No arm of the criterion is met, but the block test is the one we report
-as unresolved rather than passed: the one-sided tail is close to the
-level, and \indepBlocks\ blocks cannot see modest overdispersion. The
-rate test and the lag test find nothing at this concurrency through
+its binomial value in the concurrent arm (\indepBlocks\ blocks;
+95\% CI \indepConcDispersionCi, which covers 1; upper-tail
+chi-square $p{=}\indepConcDispersionP$). In the sequential arm
+the ratio is \indepSeqDispersion\ (\indepSeqBlocks\ blocks;
+$p{=}\indepSeqDispersionP$).
+
+\paragraph{Reading the tests.} The rate and lag tests do not reject.
+The dispersion test rejects one-sided at the \indepLevel\ level
+($p{=}\indepConcDispersionP$) while the two-sided 95\% CI on the
+ratio covers 1. With \indepBlocks\ blocks, which cannot see modest
+overdispersion, that arm alone leaves the block-scale result unresolved.
+\ifnum\indepExtAvailable=1\relax
+To resolve it we drew a concurrent arm alone on a further
+\indepExtRows\ rows of the vector on \indepExtDate\ (\indepExtBlocks\
+blocks; \indepExtErrors\ requests failed or hit the ceiling). Its block
+dispersion is \indepExtDispersion\ (95\% CI \indepExtDispersionCi;
+upper-tail $p{=}\indepExtDispersionP$) and its lag-one
+autocorrelation \indepExtLag\ ($p{=}\indepExtLagP$). Its flip
+rate is \indepExtRate\ (\indepExtCi) against the sequential
+arm's \indepSeqRate\ ($p{=}\indepExtVsSeqP$). This arm was
+drawn a day later and on other rows, so the rate comparison
+also spans a day of the snapshot. With \indepExtBlocks\
+blocks the dispersion test does not reject. The rate test, the lag test,
+and the larger block test find nothing at this concurrency through this
+gateway; a rate difference smaller than \indepMdd\ is not excluded.
+\else
+The rate test and the lag test find nothing at this concurrency through
 this gateway; a dependence at the block scale, and a rate difference
-smaller than \indepMdd, are not excluded. Since the pinned schedule
-tests a stratum's flip \emph{rate} and the rates agree, the practical
-reading is that the certificates of the deployment run, which was
-issued at this concurrency, rest on draws whose rate the sequential arm
-reproduces.
+smaller than \indepMdd, are not excluded.
+\fi
+The pinned schedule tests a stratum's flip \emph{rate}, and the rates
+agree. The practical reading is that the certificates of the
+deployment run, which was issued at this concurrency, rest on draws
+whose rate the sequential arm reproduces. Agreement of the rates does
+not by itself establish the per-look level, which rests on
+non-interference; the block test is the instrument that speaks to it.
 \fi
 
 \paragraph{The bound.} Every result above spends its budget through the
 exact bound of Eq.~\eqref{eq:exact}, split across looks by Bonferroni.
-The bound, not the stratification or the schedule, is what sets the
-frontier, and we measured how much by swapping it inside the same
+The bound, not the stratification or the schedule, is what sets
+the frontier. We measured how much by swapping it inside the same
 pinned procedure over the same stored labels (Table~\ref{tab:bounds};
 Appendix~\ref{app:grid} lists every configuration). On a clean sample
 at $n{=}90$ the exact bound reads \boundExactAtN\ and its binomial
-limit, the Clopper--Pearson bound~\cite{clopper}, \boundCpAtN; the
+limit, the Clopper--Pearson bound~\cite{clopper}, \boundCpAtN. The
 Maurer--Pontil empirical-Bernstein bound~\cite{maurer} that an earlier
-version of this article certified with reads \boundEbAtN, the
+version of this article certified with reads \boundEbAtN, and the
 Bardenet--Maillard without-replacement bound~\cite{serfling,bardenet}
-\boundWorAtN, and a Waudby-Smith--Ramdas betting confidence
+reads \boundWorAtN. A Waudby-Smith--Ramdas betting confidence
 sequence~\cite{wsr}, which is anytime-valid and therefore spends the
-stratum's budget without splitting it across the six looks,
-\boundBetAtN. End to end across the \boundConfigsTotal\ configurations
-of Table~\ref{tab:main} (main seed), the exact bound certifies
-\boundExactConfigs\ of them against \boundEbConfigs\ under
-Maurer--Pontil and \boundWorConfigs\ under Bardenet--Maillard, with
-mean savings \boundExactSavings\ against \boundEbSavings\ and
-\boundWorSavings, on \boundExactOracle\ oracle calls against
-\boundEbOracle\ and \boundWorOracle. Relative to the exact bound,
-Maurer--Pontil loses \boundEbLost\ certificates and gains
-\boundEbExtra, and of the shared ones it reaches \boundEbSameLook\ at
-the same look and \boundEbLater\ at a later one; the widest single
-gain is \boundGapPair\ at $\alpha{=}\boundGapAlpha$, from
-\boundGapEbSavings\ savings for \boundGapEbOracle\ calls to
-\boundGapExactSavings\ for \boundGapExactOracle. The empirical-Bernstein
-bounds pay for a variance term a binary loss does not need, and the
-without-replacement form pays more, not less, because its constants are
-larger (an earlier preprint reported it as tighter; that replay used
-the Maurer--Pontil linear constant inside the Serfling form, and the
-published constant, $\kappa = 7/3 + 3/\sqrt{2}$~\cite{bardenet}, is
-what the numbers here use). The Clopper--Pearson limit certifies \boundCpConfigs\ configurations
+stratum's budget without splitting it across the six looks, reads
+\boundBetAtN.
+
+\paragraph{The bounds compared.} End to end across the
+\boundConfigsTotal\ configurations of Table~\ref{tab:main} (main
+seed), the exact bound certifies \boundExactConfigs\ of them against
+\boundEbConfigs\ under Maurer--Pontil and \boundWorConfigs\ under
+Bardenet--Maillard. Mean savings are \boundExactSavings\ against
+\boundEbSavings\ and \boundWorSavings, on \boundExactOracle\ oracle
+calls against \boundEbOracle\ and \boundWorOracle. Relative to
+the exact bound, Maurer--Pontil loses \boundEbLost\ certificates
+and gains \boundEbExtra, and of the shared ones it reaches
+\boundEbSameLook\ at the same look and \boundEbLater\ at a later one.
+The widest single gain is \boundGapPair\ at $\alpha{=}\boundGapAlpha$,
+from \boundGapEbSavings\ savings for \boundGapEbOracle\ calls
+to \boundGapExactSavings\ for \boundGapExactOracle. The
+empirical-Bernstein bounds pay for a variance term a binary
+loss does not need, and the without-replacement form pays more,
+not less, because its constants are larger. An earlier preprint
+reported it as tighter. That replay used the Maurer--Pontil linear
+constant inside the Serfling form, and the published constant,
+$\kappa = 7/3 + 3/\sqrt{2}$~\cite{bardenet}, is what the numbers here
+use. The Clopper--Pearson limit certifies \boundCpConfigs\ configurations
 at mean savings \boundCpSavings\ on \boundCpOracle\ calls, the
 finite-population correction buying the exact bound its one further
-certificate. The betting sequence certifies \boundBetConfigs\
-configurations at mean savings \boundBetSavings\ on \boundBetOracle\
-calls; it
-beats the exact bound where the schedule's Bonferroni split bites
-hardest (\boundBetOverExactPair\ at $\alpha{=}\boundBetOverExactAlpha$:
-\boundBetOverExactSavings\ against \boundBetOverExactExactSavings), and
-loses to it elsewhere (certificates lost \boundBetLost, gained
-\boundBetExtra). Its validity here rests on the i.i.d.\ construction of the
-hedged capital process, which the without-replacement draws do not
-satisfy exactly; a without-replacement betting sequence or a
-time-uniform boundary~\cite{howard} would remove the split without that
-caveat and is the remaining power lever we see.
+certificate. The betting sequence certifies
+\boundBetConfigs\ configurations at mean savings \boundBetSavings\ on
+\boundBetOracle\ calls. It beats the exact bound where the schedule's
+Bonferroni split bites hardest (\boundBetOverExactPair\ at
+$\alpha{=}\boundBetOverExactAlpha$: \boundBetOverExactSavings\ against
+\boundBetOverExactExactSavings), and loses to it elsewhere (certificates
+lost \boundBetLost, gained \boundBetExtra). Its validity here rests
+on the i.i.d.\ construction of the hedged capital process, which the
+without-replacement draws do not satisfy exactly. A without-replacement
+betting sequence or a time-uniform boundary~\cite{howard} would remove
+the split without that caveat and is the remaining power lever we see.
 
 Validity comes before power, so all five arms were replayed through
 the calibration protocol (\boundCalTrials\ trials per arm,
-\boundNullTrials\ of them at planted rates above the budget). No null
-configuration's certification rate is demonstrably above the
-per-stratum $\delta$ of \boundNullDeltaS\ for any arm. The exact
-bound's worst null certification rate is \boundExactNullWorst. Most of
-those certificates are correct, because the realized count of a
-planted stratum falls below $\alpha n_j$ in many trials; the
+\boundNullTrials\ of them at planted rates above the budget). At
+planted nulls the exact bound certifies up to \boundExactNullWorst\ of
+trials, against a per-stratum $\delta_j$ of \boundNullDeltaS. Most
+of those certificates are correct, because the realized count of
+a planted stratum falls below $\alpha n_j$ in many trials. The
 certificates whose realized count exceeds the budget, the event of
 Theorem~\ref{thm:valid}, are at most \boundExactNullUnsafe\ of trials
 in any null configuration ($\alpha{=}\boundExactNullUnsafeAlpha$,
 $p{=}\boundExactNullUnsafeP$, $n_j{=}\boundExactNullUnsafeSize$; Wilson
-\boundExactNullUnsafeCi), and \boundExactNullsOver\ of the
-\boundNullConfigs\ null configurations carry an interval above
-$\delta$. The Clopper--Pearson limit certifies \boundCpNullWorst\ of
-null trials at worst (\boundCpNullUnsafe\ unsafe), the betting sequence
-\boundBetNullWorst\ (\boundBetNullUnsafe\ unsafe), and Maurer--Pontil
-and Bardenet--Maillard \boundEbNullWorst\ and \boundWorNullWorst\
-(\boundEbNullUnsafe\ and \boundWorNullUnsafe\ unsafe), leaving almost
-all of their error budget unspent. A clean \boundCleanStratum-cell
-stratum at $\alpha{=}0.05$ costs the exact bound \boundExactCleanSample\
-draws (\minZeroFlipRealizedLarge\ at $n_j{=}\minZeroFlipLargeSize$ in
-the calibration study), the Clopper--Pearson limit
+\boundExactNullUnsafeCi). Of the \boundNullConfigs\ null configurations,
+\boundExactNullsOver\ carry a certification-rate interval above
+$\delta_j$. The Clopper--Pearson limit certifies \boundCpNullWorst\ of
+null trials at worst (\boundCpNullUnsafe\ unsafe), and the betting
+sequence \boundBetNullWorst\ (\boundBetNullUnsafe\ unsafe).
+Maurer--Pontil and Bardenet--Maillard certify
+\boundEbNullWorst\ and \boundWorNullWorst\ (\boundEbNullUnsafe\ and
+\boundWorNullUnsafe\ unsafe), leaving almost all of their error
+budget unspent. A clean \boundCleanStratum-cell stratum at
+$\alpha{=}0.05$ costs the exact bound \boundExactCleanSample\ draws
+(\minZeroFlipRealizedLarge\ at $n_j{=}\minZeroFlipLargeSize$
+in the calibration study). It costs the Clopper--Pearson limit
 \boundCpCleanSample, the sequence \boundBetCleanSample, Maurer--Pontil
-\boundEbCleanSample, and Bardenet--Maillard \boundWorCleanSample. The frontier in \figref{fig:frontier} is
-therefore a property of the bound, and the exact bound is the pinned
-one because it is proven for exactly the sampling the procedure
-performs and, on every configuration measured here, is the tightest of
-the proven arms. Every number of the earlier version is reproducible by running
+\boundEbCleanSample, and Bardenet--Maillard \boundWorCleanSample.
+The frontier in \figref{fig:frontier} is therefore a property
+of the bound. The exact bound is the pinned one because it is
+proven for exactly the sampling the procedure performs and, on
+every configuration measured here, is the tightest of the proven
+arms. Every number of the earlier version is reproducible by running
 the released harness with the Maurer--Pontil arm selected.
 
 \begin{table*}[t]
@@ -1558,7 +1730,7 @@ unsplit per-stratum level, $\delta/2$); the certifying configurations,
 mean savings, and oracle calls over the Table~\ref{tab:main} grid (main
 seed); and the worst rate of unsafe certificates, the event of
 Theorem~\ref{thm:valid}, at planted nulls in the calibration replay
-(per-stratum $\delta{=}0.05$).}
+(per-stratum $\delta{=}0.05$). WoR: without replacement.}
 \label{tab:bounds}
 \centering\small
 \input{\paperroot/tablebounds}
@@ -1566,14 +1738,15 @@ Theorem~\ref{thm:valid}, at planted nulls in the calibration replay
 
 \paragraph{Embedding-transfer operating points.} A measured $\tau$
 sweep over per-row similarities shows the guarantee-free transfer
-baseline collapses within a $\approx 0.02$-wide threshold window
-(formatting: \tauFmid\ of rows reused at $\tau{=}0.96$, \tauFhi\ at
-$0.98$, none at $0.99$; widening: \tauWmid\ at $0.94$, \tauWhi\ at
-$0.96$, none at $0.97$), and, decisively, realized error among reused
+baseline collapses within a $\approx 0.02$-wide threshold window.
+On the formatting edit it collapses from \tauFmid\ of rows reused
+at $\tau{=}0.96$ to \tauFhi\ at $0.98$ and none at $0.99$. On the
+widening edit it collapses from \tauWmid\ at $0.94$ to \tauWhi\ at
+$0.96$ and none at $0.97$. Decisively, realized error among reused
 rows stays at the population flip rate at every operating point
-(\tauFerrLo--\tauFerrHi\ and \tauWerrLo--\tauWerrHi): the threshold controls volume,
-never error, because cross-version similarity carries no per-cell flip
-signal (B1).
+(\tauFerrLo--\tauFerrHi\ and \tauWerrLo--\tauWerrHi): the threshold
+controls volume, never error, because cross-version similarity carries
+no per-cell flip signal (B1).
 
 \section{The prompt-edit benchmark}
 \label{sec:benchmark}
@@ -1581,18 +1754,23 @@ signal (B1).
 Semantic benchmarks exist, but they benchmark \emph{engines} on a fixed
 task~\cite{sembench}; none exercises maintenance across prompt versions,
 which needs a different artifact: version pairs plus per-cell flip labels
-against the new version. Ours comprises: two redistributable corpora (Stack Overflow Developer
-Survey, \corpusSO\ rows, ODbL~1.0/DbCL~1.0; Djinni English candidate
-profiles, \corpusDjinni\ rows, MIT); three materialized columns of two
-types (two Boolean columns over structured facets, one of them the
-production column and one a lab replica seeded from its second version;
-one 4-way ordinal select over long free text); five realistic edit
-pairs spanning formatting-only, synonym rewording, scope widening, and
-criteria change; full ground-truth flip labels for $n{=}\benchN$ rows
-per version pair at pinned decode (\labeledCells\ labeled cells), plus
-self-flip replicate labels for both column types; and the deterministic
-harness (seeded sampling, adaptive certifier, baseline policies) that
-reproduces every number in this paper. Table~\ref{tab:pairs} lists the
+against the new version. Ours comprises five components. The first is
+two redistributable corpora: the Stack Overflow Developer Survey
+(\corpusSO\ rows, ODbL~1.0/DbCL~1.0) and Djinni English candidate
+profiles (\corpusDjinni\ rows, MIT). The second is three materialized
+columns of two types: two Boolean columns over structured facets, one of
+them the production column and one a lab replica seeded from its second
+version; and one 4-way ordinal select over long free text. The third is
+five realistic edit pairs spanning formatting-only, synonym rewording,
+scope widening, and criteria change. The fourth is full ground-truth
+flip labels for $n{=}\benchN$ rows per version pair at pinned decode,
+plus the three-draw relabeling of the headline pair, which also supplies
+its self-flip floor. These are \labeledCells\ labeled cells in all:
+\editLabelCells\ distinct version cells and \drawLabelCells\ relabeling
+draws. The fourth component also includes the select column's self-flip
+probe. The fifth is the deterministic harness (seeded sampling, adaptive
+certifier, baseline policies) that reproduces every number in this
+paper. Table~\ref{tab:pairs} lists the
 five pairs with their exact deltas. Ledgered model spend across the
 entire evaluation is \totalSpend\ (plus \offLedgerCells\ cells from
 direct-call probes the ledger does not see), so the benchmark is cheap
@@ -1607,7 +1785,7 @@ against the cached version on the $n{=}\benchN$ evaluation vector
 formatting version's cells (v2$\to$v3), as the benchmark defines it.}
 \label{tab:pairs}
 \centering\small
-\begin{tabular}{@{}p{2.1cm}p{3.6cm}p{8.6cm}r@{}}
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{2.1cm}>{\raggedright\arraybackslash}p{3.6cm}>{\raggedright\arraybackslash}p{8.6cm}r@{}}
 \toprule
 Pair & Column (corpus; contract; bound fields) & Exact delta & flip \\
 \midrule
@@ -1633,7 +1811,7 @@ the only row whose certified quantity is the reuse of cached outputs
 across a change of the prompt definition.}
 \label{tab:related}
 \centering\small
-\begin{tabular}{@{}p{3.1cm}p{4.0cm}p{2.6cm}p{3.2cm}p{2.7cm}@{}}
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{3.1cm}>{\raggedright\arraybackslash}p{4.0cm}>{\raggedright\arraybackslash}p{2.6cm}>{\raggedright\arraybackslash}p{3.2cm}>{\raggedright\arraybackslash}p{2.7cm}@{}}
 \toprule
 System or line & Certified quantity & Held fixed & Changes & Guarantee form \\
 \midrule
@@ -1641,7 +1819,8 @@ SUPG, ABae, BARGAIN, LOTUS, ThalamusDB, Task Cascades~\cite{supg,abae,bargain,lo
 vCache~\cite{vcache} & correctness of serving a cached answer to a \emph{new} query & the answer semantics & the incoming query & learned per-entry threshold at a user error rate \\
 FreshCache, Evergreen~\cite{freshcache,evergreen} & probability that a cached entry is stale (world drift); cost of verifying aggregates & the query definition & the world the answer describes & fitted staleness model per tier; confidence sequences \\
 Stale-view cleaning, online aggregation~\cite{svc,ola} & error of an answer served from a stale view; a running aggregate & the view definition & the base data & sampling bound on the answer \\
-Classical IVM, view adaptation~\cite{gupta95,dbsp} & exact equivalence of a rewritten view & deterministic operators & the view definition & algebraic (no sampling) \\
+Classical incremental view maintenance (IVM)~\cite{dbsp} & exact equality of the maintained view with recomputation & the view definition & the base data & algebraic (no sampling) \\
+View adaptation after redefinition~\cite{gupta95} & exact equivalence of the rewritten view & deterministic operators & the view definition & algebraic (no sampling) \\
 Step-level reuse~\cite{stepcache} & per-step equivalence under a perturbed request & the model & the request & deterministic per-step check \\
 Guarantee-free semantic caches~\cite{gptcache} (B3) & nothing: a hit is a similarity above a threshold & nothing & the incoming query & none \\
 Per-output verification: assertions, regression suites, vote-of-$k$~\cite{spade,retain} & correctness of one output against a checker or a majority & the prompt & the output under test & per-output check, no population bound \\
@@ -1652,51 +1831,51 @@ Per-output verification: assertions, regression suites, vote-of-$k$~\cite{spade,
 
 \paragraph{Guaranteed semantic query processing.} Semantic-operator
 systems bound the error of \emph{one-shot} execution against a gold
-model: LOTUS's optimized operators with accuracy targets~\cite{lotus},
-SUPG's proxy-based selection with precision/recall
-guarantees~\cite{supg} and its aggregation counterpart ABae, which
-stratifies by proxy before spending an expensive predicate~\cite{abae},
-BARGAIN's adaptive cascade
-thresholds~\cite{bargain}, ThalamusDB's approximate natural-language predicates with
-error bounds~\cite{thalamusdb}, and pipeline-level accuracy budgeting
-in Task Cascades~\cite{taskcascades}. All certify a \emph{fixed}
+model. They include LOTUS's optimized operators with accuracy
+targets~\cite{lotus}, SUPG's proxy-based selection with precision/recall
+guarantees~\cite{supg}, and its aggregation counterpart ABae, which
+stratifies by proxy before spending an expensive predicate~\cite{abae}.
+They also include BARGAIN's adaptive cascade thresholds~\cite{bargain},
+ThalamusDB's approximate natural-language predicates with error
+bounds~\cite{thalamusdb}, and pipeline-level accuracy budgeting in Task
+Cascades~\cite{taskcascades}. All certify a \emph{fixed}
 definition per query; none transfers evidence across a definition
-change. We reuse their statistical framing (a labeled sample, a bound,
-a threshold) in a maintenance loop those systems do not model, with a
-different bound: because the loss is binary and the sample is drawn
-without replacement from a frozen stratum, the exact finite-population
-bound, the hypergeometric form of Clopper and Pearson's binomial
-limits~\cite{clopper}, is available and dominates the
+change. We reuse their statistical framing (a labeled sample, a bound, a
+threshold) in a maintenance loop those systems do not model, with a
+different bound. The loss is binary and the sample is drawn without
+replacement from a frozen stratum. The exact finite-population bound,
+the hypergeometric form of Clopper and Pearson's binomial
+limits~\cite{clopper}, is therefore available and dominates the
 empirical-Bernstein bounds those systems and an earlier version of this
-work relied on (\secref{sec:experiments}); time-uniform confidence
+work relied on (\secref{sec:experiments}). Time-uniform confidence
 sequences~\cite{howard,wsr} are the alternative that would remove the
 split across looks. The certificate itself is distribution-free risk
-control in the sense of risk-controlling prediction sets~\cite{rcps}
-and Learn then Test~\cite{ltt}: an upper confidence bound on a risk
+control in the sense of risk-controlling prediction sets~\cite{rcps} and
+Learn then Test~\cite{ltt}. It is an upper confidence bound on a risk
 that must clear a user-set $\alpha$ with probability $1-\delta$, here
 evaluated per stratum and per look with the multiple-testing accounting
 those frameworks make explicit. The declarative LLM data systems that
-optimize cost and quality without a statistical target, Palimpzest's
+optimize cost and quality without a statistical target are Palimpzest's
 AI-powered analytics~\cite{palimpzest}, DocETL's agentic pipeline
 rewriting~\cite{docetl}, Evaporate's structured views over data
 lakes~\cite{evaporate}, and UQE's sampling-driven queries over
-unstructured collections~\cite{uqe}, compute the same kind of
-prompt-defined per-record outputs, and none certifies which of its
-outputs survive a redefinition.
+unstructured collections~\cite{uqe}. They compute the same kind of
+prompt-defined per-record outputs. None certifies which of its outputs
+survive a redefinition.
 
 \paragraph{Verified caching.} vCache certifies that a \emph{new query}
 may reuse a cached answer under one fixed definition, with learned
-per-entry thresholds and user error rates~\cite{vcache}; Evergreen
+per-entry thresholds and user error rates~\cite{vcache}. Evergreen
 spends confidence sequences and early stopping to cut the cost of
 \emph{verifying} semantic aggregates, not to decide
-reuse~\cite{evergreen}; and FreshCache approves a cache hit only when a
+reuse~\cite{evergreen}. FreshCache approves a cache hit only when a
 learned staleness model puts the probability that the entry is stale
 below a per-tier error budget~\cite{freshcache}. FreshCache is the
 closest in shape, since a per-partition budget gating reuse is exactly
-our skeleton, and it differs on the two axes that decide the guarantee:
-its risk is change-of-\emph{world} (open-web evidence aging under fixed
-query semantics) where ours is change-of-\emph{definition}, and its
-per-tier quantity is a fitted model's point estimate where ours is a
+our skeleton, and it differs on the two axes that decide the guarantee.
+Its risk is change-of-\emph{world} (open-web evidence aging under fixed
+query semantics) where ours is change-of-\emph{definition}. Its per-tier
+quantity is a fitted model's point estimate where ours is a
 finite-sample upper confidence bound that either clears $\alpha$ or
 refuses. Our B1 baseline
 shows why these mechanisms do not port: across a definition change the
@@ -1709,24 +1888,26 @@ change-of-world machinery decides when the snapshot itself expires).
 \paragraph{Incremental and adaptive view maintenance.} Sampling a stale
 materialized view to bound the error of answers served from
 it~\cite{svc} is the closest classical relative of what we do, and the
-difference is what goes stale: there the data drifts under a fixed view
-definition, here the definition itself changes over fixed data, which is
+difference is what goes stale. There the data drifts under a fixed view
+definition; here the definition itself changes over fixed data. That is
 why their staleness estimators condition on updates and ours condition
-on a prompt delta, and the look schedule itself is online aggregation's
+on a prompt delta. The look schedule itself is online aggregation's
 template~\cite{ola}, a running estimate whose interval tightens as
 sampling proceeds, repurposed to certify a stratum rather than to answer
-an aggregate. Classical incremental view maintenance (IVM) and view adaptation after
-redefinition~\cite{gupta95,dbsp} assume
-deterministic operators, where a rewrite either preserves a
-subexpression or does not. Stochastic LLM cells break the premise: our
-measurements show that even a semantically null rewrite flips cells at a
-rate above the column's noise floor (\flipSoFormatting\ against
-\floorBool), so ``preserved'' is not a property a rewrite can have here,
-only a rate one can bound. Streaming semantic systems recompile
-operators mid-stream but recompute outputs instead of certifying reuse
-of old ones~\cite{vectraflow,contprompts}, and streaming cascades
-certify on the \emph{data-arrival} axis, where new tuples meet a fixed
-operator, and leave the definition axis open~\cite{streamcascades}.
+an aggregate. Classical incremental view maintenance (IVM) propagates
+base-data changes through a fixed view definition~\cite{dbsp}, and view
+adaptation after redefinition~\cite{gupta95} rewrites the
+materialization when the definition changes. Both assume deterministic
+operators, where a rewrite either preserves a subexpression or does not.
+Stochastic LLM cells break the premise. Our measurements show that even
+a semantically null rewrite flips cells at about the column's noise
+floor (\flipSoFormatting\ against \floorBool), so ``preserved'' is not a
+property a rewrite can have here, only a rate one can bound. Streaming
+semantic systems recompile operators mid-stream but recompute outputs
+instead of certifying reuse of old ones~\cite{vectraflow,contprompts}.
+Streaming cascades certify on the \emph{data-arrival} axis, where new
+tuples meet a fixed operator, and leave the definition axis
+open~\cite{streamcascades}.
 Given that distinction,
 \sivm{} is, to our knowledge, the first
 maintenance procedure whose unit of transfer is a
@@ -1740,10 +1921,10 @@ verification is a deterministic per-step check, so it carries no error
 budget and makes no population statement about the set it reuses.
 In-database prompt management~\cite{promptdb} and versioned,
 provenance-tracked prompt views~\cite{spear} supply the substrate this
-work assumes, not a competing mechanism; we take the framing of
-prompts as versioned views from that line and claim only the
-certification machinery built on top of it, whose reuse is of
-\emph{outputs}, not of key-value (KV) attention state.
+work assumes, not a competing mechanism. We take the framing of prompts
+as versioned views from that line and claim only the certification
+machinery built on top of it, whose reuse is of \emph{outputs}, not of
+key-value (KV) attention state.
 
 \paragraph{Prompt sensitivity and regression.} Prompt-delta analysis
 for assertion synthesis~\cite{spade} anticipates our edit taxonomy but
@@ -1757,37 +1938,37 @@ change) shows why measurement, not taxonomy, must carry the decision.
 \section{Limitations and outlook}
 \label{sec:limits}
 
-\paragraph{Which budgets are usable, and for what.} Most of the
-savings in Table~\ref{tab:main} sit at $\alpha{=}0.2$, which allows
-up to one cell in five of a certified stratum to flip on recomputation
-(with probability $1-\delta$ over the run, in the realized terms of
-Theorem~\ref{thm:valid}). That is a defensible budget where a person reads the
-column row by row before acting on it (a recruiter screen, a lead
-list, an enrichment sheet a reviewer walks through), where the cost of
-a stale cell is a wasted glance, and where the alternative on offer is
-today's status quo, which reuses everything at the population flip
-rate with no bound at all. It is not a defensible budget for a column
-that feeds an aggregate or a downstream filter; there the strict
-reuse-set mode and a budget at or below $0.05$ are the right setting,
-and \secref{sec:experiments} shows what they cost: on the stable Boolean
-column $\alpha{=}0.1$ certifies \frontierB\ mean savings and
-$\alpha{=}0.05$ certifies in \edgeCertRate\ of replications at the
-deepest look, while on the less stable select column tight budgets are
-refused because the model's own floor sits above them. At deployment
-scale the sample a tight budget needs is still a constant, \sepOracleTight\
-calls at $\alpha{=}0.1$ against \deployN\ cells, so tight budgets are
-affordable in calls; what they cannot buy is certification of a
-stratum whose flip rate exceeds them, which is the correct outcome. A
+\paragraph{Which budgets are usable, and for what.} Most of the savings
+in Table~\ref{tab:main} sit at $\alpha{=}0.2$. This budget allows up to
+one cell in five of a certified stratum to flip on recomputation (with
+probability $1-\delta$ over the run, in the realized terms of
+Theorem~\ref{thm:valid}). That is a defensible budget where a person
+reads the column row by row before acting on it (a recruiter screen, a
+lead list, an enrichment sheet a reviewer walks through). Two further
+conditions apply: the cost of a stale cell is a wasted glance, and the
+alternative on offer is today's status quo, which reuses everything at
+the population flip rate with no bound at all. It is not a defensible
+budget for a column that feeds an aggregate or a downstream filter.
+There the strict reuse-set mode and a budget at or below $0.05$ are the
+right setting, and \secref{sec:experiments} shows what they cost. On the
+stable Boolean column $\alpha{=}0.1$ certifies \frontierB\ mean savings
+and $\alpha{=}0.05$ certifies in \edgeCertRate\ of replications by the
+deepest look. On the less stable select column tight budgets are refused
+because the model's own floor sits above them. At deployment scale the
+sample a tight budget needs is still a constant, \sepOracleTight\ calls
+at $\alpha{=}0.1$ against \deployN\ cells, so tight budgets are
+affordable in calls. What they cannot buy is certification of a stratum
+whose flip rate exceeds them, which is the correct outcome. A
 practitioner should therefore read the frontier of
 \figref{fig:frontier} against the column's floor and choose the budget
 the downstream use tolerates, not the one that maximizes savings.
 
 \paragraph{Statistical scope.} Bonferroni across strata and looks is
-sound but conservative, and \secref{sec:experiments} prices it: the
+sound but conservative, and \secref{sec:experiments} prices it. The
 exact bound leaves a gap between its measured unsafe-certificate rate
-and the nominal $\delta$, and a betting confidence sequence, which
-spends no split across looks, beats it on the configurations where
-that split bites hardest and loses elsewhere. A without-replacement
+and the nominal $\delta$. A betting confidence sequence, which spends no
+split across looks, beats it on the configurations where that split
+bites hardest and loses elsewhere. A without-replacement
 betting sequence or a time-uniform boundary~\cite{howard} would combine
 the two, and e-value selection (the e-value Benjamini--Hochberg
 procedure, e-BH)~\cite{ebh} composes with either; neither is needed for
@@ -1799,7 +1980,13 @@ are an open lever with guaranteed validity (Assumption~\ref{as:frozen}).
 \paragraph{Equivalence and columns.} In the main evaluation equivalence
 is exact match, and the columns are two Boolean columns and one four-way
 ordinal select; numeric and free-text columns, which the introduction's
-product examples also serve, are not evaluated there. A free-text column needs a
+product examples also serve, are not evaluated there. The five
+author-written edit pairs, one per class per column, are enough to show
+that surface class can fail to predict flip rate, not to estimate how
+often it does. The edit-class findings should be read at that strength.
+Because both Boolean columns ask one question over one corpus, the
+observation that a column's own stability dominates the edit rests on
+two columns. A free-text column needs a
 judge, and the judge's own error enters the budget. In a stratum, let $q$
 be the share of pairs the judge calls equivalent although a reader would
 not (missed flips). The flip rate the judge reports for the stratum is
@@ -1807,113 +1994,117 @@ then at least the true rate minus $q$, and $q$ is at most the judge's
 miss rate among the pairs it calls equivalent. So let $\hat{m}$ be an
 upper confidence bound on that conditional miss rate at level
 $\delta_{\mathrm{cal}}$, from human-labeled pairs of the same column,
-and certify at $\alpha - \hat{m}$: a certified stratum's true rate is at
+and certify at $\alpha - \hat{m}$. A certified stratum's true rate is at
 most $\alpha$ whenever the calibration bound and the certificate both
-hold, which they do with probability at least
-$1 - \delta - \delta_{\mathrm{cal}}$, provided the judge's conditional
-miss rate in the certified stratum is no higher than in the calibration
-pool. Errors in the other direction (calling equivalent cells
-different) only raise the reported rate and cost power. The calibration
+hold, provided the judge's conditional miss rate in the certified
+stratum is no higher than in the calibration pool. They both hold with
+probability at least $1 - \delta - \delta_{\mathrm{cal}}$. Errors in the
+other direction (calling equivalent cells different) only raise the
+reported rate and cost power. The calibration
 belongs to the (edit, column) it was drawn from, or to a pool of
 comparisons on one column if their conditional miss rates are taken as
 equal, since a judge's miss rate is a property of the outputs it
-compares; the machinery of this article is otherwise unchanged, but its
+compares. The machinery of this article is otherwise unchanged, but its
 power under a noisy judge \ifnum\pilotAvailable=1\relax has one measurement so far\else is an open measurement\fi.
 \ifnum\pilotAvailable=1\relax
 
 \paragraph{A pilot.} We ran the recipe once, on a free-text column over
 \pilotRows\ SO profiles that names each respondent's primary technical
-specialty in a short phrase, with three prompt versions (a baseline, a
-formatting-only edit of it, and a synonym rewording) and the primary
-model as judge (\pilotJudgeModel), asked in both orders whether two
-phrases name the same specialty. A pair either of whose requests
-failed (errored or timed out; the failures came in bursts of
-consecutive rows and did not recur on the same rows across versions) is
-excluded: \pilotFloorUsable, \pilotFmtUsable, and \pilotSynUsable\ of
-the \pilotRows\ pairs are usable for the floor, the formatting edit, and
-the synonym edit. Under that judge the column's own floor, two draws of
-the same prompt, is \pilotFloorRate\ (Wilson \pilotFloorCi); the
-formatting edit flips \pilotFmtRate\ (\pilotFmtCi) and the synonym edit
-\pilotSynRate\ (\pilotSynCi). We hand-labeled \pilotLabeled\ calibration
-pairs (one labeler, the author), drawn evenly from the three
-comparisons and pooled: \pilotLabeledSame\ the judge had called
-equivalent and \pilotLabeledDiff\ it had called different. The judge
-missed \pilotMisses\ true differences among the \pilotLabeledSame, an
-upper confidence bound of \pilotMissUcb\ on its miss rate among the
-pairs it calls equivalent at $\delta_{\mathrm{cal}}{=}\pilotDeltaCal$
-(pooled across the three comparisons; each comparison's
+specialty in a short phrase. The column has three prompt versions: a
+baseline, a formatting-only edit of it, and a synonym rewording. The
+judge is the primary model (\pilotJudgeModel), asked in both orders
+whether two phrases name the same specialty. A pair counts as equivalent
+only when both orders answer SAME. A pair either of whose requests
+failed (errored or timed out) is excluded. The failures came in bursts
+of consecutive rows and did not recur on the same rows across versions.
+The exclusion leaves \pilotFloorUsable, \pilotFmtUsable, and
+\pilotSynUsable\ of the \pilotRows\ pairs usable for the floor, the
+formatting edit, and the synonym edit. Under that judge the column's own
+floor, two draws of the same prompt, is \pilotFloorRate\ (Wilson
+\pilotFloorCi). The formatting edit flips \pilotFmtRate\ (\pilotFmtCi)
+and the synonym edit \pilotSynRate\ (\pilotSynCi).
+
+\paragraph{Pilot calibration.} We hand-labeled
+\pilotLabeled\ calibration pairs (one labeler, the author), drawn evenly
+from the three comparisons and pooled: \pilotLabeledSame\ the judge had
+called equivalent and \pilotLabeledDiff\ it had called different. Each
+pair was shown in a shuffled order as two phrases with a Same/Different
+choice, without the judge's verdict or the comparison it came from. The
+judge missed \pilotMisses\ true differences among the \pilotLabeledSame,
+an upper confidence bound of \pilotMissUcb\ on its miss rate among the
+pairs it calls equivalent at $\delta_{\mathrm{cal}}{=}\pilotDeltaCal$.
+The bound is pooled across the three comparisons; each comparison's
 \pilotLabeledSamePerComparison\ labels alone give
-\pilotMissUcbPerComparison), and called \pilotFalseFlips\ equivalent
-pairs different. A second model (\pilotAdjudicator) labeled the same
+\pilotMissUcbPerComparison. The judge also called
+\pilotFalseFlips\ equivalent pairs
+different. A second model (\pilotAdjudicator) labeled the same
 pairs and agreed with the hand labels on \pilotAdjAgree\ of them; the
 judge itself agreed on \pilotJudgeAgree. The second model called
 \pilotAdjMissesOnJudgeSame\ of the \pilotLabeledSame\ judge-equivalent
-pairs different, every one of them a pair the author called the same;
-under its labels the miss bound would be \pilotAdjMissUcb, so the clean
-side of this calibration rests on the author's reading. Certifying at
-$\alpha - \hat{m}$, which takes \pilotMissUcb\ off each budget
-($\alpha{=}0.2$ becomes \pilotAlphaLooseEff\ and $\alpha{=}0.1$ becomes
-\pilotAlphaTightEff), with strata by the cached phrase's category
+pairs different, every one of them a pair the author called the same.
+Under its labels the miss bound would be \pilotAdjMissUcb, so the clean
+side of this calibration rests on the author's reading.
+
+\paragraph{Pilot outcome and reading.} Certifying at $\alpha - \hat{m}$
+takes \pilotMissUcb\ off each budget: $\alpha{=}0.2$ becomes
+\pilotAlphaLooseEff\ and $\alpha{=}0.1$ becomes \pilotAlphaTightEff.
+Stratification is by the cached phrase's category
 (\pilotCategories\ categories, assigned once from the cache by the same
-model), the formatting edit \pilotFmtCalLoose\ at $\alpha{=}0.2$ and
-\pilotFmtCalTight\ at $\alpha{=}0.1$; the synonym edit
-\pilotSynCalLoose\ at $\alpha{=}0.2$ and \pilotSynCalTight\ at
-$\alpha{=}0.1$. The composed guarantee holds with
+model). In that configuration,
+\pilotOutcomes. The composed guarantee holds with
 probability $1-\delta-\delta_{\mathrm{cal}}$ under the assumption
 stated above; the judge's price is the deflation plus the labels. The
 floor the certifier met is the judge's, not the model's. Under the
 author's labels a reader called \pilotFalseFlips\ of the
 \pilotLabeledDiff\ judge-DIFFERENT pairs the same specialty, across the
-three comparisons, and \pilotMisses\ of the \pilotLabeledSame\
-judge-equivalent pairs different; weighting the judge's verdicts by
-those label shares puts the reader-level disagreement of two
-same-prompt draws near \pilotImpliedFloor\ (band \pilotImpliedFloorBand\
-from the Wilson intervals of the two shares), inside the loose budget.
-On the side it controls the recipe is therefore safe, at a price of
-\pilotMissUcb\ of budget under the author's labels; on the side it does
-not control it is powerless: a judge stricter than the reader inflates
-the measured flip rate, and the certifier, which sees only the judge,
+three comparisons, and \pilotMisses\ of the
+\pilotLabeledSame\ judge-equivalent pairs different. Weighting the
+judge's verdicts by those label shares puts the reader-level
+disagreement of two same-prompt draws near \pilotImpliedFloor\ (band
+\pilotImpliedFloorBand\ from the Wilson intervals of the two shares),
+inside the loose budget. On the side it controls the recipe is therefore
+safe, at a price of \pilotMissUcb\ of budget under the author's labels.
+On the side it does not control it is powerless: a judge stricter than
+the reader inflates the measured flip rate, and the certifier, which
+sees only the judge,
 refuses. The second model, under the same instruction, was no closer to
 the reader, which suggests that the strictness sits in the instruction
 (it counts a difference in specificity as a difference) and not in the
 model. Making a judge-based column certifiable is a matter of aligning
 the judge's equivalence with the reader's and calibrating it in both
 directions; the guarantee already holds for whatever judge is used.
-\fi The main evaluation's five author-written edit pairs, one per class
-per column, are enough to show that surface class can fail to predict
-flip rate,
-not to estimate how often it does, and the edit-class findings should
-be read at that strength.
+\fi
 
 \paragraph{Models and snapshots.} One budget-class reasoning model
-carries the full experimental program; \famCount\ further families were
+carries the full experimental program. A further \famCount\ families were
 run on the lab column's two pairs%
 \ifnum\famPairsAvailable=1\relax\ and \famFivePairFamilies\ of them on
-all five\fi\ (\secref{sec:experiments}), where certification reproduced
-on \famCertCount\ of them and the same edit's flip rate ranged widely, so
-the quantitative frontier (where savings sit for a given $\alpha$, and
-which edits are benign at all) is specific to the (edit, model) pair,
-even though the qualitative structure, a measurable floor that bounds
-certifiability and a certifier whose refusals track the measured flip
-rate, held on every family. Certificates are scoped to the model
+all five\fi\ (\secref{sec:experiments}). In those runs certification
+reproduced on \famCertCount\ of them and the same edit's flip rate ranged
+widely. The quantitative frontier (where savings sit for a given
+$\alpha$, and which edits are benign at all) is therefore specific to the
+(edit, model) pair. The qualitative structure nevertheless held on every
+family: a measurable floor that bounds certifiability and a certifier
+whose refusals track the measured flip
+rate. Certificates are scoped to the model
 snapshot their oracle draws came from. \secref{sec:experiments} shows
-what that scope is worth: the same model identifier through the same
-gateway had drifted \driftDaysLater\ days after the deployment run;
-the certifier measured the drift as a higher flip rate against the old
-cache, re-certified the two budgets the August run had certified (one
-of them a look deeper than the exact bound's replay of the August
-draws), and refused the tightest budget, on which the August evidence
-is silent. Detecting when a snapshot has moved without a
+what that scope is worth. The same model identifier through the same
+gateway had drifted \driftDaysLater\ days after the deployment run. The
+certifier measured the drift as a higher flip rate against the old
+cache. It re-certified the two budgets the August run had certified, one
+of them a look deeper than the exact bound's replay of the August draws.
+It refused the tightest budget, on which the August evidence is
+silent. Detecting when a snapshot has moved without a
 full re-certification, i.e., composing \sivm{} with change-of-world
 invalidation~\cite{evergreen,freshcache}, is the natural next step.
 
-\paragraph{Economics.} The economic frame that matters in production
-is time-to-consistency under provider rate limits, where certified
+\paragraph{Economics.} The economic frame that matters in production is
+time-to-consistency under provider rate limits. In that frame certified
 maintenance samples \sampleFracLo--\sampleFracHi\ of cells across the
 reliably certifying configurations of Table~\ref{tab:main}
 (\sampleFracLo\ on the headline formatting edit at $\alpha{=}0.2$)
-instead of recomputing $100\%$, a wall-clock and rate-limit gain that
-grows with table size, because sample sizes do not; the live
+instead of recomputing $100\%$. That is a wall-clock and rate-limit gain
+that grows with table size, because sample sizes do not. The live
 re-certification of \secref{sec:experiments} measured that decision at
 \sepWallLoose\ seconds of wall clock for the loose budget. Two things
 this article does not measure. The certificate surface in the UI was
@@ -1933,95 +2124,114 @@ today choose between recomputing everything and reusing everything.
 stratification, sample on a doubling schedule, bound each stratum's flip
 rate with an exact finite-population bound, reuse only what clears the
 budget. At deployment scale that cost \deployOracle\ oracle calls to
-certify reuse of \deployReused\ of \deployN\ cells, and the sample did
-not have to grow with the table, because the schedule stops on evidence
-about a \emph{rate}, which is size-independent.
+certify reuse of \deployReused\ of \deployN\ cells. The sample did not
+have to grow with the table, because the schedule stops on evidence
+about a \emph{rate}, at a cost bounded independently of the size.
 
 The result we did not anticipate is that the certifier doubles as a
 measuring instrument for the column it maintains. A stratum refused at
-every budget is a slice of the table on which the model cannot
-reproduce its own answers, identified by a futility stop at the cost of
-one look; a flip rate that has risen on the same rows against the same
-cache \driftDaysLater\ days later is a model that has moved under it,
-and the certifier reports the movement in the currency the user pays,
-oracle calls per certified budget. Certified maintenance is
+every budget is a slice of the table on which the model cannot reproduce
+its own answers, identified by a futility stop at the cost of one look.
+A flip rate that has risen on the same rows against the same cache
+\driftDaysLater\ days later is a model that has moved under it. The
+certifier reports the movement in the currency the user pays, oracle
+calls per certified budget. Certified maintenance is
 therefore useful even where it certifies nothing: the refusal
 identifies, cheaply, reuse error that would otherwise go unmeasured.
 
 \section*{Availability and reproducibility}
-The system, the certifier, every experiment script, and every result
-artifact are public in a single repository,
-\mbox{\url{https://github.com/arjunlohan/project-lore}}, under a
-source-available license that permits research and noncommercial use.
+\paragraph{What is released.} The system, the certifier, every
+experiment script, and every result artifact are public in a single
+repository, \mbox{\url{https://github.com/arjunlohan/project-lore}},
+under a source-available license that permits research and
+noncommercial use.
 Released: the two corpora (already public and redistributable
 under ODbL~1.0/DbCL~1.0 and MIT), the five versioned edit pairs, the
 per-cell ground-truth flip labels, the certifier, the adapter
 conformance suite, and every script and result artifact that produces a
 number in this paper. Both corpora are used as distributed by their
-maintainers under those licenses; the Djinni corpus is released
-anonymized at source, and this work collects no new human-subject
-data, attempts no re-identification, and releases only per-cell labels
-and aggregate statistics. Nothing in the evaluation path is withheld.
-Anyone reproducing this needs a model endpoint of
-their own; the labels are released so the statistical results can be
-reproduced without one. Several numbers here (the per-stratum floors,
-the ledger economics, the materialization wall clock, the certificate's
-stamp count) are computed from the running system's database, not
-from a result file, so the generator dumps every one of those database
-reads to an artifact alongside the others; the release is therefore
-self-contained, with no dependence on our instance. Every quantitative
-claim in this paper's prose, tables, and figures is emitted by a single
-generator (\texttt{scripts/experiments/gen-paper-assets.ts}) from those
-artifacts and from the system's cost ledger, and cited through macros,
-never typed inline, so re-running an experiment regenerates the
-sentences that cite it. A checker
-(\texttt{scripts/check-paper-numbers.ts}) enforces this mechanically
-and fails on nine classes of defect, listed in Appendix~\ref{app:guards};
-it reports zero of all nine for this draft. Three reproducibility
-hazards we hit are documented in the harness and in
-\secref{sec:experiments}: seeded \texttt{ORDER BY RAND} in MySQL depends
-on the projection list, so evaluation samples are pinned by exact query
-string; the certifier's sample path depended on the storage engine's
-row order until it was pinned to a canonical order; and naive
+maintainers under those licenses. The Djinni corpus is released
+anonymized at source, and this work collects no new human-subject data,
+attempts no re-identification, and releases only per-cell labels and
+aggregate statistics. Nothing in the evaluation path is withheld.
+Anyone reproducing this needs a model endpoint of their own; the labels
+are released so the statistical results can be reproduced without one.
+
+\paragraph{Generated numbers.} Several numbers here (the per-stratum
+floors, the ledger economics, the materialization wall clock, the
+certificate's stamp count) are computed from the running system's
+database, not from a result file. So the generator dumps every one of
+those database reads to an artifact alongside the others, and the
+release is therefore self-contained, with no dependence on our instance.
+Every quantitative claim in this paper's prose, tables, and figures is
+emitted by a single generator
+(\texttt{scripts/experiments/gen-paper-assets.ts}) from those artifacts
+and from the system's cost ledger, and cited through macros, never typed
+inline. Re-running an experiment therefore regenerates the sentences
+that cite it. A checker (\texttt{scripts/check-paper-numbers.ts})
+enforces this mechanically and fails on ten classes of defect, listed
+in Appendix~\ref{app:guards}; it reports zero of all ten for this
+version of the manuscript.
+
+\paragraph{Hazards and the preprint.} Three reproducibility hazards we
+hit are documented in the harness and in \secref{sec:experiments}.
+First, seeded \texttt{ORDER BY RAND} in MySQL depends on the projection
+list, so evaluation samples are pinned by exact query string. Second,
+the certifier's sample path depended on the storage engine's row order
+until it was pinned to a canonical order. Third, naive
 linear-congruential pseudorandom number generators written with
-JavaScript number multiplication silently lose low bits, so all
-sampling uses exact 32-bit arithmetic. Relative to the Zenodo preprint
-of this article, the certifier's default bound changed from
-Maurer--Pontil to the exact finite-population bound and every number
-was regenerated; the earlier numbers are reproducible from the same
-release with the Maurer--Pontil arm selected.
+JavaScript number multiplication silently lose low bits, so all sampling
+uses exact 32-bit arithmetic. Relative to the Zenodo preprint of this
+article, the certifier's default bound changed from Maurer--Pontil to
+the exact finite-population bound and every number was regenerated. The
+earlier numbers are reproducible from the same release with the
+Maurer--Pontil arm selected.
 
 \venueappendix
 
 \section{The mechanical guards}
 \label{app:guards}
-\texttt{scripts/check-paper-numbers.ts} fails on any of nine
-conditions: (1) a hand-typed quantity in the prose outside an
-enumerated allow-list (user parameters such as $\alpha$ and $\delta$,
-protocol constants such as the schedule looks, and generic thresholds
-quoted as such); (2) a quantity hardcoded inside the generator instead
-of derived from an artifact; (3) a macro defined but never cited, since
-an uncited macro can drift undetected; (4) a macro whose trailing space
-is swallowed into the next word, which is invisible in the source;
-(5) a sentence that asserts two quantities differ while citing two
+\texttt{scripts/check-paper-numbers.ts} fails on any of ten
+conditions:
+\begin{enumerate}
+\item a hand-typed quantity in the prose outside an enumerated
+allow-list (user parameters such as $\alpha$ and $\delta$, protocol
+constants such as the schedule looks, and generic thresholds quoted as
+such);
+\item a quantity hardcoded inside the generator instead of derived from
+an artifact;
+\item a macro defined but never cited, since an uncited macro can drift
+undetected;
+\item a macro whose trailing space is swallowed into the next word,
+which is invisible in the source;
+\item a sentence that asserts two quantities differ while citing two
 macros whose values are equal, which is how an earlier draft printed
-``different looks'' beside a number repeated twice; (6) a spelled-out
-multiplier (``twice'', ``an order of magnitude'') that the cited
-macros' ratio does not support, which is how a rate $1.26$ times a
-floor was printed as double it; (7) a containment claim (``inside'',
-``at most'') that the cited range and scalar macros do not support;
-(8) an absolute claim (``never'', ``every'', ``anywhere'') appearing in
-the abstract or the contributions list without an entry in an
+``different looks'' beside a number repeated twice;
+\item a spelled-out multiplier (``twice'', ``an order of magnitude'')
+that the cited macros' ratio does not support, which is how a rate
+$1.26$ times a floor was printed as double it;
+\item a containment claim (``inside'', ``at most'') that the cited
+range and scalar macros do not support;
+\item an absolute claim (``never'', ``every'', ``anywhere'') appearing
+in the abstract or the contributions list without an entry in an
 enumerated allow-list, the one class of defect the numeric guards are
-blind to by construction; and (9) a scope claim (``on the same
-column'') whose cited macros come from different columns, checked
-against a provenance file the generator emits from the same pair
-definitions the experiments run on. Each guard exists because the
-corresponding defect reached a compiled PDF at least once, several of
-them in a draft whose numbers were already machine-generated:
-generating the quantities is necessary but not sufficient, because the
-sentences that \emph{relate} quantities go stale independently of the
-quantities themselves.
+blind to by construction;
+\item a scope claim (``on the same column'') whose cited macros come
+from different columns, checked against a provenance file the generator
+emits from the same pair definitions the experiments run on;~and
+\item a prose sentence longer than 60 words (tables, captions,
+displayed mathematics, and the theorem environments excluded), a
+readability bound.
+\end{enumerate}
+The generator adds one guard of its own: it asserts the relations that
+the strict-mode and stratifier-ablation paragraphs of
+\secref{sec:experiments} state between figures, and stops if a
+regenerated artifact breaks one.
+Each guard exists because the corresponding defect reached a compiled
+PDF at least once, several of them in a draft whose numbers were
+already machine-generated. Generating the quantities is necessary but
+not sufficient, because the sentences that \emph{relate} quantities go
+stale independently of the quantities themselves.
 
 \section{The bound ablation, configuration by configuration}
 \label{app:grid}
@@ -2030,13 +2240,15 @@ Table~\ref{tab:main} and each of the five bounds, the certified savings
 of the main seed and the oracle calls spent. Relative to the exact
 bound, the Clopper--Pearson bound certifies all but one of its
 configurations (lost \boundCpLost, gained \boundCpExtra), reaching
-\boundCpSameLook\ of them at the same look, \boundCpEarlier\ earlier, and \boundCpLater\
-later, since it ignores the finite-population correction; Maurer--Pontil
-reaches \boundEbSameLook\ at the same look, \boundEbLater\ later, and
-\boundEbEarlier\ earlier; Bardenet--Maillard loses \boundWorLost\
-certificates, gains \boundWorExtra, and reaches \boundWorSameLook\ at
-the same look, \boundWorEarlier\ earlier, and \boundWorLater\ later; the betting sequence reaches \boundBetSameLook\
-at the same look, \boundBetEarlier\ earlier, and \boundBetLater\ later.
+\boundCpSameLook\ of them at the same look, \boundCpEarlier\ earlier,
+and \boundCpLater\ later, since it ignores the finite-population
+correction. Maurer--Pontil reaches \boundEbSameLook\ at the same look,
+\boundEbLater\ later, and \boundEbEarlier\ earlier. Bardenet--Maillard
+loses \boundWorLost\ certificates, gains \boundWorExtra, and reaches
+\boundWorSameLook\ at the same look, \boundWorEarlier\ earlier, and
+\boundWorLater\ later. The betting sequence reaches
+\boundBetSameLook\ at the same look, \boundBetEarlier\ earlier, and
+\boundBetLater\ later.
 
 \begin{table*}[t]
 \caption{Certified savings of the main seed (oracle calls in

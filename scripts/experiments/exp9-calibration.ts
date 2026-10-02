@@ -46,6 +46,9 @@ async function main() {
           let violPres = 0;
           let violReuse = 0;
           let violTheorem = 0;
+          // Theorem 1's event in strict mode: the realized whole-stratum
+          // flip count exceeds alpha times the reused count.
+          let violTheoremStrict = 0;
           let sampledSum = 0;
           for (let t = 0; t < TRIALS; t++) {
             const flips = Array.from({ length: size }, () =>
@@ -69,6 +72,8 @@ async function main() {
               // (sampled flips included) exceeds alpha times the size.
               const allFlips = flips.reduce((a: number, b) => a + b, 0);
               if (allFlips / size > alpha) violTheorem++;
+              if (allFlips > alpha * (size - outcome.sampled))
+                violTheoremStrict++;
               if (restFlips / size > alpha) violPres++;
               if (rest.length > 0 && restFlips / rest.length > alpha)
                 violReuse++;
@@ -82,6 +87,9 @@ async function main() {
             certificationRate: certified / TRIALS,
             violationRateTheorem: certified > 0 ? violTheorem / certified : 0,
             unsafeRateTheorem: violTheorem / TRIALS,
+            violationRateTheoremStrict:
+              certified > 0 ? violTheoremStrict / certified : 0,
+            unsafeRateTheoremStrict: violTheoremStrict / TRIALS,
             violationRatePresented: certified > 0 ? violPres / certified : 0,
             violationRateReuseSet: certified > 0 ? violReuse / certified : 0,
             avgSampled: sampledSum / TRIALS,

@@ -57,6 +57,11 @@ const exp11c = J("exp11c-deployment-bounds.json"); // August draws, every bound
 const exp11cSep = J("exp11c-deployment-bounds-v4.json"); // September snapshot, live
 const exp16 = J("exp16-snapshot-drift.json");
 const exp17 = JOpt("exp17-independence.json");
+// The concurrent-only extension of the independence check (a further 1,000
+// rows the next day), present once it has run.
+const exp17ext = JOpt("exp17-independence-ext.json") as
+  | { n: number; ranAt: string; concurrency: number; concurrent: { usable: number; errors: number; flips: number; flipRate: number | null; wilson95: [number, number]; serial: { lag1: number; lag1PermutationP: number; blocks: number; blockVarianceRatio: number | null; dispersionChiSquare: number; dispersionDf: number } }; againstMainSequential: { twoSidedP: number } }
+  | undefined;
 const exp19 = JOpt("exp19-freetext.json") as Exp19 | undefined;
 const pilotReady = !!exp19 && !!exp19.calibrationSummary && exp19.calibrationSummary.humanLabeled > 0 && exp19.calibrationSummary.missUcbConditional !== null;
 const exp18Files = readdirSync("docs/research/experiments")
@@ -359,10 +364,10 @@ def("floorTzeroProbe", pct(exp0.regimes["T0"].selfFlipRate, 1));
 
 // Edit flip rates
 def("flipSoFormatting", pct(pick("so-formatting", 0.2).trueFlipRate));
-def("flipSoSynonym", pct(pick("so-synonym", 0.2).trueFlipRate, 2));
-def("flipSoWidening", pct(pick("so-widening", 0.2).trueFlipRate, 2));
-def("flipDjFormatting", pct(pick("dj-formatting", 0.2).trueFlipRate, 2));
-def("flipDjCriteria", pct(pick("dj-criteria", 0.2).trueFlipRate, 2));
+def("flipSoSynonym", pct(pick("so-synonym", 0.2).trueFlipRate, 1));
+def("flipSoWidening", pct(pick("so-widening", 0.2).trueFlipRate, 1));
+def("flipDjFormatting", pct(pick("dj-formatting", 0.2).trueFlipRate, 1));
+def("flipDjCriteria", pct(pick("dj-criteria", 0.2).trueFlipRate, 1));
 
 // Benchmark headline (n=2000)
 const bench = pick("so-formatting", 0.2);
@@ -377,6 +382,7 @@ def("benchSavingsPi", `[${(bci.savingsLo * 100).toFixed(1)}, ${(bci.savingsHi * 
 def("benchRealizedCi", `[${(bci.realizedReuseCiLo * 100).toFixed(1)}, ${(bci.realizedReuseCiHi * 100).toFixed(1)}]`);
 def("bootB", num(bci.B));
 def("benchRealized", pct(bench.main.realizedPresented, 2));
+def("benchRealizedReuse", pct(bench.main.realizedReuse, 2));
 def("benchOracleTight", String(pick("so-formatting", 0.1).main.sampled));
 def("synTightCertRate", pct(pick("so-synonym", 0.1).bootstrap.certificationRate, 0));
 def("benchOracleMain", String(pick("so-formatting", 0.2).main.sampled));
@@ -420,7 +426,9 @@ def("edgeSavingsMean", pct(edge.bootstrap.savingsMean, 1));
     exceed
       .map(
         (r) =>
-          `${LABELS[r.pair] ?? r.pair} at $\\alpha{=}${r.alpha}$ (${pct(r.bootstrap.violationRateReuseSet, 1)} of the ${pct(r.bootstrap.certificationRate, 0)} of replications that certify)`,
+          // The shares themselves are the exceed. and cert. columns of the
+          // main table; the prose names the cells and points there.
+          `${LABELS[r.pair] ?? r.pair} at $\\alpha{=}${r.alpha}$`,
       )
       .join("; "),
   );
@@ -453,29 +461,69 @@ const ab = (exp8ab.results as Row8[]).find(
 )!;
 // r9b/M4: Contribution 2 advertises TWO guarantee targets but the paper
 // printed benchmark numbers for only one, while the strict reuse-set arm sat
-// complete in the artifact. Emit it: the strict mode is nearly free at the
-// loose budget on the stable column and collapses everywhere else.
+// complete in the artifact. Emit it beside the default mode's own figures,
+// so the prose compares like with like: under the exact bound the strict
+// mode is free where the flip rate sits well below the budget and its
+// price rises as the budget approaches the flip rate.
 {
-  const strict = (exp8.results as Array<{
+  type R8s = {
     pair: string;
     alpha: number;
     estimand: string;
+    n: number;
+    main: { reused: number };
     bootstrap: { savingsMean: number; certificationRate: number };
-  }>).filter((r) => r.estimand === "reuse-set");
+  };
+  const strict = (exp8.results as R8s[]).filter((r) => r.estimand === "reuse-set");
+  const dflt = (exp8.results as R8s[]).filter((r) => r.estimand === "presented");
   const at = (pair: string, alpha: number) =>
     strict.find((r) => r.pair === pair && r.alpha === alpha)!;
-  def("reuseSetSavingsMain", pct(at("so-formatting", 0.2).bootstrap.savingsMean, 1));
-  def("reuseSetSavingsTight", pct(at("so-formatting", 0.1).bootstrap.savingsMean, 1));
-  def("reuseSetCertTight", pct(at("so-formatting", 0.1).bootstrap.certificationRate, 1));
+  const atD = (pair: string, alpha: number) =>
+    dflt.find((r) => r.pair === pair && r.alpha === alpha)!;
+  const mean = (r: R8s) => pct(r.bootstrap.savingsMean, 1);
+  const cert = (r: R8s) => pct(r.bootstrap.certificationRate, 1);
+  def("reuseSetSavingsMain", mean(at("so-formatting", 0.2)));
+  def("reuseSetSavingsMainSeed", ratioPct(at("so-formatting", 0.2).main.reused, at("so-formatting", 0.2).n, 1));
+  def("reuseSetSavingsTight", mean(at("so-formatting", 0.1)));
+  def("reuseSetCertTight", cert(at("so-formatting", 0.1)));
+  def("benchCertTight", cert(atD("so-formatting", 0.1)));
+  def("reuseSetCertEdge", cert(at("so-formatting", 0.05)));
+  def("reuseSetSynLoose", mean(at("so-synonym", 0.2)));
+  def("reuseSetWidLoose", mean(at("so-widening", 0.2)));
+  def("defaultSynLoose", mean(atD("so-synonym", 0.2)));
+  def("defaultWidLoose", mean(atD("so-widening", 0.2)));
+  def("reuseSetDjFmtCertLoose", cert(at("dj-formatting", 0.2)));
+  def("reuseSetDjCritCertLoose", cert(at("dj-criteria", 0.2)));
+  def("reuseSetDjFmtSavLoose", mean(at("dj-formatting", 0.2)));
+  def("reuseSetDjCritSavLoose", mean(at("dj-criteria", 0.2)));
+  def("defaultDjFmtSavLoose", mean(atD("dj-formatting", 0.2)));
+  def("defaultDjCritSavLoose", mean(atD("dj-criteria", 0.2)));
   def(
-    "reuseSetDjCertMax",
+    "reuseSetDjCertTightMax",
     pct(
       strict
-        .filter((r) => r.pair.startsWith("dj-"))
+        .filter((r) => r.pair.startsWith("dj-") && Math.abs(r.alpha - 0.1) < 1e-9)
         .reduce((a, r) => Math.max(a, r.bootstrap.certificationRate), 0),
       1,
     ),
   );
+  // The prose states relations between these figures ("free", "two points",
+  // "within a point", "far below"); a regenerated artifact that breaks one
+  // must fail here rather than print a stale sentence.
+  const relation = (name: string, ok: boolean) => {
+    if (!ok) throw new Error(`strict-mode paragraph: relation no longer holds (${name}); rewrite the sentence in body.tex`);
+  };
+  const pts = (x: number) => x * 100;
+  relation("free at the loose budget", Math.abs(pts(at("so-formatting", 0.2).bootstrap.savingsMean - atD("so-formatting", 0.2).bootstrap.savingsMean)) < 0.05 && at("so-formatting", 0.2).bootstrap.certificationRate === 1);
+  relation("two points at the tight budget", Math.round(pts(atD("so-formatting", 0.1).bootstrap.savingsMean - at("so-formatting", 0.1).bootstrap.savingsMean)) === 2 && pts(atD("so-formatting", 0.1).bootstrap.certificationRate - at("so-formatting", 0.1).bootstrap.certificationRate) < 1);
+  relation("strict mode far below the default at 0.05", at("so-formatting", 0.05).bootstrap.certificationRate < atD("so-formatting", 0.05).bootstrap.certificationRate / 4);
+  for (const pair of ["so-synonym", "so-widening"]) {
+    relation(`${pair} within a point at 0.2`, Math.abs(pts(at(pair, 0.2).bootstrap.savingsMean - atD(pair, 0.2).bootstrap.savingsMean)) < 1);
+    relation(`${pair} far below at 0.1`, at(pair, 0.1).bootstrap.savingsMean < atD(pair, 0.1).bootstrap.savingsMean / 2);
+  }
+  for (const pair of ["dj-formatting", "dj-criteria"]) {
+    relation(`${pair} strict savings well below default at 0.2`, at(pair, 0.2).bootstrap.savingsMean < atD(pair, 0.2).bootstrap.savingsMean * 0.75);
+  }
   // How much of the grid certifies at all, so the abstract can disclose that
   // the headline economics live at the loose end of the frontier.
   const pres = (exp8.results as Array<{
@@ -503,24 +551,42 @@ def("ablationSavings", `${(ab.bootstrap.savingsMean * 100).toFixed(1)}\\%`);
       bootstrap: { savingsMean: number };
     }>).map((r) => [keyOf(r), r.bootstrap.savingsMean]),
   );
+  const fineCert = new Map(
+    (exp8ab.results as Array<{ pair: string; alpha: number; estimand: string; bootstrap: { certificationRate: number } }>).map((r) => [keyOf(r), r.bootstrap.certificationRate]),
+  );
   let better = 0;
   let worse = 0;
   let total = 0;
+  type Win = { pair: string; alpha: number; fineMean: number; baseMean: number; fineCert: number; baseCert: number };
+  const wins: Win[] = [];
   for (const r of exp8.results as Array<{
     pair: string;
     alpha: number;
     estimand: string;
-    bootstrap: { savingsMean: number };
+    bootstrap: { savingsMean: number; certificationRate: number };
   }>) {
     const f = fine.get(keyOf(r));
     if (f === undefined) continue;
     total++;
-    if (f > r.bootstrap.savingsMean + 1e-9) better++;
-    else if (f < r.bootstrap.savingsMean - 1e-9) worse++;
+    if (f > r.bootstrap.savingsMean + 1e-9) {
+      better++;
+      wins.push({ pair: r.pair, alpha: r.alpha, fineMean: f, baseMean: r.bootstrap.savingsMean, fineCert: fineCert.get(keyOf(r)) ?? 0, baseCert: r.bootstrap.certificationRate });
+    } else if (f < r.bootstrap.savingsMean - 1e-9) worse++;
   }
   def("ablationTotal", String(total));
   def("ablationBetter", String(better));
   def("ablationWorse", String(worse));
+  def("ablationTies", String(total - better - worse));
+  // Where the wins sit: the value-only certification rate they occur at,
+  // and the largest of them, so the prose describes the wins it counts.
+  if (wins.length === 0) throw new Error("stratifier ablation: no win to describe; rewrite the sentence in body.tex");
+  const top = wins.reduce((a, w) => (w.fineMean - w.baseMean > a.fineMean - a.baseMean ? w : a));
+  def("ablationWinBaseCertMax", pct(Math.max(...wins.map((w) => w.baseCert)), 1));
+  def("ablationTopWinLabel", `${LABELS[top.pair] ?? top.pair} at $\\alpha{=}${top.alpha}$`);
+  def("ablationTopWinFine", pct(top.fineMean, 1));
+  def("ablationTopWinBase", pct(top.baseMean, 1));
+  def("ablationTopWinFineCert", pct(top.fineCert, 1));
+  def("ablationTopWinBaseCert", pct(top.baseCert, 1));
 }
 
 // exp7 baselines (regenerate B2/B1/B3 prose)
@@ -606,11 +672,13 @@ def("calConfigs", String(exp9.results.length));
   const cal = exp9.results as C9[];
   const T = Number(exp9.trials);
   // Theorem 1's event: certified AND realized whole-stratum flip count above
-  // alpha n_j (sampled flips included). In strict mode the certified quantity
-  // is the reuse-set rate, so that mode's violation is the reuse-set event.
-  const unsafeOf = (r: C9 & { violationRateTheorem?: number }) =>
-    r.certificationRate *
-    (r.estimand === "presented" ? (r.violationRateTheorem ?? r.violationRatePresented) : r.violationRateReuseSet);
+  // alpha n_j (sampled flips included); in strict mode, above alpha times
+  // the reused count, which is what that mode certifies.
+  const unsafeOf = (r: C9 & { violationRateTheorem?: number; violationRateTheoremStrict?: number }) => {
+    const cond = r.estimand === "presented" ? r.violationRateTheorem : r.violationRateTheoremStrict;
+    if (cond === undefined) throw new Error(`exp9 lacks the Theorem 1 event rate for ${r.estimand}; re-run exp9-calibration`);
+    return r.certificationRate * cond;
+  };
   const worst = cal.reduce((a, b) => (unsafeOf(b) > unsafeOf(a) ? b : a));
   const u = unsafeOf(worst);
   const [wlo, whi] = wilsonInterval(Math.round(u * T), T);
@@ -856,9 +924,9 @@ def("sepRealizedLoose", pct(sx2.realizedOnOverlap ?? 0, 2));
 def("sepRealizedTight", pct(sx1.realizedOnOverlap ?? 0, 2));
 {
   const smp2 = arm(exp11cSep, "eb", 0.2);
-  def("sepMpOracleLoose", String(smp2.oracleCalls));
+  def("sepMpOracleLoose", num(smp2.oracleCalls));
   const smp1 = exp11cSep.sweeps.find((s: W11c) => s.bound === "eb" && Math.abs(s.alpha - 0.1) < 1e-9) as W11c;
-  def("sepMpTightOutcome", smp1.status === "ok" && smp1.reused > 0 ? `certifies after ${smp1.oracleCalls} calls` : smp1.status === "ok" ? `refuses after ${smp1.oracleCalls} calls` : "is not reached");
+  def("sepMpTightOutcome", smp1.status === "ok" && smp1.reused > 0 ? `certifies after ${num(smp1.oracleCalls)} calls` : smp1.status === "ok" ? `refuses after ${num(smp1.oracleCalls)} calls` : "is not reached");
 }
 // Snapshot drift (exp16): the same rows under both snapshots.
 {
@@ -984,6 +1052,7 @@ const CONC = 32;
 const matHours = Number(lat.ms) / CONC / 3600000;
 def("deployMatHours", matHours.toFixed(1));
 def("deployConcurrency", String(CONC));
+def("deployMatMeanLatencyS", (Number(lat.ms) / Number(lat.c) / 1e3).toFixed(1));
 const maintCells = dx2.oracleCalls + dx2.recompute;
 def("deployMaintCells", num(maintCells));
 def("deployMaintCost", `\\$${(maintCells * perCell).toFixed(2)}`);
@@ -1172,6 +1241,8 @@ const drawLabels = Object.values(
   rawLabels as Record<string, { d1: unknown[]; d2: unknown[] }>,
 ).reduce((a, r) => a + r.d1.length + r.d2.length, 0);
 def("labeledCells", num(editLabels + drawLabels));
+def("editLabelCells", num(editLabels));
+def("drawLabelCells", num(drawLabels));
 const dbw = await mysql.createConnection({ uri: MYSQL_URL });
 const [[wt]] = (await dbw.query(
   `SELECT
@@ -1343,7 +1414,7 @@ Bound & $0/90$, $N{=}1800$ & $5/180$, $N{=}81469$ & certifying & mean savings & 
 ${row("exact", "Exact finite-population (pinned)")}
 ${row("cp", "Clopper--Pearson (binomial)")}
 ${row("betting", "Betting confidence sequence")}
-${row("eb", "Maurer--Pontil (first submission)")}
+${row("eb", "Maurer--Pontil (earlier version)")}
 ${row("wor", "Bardenet--Maillard (WoR)")}
 \\bottomrule
 \\multicolumn{7}{@{}p{\\linewidth}@{}}{\\footnotesize The betting sequence has no $5/180$ entry because its bound is a function of the whole draw sequence, not of $(k, n)$ alone.}
@@ -1389,6 +1460,7 @@ const offLedgerCells =
   // Independence check (two arms, direct calls) and the remaining-pair
   // family runs, both off the ledger.
   (exp17 ? Number(exp17.n) * 2 : 0) +
+  (exp17ext ? Number(exp17ext.n) : 0) +
     // The pilot's draws count once the pilot ships (its labels applied), and
   // only the draws that returned a phrase.
   (exp19 && pilotReady ? Object.values(exp19.draws).reduce((a, arr) => a + arr.filter((x) => x !== null).length, 0) : 0) +
@@ -1572,6 +1644,8 @@ if (gemini38Present) {
   const d38 = J(GEMINI38_FULL) as { n: number; usableFloor?: number; selfFlipFloor: number; formattingEditFlip: number };
   def("famGeminiEightFmtCount", String(Math.round(d38.formattingEditFlip * d38.n)));
   def("famGeminiEightFloorCount", String(Math.round(d38.selfFlipFloor * (d38.usableFloor ?? d38.n))));
+  def("famGeminiEightFmtFine", pct(d38.formattingEditFlip, 2));
+  def("famGeminiEightFloorFine", pct(d38.selfFlipFloor, 2));
 }
 def("famFloorLo", pct(Math.min(...famFloors), 1));
 def("famFloorHi", pct(Math.max(...famFloors), 1));
@@ -1687,9 +1761,23 @@ if (exp17) {
   // Resolution of the tests, stated beside the results: the minimum
   // detectable difference of the two-proportion test at 80% power and the
   // 95% interval on the block variance ratio (chi-square with blocks-1 df).
-  const pooled = (e.sequential.flips + e.concurrent.flips) / Math.max(1, e.sequential.usable + e.concurrent.usable);
-  const se = Math.sqrt((2 * pooled * (1 - pooled)) / Math.max(1, Math.min(e.sequential.usable, e.concurrent.usable)));
-  def("indepMdd", pct((1.96 + 0.84) * se, 1));
+  // Two-sample power calculation: the null SE uses the pooled rate over the
+  // two arm sizes, the alternative SE the rates p1 and p1 + d; solve
+  // 1.96 SE0 + 0.84 SE1(d) = d by iteration.
+  {
+    const n1 = Math.max(1, e.sequential.usable);
+    const n2 = Math.max(1, e.concurrent.usable);
+    const p1 = e.sequential.flips / n1;
+    const pooled = (e.sequential.flips + e.concurrent.flips) / (n1 + n2);
+    const se0 = Math.sqrt(pooled * (1 - pooled) * (1 / n1 + 1 / n2));
+    let d = 1.96 * se0;
+    for (let i = 0; i < 100; i++) {
+      const p2 = Math.min(1, p1 + d);
+      const se1 = Math.sqrt((p1 * (1 - p1)) / n1 + (p2 * (1 - p2)) / n2);
+      d = 1.96 * se0 + 0.84 * se1;
+    }
+    def("indepMdd", pct(d, 1));
+  }
   def("indepPowerTarget", "80\\%");
   def("indepLevel", "5\\%");
   const dfc = e.concurrent.serial.dispersionDf;
@@ -1705,6 +1793,45 @@ if (exp17) {
   def("indepSeqDispersionP", fmtP(chiP(e.sequential.serial.dispersionChiSquare, e.sequential.serial.dispersionDf)));
   def("indepConcDispersionP", fmtP(chiP(e.concurrent.serial.dispersionChiSquare, e.concurrent.serial.dispersionDf)));
   def("indepSeqBlocks", String(e.sequential.serial.blocks));
+  // Do the excluded requests hide flips? The rows both arms kept, and the
+  // sequential arm's verdict on the rows the concurrent arm dropped.
+  type Draw = { cached: boolean | null; sequential: boolean | null; concurrent: boolean | null };
+  const draws = (exp17 as { draws: Draw[] }).draws;
+  const both = draws.filter((r) => r.sequential !== null && r.concurrent !== null);
+  const droppedByConc = draws.filter((r) => r.sequential !== null && r.concurrent === null);
+  def("indepBothRows", num(both.length));
+  def("indepBothSeqRate", pct(both.filter((r) => r.sequential !== r.cached).length / both.length, 1));
+  def("indepBothConcRate", pct(both.filter((r) => r.concurrent !== r.cached).length / both.length, 1));
+  def("indepConcDroppedRows", String(droppedByConc.length));
+  def("indepConcDroppedSeqFlips", String(droppedByConc.filter((r) => r.sequential !== r.cached).length));
+  // The design is paired (same rows in both arms): discordant counts and an
+  // exact two-sided McNemar p on the rows both arms kept.
+  const onlySeq = both.filter((r) => r.sequential !== r.cached && r.concurrent === r.cached).length;
+  const onlyConc = both.filter((r) => r.concurrent !== r.cached && r.sequential === r.cached).length;
+  const disc = onlySeq + onlyConc;
+  const mcnemar = disc === 0 ? 1 : Math.min(1, 2 * binomialLowerTail(Math.min(onlySeq, onlyConc), disc, 0.5));
+  def("indepOnlySeqFlips", String(onlySeq));
+  def("indepOnlyConcFlips", String(onlyConc));
+  def("indepPairedP", mcnemar < 0.001 ? "<0.001" : mcnemar.toFixed(2));
+  // The concurrent-only extension: enough blocks for the dispersion test.
+  def("indepExtAvailable", exp17ext ? "1" : "0");
+  if (exp17ext) {
+    const x = exp17ext.concurrent;
+    const dfx = x.serial.dispersionDf;
+    const ratio = x.serial.blockVarianceRatio ?? 0;
+    def("indepExtRows", num(exp17ext.n));
+    def("indepExtErrors", String(x.errors));
+    def("indepExtBlocks", String(x.serial.blocks));
+    def("indepExtDispersion", ratio.toFixed(2));
+    def("indepExtDispersionCi", `[${((ratio * dfx) / chiSquareQuantile(0.975, dfx)).toFixed(2)}, ${((ratio * dfx) / chiSquareQuantile(0.025, dfx)).toFixed(2)}]`);
+    def("indepExtDispersionP", fmtP(chiP(x.serial.dispersionChiSquare, dfx)));
+    def("indepExtLag", signed(x.serial.lag1));
+    def("indepExtLagP", lagP(x.serial.lag1PermutationP));
+    def("indepExtRate", pct(x.flipRate ?? 0, 1));
+    def("indepExtCi", ci(x.wilson95));
+    def("indepExtVsSeqP", fmtP(exp17ext.againstMainSequential.twoSidedP));
+    def("indepExtDate", fmtRunDate(exp17ext.ranAt));
+  }
 }
 
 // Full bound-by-configuration grid (exp14) for the appendix: savings and
@@ -1795,6 +1922,26 @@ ${lines.join("\n")}
     }
   }
   def("famPairsAvailable", arts.length > 0 ? "1" : "0");
+  // A cached-value stratum smaller than the first look is drawn in full,
+  // so its draws count toward the family's calls on that pair and it is
+  // never certified (nothing is left to reuse); the caption says so where
+  // it happens, since the refusal count is then not a schedule look.
+  {
+    type Strat = { size: number };
+    const notes: string[] = [];
+    for (const a of arts) {
+      for (const [pairKey, pr] of Object.entries(a.pairs)) {
+        const strata = ((pr as unknown as { sweeps: Array<{ strata?: Record<string, Strat> }> }).sweeps[0]?.strata ?? {}) as Record<string, Strat>;
+        for (const [sk, s] of Object.entries(strata)) {
+          if (s.size >= 45) continue;
+          const value = sk.startsWith("v=true") ? "cached-TRUE" : sk.startsWith("v=false") ? "cached-FALSE" : `cached-${sk.replace(/^v=/, "").replace(/\|all$/, "")}`;
+          const column = pairKey === "so-widening" ? "widening" : "select";
+          notes.push(`${LABEL[a.model] ?? a.model} holds ${s.size} ${value} cells on the ${column} column, fewer than the first look; that stratum is drawn in full, so its ${s.size} draws count toward the family's calls on that pair and, with nothing left to reuse, it is never certified`);
+        }
+      }
+    }
+    def("famPairsSmallStrataNote", notes.length ? ` ${notes.join("; ")}.` : "");
+  }
   def("famFivePairFamilies", String(complete));
   def("famFivePairList", completeLabels.join(", ") || "--");
   // Certification outcomes across the remaining pairs, for the prose.
@@ -1970,10 +2117,26 @@ if (pilotReady && exp19) {
       ? `certifies ${pct(s.savings, 1)} savings (realized judge-scored error ${s.realizedJudge === null ? "--" : pct(s.realizedJudge, 2)}, ${s.sampled} oracle calls)`
       : `is refused on every stratum after ${s.sampled} oracle calls`;
   };
-  def("pilotFmtCalLoose", outcome("formatting", "category@0.2:calibrated"));
-  def("pilotFmtCalTight", outcome("formatting", "category@0.1:calibrated"));
-  def("pilotSynCalLoose", outcome("synonym", "category@0.2:calibrated"));
-  def("pilotSynCalTight", outcome("synonym", "category@0.1:calibrated"));
+  // One sentence for the four calibrated runs. When every run refuses every
+  // stratum after the same number of calls, say so once instead of four
+  // times; otherwise spell the four outcomes out.
+  const runs: Array<[string, string, string]> = [
+    ["formatting", "category@0.2:calibrated", "0.2"],
+    ["formatting", "category@0.1:calibrated", "0.1"],
+    ["synonym", "category@0.2:calibrated", "0.2"],
+    ["synonym", "category@0.1:calibrated", "0.1"],
+  ];
+  const sweeps = runs.map(([n, k]) => res(n).sweeps[k]);
+  const allRefused = sweeps.every((s) => s && s.alphaEffective > 0 && s.certifiedStrata.length === 0);
+  const sameCalls = allRefused && sweeps.every((s) => s.sampled === sweeps[0].sampled);
+  const nCategories = (exp19.categories as string[]).length;
+  const firstLookOnly = sameCalls && sweeps[0].sampled === nCategories * 45;
+  def(
+    "pilotOutcomes",
+    sameCalls
+      ? `both edits are refused on every stratum at both budgets, each run stopping after ${num(sweeps[0].sampled)} oracle calls${firstLookOnly ? " (every stratum at its first look)" : ""}`
+      : `the formatting edit ${outcome("formatting", "category@0.2:calibrated")} at $\\alpha{=}0.2$ and ${outcome("formatting", "category@0.1:calibrated")} at $\\alpha{=}0.1$; the synonym edit ${outcome("synonym", "category@0.2:calibrated")} at $\\alpha{=}0.2$ and ${outcome("synonym", "category@0.1:calibrated")} at $\\alpha{=}0.1$`,
+  );
 }
 
 // ---------------------------------------------------------------------------
@@ -1993,7 +2156,7 @@ if (pilotReady && exp19) {
     return `${perM(p.inputPerToken)} / ${perM(p.outputPerToken)}`;
   };
   const rowsM: string[] = [
-    `\\texttt{deepseek/deepseek-v4-flash-0731} & primary model: every cell of the main program, the deployment run, the drift and independence checks${pilotReady ? ", the free-text pilot's cells and its judge" : ""} & \\ledgerStart\\ to \\ledgerEnd; \\sepSnapshotDate & ${priceOf("deepseek/deepseek-v4-flash-0731")} \\\\`,
+    `\\texttt{deepseek/deepseek-v4-flash-0731} & primary model: every cell of the main program, the deployment run, the drift and independence checks${pilotReady ? ", the free-text pilot's cells and its judge" : ""} & \\ledgerStart\\ to \\ledgerEnd; \\sepSnapshotDate${exp17ext ? "; \\indepExtDate" : ""} & ${priceOf("deepseek/deepseek-v4-flash-0731")} \\\\`,
     `\\texttt{openai/text-embedding-3-small} & embedding proxy (baselines B1, B3; interaction stratifier) & with the main program & ${priceOf("openai/text-embedding-3-small")} \\\\`,
   ];
   for (const f of FAMILIES) {
