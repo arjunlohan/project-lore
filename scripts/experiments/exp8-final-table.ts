@@ -144,6 +144,11 @@ interface RunOutcome {
   reusedFlips: number;
   certTotal: number; // total rows in certified strata
   recompute: number;
+  /** Certified strata for which the event Theorem 1 bounds occurred. */
+  unsafeStrata: number;
+  /** Certified strata whose own reuse-set rate exceeds alpha (a subset of
+   * the theorem's event in the strict mode; not certified by the default). */
+  reuseExceedStrata: number;
 }
 
 async function replay(
@@ -160,6 +165,8 @@ async function replay(
   let certTotal = 0;
   let recompute = 0;
   let certifiedStrata = 0;
+  let unsafeStrata = 0;
+  let reuseExceedStrata = 0;
   for (const s of strata) {
     const order = seededShuffle(
       s.flips.map((_, i) => i),
@@ -180,13 +187,27 @@ async function replay(
       certifiedStrata++;
       certTotal += s.flips.length;
       const rest = order.slice(outcome.sampled);
+      const restFlips = rest.reduce((a, i) => a + s.flips[i]!, 0);
       reused += rest.length;
-      reusedFlips += rest.reduce((a, i) => a + s.flips[i]!, 0);
+      reusedFlips += restFlips;
+      // The event the theorem bounds is per stratum, so it is counted per
+      // stratum: a union of certified strata can sit inside the budget while
+      // one of them does not. Default mode: the stratum is a null, its whole
+      // realized flip count M_j above alpha * n_j. Strict mode: M_j above
+      // alpha * (n_j - m_j), the reused count; the stratum's own reuse-set
+      // rate exceeding alpha is a subset of that event.
+      const stratumFlips = s.flips.reduce((a, x) => a + x, 0);
+      const unsafe =
+        estimand === "presented"
+          ? stratumFlips > alpha * s.flips.length + 1e-9
+          : stratumFlips > alpha * rest.length + 1e-9;
+      if (unsafe) unsafeStrata++;
+      if (restFlips > alpha * rest.length + 1e-9) reuseExceedStrata++;
     } else {
       recompute += s.flips.length - outcome.sampled;
     }
   }
-  return { certifiedStrata, sampled, reused, reusedFlips, certTotal, recompute };
+  return { certifiedStrata, sampled, reused, reusedFlips, certTotal, recompute, unsafeStrata, reuseExceedStrata };
 }
 
 async function main() {
@@ -326,6 +347,8 @@ async function main() {
         const savingsAll: number[] = [];
         let violPresented = 0;
         let violReuse = 0;
+        let unsafeRuns = 0;
+        let reuseExceedRuns = 0;
         let savingsSum = 0;
         let savingsSq = 0;
         for (let b = 0; b < B; b++) {
@@ -335,6 +358,8 @@ async function main() {
           savingsSum += sv;
           savingsAll.push(sv);
           savingsSq += sv * sv;
+          if (o.unsafeStrata > 0) unsafeRuns++;
+          if (o.reuseExceedStrata > 0) reuseExceedRuns++;
           if (o.reused > 0) {
             certRuns++;
             if (o.reusedFlips / o.certTotal > alpha) violPresented++;
@@ -388,6 +413,12 @@ async function main() {
             certificationRate: certRuns / B,
             violationRatePresented: certRuns > 0 ? violPresented / certRuns : 0,
             violationRateReuseSet: certRuns > 0 ? violReuse / certRuns : 0,
+            // Share of ALL replications that issue at least one unsafe
+            // certificate, counted per stratum (the event of Theorem 1).
+            unsafeCertificateRate: unsafeRuns / B,
+            // Share of ALL replications in which a certified stratum's own
+            // reuse-set rate exceeds alpha.
+            stratumReuseExceedRate: reuseExceedRuns / B,
             savingsMean,
             savingsSd,
             savingsLo,

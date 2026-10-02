@@ -1,8 +1,7 @@
 /**
  * Synthetic validity + power check for the sIVM v1 math (no LLM calls).
  * - Validity: across trials, P(any certified stratum has true flip rate
- *   > alpha) must be <= delta (should be far below, EB+Bonferroni are
- *   conservative).
+ *   > alpha) must be <= delta.
  * - Power: strata with true rate 0 and size >> minSample should certify.
  *
  * Run: pnpm tsx scripts/test-sivm-math.ts
@@ -117,11 +116,16 @@ async function main() {
     adaptRiskyCertified / ADAPT_TRIALS <= DELTA / 2 &&
     adaptCleanCertified / ADAPT_TRIALS > 0.5;
   // Assert what the math promises: clean large strata certify reliably;
-  // low-noise power is reported (needs adaptive top-up, a tracked upgrade),
-  // and at/above-alpha strata must essentially never certify.
+  // low-noise power is reported (needs adaptive top-up, a tracked upgrade);
+  // a stratum well above alpha never certifies; and a stratum whose flip
+  // rate EQUALS alpha certifies no more often than its share of delta. The
+  // exact bound spends that share, so the rate is not near zero as it was
+  // under the empirical-Bernstein bound this test was first written for
+  // (its old threshold of 1% failed from the day the exact bound was pinned).
+  const perStratumDelta = DELTA / SCENARIO.length;
   const powerOk =
     (certifyCount.get("safe-large") ?? 0) / TRIALS > 0.95 &&
-    (certifyCount.get("borderline") ?? 0) / TRIALS < 0.01 &&
+    (certifyCount.get("borderline") ?? 0) / TRIALS <= perStratumDelta &&
     (certifyCount.get("risky") ?? 0) === 0;
   const validityOk = violationRate <= DELTA;
   console.log(

@@ -549,6 +549,12 @@ const longSentences = [
     `abstract: ${abstractSentences.length} sentences, longest: ${abstractSentences.reduce((a, x) => Math.max(a, x.split(" ").length), 0)} words`,
   );
   for (const x of longSentences.slice(0, 20)) console.log(`  (${x.split(" ").length}) ${x.slice(0, 110)}...`);
+  // PROSE_LIST_OVER=45 lists every prose sentence longer than that, in full,
+  // for the writer who has to split them.
+  if (process.env.PROSE_LIST_OVER) {
+    const limit = Number(process.env.PROSE_LIST_OVER);
+    for (const x of proseSentences.filter((y) => y.split(" ").length > limit)) console.log(`  over ${limit} (${x.split(" ").length}): ${x}`);
+  }
 }
 
 const ok =

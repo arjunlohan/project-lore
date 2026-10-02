@@ -225,6 +225,9 @@ export async function certifyColumnEdit(
         upperBound: last.upperBound,
         certified: outcome.certified,
         looks: outcome.looks,
+        perStratumDelta,
+        estimand: opts.estimand ?? "presented",
+        bound: opts.bound ?? "exact",
       });
     }
   } else {
@@ -247,7 +250,12 @@ export async function certifyColumnEdit(
       strata: mathInput,
       alpha: opts.alpha,
       delta: opts.delta,
-    });
+    }).map((r) => ({
+      ...r,
+      perStratumDelta: opts.delta / Math.max(1, mathInput.length),
+      estimand: "presented" as const,
+      bound: "exact" as const,
+    }));
   }
   const sampledRowIds = [...sampledByStratum.values()].flat();
 

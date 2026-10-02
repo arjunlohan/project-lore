@@ -17,6 +17,7 @@ import {
   exactUpperBound,
   mulberry32,
   worUpperBound,
+  lookSchedule,
 } from "@lore/core/sivm";
 import mysql from "mysql2/promise";
 import { PAIRS } from "./pairs";
@@ -45,6 +46,39 @@ const exp2 = J("exp2-editclass.json");
 const exp4 = J("exp4-vote3.json");
 const exp7 = J("exp7-baselines.json");
 const exp8 = J("exp8-final-table.json");
+// The total failure probability of a certification, as the main results
+// were run, and the number of strata of each pair's column (its distinct
+// cached values in the released labels): the per-stratum level is their
+// ratio.
+const DELTA_TOTAL = (() => {
+  const m = String(exp8.procedure).match(/delta=([\d.]+)/);
+  if (!m) throw new Error("exp8-final-table.json does not state its delta");
+  return Number(m[1]);
+})();
+// Section III says the budget may be read after the draws, because the look
+// schedule does not depend on it. The schedule sizes its last look from
+// alpha, which bites only below the smallest budget of the article; hold the
+// claim to the code for every budget the article uses, over a range of
+// stratum sizes and for the stratum counts that occur (2, 4, and the pilot's 8).
+{
+  const budgets = [...new Set((exp8.results as Array<{ alpha: number }>).map((r) => r.alpha))];
+  const sizes = [45, 60, 90, 169, 186, 360, 529, 743, 1440, 1441, 1814, 2000, 7715, 81469];
+  for (const K of [1, 2, 4, 8]) {
+    for (const size of sizes) {
+      const ref = JSON.stringify(lookSchedule(size, budgets[0]!, DELTA_TOTAL / K, 45, 6));
+      for (const alpha of budgets) {
+        if (JSON.stringify(lookSchedule(size, alpha, DELTA_TOTAL / K, 45, 6)) !== ref) {
+          throw new Error(`the look schedule depends on the budget at alpha=${alpha} (stratum ${size}, K=${K}); rewrite "What the test conditions on is fixed" in body.tex`);
+        }
+      }
+    }
+  }
+}
+const strataCountOf = (pairKey: string): number => {
+  const pr = (J("benchmark-labels.json") as { pairs: Array<{ key: string; cached: unknown[] }> }).pairs.find((x) => x.key === pairKey);
+  if (!pr) throw new Error(`benchmark-labels.json has no pair ${pairKey}`);
+  return new Set(pr.cached.filter((v) => v !== null && v !== undefined).map((v) => String(v))).size;
+};
 const exp8ab = J("exp8-embed-ablation.json");
 const exp9 = J("exp9-calibration.json");
 const exp10 = J("exp10-multidraw.json");
@@ -191,6 +225,8 @@ interface Row8 {
     violationRateReuseSet: number;
     savingsMean: number;
     savingsSd: number;
+    savingsLo: number;
+    savingsHi: number;
   };
 }
 const rows = (exp8.results as Row8[]).filter((r) => r.estimand === "presented");
@@ -241,10 +277,17 @@ const frontierPlots = Object.keys(LABELS)
     const pts = rows
       .filter((r) => r.pair === pair)
       .sort((a, b) => a.alpha - b.alpha)
-      .map(
-        (r) =>
-          `(${r.alpha},${(r.bootstrap.savingsMean * 100).toFixed(1)}) +- (0,${(r.bootstrap.savingsSd * 100).toFixed(1)})`,
-      )
+      .map((r) => {
+        // The bar is the 95% percentile interval of Table 1, not mean +- sd:
+        // the replications are a certify/refuse mixture, and a symmetric bar
+        // reaches below zero savings. Where a configuration certifies in a
+        // few replications only, the interval is [0, 0] and the mean sits
+        // above it; the bar then runs from the mean down to zero.
+        const mean = r.bootstrap.savingsMean * 100;
+        const up = Math.max(0, r.bootstrap.savingsHi * 100 - mean);
+        const down = Math.max(0, mean - r.bootstrap.savingsLo * 100);
+        return `(${r.alpha},${mean.toFixed(1)}) += (0,${up.toFixed(1)}) -= (0,${down.toFixed(1)})`;
+      })
       .join(" ");
     return `\\addplot+[error bars/.cd, y dir=both, y explicit] coordinates { ${pts} }; \\addlegendentry{${LABELS[pair]}}`;
   })
@@ -269,6 +312,12 @@ const powerPlots = [600, 1800, 5000]
 writeFileSync(
   "paper/figdata.tex",
   `% GENERATED. Do not edit.
+% Series colors of the frontier figure (a color-blind-safe set; the series
+% also differ in mark and dash pattern).
+\\definecolor{frontierA}{RGB}{0,114,178}
+\\definecolor{frontierB}{RGB}{213,94,0}
+\\definecolor{frontierC}{RGB}{0,158,115}
+\\definecolor{frontierD}{RGB}{204,121,167}
 \\newcommand{\\frontierplots}{${frontierPlots}}
 \\newcommand{\\powerplots}{${powerPlots}}
 `,
@@ -468,18 +517,31 @@ def("edgeCertRate", `${(edge.bootstrap.certificationRate * 100).toFixed(1)}\\%`)
 def("edgeSavingsMean", pct(edge.bootstrap.savingsMean, 1));
 // Under the exact bound the certifier spends its budget, so Table 1 can
 // contain a configuration whose rare certifications are unsafe (a stratum
-// whose flip rate sits just above alpha). Report the worst unconditional
-// rate, P(certify and realized presented-cells error > alpha), against the
-// nominal delta, and every cell with nonzero reuse-set exceedance, instead
-// of asserting that no such cell exists.
+// whose flip rate sits just above alpha). An unsafe certificate is counted
+// as Theorem 1 defines it and per stratum: a certificate for a stratum whose
+// whole realized flip count exceeds alpha n_j (in the strict mode, alpha
+// times the cells it reuses). A union of certified strata can sit inside the
+// budget while one of them does not, so a union-level rate undercounts.
 {
-  type RV = Row8 & { bootstrap: Row8["bootstrap"] & { violationRatePresented: number } };
+  type RV = Row8 & { bootstrap: Row8["bootstrap"] & { violationRatePresented: number; unsafeCertificateRate?: number } };
+  const unsafeRate = (r: RV) => {
+    if (r.bootstrap.unsafeCertificateRate === undefined) throw new Error("exp8-final-table.json lacks the per-stratum unsafe-certificate rate; re-run exp8-final-table.ts");
+    return r.bootstrap.unsafeCertificateRate;
+  };
+  // Per-stratum level of the column a configuration belongs to.
+  const levelOf = (r: RV) => DELTA_TOTAL / strataCountOf(r.pair);
   const pres = rows as RV[];
-  const unsafe = pres.map((r) => ({
-    r,
-    u: r.bootstrap.certificationRate * r.bootstrap.violationRatePresented,
-  }));
-  const worst = unsafe.reduce((a, b) => (b.u > a.u ? b : a));
+  const unsafe = pres.map((r) => ({ r, u: unsafeRate(r) })).filter((x) => x.u > 0);
+  // The main-results paragraph says the table contains one configuration
+  // with unsafe certificates, that every certificate it issues is unsafe,
+  // and that the share sits inside the per-stratum level.
+  if (unsafe.length !== 1) {
+    throw new Error(`the default mode has ${unsafe.length} configurations with unsafe certificates, not one; rewrite "Certificates that exceed the budget" in body.tex`);
+  }
+  const worst = unsafe[0]!;
+  if (!(worst.u === worst.r.bootstrap.certificationRate && worst.u < levelOf(worst.r))) {
+    throw new Error("the default mode's unsafe configuration no longer has every certificate unsafe, or its rate left the per-stratum level; rewrite the paragraph in body.tex");
+  }
   def("tableUnsafeWorstPair", LABELS[worst.r.pair] ?? worst.r.pair);
   def("tableUnsafeWorstAlpha", worst.r.alpha.toString());
   def("tableUnsafeWorstCert", pct(worst.r.bootstrap.certificationRate, 1));
@@ -487,17 +549,25 @@ def("edgeSavingsMean", pct(edge.bootstrap.savingsMean, 1));
     (r) => r.bootstrap.certificationRate > 0 && r.bootstrap.violationRateReuseSet > 0,
   );
   def("tableExceedConfigs", String(exceed.length));
-  // The strict mode certifies the reuse-set rate, so its unsafe certificates
-  // are the ones whose realized reuse-set rate exceeds alpha.
+  // The strict mode's unsafe certificates, by the same per-stratum count.
+  // The appendix names how many configurations have any, the largest rate,
+  // and where it occurs, and says each sits inside its per-stratum level.
   const strictUnsafe = (exp8.results as RV[])
     .filter((r) => (r as unknown as { estimand: string }).estimand === "reuse-set")
-    .map((r) => ({ r, u: r.bootstrap.certificationRate * r.bootstrap.violationRateReuseSet }))
+    .map((r) => ({ r, u: unsafeRate(r) }))
     .filter((x) => x.u > 0);
-  if (strictUnsafe.length !== 1) throw new Error(`strict mode has ${strictUnsafe.length} configurations with unsafe certificates, not one; rewrite the sentence in the strict-mode paragraph`);
-  def("strictUnsafePair", LABELS[strictUnsafe[0]!.r.pair] ?? strictUnsafe[0]!.r.pair);
-  def("strictUnsafeAlpha", strictUnsafe[0]!.r.alpha.toString());
-  def("strictUnsafeRate", pct(strictUnsafe[0]!.u, 1));
-  if (!(strictUnsafe[0]!.u < 0.05)) throw new Error("strict-mode unsafe rate is not inside the per-stratum delta; rewrite the sentence");
+  if (strictUnsafe.length === 0) throw new Error("the strict mode has no configuration with unsafe certificates; rewrite the sentence in the strict-mode appendix");
+  if (!strictUnsafe.every((x) => x.u < levelOf(x.r))) {
+    throw new Error("a strict-mode unsafe rate is not inside its per-stratum level; rewrite the sentence in the strict-mode appendix");
+  }
+  const strictWorst = strictUnsafe.reduce((a, b) => (b.u > a.u ? b : a));
+  if (strictUnsafe.filter((x) => x.u === strictWorst.u).length !== 1) {
+    throw new Error("the largest strict-mode unsafe rate is shared by two configurations; rewrite the sentence, which names one");
+  }
+  def("strictUnsafeConfigs", String(strictUnsafe.length));
+  def("strictUnsafePair", LABELS[strictWorst.r.pair] ?? strictWorst.r.pair);
+  def("strictUnsafeAlpha", strictWorst.r.alpha.toString());
+  def("strictUnsafeRate", pct(strictWorst.u, 1));
 }
 
 // Sampling fractions across reliably-certifying configs
@@ -1908,8 +1978,9 @@ type RepCell = {
   model: string;
   pair: string;
   alpha: number;
+  strata: number;
   mainSeed: { sampled: number; reused: number; certified: boolean };
-  replications: { B: number; certificationRate: number; savingsMean: number; unsafePresentedRate: number };
+  replications: { B: number; certificationRate: number; savingsMean: number; unsafePresentedRate: number; unsafeCertificateRate?: number };
 };
 const famRep = (J("exp18b-family-replications.json") as { results: RepCell[] }).results;
 const repOf = (model: string, pair: string, alpha: number) =>
@@ -1972,18 +2043,19 @@ for (const f of FAMILIES) {
   if (d.synonym && !syn) console.log(`NOTE: ${f.file} synonym pair partial (${d.synonym.usableEdit}/${d.n}); reported as --`);
   // A family whose floor and flip differ only in the second decimal is
   // printed to two, so the table shows the relation the prose states.
-  const fine = d.selfFlipFloor !== d.formattingEditFlip && Math.abs(d.selfFlipFloor - d.formattingEditFlip) < 0.002;
-  const dec = fine ? 2 : 1;
+  // The caption gives one rule for a two-decimal entry (a rate on a half);
+  // two rates that print alike at one decimal would need another.
+  if (d.selfFlipFloor !== d.formattingEditFlip && pctRate(d.selfFlipFloor, 1) === pctRate(d.formattingEditFlip, 1)) {
+    throw new Error(`${f.label}: floor and flip differ but print alike; give the caption of the model table a rule for it`);
+  }
   famRows.push(
-    `${f.label} & ${num(d.n)} & ${pctRate(d.selfFlipFloor, dec)} & ${pctRate(d.formattingEditFlip, dec)} & ${repCell(d.model, "so-formatting", 0.1)} & ${repCell(d.model, "so-formatting", 0.2)} & ${syn ? pctRate(syn.synonymEditFlip, 1) : "--"} & ${syn ? repCell(d.model, "so-synonym", 0.1) : "--"} & ${syn ? repCell(d.model, "so-synonym", 0.2) : "--"} \\\\`,
+    `${f.label} & ${num(d.n)} & ${pctRate(d.selfFlipFloor, 1)} & ${pctRate(d.formattingEditFlip, 1)} & ${repCell(d.model, "so-formatting", 0.1)} & ${repCell(d.model, "so-formatting", 0.2)} & ${syn ? pctRate(syn.synonymEditFlip, 1) : "--"} & ${syn ? repCell(d.model, "so-synonym", 0.1) : "--"} & ${syn ? repCell(d.model, "so-synonym", 0.2) : "--"} \\\\`,
   );
   requireRep(d.model, "so-formatting", d.sweeps);
   if (syn) requireRep(d.model, "so-synonym", syn.sweeps);
   // The prose cites a few of these figures; the rest are in the table.
-  if (!fine) {
-    defCited(`fam${f.key}Floor`, pctRate(d.selfFlipFloor, 1));
-    defCited(`fam${f.key}Fmt`, pctRate(d.formattingEditFlip, 1));
-  }
+  defCited(`fam${f.key}Floor`, pctRate(d.selfFlipFloor, 1));
+  defCited(`fam${f.key}Fmt`, pctRate(d.formattingEditFlip, 1));
   famUsable.push(...[(d as unknown as { usableFloor?: number }).usableFloor, (d as unknown as { usableEdit?: number }).usableEdit, syn?.usableEdit].filter((x): x is number => typeof x === "number"));
   famFloors.push(d.selfFlipFloor);
   const anyCert = d.sweeps.some((x) => x.certifiedStrata.length > 0) ||
@@ -2036,7 +2108,14 @@ void famCertifying;
   };
   def("famRepCells", String(famRep.length));
   def("famRepUnsafeMax", pctCeil(Math.max(...famRep.map((r) => r.replications.unsafePresentedRate)), 1));
-  reading("unsafe certificates stay inside the per-stratum level in every cell", Math.max(...famRep.map((r) => r.replications.unsafePresentedRate)) < 0.025);
+  // Unsafe certificates as Theorem 1 defines them, per stratum (a certificate
+  // for a null), beside the presented-cells event above, which is a subset.
+  const unsafeCert = (r: (typeof famRep)[number]) => {
+    if (r.replications.unsafeCertificateRate === undefined) throw new Error("exp18b lacks the per-stratum unsafe-certificate rate; re-run exp18b-family-replications.ts");
+    return r.replications.unsafeCertificateRate;
+  };
+  def("famRepUnsafeCertMax", pctCeil(Math.max(...famRep.map(unsafeCert)), 1));
+  reading("unsafe certificates stay inside the per-stratum level in every cell", famRep.every((r) => unsafeCert(r) < DELTA_TOTAL / r.strata && r.replications.unsafePresentedRate <= unsafeCert(r)));
   // "On each further model at least one edit certifies in at least X of
   // replications at the loose budget": the minimum over models of the best cell.
   const best = models.map((m) =>
@@ -2352,6 +2431,66 @@ if (exp17) {
     ];
     for (const [name, ok] of reading) {
       if (!ok) throw new Error(`independence check: "${name}" no longer holds; rewrite the paragraph "Reading the tests" in body.tex`);
+    }
+    // A third look outside the plan: where in each arm's own completion order
+    // the flips fall, and how many rows flip in both paired arms. Block
+    // overdispersion against one common rate arises from interference between
+    // requests, and equally from flip-prone rows that sit together in the
+    // order. The two paired arms share their rows and their order, so the
+    // text may not read their overdispersion as an effect of concurrency.
+    {
+      type Order = Array<{ id: string }>;
+      type Rowed = { id: string; cached: boolean | null; sequential?: boolean | null; concurrent: boolean | null };
+      const main = exp17 as unknown as { draws: Rowed[]; completionOrder: { sequential: Order; concurrent: Order } };
+      const ext = exp17ext as unknown as { draws: Rowed[]; completionOrder: Order };
+      const halves = (rowsOf: Rowed[], order: Order, arm: "sequential" | "concurrent") => {
+        const byId = new Map(rowsOf.map((r) => [r.id, r]));
+        const seq = order
+          .map((o) => byId.get(o.id)!)
+          .filter((r) => r[arm] !== null && r[arm] !== undefined)
+          .map((r) => (r[arm] !== r.cached ? 1 : 0));
+        const h = Math.floor(seq.length / 2);
+        const sum = (xs: number[]) => xs.reduce((acc: number, v) => acc + v, 0);
+        const n1 = h;
+        const n2 = seq.length - h;
+        const k1 = sum(seq.slice(0, h));
+        const k2 = sum(seq.slice(h));
+        const pooled = (k1 + k2) / (n1 + n2);
+        const z = (k2 / n2 - k1 / n1) / Math.sqrt(pooled * (1 - pooled) * (1 / n1 + 1 / n2));
+        return { n1, n2, k1, k2, p: chiP(z * z, 1) };
+      };
+      const hSeq = halves(main.draws, main.completionOrder.sequential, "sequential");
+      const hConc = halves(main.draws, main.completionOrder.concurrent, "concurrent");
+      const hExt = halves(ext.draws, ext.completionOrder, "concurrent");
+      const flipsBoth = both.filter((r) => r.sequential !== r.cached && r.concurrent !== r.cached).length;
+      const expectedBoth =
+        (both.filter((r) => r.sequential !== r.cached).length * both.filter((r) => r.concurrent !== r.cached).length) / both.length;
+      const seqRatio = e.sequential.serial.blockVarianceRatio ?? 0;
+      const look3: Array<[string, boolean]> = [
+        ["the first concurrent arm had about three times the sequential arm's failed requests", e.concurrent.errors >= 2.5 * e.sequential.errors && e.concurrent.errors <= 3.5 * e.sequential.errors],
+        ["the larger concurrent arm had no failed request", x.errors === 0],
+        ["the sequential arm shows block excess on the same rows", seqRatio > 1.2 && seqRatio < (e.concurrent.serial.blockVarianceRatio ?? 0)],
+        ["far more rows flip in both paired arms than chance would give", flipsBoth > 3 * expectedBoth],
+        ["the first concurrent arm's flips concentrate late in its completion order", hConc.p < 0.01 && hConc.k2 > hConc.k1 && hConc.n1 === hConc.n2],
+        ["the sequential arm shows the same direction on the same rows", hSeq.k2 > hSeq.k1],
+        ["the larger arm shows no such trend", hExt.p > 0.5 && hExt.n1 === hExt.n2],
+      ];
+      for (const [name, ok] of look3) {
+        if (!ok) throw new Error(`independence check: "${name}" no longer holds; rewrite the independence paragraphs in body.tex (Section V-F and Appendix D)`);
+      }
+      def("indepBothFlipRows", String(flipsBoth));
+      def("indepBothFlipExpected", expectedBoth.toFixed(0));
+      def("indepConcFirstHalfFlips", String(hConc.k1));
+      def("indepConcSecondHalfFlips", String(hConc.k2));
+      def("indepConcHalfN", String(hConc.n1));
+      def("indepConcHalfP", hConc.p < 0.001 ? "<0.001" : hConc.p.toFixed(3));
+      def("indepSeqFirstHalfFlips", String(hSeq.k1));
+      def("indepSeqFirstHalfN", String(hSeq.n1));
+      def("indepSeqSecondHalfFlips", String(hSeq.k2));
+      def("indepSeqSecondHalfN", String(hSeq.n2));
+      def("indepExtFirstHalfFlips", String(hExt.k1));
+      def("indepExtSecondHalfFlips", String(hExt.k2));
+      def("indepExtHalfN", num(hExt.n1));
     }
     // What dependence of that size would cost (exp9c): the certifier's
     // per-stratum error probability at the least favourable rate, simulated
@@ -3034,7 +3173,7 @@ ${lines.join("\n")}
 // strict mode's own unsafe certificates (reuse-set rate above the budget).
 // ---------------------------------------------------------------------------
 {
-  type RS = { pair: string; alpha: number; estimand: string; bootstrap: { certificationRate: number; savingsMean: number; violationRateReuseSet: number } };
+  type RS = { pair: string; alpha: number; estimand: string; bootstrap: { certificationRate: number; savingsMean: number; violationRateReuseSet: number; unsafeCertificateRate?: number } };
   const all = exp8.results as RS[];
   const at = (pair: string, alpha: number, estimand: string) => all.find((r) => r.pair === pair && r.estimand === estimand && Math.abs(r.alpha - alpha) < 1e-9)!;
   const one = (x: number) => (x * 100).toFixed(1);
@@ -3052,7 +3191,8 @@ ${lines.join("\n")}
     for (const alpha of tabulated) {
       const d = at(pair, alpha, "presented").bootstrap;
       const st = at(pair, alpha, "reuse-set").bootstrap;
-      lines.push(`${LABELS[pair]} & ${alpha.toFixed(2)} & ${one(d.certificationRate)} & ${one(d.savingsMean)} & ${one(st.certificationRate)} & ${one(st.savingsMean)} & ${one(st.certificationRate * st.violationRateReuseSet)} \\\\`);
+      if (st.unsafeCertificateRate === undefined) throw new Error("exp8-final-table.json lacks the per-stratum unsafe-certificate rate; re-run exp8-final-table.ts");
+      lines.push(`${LABELS[pair]} & ${alpha.toFixed(2)} & ${one(d.certificationRate)} & ${one(d.savingsMean)} & ${one(st.certificationRate)} & ${one(st.savingsMean)} & ${one(st.unsafeCertificateRate)} \\\\`);
     }
   }
   writeFileSync(

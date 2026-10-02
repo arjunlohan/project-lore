@@ -481,6 +481,15 @@ export interface StratumResult {
   certified: boolean;
   /** Per-look trace when the adaptive schedule produced it. */
   looks?: AdaptiveLook[];
+  /**
+   * What the stratum was tested under: its share of the failure probability
+   * (delta / K, split again over the looks), the guarantee target, and the
+   * bound. A persisted certificate carries them so that its decision can be
+   * re-derived from the record alone.
+   */
+  perStratumDelta?: number;
+  estimand?: "presented" | "reuse-set";
+  bound?: BoundKind;
 }
 
 export interface CertifyMathInput {

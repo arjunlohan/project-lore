@@ -107,9 +107,9 @@ decode pinning. One is the realized false-reuse rate over the cells a
 certified stratum presents, which we certify by default. The other is
 the same rate over the reused cells alone, which the strict mode
 certifies at a correspondingly lower threshold. An impossibility floor
-follows: with the prompt unedited, a budget $\alpha$ below a stratum's
-self-flip rate is rarely certifiable, and \secref{sec:problem} bounds
-how rarely.
+follows: with the prompt unedited, a budget $\alpha$ well below a
+large stratum's self-flip rate is rarely certifiable, and
+\secref{sec:problem} bounds how rarely.
 \item \textbf{The \sivm{} procedure} (\emph{semantic incremental view
 maintenance}; \secref{sec:system}): a frozen stratification, an
 adaptive sample, and a futility rule. The stratification is by cached
@@ -139,8 +139,8 @@ measures the noise floor, the savings frontier over the error budget,
 and minority-stratum volatility, along with how much of it majority
 voting at write time removes. It includes a stratifier ablation
 (refinement leaves validity intact but costs power on this benchmark)
-and a calibration study of how often a certificate exceeds its budget,
-against the nominal $\delta$. \ifnum\indepAvailable=1\relax It checks
+and a calibration study of how often the procedure issues a certificate
+that exceeds its budget, against the nominal $\delta$. \ifnum\indepAvailable=1\relax It checks
 the cross-row independence assumption. \fi It also covers \famCount\
 further models from four providers. A re-certification
 \driftDaysLater\ days after the column was built measured drift
@@ -593,9 +593,12 @@ Algorithm~\ref{alg:sivm} states the procedure in full. What the test
 conditions on is fixed before the first oracle call: the
 stratification, the look schedule with its per-look levels, the seed,
 the bound, and the equivalence relation. The budget $\alpha$ and the
-mode enter only where a look's bound is compared with a threshold. The
-event on which every scheduled look's bound holds does not depend on
-them, so several budgets, and both modes, can be read from one sample
+mode enter where a look's bound is compared with a threshold, and in
+the futility stop, which can only end sampling. The schedule's last
+look is sized from $\alpha$ only for budgets near $0.01$ or below,
+smaller than any used here. The
+event on which every scheduled look's bound holds therefore does not
+depend on them, so several budgets, and both modes, can be read from one sample
 path at no cost in $\delta$ (\secref{sec:exp-deploy} reads three
 budgets). Two results in this article were computed after their draws
 had been seen, and are marked as retrospective where they appear: the
@@ -783,9 +786,11 @@ immutable versions (the \sivm{} substrate); certificates persist with
 full strata evidence, and reused cells carry visible provenance in the
 UI. Decode is pinned ($T{=}0$) for all cell computation per
 Assumption~\ref{as:pin}. The table's certify action runs the pinned
-procedure of \secref{sec:system} on the rows of the user's current
-view, at most \routeScopeCap\ per request. The corpus-scale runs of
-\secref{sec:exp-deploy} call the same certifier function from a script.
+procedure of \secref{sec:system} in the default mode on the rows of the
+user's current view, at most \routeScopeCap\ per request. Each request
+is a certification of its own, with its own $\delta$. The corpus-scale
+runs of \secref{sec:exp-deploy} call the same certifier function from a
+script.
 
 \paragraph{What the user sees.} In the table view a reused cell
 carries a shield mark beside its value. Its tooltip shows the
@@ -826,8 +831,12 @@ one certification path.
 
 \paragraph{Certificates are records, not decisions.} A certificate
 persists the budget $\alpha$, the prompt delta, the per-stratum evidence
-(size, cells sampled, bound attained, certified or refused), and the
-counts of sampled, reused, and recomputed cells. It is therefore
+(size, cells sampled, the bound at each look, certified or refused),
+and the counts of sampled, reused, and recomputed cells. Each stratum's
+entry also names the level, the mode, and the bound it was tested
+under; that field is new in this release, and the certificates of
+\secref{sec:exp-deploy} carry those settings in their run artifacts.
+A certificate is therefore
 auditable after the fact: the realized-error audits in
 \secref{sec:exp-deploy} are recomputed, from the row identifiers each
 run persisted and the stored cells, by a script that imports nothing
@@ -1050,6 +1059,9 @@ under the edit.}
 
 \begin{figure}[t]
 \centering
+%% Five series that stay apart without color: the three Boolean pairs solid,
+%% the two select pairs dashed, each with its own mark. The four colors are
+%% defined in figdata.tex.
 \begin{tikzpicture}
 \begin{axis}[width=\linewidth, height=5.6cm, xlabel={error budget $\alpha$},
   ylabel={certified savings (\%)}, xmin=0, xmax=0.22, ymin=-5, ymax=100,
@@ -1058,14 +1070,21 @@ under the edit.}
   xticklabel style={/pgf/number format/fixed},
   legend style={at={(0.5,-0.3)}, anchor=north, legend columns=2,
     font=\scriptsize, /tikz/every even column/.append style={column sep=6pt}},
-  grid=major, grid style={opacity=0.2}]
+  grid=major, grid style={opacity=0.2},
+  cycle list={
+    {frontierA, mark=*},
+    {frontierB, mark=square*},
+    {frontierC, mark=triangle*},
+    {frontierD, dashed, mark=diamond*, mark options={solid}},
+    {black, dashed, mark=x, mark options={solid}}}]
 \frontierplots
 \end{axis}
 \end{tikzpicture}
-\caption{The $\alpha$-savings frontier under the pinned procedure: mean
-$\pm$ one standard deviation over \bootB\ sampling replications per point, generated from the
-result files. Savings collapse as $\alpha$ approaches each pair's
-flip rate.}
+\caption{The $\alpha$-savings frontier under the pinned procedure: the
+mean over \bootB\ sampling replications per point, with the 95\%
+percentile interval of Table~\ref{tab:main} as the bar, generated from
+the result files. Savings fall away as $\alpha$ approaches the flip
+rates of the strata that certify.}
 \Description{Line plot of certified savings against the error budget
 alpha for five prompt-edit pairs. All curves start at zero savings at
 the tightest budget and rise steeply as alpha loosens, with the two
@@ -1261,10 +1280,12 @@ floor on the lab Boolean column, from \famFloorLo\ to \famFloorHi\
 (Table~\ref{tab:fampairs}).
 Certified reuse is not a property of the primary model. On each of the
 \famCount\ further models at least one edit certifies in at least
-\famRepBestMin\ of replications at the loose budget. And certificates
-stay inside their budgets. Across the \famRepCells\ cells of the two
-tables, a certificate whose realized presented-cells error exceeds its
-budget occurs in at most \famRepUnsafeMax\ of a cell's replications.
+\famRepBestMin\ of replications at the loose budget. And unsafe
+certificates stay rare. Across the \famRepCells\ cells of the two
+tables, a certificate for a null is issued in at most
+\famRepUnsafeCertMax\ of a cell's replications, inside the per-stratum
+level of every column. A realized presented-cells error above the
+budget occurs in at most \famRepUnsafeMax.
 
 \paragraph{What does not transfer.} Which edits are benign does not
 transfer. The formatting-only edit is the benign one on the primary
@@ -1281,7 +1302,7 @@ way, from \famGlmTrueShareOld\ to \famGlmTrueShareNew. Self-disagreement
 alone flips cells both ways and leaves the share where it was, so on
 these two models the edit shifts the model's decision. On the three
 models where the formatting edit fails, the synonym rewording certifies
-a stratum in most replications instead, because its flips concentrate
+a stratum in most replications at the loose budget instead, because its flips concentrate
 in one cached value and leave the other reusable. The ordering that the
 edits' labels suggest (formatting benign, rewording not) therefore
 inverts on some models and holds on others. Benignness is a property of
@@ -1289,8 +1310,9 @@ the (edit, model) pair, and the certifier measures it per stratum
 without consulting the label.
 
 \paragraph{Floors are per stratum.} The floor binds for the identity
-edit only (\secref{sec:problem}), and two strata of this study flip
-less under an edit than under none. Under the formatting edit
+edit only (\secref{sec:problem}), and some strata of this study flip
+less under an edit than under none. The two clearest are on the lab
+column. Under the formatting edit
 GLM-4.7-Flash's cached-FALSE stratum flips \famGlmFmtFalseStratum\
 against an identity floor of \famGlmFloorFalseStratum, and GPT-5 nano's
 cached-TRUE stratum flips \famNanoFmtTrueStratum\ against
@@ -1310,8 +1332,7 @@ Table~\ref{tab:main}, with the column-level floor of the noise-floor
 paragraph. Here $n$ is the rows requested; a few requests per model
 failed, leaving at least \famUsableMin\ usable rows per measurement.
 A rate that falls half way between two one-decimal values is printed
-to two decimals (the last row's floor and flip differ only at that
-digit). Gemini~3 Flash ran these two pairs only: in its
+to two decimals. Gemini~3 Flash ran these two pairs only: in its
 reasoning regime the remaining pairs would have been the costliest runs
 of the study, and they were left out%
 \ifnum\famProbeRow=1\relax; the \texttt{\altModelName} probe ran the
@@ -1513,31 +1534,42 @@ sequential against \indepConcRate\ concurrent. That comparison could
 detect a difference of \indepMdd\ percentage points, not a smaller
 one. The lag-one tests of serial dependence do not reject in any arm.
 
-Second, concurrency tripled the requests that failed or timed out,
-from \indepSeqErrors\ to \indepConcErrors\ of \indepN. The certifier
-counts a failed call as a flip (\secref{sec:impl}). Counted that way
-the two arms read \indepSeqFailRate\ and \indepConcFailRate\
-($p{=}\indepFailP$). The rule is conservative, so under load this costs
+Second, failed requests track the serving conditions more than the
+concurrency. The first concurrent arm had three times as many failed or
+timed-out requests as the sequential arm, \indepConcErrors\ against
+\indepSeqErrors\ of \indepN. The larger concurrent arm, a day later
+under faster serving, had none. The certifier counts a failed call as a
+flip (\secref{sec:impl}). Counted that way the three arms read
+\indepSeqFailRate, \indepConcFailRate, and \indepExtRate. The first
+two share their rows, and their difference gives an exact McNemar
+$p{=}\indepFailPairedP$. The rule is conservative, so failures cost
 certificates, not validity.
 
-Third, dependence among draws issued together is not excluded. Over
-blocks of \indepBlockSize\ completions, flip counts are more dispersed
-than independent draws would make them. Pooled over both concurrent
-arms, their variance is \indepPooledDispersion\ times the binomial
-value (95\% interval \indepPooledDispersionCi), and the one-sided test
-rejects narrowly. A simulation prices that for the least favorable case, a
-stratum whose flip rate sits one flip past the budget. With independent
-draws the certifier errs there with probability at most
-\overdispIndep. At the pooled estimate it errs with probability
-\overdispPooled, and at the upper end of the interval with probability
-\overdispPooledUpper, against a nominal $\delta_j$ of $0.05$. The first
-concurrent arm alone, eight blocks drawn under slow serving, is
-compatible with much stronger dependence.
+Third, dependence among draws issued together is not excluded, and the
+planned test for it is confounded. Over blocks of \indepBlockSize\
+completions, the first concurrent arm's flip counts have
+\indepConcDispersion\ times the variance that independent draws at one
+rate would give. The sequential arm, with one request in flight, shows
+excess on the same rows (a ratio of \indepSeqDispersion). And \indepBothFlipRows\
+rows flip in both of those arms where chance would give about
+\indepBothFlipExpected. In the two paired arms the excess therefore
+follows the rows they share at least as much as the concurrency. The
+larger arm, on other rows, reads \indepExtDispersion. Pooled over both
+concurrent arms the ratio is \indepPooledDispersion\ (95\% interval
+\indepPooledDispersionCi), and the one-sided test rejects narrowly. A
+simulation prices that ratio as if all of it were dependence, for the
+least favorable case, a stratum whose flip rate sits one flip past the
+budget. With independent draws the certifier errs there with
+probability at most \overdispIndep. At the pooled estimate it errs with
+probability \overdispPooled, and at the upper end of the pooled interval
+with probability \overdispPooledUpper, against a nominal $\delta_j$ of
+$0.05$. The first concurrent arm alone, eight blocks drawn under slow
+serving, is compatible with a much larger figure.
 
 The check therefore supports less than independence. It does not show
-that concurrent draws interfere. It also cannot rule out an error
-probability two to three times the nominal one on a stratum that sits
-just past its budget. Three things limit that exposure. It is confined
+that concurrent draws interfere. It also cannot rule out, at the upper
+end of the pooled interval, an error probability two to three times the
+nominal one on a stratum that sits just past its budget. Three things limit that exposure. It is confined
 to such strata, and at $\alpha{=}0.2$ the deployment stratum's audited
 error is far below its budget. The replication results of this article
 resample frozen labels, a fixed population for which the hypergeometric
@@ -1555,8 +1587,8 @@ concurrency, in the September snapshot. The September certificates of
 
 \paragraph{The bound ablation.} Every result above spends its $\delta$
 through the exact bound of Eq.~\eqref{eq:exact}, split across looks by
-Bonferroni. The bound, more than the stratification or the schedule,
-sets the frontier. We measured how much by swapping it inside the same
+Bonferroni. The bound, more than the stratification, sets the
+frontier. We measured how much by swapping it inside the same
 pinned procedure over the same stored labels (Table~\ref{tab:bounds};
 Appendix~\ref{app:grid} gives every configuration). Five bounds are
 compared: the exact bound; its binomial limit, the Clopper--Pearson
@@ -1859,9 +1891,10 @@ recompute would show as TRUE: hidden positives. At the scale of the
 corpus the loose budget tolerates \budgetCellsLoose\ of them, about
 twice the \deployTrueStratum\ rows the column marks TRUE at all. The
 tight budget still tolerates more than that number. The audits found
-fewer, but not few. Carried to all the reused cells, their error rates
-come to about \deployHiddenLoose\ hidden positives on the August draws
-and about \sepHiddenLoose\ in September. Each is a row on which a
+fewer, but not few. Carried to all the reused cells, the error rates
+audited under the loose certificates come to about \deployHiddenLoose\
+hidden positives on the August draws and about \sepHiddenLoose\ in
+September. Each is a row on which a
 recompute would differ, not a row known to be wrong, and a certificate
 promises only its budget.
 
@@ -1941,7 +1974,8 @@ used as a proxy, are therefore an open lever with guaranteed validity
 \paragraph{Sequences of edits.} Reuse is one edit deep in the released
 system. A cell reused under a certificate is recomputed at the next
 edit (\secref{sec:impl}), so savings do not accumulate over a series of
-edits. Theorem~\ref{thm:valid} does not force that choice. A later
+edits: the edit after a certified one recomputes every cell that one
+reused. Theorem~\ref{thm:valid} does not force that choice. A later
 certification could test the carried-forward values against fresh draws
 of the newest version, because the guarantee concerns the stored values
 whatever version computed them. We have not evaluated sequences of
@@ -2435,7 +2469,7 @@ multiplication silently loses low bits, so all sampling uses exact
 in the order the cell query returned, which the query planner served
 through one index in August and another afterwards. The August run
 walked the content-hash order, the certifier now sorts by content hash
-before shuffling, and the replay reproduces the August run's every count
+before shuffling, and the replay reproduces every count of the August run
 under the Maurer--Pontil arm (the released script asserts it).
 \par
 
@@ -2545,7 +2579,7 @@ shuffles of each arm's own flip sequence, differ from the chi-square
 ones by at most \indepPermGap\ and fall on the same side of the
 \indepLevel\ level in every case.
 
-Two looks that were not in the plan argue for caution. Flips
+Three looks that were not in the plan argue for caution. Flips
 concentrate in slow responses: in the larger arm, \indepExtSlowFlips\
 of the \indepExtHalfRows\ slower responses flip against
 \indepExtFastFlips\ of the \indepExtHalfRows\ faster ones. Completion
@@ -2554,7 +2588,23 @@ formed in launch order instead, the dispersion ratio is
 \indepExtLaunchDispersion\ in the larger arm ($p{=}\indepExtLaunchP$)
 and \indepLaunchDispersion\ in the first ($p{=}\indepLaunchP$). The
 ordering was chosen after seeing the data, so we report these as
-cautions, not as findings.
+cautions, not as findings. The third look asks where the excess of the
+first concurrent arm comes from. Its flips concentrate late in its
+completion order: \indepConcFirstHalfFlips\ in the first
+\indepConcHalfN\ completions and \indepConcSecondHalfFlips\ in the last
+\indepConcHalfN\ (two-proportion $p\indepConcHalfP$). The sequential
+arm walks the same rows in the same order and leans the same way,
+\indepSeqFirstHalfFlips\ flips in its first \indepSeqFirstHalfN\
+completions and \indepSeqSecondHalfFlips\ in its last
+\indepSeqSecondHalfN. Of the \indepBothRows\ rows both arms kept,
+\indepBothFlipRows\ flip in both, where independent rows at those rates
+would give about \indepBothFlipExpected. The larger arm, on other rows,
+shows no such trend (\indepExtFirstHalfFlips\ and
+\indepExtSecondHalfFlips\ flips in its two halves of \indepExtHalfN).
+Block excess in the paired arms is therefore at least partly a property
+of their rows and the order those rows were issued in. A test in
+completion order cannot separate that from interference between
+requests.
 
 \paragraph{The simulated cost of dependence.} The simulation behind
 the error probabilities of \secref{sec:exp-validity} runs the certifier
@@ -2735,18 +2785,21 @@ throughout. Where a stratum's flip rate is well below the budget the
 two modes agree, as on the three SO edits at $\alpha{=}0.2$. One budget
 step before the default mode's own frontier the strict mode's savings
 fall away: on the synonym and scope-widening edits at $\alpha{=}0.1$,
-and on both Djinni edits at $\alpha{=}0.2$. The strict mode's own
-certificates can exceed the budget too, at a rate the theorem allows.
-On \strictUnsafePair\ at $\alpha{=}\strictUnsafeAlpha$ it certifies in
-\strictUnsafeRate\ of replications, each with a reuse-set rate above
-$\alpha$, against $\delta_j = 0.05$.
+and on both Djinni edits at $\alpha{=}0.2$. The strict mode
+issues unsafe certificates too, at a rate the theorem allows. Counted
+per stratum, they occur in \strictUnsafeConfigs\ configurations of the
+table, most often on \strictUnsafePair\ at
+$\alpha{=}\strictUnsafeAlpha$, in \strictUnsafeRate\ of replications.
+Each rate sits inside its column's per-stratum level, $\delta_j{=}0.05$
+on the Boolean columns and $\delta_j{=}0.025$ on the select column.
 
 \begin{table}[t]
 \caption{The default and strict modes on the five edit pairs:
 certification rate and mean savings over \bootB\ replications, in
 percent. Column \emph{unsafe} is the share of all replications in which
-the strict mode certifies with a realized reuse-set rate above
-$\alpha$.}
+the strict mode issues an unsafe certificate, counted per stratum: one
+for a stratum whose realized flip count exceeds $\alpha$ times the cells
+it reuses, the event Theorem~\ref{thm:valid} bounds in that mode.}
 \label{tab:strict}
 \centering\footnotesize
 \setlength{\tabcolsep}{4pt}

@@ -41,6 +41,7 @@ async function run(strata: Stratum[], alpha: number, seedOf: (s: Stratum) => num
   let reused = 0;
   let reusedFlips = 0;
   let certTotal = 0;
+  let unsafeStrata = 0;
   const total = strata.reduce((a, s) => a + s.flips.length, 0);
   for (const s of strata) {
     const order = seededShuffle(s.flips.map((_, i) => i), seedOf(s));
@@ -60,19 +61,24 @@ async function run(strata: Stratum[], alpha: number, seedOf: (s: Stratum) => num
       reused += rest.length;
       reusedFlips += rest.reduce((a, i) => a + s.flips[i]!, 0);
       certTotal += s.flips.length;
+      // The event Theorem 1 bounds, per stratum: a certificate issued for a
+      // null, a stratum whose whole realized flip count exceeds alpha * n_j.
+      if (s.flips.reduce((a, x) => a + x, 0) > alpha * s.flips.length + 1e-9) unsafeStrata++;
     }
   }
-  return { sampled, reused, reusedFlips, certTotal, savings: total > 0 ? reused / total : 0 };
+  return { sampled, reused, reusedFlips, certTotal, unsafeStrata, savings: total > 0 ? reused / total : 0 };
 }
 
 async function replicate(strata: Stratum[], alpha: number) {
   let certRuns = 0;
   let unsafePresented = 0;
+  let unsafeRuns = 0;
   const savings: number[] = [];
   for (let b = 0; b < B; b++) {
     // The same seed convention as exp8's replications.
     const o = await run(strata, alpha, (s) => 1000 + b + s.id.length * 7919);
     savings.push(o.savings);
+    if (o.unsafeStrata > 0) unsafeRuns++;
     if (o.reused > 0) {
       certRuns++;
       if (o.reusedFlips / o.certTotal > alpha) unsafePresented++;
@@ -89,6 +95,9 @@ async function replicate(strata: Stratum[], alpha: number) {
     // Unconditional: the share of all replications that certify with a
     // realized presented-cells error above the budget.
     unsafePresentedRate: unsafePresented / B,
+    // Unconditional, and per stratum: the share of all replications that
+    // issue a certificate for a null (the event of Theorem 1).
+    unsafeCertificateRate: unsafeRuns / B,
   };
 }
 
