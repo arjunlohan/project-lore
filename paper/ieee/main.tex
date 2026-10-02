@@ -156,15 +156,15 @@ error budget with stated confidence. It samples each stratum on a
 doubling schedule and bounds its flip rate with an exact
 finite-population bound; a strict mode bounds the error of the reused
 cells alone. An impossibility floor follows: with the prompt unedited,
-no budget below the model's rate of self-disagreement is certifiable.
+no stratum certifies below its own rate of self-disagreement.
 On two public corpora (\labeledCells\ labeled cells), a
 formatting-only edit certifies \benchSavingsMain\ call savings
 (\benchSavings\ mean over \bootB\ replications) at an error budget of
 0.2 with \benchRealized\ realized false-reuse; at deployment scale,
 \deployOracle\ fresh calls certify reuse of \deployReused\ of \deployN\
-cells. Across \calTrials\ calibration runs, certificates that exceed
-their budget occur in at most \calUnsafeWorst\ of runs per
-configuration, against a nominal \calNominalDelta. A second
+cells. Across the calibration grid, a certificate exceeds its budget
+with probability at most \calBoundaryHi\ at the least favorable
+population, against a nominal \calNominalDelta. A second
 certification \driftDaysLater\ days later measured drift of the served
 model and re-certified the same budgets. At least one edit certifies on
 \famCertCount\ of \famCount\ further model families; which edits

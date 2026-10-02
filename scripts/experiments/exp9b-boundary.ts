@@ -113,7 +113,7 @@ function unsafeProbability(N: number, M: number, alpha: number, mode: Mode): num
 
 async function simulate(N: number, M: number, alpha: number, mode: Mode, seed: number) {
   const rand = mulberry32(seed);
-  const base = Array.from({ length: N }, (_, i) => (i < M ? 1 : 0));
+  const base: number[] = Array.from({ length: N }, (_, i) => (i < M ? 1 : 0));
   let unsafe = 0;
   for (let t = 0; t < CHECK_TRIALS; t++) {
     const arr = base.slice();

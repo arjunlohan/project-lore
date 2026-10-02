@@ -141,16 +141,32 @@ pnpm gen:paper && pnpm gen:report && pnpm check:paper && pnpm build:paper
 every database read it makes to `db-derived-inputs.json` so the numbers are
 recomputable without our instance. `gen:report` emits
 `docs/research/lore-research-report.html` from the same macros. `check:paper`
-is the enforcement pass and fails on six conditions: a hand-typed quantity in
+is the enforcement pass and fails on ten conditions: a hand-typed quantity in
 the prose, a quantity hardcoded in the generator, a macro defined but never
 cited, a macro that swallows its trailing space, a sentence asserting two
-quantities differ while citing two macros of equal value, and a spelled-out
-multiplier the macro ratio does not support. Each guard exists because the
-corresponding defect shipped at least once.
+quantities differ while citing two macros of equal value, a spelled-out
+multiplier the macro ratio does not support, a containment claim the cited
+macros do not support, an absolute claim in the abstract or contributions
+outside an allow-list, a "same column" claim whose macros come from different
+columns, and a prose sentence longer than 60 words. The generator adds its own
+assertions on the relations the prose states between figures. Each guard
+exists because the corresponding defect shipped at least once.
 
-Reproducing the statistical results needs no model endpoint: the ground-truth
-flip labels are released. Recomputing the labels themselves does, and costs
-about the ledgered spend reported in the paper.
+Reproducing the statistical results needs no model endpoint and no database:
+the per-cell labels of the five edit pairs are released as
+`docs/research/experiments/benchmark-labels.json`, and
+
+```bash
+EXP_STRATIFIER=value-only EXP_LABELS=docs/research/experiments/benchmark-labels.json \
+  pnpm tsx scripts/experiments/exp8-final-table.ts
+```
+
+rebuilds the main results table from them. Recomputing the labels themselves
+needs an endpoint, and costs about the ledgered spend reported in the paper.
+The corpora are not redistributed here: download them from their maintainers
+(the sources and licenses are in `docs/research/dataset-shortlist.md` and in
+the paper's references) into `.local-infra/data/`, and `scripts/ingest/` loads
+them.
 
 Data licenses: SO Survey 2023 under ODbL 1.0/DbCL 1.0; Djinni profiles
 under MIT (lang-uk). The chat scaffold this app began from is the eve

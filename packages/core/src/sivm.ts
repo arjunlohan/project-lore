@@ -400,7 +400,7 @@ export function binomialCdf(k: number, n: number, p: number): number {
  * bound is that M over N. Because it holds conditionally on every
  * population realisation it holds unconditionally, over sampling and draw
  * randomness together, and it bounds the REALISED whole-stratum flip count,
- * not only its expectation. As N grows it tends to the binomial
+ * rather than its expectation. As N grows it tends to the binomial
  * Clopper-Pearson bound (`binomialUpperBound`).
  *
  * This is the bound the pinned procedure certifies with from the IEEE

@@ -338,7 +338,7 @@ async function main() {
     const concMs = Date.now() - tConc;
     const byCompletion = [...concurrent].sort((a, b) => a.endedAt - b.endedAt);
     const usable = byCompletion.filter((c) => c.value !== null && cache.has(c.id));
-    const flips = usable.map((c) => (cache.get(c.id) !== c.value ? 1 : 0));
+    const flips: number[] = usable.map((c) => (cache.get(c.id) !== c.value ? 1 : 0));
     const k = flips.reduce((a, b) => a + b, 0);
     const p2 = usable.length > 0 ? k / usable.length : 0;
     const p1 = main.sequential.flips / Math.max(1, main.sequential.usable);

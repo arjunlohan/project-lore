@@ -15,8 +15,14 @@
  * Outputs: exp8-final-table.json + paper/table1.tex (generated, not typed).
  *
  * Run: set -a; source .env.local; set +a; pnpm tsx scripts/experiments/exp8-final-table.ts
+ *
+ * From the released labels alone (no database, no model endpoint):
+ *   EXP_STRATIFIER=value-only EXP_LABELS=docs/research/experiments/benchmark-labels.json \
+ *     pnpm tsx scripts/experiments/exp8-final-table.ts
+ * reads the evaluation vectors and both sides' cell values from the artifact
+ * that export-benchmark-labels.ts writes, and reproduces the same output.
  */
-import { mkdirSync, writeFileSync } from "node:fs";
+import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import mysql from "mysql2/promise";
 import { PAIRS, type PairDef as Pair } from "./pairs";
 import {
@@ -52,6 +58,15 @@ const OUT = process.env.EXP_OUT ?? "docs/research/experiments/exp8-final-table.j
 // the core certifier (IEEE Access resubmission); EXP_BOUND=eb reproduces the
 // first submission's Table 1 for the response letter.
 const BOUND = (process.env.EXP_BOUND ?? "exact") as BoundKind;
+// Read the labels from the released artifact instead of the database.
+const LABELS = process.env.EXP_LABELS;
+if (LABELS && STRATIFIER !== "value-only") {
+  throw new Error("EXP_LABELS supports the pinned value-only stratifier only (the ablation needs prompts and embeddings)");
+}
+type ReleasedPair = { key: string; rowIds: string[]; cached: unknown[]; fresh: unknown[] };
+const released: ReleasedPair[] | null = LABELS
+  ? (JSON.parse(readFileSync(LABELS, "utf8")) as { pairs: ReleasedPair[] }).pairs
+  : null;
 const DELTA = 0.1;
 const MAIN_SEED = 42;
 const B = Number(process.env.EXP_B ?? 1000);
@@ -155,32 +170,53 @@ async function main() {
   const texRows: string[] = [];
 
   for (const pair of PAIRS) {
-    const columns = await listColumns(pair.corpus);
-    const column = columns.find((c) => pair.columnMatch(c.name));
-    if (!column) throw new Error(`column for ${pair.key} not found`);
-    const vFrom = await getColumnVersion(column.id, pair.fromV);
-    const vTo = await getColumnVersion(column.id, pair.toV);
-    if (!vFrom || !vTo) throw new Error(`versions missing for ${pair.key}`);
+    let rows: Row[];
+    let cache: Map<string, unknown>;
+    let truth: Map<string, unknown>;
+    let vFrom: { prompt_template: string } | null = null;
+    let vTo: { prompt_template: string } | null = null;
+    if (released) {
+      // The released labels: the vector in sampling order and both sides'
+      // values, null where the row holds no oracle cell of that version.
+      const entry = released.find((p) => p.key === pair.key);
+      if (!entry) throw new Error(`${LABELS} has no pair ${pair.key}`);
+      rows = entry.rowIds.map((id) => ({ [pair.idField]: id }));
+      const side = (values: unknown[]) =>
+        new Map(
+          entry.rowIds
+            .map((id, i) => [id, values[i]] as [string, unknown])
+            .filter(([, v]) => v !== null),
+        );
+      cache = side(entry.cached);
+      truth = side(entry.fresh);
+    } else {
+      const columns = await listColumns(pair.corpus);
+      const column = columns.find((c) => pair.columnMatch(c.name));
+      if (!column) throw new Error(`column for ${pair.key} not found`);
+      vFrom = await getColumnVersion(column.id, pair.fromV);
+      vTo = await getColumnVersion(column.id, pair.toV);
+      if (!vFrom || !vTo) throw new Error(`versions missing for ${pair.key}`);
 
-    const rows = await loadRows(pair);
-    const rowIds = rows.map((r) => String(r[pair.idField]));
-    // r8/M12: filter to ORACLE-computed cells, as exp11b-verify and exp13
-    // already do. Certificates are now applied in this database, and a
-    // `reused_certified` cell is a verbatim copy of the v1 value, so an
-    // unfiltered read would score it as a non-flip by construction and
-    // silently deflate every flip rate in Table 1.
-    const oracleOnly = (cs: Array<{ row_id: string; value: unknown; status: string }>) =>
-      new Map(
-        cs
-          .filter((c) => c.status === "done" || c.status === "cached")
-          .map((c) => [c.row_id, c.value]),
+      rows = await loadRows(pair);
+      const rowIds = rows.map((r) => String(r[pair.idField]));
+      // r8/M12: filter to ORACLE-computed cells, as exp11b-verify and exp13
+      // already do. Certificates are now applied in this database, and a
+      // `reused_certified` cell is a verbatim copy of the v1 value, so an
+      // unfiltered read would score it as a non-flip by construction and
+      // silently deflate every flip rate in Table 1.
+      const oracleOnly = (cs: Array<{ row_id: string; value: unknown; status: string }>) =>
+        new Map(
+          cs
+            .filter((c) => c.status === "done" || c.status === "cached")
+            .map((c) => [c.row_id, c.value]),
+        );
+      cache = oracleOnly(
+        await getCellsForVersion(column.id, pair.fromV, rowIds),
       );
-    const cache = oracleOnly(
-      await getCellsForVersion(column.id, pair.fromV, rowIds),
-    );
-    const truth = oracleOnly(
-      await getCellsForVersion(column.id, pair.toV, rowIds),
-    );
+      truth = oracleOnly(
+        await getCellsForVersion(column.id, pair.toV, rowIds),
+      );
+    }
     const usableRows = rows.filter((r) => {
       const id = String(r[pair.idField]);
       return cache.has(id) && truth.has(id);
@@ -195,10 +231,12 @@ async function main() {
     let t1 = 0;
     let t2 = 0;
     if (STRATIFIER !== "value-only") {
+      if (!vFrom || !vTo) throw new Error("the ablation needs the prompt templates");
       const delta = diffPrompts(vFrom.prompt_template, vTo.prompt_template);
       const deltaText = [...delta.added, ...delta.removed].join(" ") || "(none)";
+      const fromTemplate = vFrom.prompt_template;
       const bound = usableRows.map(
-        (r) => bindTemplate(vFrom.prompt_template, r).text,
+        (r) => bindTemplate(fromTemplate, r).text,
       );
       const [deltaEmb, ...rowEmbs] = await embedTexts([deltaText, ...bound]);
       usableRows.forEach((r, i) =>

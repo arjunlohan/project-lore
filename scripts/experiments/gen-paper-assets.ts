@@ -1160,7 +1160,35 @@ const [[lat]] = (await dbl.query(
 )) as unknown as [[{ ms: number; c: number }]];
 await dbl.end();
 const CONC = 32;
+// The run's MEASURED wall clock: from its first cell write to its last. Its
+// cells are the version-1 cells written after the column's previous ledger
+// entry and no later than its own; the computed ones among them must be
+// exactly the cells the ledger billed, or the window is not the run.
+const dbSpan = await mysql.createConnection({ uri: MYSQL_URL });
+const [[matRun]] = (await dbSpan.query(
+  `SELECT l.at, l.cells, l.column_id FROM cost_ledger l JOIN ai_columns col ON col.id = l.column_id
+   WHERE col.name LIKE '%(lab)%' AND col.table_id = 'profiles' ORDER BY l.cells DESC LIMIT 1`,
+)) as unknown as [[{ at: Date; cells: number; column_id: string }]];
+const [[matPrev]] = (await dbSpan.query(
+  `SELECT MAX(l.at) AS at FROM cost_ledger l WHERE l.column_id = ? AND l.at < ?`,
+  [matRun.column_id, matRun.at],
+)) as unknown as [[{ at: Date }]];
+const [[matSpan]] = (await dbSpan.query(
+  `SELECT MIN(c.updated_at) AS first, MAX(c.updated_at) AS last, COUNT(*) AS n, SUM(c.status = 'done') AS computed
+   FROM ai_cells c WHERE c.column_id = ? AND c.prompt_version = 1 AND c.updated_at > ? AND c.updated_at <= ?`,
+  [matRun.column_id, matPrev.at, matRun.at],
+)) as unknown as [[{ first: Date; last: Date; n: number; computed: number }]];
+await dbSpan.end();
+if (Number(matSpan.computed) !== Number(colLed.c)) {
+  throw new Error(`the materialization window holds ${matSpan.computed} computed cells, the ledger billed ${colLed.c}; the measured wall clock would not be the run's`);
+}
+const matSpanHours = (new Date(matSpan.last).getTime() - new Date(matSpan.first).getTime()) / 3.6e6;
+def("deployMatSpanHours", matSpanHours.toFixed(1));
 const matHours = Number(lat.ms) / CONC / 3600000;
+// The prose says the latency estimate agrees with the measured span.
+if (Math.abs(matHours - matSpanHours) > 0.1 * matSpanHours) {
+  throw new Error("the latency estimate of the materialization wall clock no longer agrees with the measured span; rewrite the sentence in body.tex");
+}
 def("deployMatHours", matHours.toFixed(1));
 def("deployConcurrency", String(CONC));
 def("deployMatMeanLatencyS", (Number(lat.ms) / Number(lat.c) / 1e3).toFixed(1));
@@ -1274,6 +1302,14 @@ def("hhSupgSelFracW", selFrac("so-widening"));
   for (const c of certifying) {
     if (!(c.e.reusedTrueSubgroup > 0 && (c.e.realizedTrueSubgroup ?? 0) > c.alpha)) {
       throw new Error(`exp13: the embedding-proxy arm at ${c.pair} alpha=${c.alpha} no longer reuses cached-TRUE cells above the budget; rewrite the caveat in body.tex`);
+    }
+  }
+  // The second caveat says the embedding arm is tested at a stricter level
+  // than sIVM and still reuses more at the loose budget.
+  for (const r of exp13.results as Array<{ pair: string; sweeps: Array<{ alpha: number; multiplicity: { sivmPerTestDelta: number; embeddingArmPerTestDelta: number }; sivm: { reused: number }; supg: Emb }> }>) {
+    const w = r.sweeps.find((x) => Math.abs(x.alpha - 0.2) < 1e-9)!;
+    if (!(w.multiplicity.embeddingArmPerTestDelta < w.multiplicity.sivmPerTestDelta && w.supg.reused > w.sivm.reused)) {
+      throw new Error(`exp13 ${r.pair}: the embedding arm no longer reuses more than sIVM at a stricter per-test level; rewrite the second caveat in body.tex`);
     }
   }
   def("hhEmbCertCells", String(certifying.length));
@@ -1641,6 +1677,7 @@ writeFileSync(
       materializationLedgerRun: { costUsd: Number(colLed.s), cells: Number(colLed.c) },
       ledgerTotal: { costUsd: Number(led.s), cells: Number(led.c), window: ledgerWindow },
       materializationLatency: { sumMs: Number(lat.ms), cells: Number(lat.c) },
+      materializationSpan: { firstCellWrite: new Date(matSpan.first).toISOString(), lastCellWrite: new Date(matSpan.last).toISOString(), cellsWritten: Number(matSpan.n), computed: Number(matSpan.computed) },
       deploymentCertificate: {
         id: cert.id,
         reusedCount: Number(cert.reused_count),
@@ -1971,7 +2008,8 @@ if (exp17) {
       const se1 = Math.sqrt((p1 * (1 - p1)) / n1 + (p2 * (1 - p2)) / n2);
       d = 1.96 * se0 + 0.84 * se1;
     }
-    def("indepMdd", pct(d, 1));
+    // A difference of rates: quoted in percentage points.
+    def("indepMdd", (d * 100).toFixed(1));
   }
   def("indepPowerTarget", "80\\%");
   def("indepLevel", "5\\%");
@@ -2072,7 +2110,7 @@ if (exp17) {
     const reading: Array<[string, boolean]> = [
       ["the first concurrent arm rejects one-sided at 5%", firstP < 0.05],
       ["the larger arm alone does not reject", extP >= 0.05],
-      ["the pooled test sits at the 5% level", pooledP > 0.04 && pooledP < 0.06],
+      ["the pooled test rejects narrowly", pooledP > 0.03 && pooledP < 0.05],
       ["the larger arm's interval admits ratios near 2", extHi > 2],
       ["flips concentrate in slow responses", unplannedExt.latencySplit.slowerHalf.flips > 3 * unplannedExt.latencySplit.fasterHalf.flips && unplannedExt.latencySplit.slowerHalf.n === unplannedExt.latencySplit.fasterHalf.n],
       ["the launch-order ratio rejects in the larger arm and not in the first", launchExtP < 0.05 && launchMainP >= 0.05],
@@ -2092,7 +2130,7 @@ if (exp17) {
       const [indep, planned, launchOrder, upper] = c.ratios.map((r) => worst(r.label));
       const same = (a: number, b: number) => Math.abs(a - b) < 5e-3;
       if (
-        c.ratios.length !== 4 || c.block !== (x.serial.blockSize ?? 32) ||
+        c.ratios.length !== 4 || c.block !== e.concurrent.serial.blockSize ||
         !same(c.ratios[1]!.phi, ratio) || !same(c.ratios[2]!.phi, unplannedExt.launchOrderBlocks.blockVarianceRatio ?? 0) || !same(c.ratios[3]!.phi, extHi)
       ) {
         throw new Error("exp9c-overdispersion.json was simulated at other dispersion ratios than the independence check now reports; re-run scripts/experiments/exp9c-overdispersion.ts");
