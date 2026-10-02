@@ -393,6 +393,7 @@ def("labelChurn", pct(exp10.labelDisagreementRate, 1));
   // The three single-quantity labelings round to 6.3%, 6.0% and 6.30%; the
   // flip counts behind them keep the first and the last apart.
   def("fmtStoredFlips", String(Math.round(t1.trueFlipRate * t1.n)));
+  def("fmtStoredRateFine", pct(t1.trueFlipRate, 2));
   def("fmtEarlierFlips", String(Math.round(exp10.singleDrawFlipRate * exp10.n)));
   def("fmtVoteFlips", String(Math.round(exp10.vote3FlipRate * exp10.n)));
 }
@@ -422,7 +423,7 @@ def("bootB", num(bci.B));
 def("benchRealized", pct(bench.main.realizedPresented, 2));
 def("benchRealizedReuse", pct(bench.main.realizedReuse, 2));
 def("benchOracleTight", String(pick("so-formatting", 0.1).main.sampled));
-def("synTightCertRate", pct(pick("so-synonym", 0.1).bootstrap.certificationRate, 0));
+def("synTightCertRate", pct(pick("so-synonym", 0.1).bootstrap.certificationRate, 1));
 def("benchOracleMain", String(pick("so-formatting", 0.2).main.sampled));
 const frontier = [0.2, 0.1, 0.05, 0.02].map(
   (a) => `${(pick("so-formatting", a).bootstrap.savingsMean * 100).toFixed(1)}\\%`,
@@ -761,7 +762,7 @@ def("calConfigs", String(exp9.results.length));
   def("calUnsafeWorstAlpha", worst.alpha.toString());
   def("calUnsafeWorstP", worst.p.toString());
   def("calUnsafeWorstSize", num(worst.size));
-  def("calUnsafeWorstEstimand", worst.estimand === "presented" ? "presented-cells" : "reuse-set");
+  def("calUnsafeWorstEstimand", worst.estimand === "presented" ? "default" : "strict");
   def("calNominalDelta", pct(Number(exp9.perStratumDelta), 0));
   const tight = cal.filter((r) => r.p > r.alpha && r.p <= r.alpha * 1.3);
   def("calUnsafeTightMean", pct(tight.reduce((a, r) => a + unsafeOf(r), 0) / tight.length, 2));
@@ -1031,9 +1032,12 @@ def("sepRealizedTight", pct(sx1.realizedOnOverlap ?? 0, 2));
     }
   };
   check("exp11c-deployment-bounds.json", dx2, true);
+  check("exp11c-deployment-bounds.json", dx1, false);
   check("exp11c-deployment-bounds.json", dmp2, false);
+  check("exp11c-deployment-bounds.json", arm(exp11c, "eb", 0.1), false);
   check("exp11c-deployment-bounds-v4.json", sx2, false);
   check("exp11c-deployment-bounds-v4.json", sx1, false);
+  check("exp11c-deployment-bounds-v4.json", arm(exp11cSep, "eb", 0.2), false);
 }
 // Snapshot drift (exp16): the same rows under both snapshots.
 {
@@ -1602,7 +1606,8 @@ const offLedgerCells =
     return acc + d.draws.reduce((a, r) =>
       a + ["a1", "b1", "a2", "a3", "a4", "a5"].filter((k) => r[k] !== undefined && r[k] !== null).length, 0);
   }, 0) +
-  Number(exp0.n) * 2 +
+  // exp0 drew every row twice under each of its regimes.
+  Number(exp0.n) * 2 * Object.keys(exp0.regimes).length +
   Number(exp0b.n) * 2 +
   Number(exp4.validPairs) * 6 +
   // Independence check (two arms, direct calls) and the remaining-pair
@@ -2033,6 +2038,17 @@ if (exp17) {
     def("indepExtCi", ci(x.wilson95));
     def("indepExtVsSeqP", fmtP(exp17ext.againstMainSequential.twoSidedP));
     def("indepExtDate", fmtRunDate(exp17ext.ranAt));
+    // The larger arm ran under faster serving than the first concurrent arm;
+    // the prose says so, since the two arms are pooled in one test.
+    {
+      const first = Number(e.concurrent.medianLatencyMs ?? 0);
+      const later = Number((x as unknown as { medianLatencyMs?: number }).medianLatencyMs ?? 0);
+      if (!(first > 0 && later > 0 && later < first / 2)) {
+        throw new Error("independence check: the larger arm no longer ran at under half the first arm's median latency; rewrite the sentence in body.tex");
+      }
+      def("indepConcMedianLatency", (first / 1e3).toFixed(1));
+      def("indepExtMedianLatency", (later / 1e3).toFixed(1));
+    }
     // The upper end of the larger arm's interval: the ratio the test cannot exclude.
     const extHi = (ratio * dfx) / chiSquareQuantile(0.025, dfx);
     def("indepExtDispersionHi", extHi.toFixed(2));
@@ -2065,6 +2081,29 @@ if (exp17) {
     ];
     for (const [name, ok] of reading) {
       if (!ok) throw new Error(`independence check: "${name}" no longer holds; rewrite the paragraph "Reading the tests" in body.tex`);
+    }
+    // What dependence of that size would cost (exp9c): the certifier's
+    // per-stratum error probability at the least favourable rate, simulated
+    // under beta-binomial dependence within blocks, worst cell per ratio.
+    {
+      type R9c = { alpha: number; size: number; ratio: number; ratioLabel: string; errorProbability: number };
+      const c = J("exp9c-overdispersion.json") as { perStratumDelta: number; block: number; ratios: Array<{ label: string; phi: number }>; results: R9c[] };
+      const worst = (label: string) => Math.max(...c.results.filter((r) => r.ratioLabel === label).map((r) => r.errorProbability));
+      const [indep, planned, launchOrder, upper] = c.ratios.map((r) => worst(r.label));
+      const same = (a: number, b: number) => Math.abs(a - b) < 5e-3;
+      if (
+        c.ratios.length !== 4 || c.block !== (x.serial.blockSize ?? 32) ||
+        !same(c.ratios[1]!.phi, ratio) || !same(c.ratios[2]!.phi, unplannedExt.launchOrderBlocks.blockVarianceRatio ?? 0) || !same(c.ratios[3]!.phi, extHi)
+      ) {
+        throw new Error("exp9c-overdispersion.json was simulated at other dispersion ratios than the independence check now reports; re-run scripts/experiments/exp9c-overdispersion.ts");
+      }
+      if (!(indep! < c.perStratumDelta && indep! < planned! && planned! < launchOrder! && launchOrder! < upper! && upper! > 2 * c.perStratumDelta)) {
+        throw new Error("exp9c: the simulated error probabilities no longer rise with the dispersion ratio as the prose says; rewrite the sentence in \"Reading the tests\"");
+      }
+      def("overdispIndep", pct(indep!, 1));
+      def("overdispPlanned", pct(planned!, 1));
+      def("overdispLaunch", pct(launchOrder!, 1));
+      def("overdispUpper", pct(upper!, 1));
     }
   }
 }
@@ -2228,7 +2267,7 @@ writeFileSync(
 Rate & Edit & Cells & Instrument (artifact) \\\\
 \\midrule
 \\multicolumn{4}{@{}l}{\\emph{Headline pair: SO formatting-only, Boolean lab column}} \\\\
-\\flipSoFormatting & formatting v1$\\to$v2 & $n{=}\\benchN$ evaluation vector & stored v2 oracle cells against the stored v1 cache, one draw each side (\\fmtStoredFlips\\ flips); the Table~\\ref{tab:main} label instrument (\\texttt{exp8}) \\\\
+\\flipSoFormatting & formatting v1$\\to$v2 & $n{=}\\benchN$ evaluation vector & stored v2 oracle cells against the stored v1 cache, one draw each side (\\fmtStoredFlips\\ flips, \\fmtStoredRateFine\\ to two decimals); the Table~\\ref{tab:main} label instrument (\\texttt{exp8}) \\\\
 \\floorBoolStored & formatting v1$\\to$v2 & same rows & the same comparison on the v2 cells as first drawn (\\fmtEarlierFlips\\ flips), recorded before \\vectorRedrawnCells\\ of them were re-drawn on \\vectorRedrawnDate\\ (\\texttt{exp10}) \\\\
 \\floorBoolVote & formatting v1$\\to$v2 & same rows & majority of three draws on each side (\\fmtVoteFlips\\ flips; \\texttt{exp10}) \\\\
 \\editFlipFreshBoth & formatting v1$\\to$v2 & same rows & fresh single draws on both sides, neither the cache (\\texttt{exp10}) \\\\

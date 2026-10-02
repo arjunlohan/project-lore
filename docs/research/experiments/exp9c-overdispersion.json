@@ -1,0 +1,93 @@
+{
+  "experiment": "exp9c-overdispersion",
+  "note": "the pinned certifier's per-stratum error probability on the deployment stratum, at the least favourable rate, when draws arrive in blocks of 32 with beta-binomial dependence; phi is the block-count variance ratio against the binomial (1 = independent); a model of dependence, not a measurement of it",
+  "stratumSize": 81469,
+  "block": 32,
+  "perStratumDelta": 0.05,
+  "trials": 100000,
+  "ratios": [
+    {
+      "label": "independent",
+      "phi": 1
+    },
+    {
+      "label": "planned estimate (larger arm)",
+      "phi": 1.2623922289946485
+    },
+    {
+      "label": "launch-order estimate (larger arm)",
+      "phi": 1.609830283947978
+    },
+    {
+      "label": "upper end of the planned test's 95% interval",
+      "phi": 2.255510721653054
+    }
+  ],
+  "results": [
+    {
+      "alpha": 0.2,
+      "size": 81469,
+      "ratio": 1,
+      "ratioLabel": "independent",
+      "rate": 0.2000024549215039,
+      "errorProbability": 0.02286
+    },
+    {
+      "alpha": 0.2,
+      "size": 81469,
+      "ratio": 1.2623922289946485,
+      "ratioLabel": "planned estimate (larger arm)",
+      "rate": 0.2000024549215039,
+      "errorProbability": 0.04145
+    },
+    {
+      "alpha": 0.2,
+      "size": 81469,
+      "ratio": 1.609830283947978,
+      "ratioLabel": "launch-order estimate (larger arm)",
+      "rate": 0.2000024549215039,
+      "errorProbability": 0.07123
+    },
+    {
+      "alpha": 0.2,
+      "size": 81469,
+      "ratio": 2.255510721653054,
+      "ratioLabel": "upper end of the planned test's 95% interval",
+      "rate": 0.2000024549215039,
+      "errorProbability": 0.1215
+    },
+    {
+      "alpha": 0.1,
+      "size": 81469,
+      "ratio": 1,
+      "ratioLabel": "independent",
+      "rate": 0.10000122746075195,
+      "errorProbability": 0.01931
+    },
+    {
+      "alpha": 0.1,
+      "size": 81469,
+      "ratio": 1.2623922289946485,
+      "ratioLabel": "planned estimate (larger arm)",
+      "rate": 0.10000122746075195,
+      "errorProbability": 0.03473
+    },
+    {
+      "alpha": 0.1,
+      "size": 81469,
+      "ratio": 1.609830283947978,
+      "ratioLabel": "launch-order estimate (larger arm)",
+      "rate": 0.10000122746075195,
+      "errorProbability": 0.06069
+    },
+    {
+      "alpha": 0.1,
+      "size": 81469,
+      "ratio": 2.255510721653054,
+      "ratioLabel": "upper end of the planned test's 95% interval",
+      "rate": 0.10000122746075195,
+      "errorProbability": 0.10826
+    }
+  ],
+  "wallMs": 21956
+}

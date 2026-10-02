@@ -106,12 +106,13 @@ certifies at a correspondingly lower threshold. An impossibility floor
 follows: with the prompt unedited, a budget $\alpha$ below a stratum's
 self-flip rate is not certifiable.
 \item \textbf{The \sivm{} procedure} (\emph{semantic incremental view
-maintenance}; \secref{sec:system}): frozen cached-value stratification
-(optionally refined by how strongly the edit's changed terms match each
-row), adaptive sampling on a
+maintenance}; \secref{sec:system}): a frozen stratification, an
+adaptive sample, and a futility rule. The stratification is by cached
+value, optionally refined by how strongly the edit's changed terms
+match each row. Sampling follows a
 doubling schedule of \emph{looks} (points at which the sample is
-inspected), and futility stopping (giving up on a stratum whose sample
-already exceeds the budget). Certification is per-stratum with an
+inspected). The futility rule gives up on a stratum whose sample
+already exceeds the budget. Certification is per-stratum with an
 exact finite-population confidence bound, and the procedure offers two
 guarantee targets (presented cells; strict reuse set). Deciding at several looks is
 \emph{peeking}; the validity theorem survives it by splitting the
@@ -542,7 +543,7 @@ Algorithm~\ref{alg:sivm} states the procedure in full.
 \begin{algorithmic}[1]
 \REQUIRE cached cells $\{(r_i, c_i)\}$; edit $\pi \to \pi'$; budget
 $\alpha$; failure probability $\delta$; first look $n_0$; at most $\ell$ looks;
-mode $\in \{\text{presented}, \text{reuse-set}\}$;
+mode $\in \{\text{default}, \text{strict}\}$;
 Assumptions~\ref{as:pin}--\ref{as:sample}
 \ENSURE reuse set $\mathcal{R}$, recompute set, certificate record
 \STATE $\Delta \leftarrow$ word-level LCS diff of $\pi$ and $\pi'$
@@ -557,7 +558,7 @@ value, optionally refined by an interaction bucket of $\Delta$; freeze
     yet drawn; $k \leftarrow |\{ i \le n : c_i \not\equiv X_i' \}|$
     \STATE $u \leftarrow$ exact upper bound of Eq.~\eqref{eq:exact} at
     $(k, n, n_j, \delta')$
-    \STATE $\alpha' \leftarrow \alpha$ if presented mode, else
+    \STATE $\alpha' \leftarrow \alpha$ in the default mode, else
     $\alpha (n_j - n)/n_j$
     \IF{$n < n_j$ \AND $u \le \alpha'$}
       \STATE certify stratum $j$; \textbf{break}
@@ -746,7 +747,7 @@ certifier took the
 order the storage engine happened to return. That order changed when
 the query planner switched indexes, and the same seed then drew a
 different sample (\secref{sec:experiments}). And a model snapshot is a
-version of its own: oracle draws taken after a provider-side change are
+version of its own: oracle draws taken after a change of the served model are
 stored under a new prompt version carrying the same template. Draws
 from two snapshots therefore never share a key and cannot be mixed in
 one certification path.
@@ -867,10 +868,10 @@ three-draw relabeling of the headline pair quantifies the instrument's
 own variance. With fresh draws on
 both sides the edit flips \editFlipFreshBoth\ of cells, and
 \floorBoolVote\ under majority-vote labels (\fmtVoteFlips\ of the
-\benchN\ rows). The stored single-draw
-labels read \flipSoFormatting\ (\fmtStoredFlips\ rows), the figure
-Table~\ref{tab:main} reports.
-They read \floorBoolStored\ (\fmtEarlierFlips\ rows) when the relabeling ran, before
+\benchN\ rows). The stored single-draw labels flip \fmtStoredFlips\
+rows (\fmtStoredRateFine), which Table~\ref{tab:main} prints as
+\flipSoFormatting.
+They flipped \fmtEarlierFlips\ rows (\floorBoolStored) when the relabeling ran, before
 \vectorRedrawnCells\ of the vector's v2 cells were re-drawn on
 \vectorRedrawnDate. Between that earlier labeling and the majority
 vote, \labelChurn\ of rows relabel. These are draws of one population
@@ -894,7 +895,7 @@ assumed~\cite{gilardi,ziems,pangakis,tornberg}. Ledgered model spend across ever
 cost ledger. That figure is a lower bound, not a total. The ledger
 records only cells written through the column runner. A further
 \offLedgerCells\ cells were computed by probe scripts that call the
-model directly (the self-flip probes, the vote-of-3 study, the multi-draw relabeling,
+model directly (the self-flip probes, the majority-vote study, the multi-draw relabeling,
 the model-family runs\ifnum\pilotAvailable=1\relax, the independence
 check, and the free-text pilot's draws\else, and the independence
 check\fi).
@@ -909,10 +910,12 @@ gateway's list prices as fetched on \priceFetchedAt.}
 
 \begin{table*}[t]
 \caption{Reconciliation of the flip-rate figures quoted in this
-article. Each is a different quantity or a different instrument on the
-same quantity; none is a restatement of another.}
+article. Each is a different quantity, a different instrument on the
+same quantity, or the same instrument on an earlier draw; none is a
+restatement of another.}
 \label{tab:rates}
 \centering\footnotesize
+\renewcommand{\arraystretch}{1.2}
 \input{\paperroot/tablerates}
 \end{table*}
 
@@ -994,7 +997,7 @@ We note two caveats on the same experiment. First, the cached value is
 the proxy the reduction names, and the result does not depend on that
 choice. Run instead with an embedding-interaction proxy, and with its
 much larger threshold search corrected accordingly, the competitor
-certifies in \hhEmbCertCells\ of the \hhEmbCells\ (edit, budget) cells
+certifies in \hhEmbCertCells\ of the \hhEmbCells\ (edit, budget) configurations
 and lands in the same place. At $\alpha{=}0.2$ on the formatting edit
 it reuses \hhEmbReused\ cells at \hhEmbErr\ error, \hhEmbTrueRows\ of
 them cached-TRUE cells that flip at \hhEmbTrueErr. On the widening edit
@@ -1172,7 +1175,7 @@ Boolean column's does.
 \caption{Model families on the lab column's two edit pairs under the
 pinned procedure (presented-cells estimand, $\delta{=}0.1$; the same
 seeded rows as the primary evaluation vector, one fresh draw per cell,
-$T{=}0$). Cells give certified savings with the realized presented-cells
+$T{=}0$). Entries give certified savings with the realized presented-cells
 error in parentheses, or ``refused'' with the oracle calls spent before
 the futility stop. The primary row is the main seed of
 Table~\ref{tab:main} (whose savings are replication means), with the
@@ -1613,7 +1616,7 @@ such rate over all configurations is \calUnsafeWorst\ (95\% CI
 \calUnsafeWorstCi) against the per-stratum $\delta_j{=}\calNominalDelta$
 the study plants. It occurs at $\alpha{=}\calUnsafeWorstAlpha$,
 $p{=}\calUnsafeWorstP$, $n_j{=}\calUnsafeWorstSize$, in
-\calUnsafeWorstEstimand\ mode. The presented-cells rate, which
+the \calUnsafeWorstEstimand\ mode. The presented-cells rate, which
 leaves out the sampled flips, exceeds $\alpha$ in at most
 \calUnsafePresentedWorst\ of runs. Of the configurations,
 \calTightNulls\ are \emph{tight} nulls, planted just above the budget at
@@ -1629,9 +1632,9 @@ therefore not the least favourable case. The theorem's event is hardest
 to avoid for a fixed population whose realized count sits one flip past
 the budget, and there the probability of an unsafe certificate is an
 exact finite sum over the schedule. Across the \calBoundaryCells\
-(budget, size) cells of the grid it lies between \calBoundaryLo\ and
+(budget, size) combinations of the grid it lies between \calBoundaryLo\ and
 \calBoundaryHi\ in the default mode and reaches \calBoundaryStrictHi\
-in the strict mode, inside $\delta_j{=}\calNominalDelta$ in each cell.
+in the strict mode, inside $\delta_j{=}\calNominalDelta$ in each.
 The remaining gap comes from the Bonferroni split across looks (the
 earliest of which cannot certify at a tight budget), from the
 discreteness of the test, and from the futility rule, which stops
@@ -1709,8 +1712,11 @@ upper-tail $p{=}\indepExtDispersionP$) and its lag-one
 autocorrelation \indepExtLag\ ($p{=}\indepExtLagP$). Its flip
 rate is \indepExtRate\ (\indepExtCi) against the sequential
 arm's \indepSeqRate\ ($p{=}\indepExtVsSeqP$). This arm was
-drawn a day later and on other rows, so the rate comparison
-also spans a day of the snapshot. Pooled over both concurrent arms, the
+drawn a day later, on other rows, and under faster serving (a median
+response of \indepExtMedianLatency\ seconds against
+\indepConcMedianLatency\ in the first concurrent arm), so the
+comparisons between arms also span a day of the snapshot. Pooled over
+both concurrent arms, the
 dispersion statistic is \indepPooledChi\ on \indepPooledDf\ degrees of
 freedom ($p{=}\indepPooledP$). The block-scale question is therefore
 bounded, not settled. The larger arm alone does not reject, the pooled
@@ -1731,10 +1737,19 @@ cautions, not as findings.
 What the check supports is narrower than independence. The flip rate,
 the quantity the bound estimates, does not move with concurrency in
 these draws; a difference smaller than \indepMdd\ is not excluded.
-Dependence among draws issued together is not excluded either.
-Overdispersion of the size these intervals admit would raise a
-certificate's error probability above its per-look level, by an amount
-we do not quantify. Two things limit the exposure. First, the
+Dependence among draws issued together is not excluded either, and it
+would raise a certificate's error probability. We simulated the
+certifier on the deployment stratum, at its two certified budgets and
+at the least favourable rate, one flip past the budget, with
+beta-binomial dependence inside blocks of \indepBlockSize\ draws. With
+independent draws its per-stratum error probability is at most
+\overdispIndep. It rises to \overdispPlanned\ at the planned test's
+dispersion estimate in the larger arm, \overdispLaunch\ at the
+launch-order estimate, and \overdispUpper\ at the upper end of the
+planned test's interval, against a nominal $\delta_j = 0.05$. That
+exposure is confined to strata whose flip rate
+sits near the budget; a stratum well below it, as in the deployment
+runs, is certified correctly either way. Two further things limit it. First, the
 replication results of this article resample frozen labels, a fixed
 population for which the hypergeometric law holds however the labels
 were drawn; the assumption matters for a live certification, as in the
@@ -1828,7 +1843,7 @@ The frontier in \figref{fig:frontier} is therefore a property
 of the bound. The exact bound is the pinned one because it is
 proven for exactly the sampling the procedure performs and, on
 every configuration measured here, is the tightest of the proven
-arms. Every number of the preprint is reproducible by running
+arms. The preprint's certification results are reproducible by running
 the released harness with the Maurer--Pontil arm selected.
 
 \begin{table*}[t]
@@ -1938,7 +1953,7 @@ Classical incremental view maintenance (IVM)~\cite{dbsp} & exact equality of the
 View adaptation after redefinition~\cite{gupta95} & exact equivalence of the rewritten view & deterministic operators & the view definition & algebraic (no sampling) \\
 Step-level reuse~\cite{stepcache} & per-step equivalence under a perturbed request & the model & the request & deterministic per-step check \\
 Guarantee-free semantic caches~\cite{gptcache} (B3) & nothing: a hit is a similarity above a threshold & nothing & the incoming query & none \\
-Per-output verification: assertions, regression suites, vote-of-$k$~\cite{spade,retain} & correctness of one output against a checker or a majority & the prompt & the output under test & per-output check, no population bound \\
+Per-output verification: assertions, regression suites, majority vote~\cite{spade,retain} & correctness of one output against a checker or a majority & the prompt & the output under test & per-output check, no population bound \\
 \sivm{} (this work) & false-reuse rate of cached stochastic cells kept under the new definition, per stratum & the model snapshot and the data & the prompt definition & exact finite-sample bound per stratum and look \\
 \bottomrule
 \end{tabular}
@@ -2306,6 +2321,7 @@ aggregate statistics. Nothing in the evaluation path is withheld.
 Anyone rerunning the evaluation needs a model endpoint of their own; the labels
 are released so the statistical results can be reproduced without one.
 
+\keeprunin
 \paragraph{Generated numbers.} Every quantitative claim in this
 article's prose, tables, and figures is
 emitted by a single generator
@@ -2340,8 +2356,8 @@ public as a preprint (Zenodo,
 it is ``the preprint'' wherever this article says so. Relative to it,
 the certifier's default bound changed from Maurer--Pontil to
 the exact finite-population bound and every number was regenerated. The
-preprint's numbers are reproducible from the same release with the
-Maurer--Pontil arm selected.
+preprint's certification results are reproducible from the same release
+with the Maurer--Pontil arm selected.
 
 \venueappendix
 
@@ -2376,8 +2392,8 @@ blind to by construction;
 from different columns, checked against a provenance file the generator
 emits from the same pair definitions the experiments run on;~and
 \item a prose sentence longer than 60 words (tables, captions,
-displayed mathematics, and the theorem environments excluded), a
-readability bound.
+numbered lists, displayed mathematics, and the theorem environments
+excluded), a readability bound.
 \end{enumerate}
 The generator adds guards of its own. It asserts the relations that
 \secref{sec:experiments} and \secref{sec:limits} state between figures:

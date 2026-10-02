@@ -59,6 +59,10 @@ mkdir -p "$OUT/cover" && cp paper/ieee/cover-letter.tex "$OUT/cover/" \
   && ( cd "$OUT/cover" && pdflatex -interaction=nonstopmode cover-letter.tex >/dev/null 2>&1 && pdflatex -interaction=nonstopmode cover-letter.tex >/dev/null 2>&1 ) \
   && cp "$OUT/cover/cover-letter.pdf" "$OUT/cover-letter.pdf"
 echo "cover letter: $OUT/cover-letter.pdf ($(/usr/bin/grep -o 'Output written on cover-letter.pdf ([0-9]* pages\?' "$OUT/cover/cover-letter.log" | /usr/bin/grep -o '[0-9]* pages\?'))"
+# The letter is written to fit one page; an edit that spills the signature
+# onto a second page should stop the build, not ship.
+COVER_PAGES=$(pdfinfo "$OUT/cover-letter.pdf" | /usr/bin/awk '/^Pages:/ {print $2}')
+[ "$COVER_PAGES" = "1" ] || { echo "cover letter runs to $COVER_PAGES pages; trim it to one"; exit 1; }
 echo "packed: $OUT/manuscript.pdf ($PAGES_FLAT), $OUT/source.zip ($(du -h "$OUT/source.zip" | cut -f1); flat, with main.bbl and main.pdf)"
 
 # 7. Resubmission deliverables (IEEE Access reject-with-resubmission): the
@@ -205,7 +209,8 @@ def colour_float(m):
     if re.search(r"\\caption\{\\DIFaddFL\{", body) and not re.search(r"\\DIFdel", body):
         return head + r"\color{blue}" + body + tail
     body = re.sub(
-        r"\\DIFaddbeginFL (\\begin\{tabular\}|\\begin\{tikzpicture\}|\\resizebox)(.*?)\\DIFaddendFL",
+        # A row-spacing command may sit between the marker and the tabular.
+        r"\\DIFaddbeginFL ((?:\\renewcommand\{\\arraystretch\}\{[^}]*\}\s*)?(?:\\begin\{tabular\}|\\begin\{tikzpicture\}|\\resizebox))(.*?)\\DIFaddendFL",
         lambda k: r"\DIFaddbeginFL {\color{blue}" + k.group(1) + k.group(2) + r"}\DIFaddendFL",
         body,
         flags=re.S,

@@ -92,18 +92,24 @@ decode parameters live in `lib/lore/models.ts`.
 
 An AI column is a materialized view of a versioned prompt. Cells are
 stochastic even at temperature zero (the same prompt disagrees with itself
-on ~5% of rows on our boolean workload), so "did the edit change this
+on 5.0% of rows on our Boolean workload), so "did the edit change this
 cell?" is only meaningful statistically. sIVM freezes cached-value strata,
-samples each on a doubling look schedule, bounds flip rates with
-empirical-Bernstein confidence bounds (validity under peeking by budget
-splitting), and reuses only strata that clear the user's error budget,
-with two guarantee targets (all presented cells, or the strict reuse set).
-Measured across two corpora, five edit classes, ~30,000 labeled cells,
-500-replication bootstraps, and 192,000 known-rate calibration trials:
-zero unsafe certifications, up to 82.9% ± 2.0 certified call savings on
-benign edits, and honest refusals everywhere else. Full report:
-`docs/research/lore-research-report.html`; every number regenerates from
-`scripts/experiments/`.
+samples each on a doubling look schedule, bounds each stratum's flip rate
+with an exact finite-population confidence bound (validity under peeking by
+splitting the failure probability across looks), and reuses only strata
+that clear the user's error budget, with two guarantee targets (all
+presented cells, or the strict reuse set). Measured on two public corpora
+with five edit pairs and 28,000 labeled cells: a formatting-only edit
+certifies 88.4% call savings at an error budget of 0.2 (88.1% mean over
+1,000 sampling replications), and at deployment scale 90 fresh calls
+certify reuse of 81,424 of 89,184 cells. Across 396,000 calibration runs,
+certificates that exceed their budget occur in at most 1.00% of runs per
+configuration, against a nominal 5%. Everything else is refused. These are
+the figures of the IEEE Access resubmission (`paper/ieee/`), which pins the
+exact bound; the earlier preprint used an empirical-Bernstein bound, and
+its certification results reproduce with that arm selected. Every number
+regenerates from `scripts/experiments/`; the earlier HTML report is at
+`docs/research/lore-research-report.html`.
 
 ## Repository map
 
@@ -114,7 +120,7 @@ benign edits, and honest refusals everywhere else. Full report:
 | `lib/lore/` | NL compiler, cell runner, certifier, stores |
 | `app/lore/`, `app/api/lore/` | table UI + API |
 | `scripts/ingest/` | corpus ingestion (reproducible) |
-| `scripts/experiments/` | exp0–exp19 (exp9b: the certifier's exact error probability at the least favourable population; exp11b: the audit verifier, which recomputes every deployment audit without the certifier; exp14–exp19: bound ablation and null study, snapshot versions and drift, independence check, remaining pairs on further families, free-text judge pilot) + asset/report generation |
+| `scripts/experiments/` | exp0–exp19 (exp9b: the certifier's exact error probability at the least favourable population; exp9c: what block-scale dependence among draws would cost that probability; exp11b: the audit verifier, which recomputes every deployment audit without the certifier; exp14–exp19: bound ablation and null study, snapshot versions and drift, independence check, remaining pairs on further families, free-text judge pilot) + asset/report generation |
 | `docs/research/` | report, review memos, result JSONs |
 | `paper/` | manuscript body shared by the acmart shell (`main.tex`, tectonic) and the IEEE Access shell (`ieee/main.tex`, latexmk; `pnpm pack:paper:ieee` builds the submission package: `scripts/pack-ieee-submission.sh` with `scripts/resolve-tex-gates.py` for the prose gates, `scripts/mark-bbl-changes.py` for the highlighted copy's reference list, and `scripts/gen-resubmission-checklist.py` for the upload checklist) |
 | `patent/` | provisional draft (attorney review pending) |
