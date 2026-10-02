@@ -1,4 +1,11 @@
 /**
+ * NOT MAINTAINED for the IEEE Access resubmission. This generator produced
+ * the HTML report of the preprint (docs/research/lore-research-report.html,
+ * Maurer-Pontil numbers), which is kept as a snapshot. Several macros it
+ * cites were renamed or removed when the certifier's bound changed, so it
+ * stops with a named error rather than mixing the old prose with new
+ * figures. The manuscript, not this report, is the current account.
+ *
  * Generate the readable companion to the paper from THE SAME macros the
  * paper cites, so the two cannot disagree.
  *

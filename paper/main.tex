@@ -94,23 +94,24 @@ look schedule, and bounds each stratum's flip rate with an exact
 finite-population confidence bound; a strict mode certifies at a
 deflated threshold to bound the error of the reused cells alone. We
 also establish an impossibility floor: with the prompt unedited, no
-stratum certifies below its own rate of self-disagreement. On two
+stratum reliably certifies below its own rate of self-disagreement. On two
 public corpora (\corpusSO\ Stack Overflow developer profiles;
-\corpusDjinni\ Djinni candidate CVs) with \labeledCells\ labeled cells
-and a production table system, a formatting-only edit certifies \benchSavingsMain\ call savings at $\alpha{=}0.2$ with \benchRealized\
-realized false-reuse, and at deployment scale \deployOracle\ oracle
-calls certify reuse of \deployReused\ of \deployN\ cells. Across
+\corpusDjinni\ Djinni candidate CVs) with \labeledCells\ labeled cells,
+one primary model, and a working table system, a formatting-only edit certifies
+reuse of \frontierB\ of cells on average at $\alpha{=}0.1$ and of
+\benchSavings\ at $\alpha{=}0.2$ ($\delta{=}0.1$; \bootB\
+replications). On the full corpus at $\alpha{=}0.2$,
+\deployOracle\ oracle calls certify reuse of \deployReused\ of
+\deployN\ cells, in a live run \driftDaysLater\ days after the column
+was built that also measured drift of the served model, as a higher
+flip rate against the same cache. Across
 the calibration grid, a certificate exceeds its budget with probability
 at most \calBoundaryHi\ at the least favorable population, against a
-nominal \calNominalDelta\ per stratum. A second certification
-\driftDaysLater\ days later,
-against the same cache, measured drift of the served model as a higher
-flip rate and re-certified the same budgets, the tighter one a look deeper than on
-the August draws. At least one edit certifies
-on \famCertCount\ of \famCount\ further model families, while which edits
-are benign varies by family. We release the system under a
-source-available noncommercial license, with the labels and a benchmark
-of versioned prompt-edit pairs.
+nominal \calNominalDelta\ per stratum. At least one edit certifies
+on \famCertCount\ of \famCount\ further models from four providers, while
+which edits are benign varies by model. We release the system, the
+labels, and five versioned prompt-edit pairs under a
+source-available noncommercial license.
 \end{abstract}
 
 \maketitle

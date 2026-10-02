@@ -2,12 +2,15 @@
  * Experiment 9c: what block-scale dependence among oracle draws would cost.
  *
  * Theorem 1 assumes the draws of sampled rows do not interfere. The
- * independence check (exp17) finds the flip RATE unmoved by concurrency but
- * cannot exclude overdispersion of flip counts among draws issued together:
- * the variance of counts over blocks of 32 reads 1.26 times its binomial
- * value in the larger arm (95% interval up to 2.26), and 1.61 with blocks
- * formed in launch order. This script asks what such dependence would do to
- * the certifier's error probability, under a simple model of it.
+ * independence check (exp17) finds the flip RATE of completed requests
+ * unmoved by concurrency but cannot exclude overdispersion of flip counts
+ * among draws issued together: the variance of counts over blocks of 32
+ * reads 1.26 times its binomial value in the larger concurrent arm (95%
+ * interval up to 2.26), 1.61 there with blocks formed in launch order, 2.08
+ * in the first concurrent arm (eight blocks; interval up to 8.62), and 1.42
+ * pooled over both arms (interval up to 2.37). This script asks what each
+ * of those ratios would do to the certifier's error probability, under a
+ * simple model of dependence.
  *
  * Model. The sample is issued in blocks of 32 draws. Each block has its own
  * flip probability, drawn from a Beta distribution with mean p and
@@ -102,6 +105,7 @@ async function main() {
   // larger arm, the launch-order estimate there, and the upper end of the
   // planned test's 95% interval. Read from the artifact, not typed.
   const ext = JSON.parse(readFileSync("docs/research/experiments/exp17-independence-ext.json", "utf8"));
+  const first = JSON.parse(readFileSync("docs/research/experiments/exp17-independence.json", "utf8"));
   const planned = Number(ext.concurrent.serial.blockVarianceRatio);
   const launch = Number(ext.concurrent.unplanned.launchOrderBlocks.blockVarianceRatio);
   const df = Number(ext.concurrent.serial.dispersionDf);
@@ -125,19 +129,37 @@ async function main() {
     };
     return sum * Math.exp(-x + s * Math.log(x) - lg(s));
   };
-  let lo = 0;
-  let hi = df * 10;
-  for (let i = 0; i < 200; i++) {
-    const mid = (lo + hi) / 2;
-    if (gammaP(df / 2, mid / 2) < 0.025) lo = mid;
-    else hi = mid;
-  }
-  const upper = (planned * df) / ((lo + hi) / 2);
+  /** The 2.5% point of a chi-square with `d` degrees of freedom. */
+  const chiLow = (d: number): number => {
+    let lo = 0;
+    let hi = d * 10;
+    for (let i = 0; i < 200; i++) {
+      const mid = (lo + hi) / 2;
+      if (gammaP(d / 2, mid / 2) < 0.025) lo = mid;
+      else hi = mid;
+    }
+    return (lo + hi) / 2;
+  };
+  const upper = (planned * df) / chiLow(df);
   const ratios = [
     { label: "independent", phi: 1 },
     { label: "planned estimate (larger arm)", phi: planned },
     { label: "launch-order estimate (larger arm)", phi: launch },
     { label: "upper end of the planned test's 95% interval", phi: upper },
+  ];
+  // Added after the first run of this script: the same planned statistic in
+  // the first concurrent arm and pooled over both arms, each with the upper
+  // end of its interval. Simulated with seeds of their own, after the four
+  // ratios above, so those cells keep the values first reported.
+  const firstRatio = Number(first.concurrent.serial.blockVarianceRatio);
+  const firstDf = Number(first.concurrent.serial.dispersionDf);
+  const pooledChi = Number(ext.pooledWithMainConcurrent.dispersionChiSquare);
+  const pooledDf = Number(ext.pooledWithMainConcurrent.dispersionDf);
+  const extraRatios = [
+    { label: "pooled estimate (both concurrent arms)", phi: pooledChi / pooledDf },
+    { label: "upper end of the pooled 95% interval", phi: pooledChi / chiLow(pooledDf) },
+    { label: "planned estimate (first concurrent arm)", phi: firstRatio },
+    { label: "upper end of the first arm's 95% interval", phi: (firstRatio * firstDf) / chiLow(firstDf) },
   ];
   const deploy = JSON.parse(readFileSync("docs/research/experiments/exp11c-deployment-bounds-v4.json", "utf8"));
   const stratum = (deploy.sweeps[0].strata as Array<{ stratumId: string; size: number }>).find((s) => s.stratumId.startsWith("v=false"))!;
@@ -146,6 +168,14 @@ async function main() {
   let seed = 20261001;
   for (const cell of CELLS) {
     for (const r of ratios) {
+      const out = await errorProbability(cell.alpha, cell.size, r.phi, seed++);
+      results.push({ ...cell, ratio: r.phi, ratioLabel: r.label, ...out });
+      console.log(`alpha=${cell.alpha} N=${cell.size} phi=${r.phi.toFixed(2)} (${r.label}): error probability ${(out.errorProbability * 100).toFixed(2)}% at rate ${out.rate.toFixed(5)}`);
+    }
+  }
+  seed = 20261101;
+  for (const cell of CELLS) {
+    for (const r of extraRatios) {
       const out = await errorProbability(cell.alpha, cell.size, r.phi, seed++);
       results.push({ ...cell, ratio: r.phi, ratioLabel: r.label, ...out });
       console.log(`alpha=${cell.alpha} N=${cell.size} phi=${r.phi.toFixed(2)} (${r.label}): error probability ${(out.errorProbability * 100).toFixed(2)}% at rate ${out.rate.toFixed(5)}`);
@@ -162,7 +192,7 @@ async function main() {
         block: BLOCK,
         perStratumDelta: PER_STRATUM_DELTA,
         trials: TRIALS,
-        ratios,
+        ratios: [...ratios, ...extraRatios],
         results,
         wallMs: Date.now() - started,
       },

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import type { FilterSpec } from "@lore/core";
+import { assignStrataWith } from "@lore/core/sivm";
 import { adapterFor, type BackendId } from "@/lib/lore/adapters";
 import { certifyColumnEdit } from "@/lib/lore/certify";
 import {
@@ -27,6 +28,12 @@ const BodySchema = z.object({
  * runner (sampled rows get real fresh v_to computations, which also
  * materializes them). Certified rows get reused_certified cells; the rest
  * stay empty pending recompute.
+ *
+ * The route runs the pinned procedure of the paper: strata by cached value,
+ * the exact finite-population bound, and the doubling look schedule (45
+ * draws, at most six looks) with the futility rule. One request covers at
+ * most `limit` rows of the current filter; a full-corpus certification calls
+ * `certifyColumnEdit` from a script (scripts/experiments/exp11c-*.ts).
  */
 export async function POST(
   req: Request,
@@ -93,6 +100,10 @@ export async function POST(
         alpha: parsed.data.alpha,
         delta: parsed.data.delta,
         apply: true,
+        adaptive: true,
+        maxLooks: 6,
+        bound: "exact",
+        stratifier: (cells) => assignStrataWith(cells, () => "all"),
       },
     );
 

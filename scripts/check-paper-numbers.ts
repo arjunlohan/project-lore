@@ -26,6 +26,10 @@ const body = tex
   .filter((l) => !l.trimStart().startsWith("%"))
   .join("\n")
   .replace(/\\begin\{thebibliography\}[\s\S]*?\\end\{thebibliography\}/g, "")
+  // Author biography: degree years are biographical facts, not measurements.
+  // \biostart ... \bioend open and close it with or without a photograph.
+  .replace(/\\biostart\n[\s\S]*?\\bioend/g, "")
+  .replace(/\\includegraphics\[[^\]]*\]\{author-photo\.jpg\}/g, "")
   .replace(/\\input\{[^}]*\}/g, "")
   .replace(/\\(documentclass|usepackage|pgfplotsset|newtheorem|newcommand|label|ref|cite)\{[^}]*\}/g, "")
   .replace(/\\begin\{axis\}\[[\s\S]*?\]/g, "")
@@ -35,8 +39,7 @@ const body = tex
   .replace(/\\(history|doi|corresp|tfootnote)\{[^}]*\}/g, "")
   .replace(/\\markboth\s*\{[^}]*\}\s*\{[^}]*\}/g, "")
   .replace(/\\address\[[^\]]*\]\{[^}]*\}/g, "")
-  // Author biography: degree years are biographical facts, not measurements.
-  .replace(/\\begin\{IEEEbiographynophoto\}[\s\S]*?\\end\{IEEEbiographynophoto\}/g, "");
+  .replace(/\\begin\{IEEEbiography(nophoto)?\}[\s\S]*?\\end\{IEEEbiography(nophoto)?\}/g, "");
 
 /** Quantities the paper may state literally, with the reason. */
 const ALLOWED: Array<[RegExp, string]> = [
@@ -65,7 +68,6 @@ const ALLOWED: Array<[RegExp, string]> = [
   [/90 oracle calls/g, "schedule first look"],
   [/95\\%\s*(percentile interval|confidence interval|Wilson confidence interval|CI|PI)|\(95\\%|with 95\\%/g, "nominal interval coverage, a protocol constant"],
   [/2023|2026|17 USC/g, "years and statutes"],
-  [/main seed 42, sampling\s+replications 1000 to 1999/g, "PRNG seed protocol constants (also in table1's generated header)"],
   [/600-cell stratum/g, "calibration grid size, a protocol constant"],
   [/\$1\.05\$ to \$1\.25\$/g, "tight-null placement, a protocol constant"],
 ];
@@ -92,11 +94,21 @@ const genFiles = [
   "paper/tablerates.tex",
   "paper/tablemodels.tex",
   "paper/tabledeploy.tex",
+  "paper/tabledeploymp.tex",
   "paper/tablefampairs.tex",
   "paper/tableboundsgrid.tex",
+  "paper/tabledependence.tex",
+  "paper/tablestrict.tex",
+  "paper/tablebudgets.tex",
+  "paper/tableboundary.tex",
+  "paper/tablestrata.tex",
 ];
+// A generated table may cite macros (the reconciliation table is built
+// from them), and a macro cited there is rendered in the article.
+let genTex = "";
 for (const f of genFiles) {
   const txt = readFileSync(f, "utf8");
+  genTex += `\n${txt}`;
   if (!/^% GENERATED/m.test(txt)) {
     console.log(`WARNING: ${f} lacks a GENERATED provenance header`);
   }
@@ -402,7 +414,7 @@ const defined = [...macroSrc.matchAll(/\\newcommand\{\\(\w+)\}/g)].map(
   (m) => m[1]!,
 );
 const orphans = defined.filter(
-  (name) => !new RegExp(`\\\\${name}(?![A-Za-z])`).test(tex),
+  (name) => !new RegExp(`\\\\${name}(?![A-Za-z])`).test(tex + genTex),
 );
 
 console.log(`hand-typed quantity candidates: ${suspects.length}`);
@@ -416,17 +428,20 @@ if (orphans.length > 0) console.log(`  ${orphans.join(", ")}`);
 // IEEE Access review round 1, Reviewer 3: "Many sentences are long and
 // contain several numbers or points in parentheses. Please shorten the
 // sentences." The prose of body.tex (tables, figures, the algorithm,
-// displayed math, the appendix enumerations, and the theorem environments
-// removed; macros expanded) must contain no sentence longer than
-// MAX_SENTENCE_WORDS words; the offenders are listed so the writer can split
-// them rather than argue with the count.
+// displayed math, and the theorem environments removed; macros expanded)
+// must contain no sentence longer than MAX_SENTENCE_WORDS words, and neither
+// may a caption or the abstract; the offenders are listed so the writer can
+// split them rather than argue with the count. Numbered lists are prose: each
+// item starts a sentence of its own (the contributions list and the appendix
+// enumerations were once skipped, and a 47-word sentence sat in one).
 const MAX_SENTENCE_WORDS = 60;
-const macroValues = new Map(
-  [...macroSrc.matchAll(/\\newcommand\{\\(\w+)\}\{(.*)\}/g)].map((m) => [m[1]!, m[2]!]),
-);
-const proseOnly = (() => {
-  let s = readFileSync("paper/body.tex", "utf8");
-  for (const env of ["table\\*?", "figure\\*?", "algorithm", "equation", "tikzpicture", "enumerate", "theorem", "assumption", "proof"]) {
+/** The prose sentences of a body source, macros expanded from `macroTex`. */
+function proseSentencesOf(src: string, macroTex: string): string[] {
+  const values = new Map(
+    [...macroTex.matchAll(/\\newcommand\{\\(\w+)\}\{(.*)\}/g)].map((m) => [m[1]!, m[2]!]),
+  );
+  let s = src;
+  for (const env of ["table\\*?", "figure\\*?", "algorithm", "equation", "tikzpicture", "theorem", "assumption", "proof"]) {
     s = s.replace(new RegExp(`\\\\begin\\{${env}\\}[\\s\\S]*?\\\\end\\{${env}\\}`, "g"), " ");
   }
   s = s
@@ -435,24 +450,104 @@ const proseOnly = (() => {
     .join("\n")
     .replace(/\\ifnum\\\w+=1\\relax|\\else|\\fi/g, " ")
     .replace(/\\sivm\{\}/g, "sIVM")
-    .replace(/\\(section|subsection|paragraph)\*?\{[^}]*\}/g, " ")
+    // A heading ends the sentence before it, whatever letter the next one
+    // starts with (a paragraph that opens on a lower-case name such as
+    // "vCache" used to be glued to the sentence before its heading).
+    .replace(/\\(section|subsection|paragraph)\*?\{[^}]*\}/g, " \u00b6 ")
+    // So does a list: its lead-in ends where the list begins, and each item
+    // is a sentence of its own.
+    .replace(/\\(begin|end)\{(enumerate|itemize)\}|\\item\b/g, " \u00b6 ")
     .replace(/\\(cite|ref|secref|figref|eqref|label|texttt|url)\{[^}]*\}/g, "X")
     .replace(/\\\[[\s\S]*?\\\]/g, " X ")
     .replace(/\$[^$]*\$/g, "X")
     .replace(/\{,\}/g, ",");
-  const names = [...macroValues.keys()].sort((a, b) => b.length - a.length);
+  const names = [...values.keys()].sort((a, b) => b.length - a.length);
   if (names.length) {
-    s = s.replace(new RegExp(`\\\\(${names.join("|")})(\\\\ |\\{\\}|(?=[^A-Za-z]))`, "g"), (_m, n: string) => `${macroValues.get(n)} `);
+    s = s.replace(new RegExp(`\\\\(${names.join("|")})(\\\\ |\\{\\}|(?=[^A-Za-z]))`, "g"), (_m, n: string) => `${values.get(n)} `);
   }
-  return s.replace(/\\[A-Za-z]+\*?/g, " ").replace(/[{}~]/g, " ").replace(/\s+/g, " ");
-})();
-const proseSentences = proseOnly.split(/(?<=[.?!])\s+(?=[A-Z(\[`]|sIVM)/).filter((x) => x.split(" ").length > 2);
-const longSentences = proseSentences.filter((x) => x.split(" ").length > MAX_SENTENCE_WORDS);
-{
-  const lens = proseSentences.map((x) => x.split(" ").length);
-  const mean = lens.reduce((a, b) => a + b, 0) / Math.max(1, lens.length);
+  s = s.replace(/\\[A-Za-z]+\*?/g, " ").replace(/[{}~]/g, " ").replace(/\s+/g, " ");
+  return s
+    .split("\u00b6")
+    .flatMap((part) => part.trim().split(/(?<=[.?!])\s+(?=[A-Z(\[`]|sIVM)/))
+    .filter((x) => x.split(" ").length > 2);
+}
+/** Length and number-density statistics of a set of prose sentences. Reviewer
+ * 3 named "many extra numbers" beside the long sentences, so the count of
+ * numeric tokens is reported with the lengths: tokens per 100 words of prose,
+ * and the share of sentences that carry three or more. */
+function proseStats(label: string, sents: string[]): void {
+  const lens = sents.map((x) => x.split(" ").length);
+  const words = lens.reduce((a, b) => a + b, 0);
   const over45 = lens.filter((x) => x > 45).length;
-  console.log(`\nprose sentences: ${lens.length}, mean ${mean.toFixed(1)} words, over 45 words: ${over45} (${((over45 / lens.length) * 100).toFixed(0)}%), over ${MAX_SENTENCE_WORDS}: ${longSentences.length}`);
+  const over60 = lens.filter((x) => x > MAX_SENTENCE_WORDS).length;
+  const nums = sents.map((x) => (x.match(/(?<![A-Za-z])\$?\d[\d,]*(?:\.\d+)?%?/g) ?? []).length);
+  const tokens = nums.reduce((a, b) => a + b, 0);
+  const dense = nums.filter((n) => n >= 3).length;
+  console.log(
+    `${label}: ${lens.length} sentences, ${words} words, mean ${(words / Math.max(1, lens.length)).toFixed(1)} words, over 45 words: ${over45} (${((over45 / Math.max(1, lens.length)) * 100).toFixed(0)}%), over ${MAX_SENTENCE_WORDS}: ${over60}; numbers: ${tokens} (${((tokens / Math.max(1, words)) * 100).toFixed(1)} per 100 words), sentences with three or more: ${((dense / Math.max(1, lens.length)) * 100).toFixed(1)}%`,
+  );
+}
+/** The text of every \\caption{...} of a source (braces balanced). The float
+ * environments are removed from the prose above, so their captions are read
+ * here and held to the same sentence bound. */
+function captionsOf(src: string): string[] {
+  const out: string[] = [];
+  const re = /\\caption\{/g;
+  for (let m = re.exec(src); m; m = re.exec(src)) {
+    const start = m.index + m[0].length;
+    let depth = 1;
+    let i = start;
+    while (i < src.length && depth > 0) {
+      const ch = src[i];
+      if (ch === "\\") {
+        i += 2;
+        continue;
+      }
+      if (ch === "{") depth++;
+      else if (ch === "}") depth--;
+      i++;
+    }
+    out.push(src.slice(start, i - 1));
+  }
+  return out;
+}
+const bodySrc = readFileSync("paper/body.tex", "utf8");
+const proseSentences = proseSentencesOf(bodySrc, macroSrc);
+const captionSentences = captionsOf(bodySrc).flatMap((c) => proseSentencesOf(c, macroSrc));
+// The abstract lives in the venue shell, outside body.tex, and is held to the
+// same bound (the IEEE Access shell's is the one the reviewers read).
+const abstractSentences = proseSentencesOf(
+  readFileSync("paper/ieee/main.tex", "utf8").match(/\\begin\{abstract\}([\s\S]*?)\\end\{abstract\}/)?.[1] ?? "",
+  macroSrc,
+);
+const longSentences = [
+  ...proseSentences.filter((x) => x.split(" ").length > MAX_SENTENCE_WORDS),
+  ...captionSentences.filter((x) => x.split(" ").length > MAX_SENTENCE_WORDS).map((x) => `[caption] ${x}`),
+  ...abstractSentences.filter((x) => x.split(" ").length > MAX_SENTENCE_WORDS).map((x) => `[abstract] ${x}`),
+];
+{
+  console.log("");
+  proseStats("prose sentences", proseSentences);
+  // The main text is everything before the appendices; the response letter
+  // quotes its number density beside the first submission's.
+  const cut = bodySrc.indexOf("\\venueappendix");
+  if (cut > 0) proseStats("main text only", proseSentencesOf(bodySrc.slice(0, cut), macroSrc));
+  // The same statistics for another source, e.g. the first submission:
+  //   git show ieee-access-submission-v1:paper/body.tex > /tmp/b.tex
+  //   git show ieee-access-submission-v1:paper/macros.tex > /tmp/m.tex
+  //   PROSE_STATS_BODY=/tmp/b.tex PROSE_STATS_MACROS=/tmp/m.tex pnpm check:paper
+  if (process.env.PROSE_STATS_BODY && process.env.PROSE_STATS_MACROS) {
+    proseStats(
+      `compared source (${process.env.PROSE_STATS_BODY})`,
+      proseSentencesOf(readFileSync(process.env.PROSE_STATS_BODY, "utf8"), readFileSync(process.env.PROSE_STATS_MACROS, "utf8")),
+    );
+  }
+  console.log(
+    `captions: ${captionsOf(bodySrc).length}, sentences: ${captionSentences.length}, longest: ${captionSentences.reduce((a, x) => Math.max(a, x.split(" ").length), 0)} words`,
+  );
+  console.log(
+    `abstract: ${abstractSentences.length} sentences, longest: ${abstractSentences.reduce((a, x) => Math.max(a, x.split(" ").length), 0)} words`,
+  );
   for (const x of longSentences.slice(0, 20)) console.log(`  (${x.split(" ").length}) ${x.slice(0, 110)}...`);
 }
 

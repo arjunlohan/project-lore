@@ -26,7 +26,8 @@
       "blockSize": 32,
       "blockVarianceRatio": 1.2623922289946485,
       "dispersionChiSquare": 37.87461908155065,
-      "dispersionDf": 30
+      "dispersionDf": 30,
+      "dispersionPermutationP": 0.15544222788860557
     },
     "unplanned": {
       "note": "not in the analysis plan; added after the planned tests were read",
@@ -35,7 +36,8 @@
         "blockSize": 32,
         "blockVarianceRatio": 1.609830283947978,
         "dispersionChiSquare": 48.29776073015053,
-        "dispersionDf": 30
+        "dispersionDf": 30,
+        "dispersionPermutationP": 0.018499075046247686
       },
       "latencySplit": {
         "fasterHalf": {
@@ -11062,10 +11064,11 @@
   "pooledWithMainConcurrent": {
     "dispersionChiSquare": 52.45795241488398,
     "dispersionDf": 37,
-    "blocks": 39
+    "blocks": 39,
+    "dispersionPermutationP": 0.045797710114494274
   },
   "reanalysis": {
-    "at": "2026-10-02T06:04:46.345Z",
+    "at": "2026-10-02T17:35:54.232Z",
     "note": "serial statistics recomputed from the stored draws with exact ties in the permutation test (EXP_REANALYZE=1); no model calls"
   }
 }

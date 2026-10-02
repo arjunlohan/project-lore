@@ -13,26 +13,22 @@
 \newcommand{\floorBoolStored}{6.0\%}
 \newcommand{\labelChurn}{4.8\%}
 \newcommand{\fmtStoredFlips}{127}
-\newcommand{\fmtStoredRateFine}{6.35\%}
 \newcommand{\fmtEarlierFlips}{120}
 \newcommand{\fmtVoteFlips}{126}
 \newcommand{\floorSelect}{6.5\%}
 \newcommand{\floorDefaultT}{9.5\%}
 \newcommand{\floorTzeroProbe}{3.0\%}
-\newcommand{\flipSoFormatting}{6.3\%}
-\newcommand{\flipSoSynonym}{8.9\%}
-\newcommand{\flipSoWidening}{9.4\%}
-\newcommand{\flipDjFormatting}{12.3\%}
-\newcommand{\flipDjCriteria}{12.4\%}
+\newcommand{\flipSoFormatting}{6.35\%}
+\newcommand{\flipSoSynonym}{8.90\%}
+\newcommand{\flipSoWidening}{9.45\%}
+\newcommand{\flipDjFormatting}{12.30\%}
+\newcommand{\flipDjCriteria}{12.45\%}
 \newcommand{\benchN}{2{,}000}
 \newcommand{\benchSavings}{88.1\%}
-\newcommand{\benchSavingsMain}{88.4\%}
-\newcommand{\benchSavingsPi}{[86.2, 88.4]}
-\newcommand{\benchRealizedCi}{[2.5, 4.2]}
+\newcommand{\benchSavingsMain}{88.5\%}
 \newcommand{\bootB}{1{,}000}
 \newcommand{\benchRealized}{3.20\%}
 \newcommand{\benchRealizedReuse}{3.28\%}
-\newcommand{\benchOracleTight}{90}
 \newcommand{\synTightCertRate}{81.4\%}
 \newcommand{\benchOracleMain}{90}
 \newcommand{\frontierA}{88.1\%}
@@ -40,17 +36,13 @@
 \newcommand{\frontierC}{38.6\%}
 \newcommand{\edgeCertRate}{74.4\%}
 \newcommand{\edgeSavingsMean}{38.6\%}
-\newcommand{\tableUnsafeWorst}{0.90\%}
 \newcommand{\tableUnsafeWorstPair}{SO scope widening}
 \newcommand{\tableUnsafeWorstAlpha}{0.05}
 \newcommand{\tableUnsafeWorstCert}{1.2\%}
-\newcommand{\tableUnsafeWorstViol}{75\%}
-\newcommand{\tableUnsafeConfigs}{1}
 \newcommand{\tableExceedConfigs}{3}
 \newcommand{\strictUnsafePair}{SO scope widening}
 \newcommand{\strictUnsafeAlpha}{0.05}
 \newcommand{\strictUnsafeRate}{0.4\%}
-\newcommand{\tableExceedList}{SO scope widening at $\alpha{=}0.05$; Djinni formatting-only at $\alpha{=}0.1$; Djinni criteria change at $\alpha{=}0.1$}
 \newcommand{\sampleFracLo}{5\%}
 \newcommand{\sampleFracHi}{74\%}
 \newcommand{\benchOracleMean}{97}
@@ -59,22 +51,8 @@
 \newcommand{\benchOracleTightMean}{188}
 \newcommand{\benchOracleTightRange}{90--405}
 \newcommand{\benchOracleTightMedian}{225}
-\newcommand{\reuseSetSavingsMain}{88.1\%}
-\newcommand{\reuseSetSavingsMainSeed}{88.4\%}
 \newcommand{\reuseSetSavingsTight}{80.6\%}
-\newcommand{\reuseSetCertTight}{98.7\%}
-\newcommand{\benchCertTight}{98.9\%}
 \newcommand{\reuseSetCertEdge}{4.5\%}
-\newcommand{\reuseSetSynLoose}{87.0\%}
-\newcommand{\reuseSetWidLoose}{86.4\%}
-\newcommand{\defaultSynLoose}{87.4\%}
-\newcommand{\defaultWidLoose}{86.6\%}
-\newcommand{\reuseSetDjFmtCertLoose}{91.1\%}
-\newcommand{\reuseSetDjCritCertLoose}{97.6\%}
-\newcommand{\reuseSetDjFmtSavLoose}{29.7\%}
-\newcommand{\reuseSetDjCritSavLoose}{31.6\%}
-\newcommand{\defaultDjFmtSavLoose}{52.1\%}
-\newcommand{\defaultDjCritSavLoose}{48.6\%}
 \newcommand{\reuseSetDjCertTightMax}{2.7\%}
 \newcommand{\tableConfigs}{20}
 \newcommand{\certifyingConfigs}{12}
@@ -82,13 +60,7 @@
 \newcommand{\ablationTotal}{40}
 \newcommand{\ablationBetter}{6}
 \newcommand{\ablationWorse}{22}
-\newcommand{\ablationTies}{12}
 \newcommand{\ablationWinBaseCertMax}{2.7\%}
-\newcommand{\ablationTopWinLabel}{SO scope widening at $\alpha{=}0.05$}
-\newcommand{\ablationTopWinFine}{5.9\%}
-\newcommand{\ablationTopWinBase}{1.0\%}
-\newcommand{\ablationTopWinFineCert}{33.3\%}
-\newcommand{\ablationTopWinBaseCert}{1.2\%}
 \newcommand{\aucVcacheF}{0.454}
 \newcommand{\aucVcacheW}{0.499}
 \newcommand{\aucInterF}{0.406}
@@ -120,6 +92,12 @@
 \newcommand{\minoritySingle}{37.1\%}
 \newcommand{\minorityVote}{24.7\%}
 \newcommand{\minorityNoise}{20.4\%}
+\newcommand{\minorityVoteRerun}{34.4\%}
+\newcommand{\minorityNoiseRerun}{16.7\%}
+\newcommand{\votedStoredTrueN}{186}
+\newcommand{\votedTrueN}{188}
+\newcommand{\votedTrueFloor}{17.6\%}
+\newcommand{\votedTrueEditFlip}{41.0\%}
 \newcommand{\calTrials}{396{,}000}
 \newcommand{\calConfigs}{198}
 \newcommand{\calUnsafeWorst}{1.00\%}
@@ -127,9 +105,8 @@
 \newcommand{\calUnsafePresentedWorst}{0.70\%}
 \newcommand{\calUnsafeStrictWorst}{0.60\%}
 \newcommand{\calBoundaryCells}{9}
-\newcommand{\calBoundaryLo}{1.3\%}
-\newcommand{\calBoundaryHi}{2.6\%}
-\newcommand{\calBoundaryStrictHi}{1.0\%}
+\newcommand{\calBoundaryHi}{2.7\%}
+\newcommand{\calBoundaryStrictHi}{1.1\%}
 \newcommand{\calUnsafeWorstAlpha}{0.05}
 \newcommand{\calUnsafeWorstP}{0.0525}
 \newcommand{\calUnsafeWorstSize}{1{,}800}
@@ -140,7 +117,7 @@
 \newcommand{\minZeroFlipRealizedSmall}{90}
 \newcommand{\minZeroFlipRealizedLarge}{180}
 \newcommand{\minZeroFlipLargeSize}{5{,}000}
-\newcommand{\bThreeReuseW}{84.0\%}
+\newcommand{\bThreeReuseW}{84.1\%}
 \newcommand{\bThreeErrW}{9.8\%}
 \newcommand{\calPRange}{[0, 0.25]}
 \newcommand{\calTightNulls}{54}
@@ -270,7 +247,7 @@
 \newcommand{\hhSupgTrueRowsW}{196}
 \newcommand{\hhSivmReusedW}{1{,}756}
 \newcommand{\hhSupgReusedW}{1{,}910}
-\newcommand{\hhSivmReusedFrac}{88.4\%}
+\newcommand{\hhSivmReusedFrac}{88.5\%}
 \newcommand{\hhSupgReusedFrac}{95.5\%}
 \newcommand{\hhSivmReusedFracW}{87.8\%}
 \newcommand{\hhSupgReusedFracW}{95.5\%}
@@ -295,6 +272,7 @@
 \newcommand{\deployExactTight}{0.055}
 \newcommand{\deployExactTightClears}{clears}
 \newcommand{\deployFalseStratum}{81{,}469}
+\newcommand{\budgetCellsLoose}{16{,}293}
 \newcommand{\minZeroFlipSample}{$n^{*}{=}94$}
 \newcommand{\minZeroFlipSampleEb}{257}
 \newcommand{\corpusSO}{89{,}184}
@@ -326,8 +304,6 @@
 \newcommand{\boundExactAtN}{0.050}
 \newcommand{\boundEbAtN}{0.144}
 \newcommand{\boundWorAtN}{0.317}
-\newcommand{\boundCpAtN}{0.052}
-\newcommand{\boundBetAtN}{0.065}
 \newcommand{\boundEbSameLook}{1}
 \newcommand{\boundEbEarlier}{0}
 \newcommand{\boundEbLater}{6}
@@ -351,13 +327,13 @@
 \newcommand{\boundGapPair}{SO scope widening}
 \newcommand{\boundGapAlpha}{0.1}
 \newcommand{\boundGapEbSavings}{18.1\%}
-\newcommand{\boundGapExactSavings}{72.0\%}
+\newcommand{\boundGapExactSavings}{72.1\%}
 \newcommand{\boundGapEbOracle}{1{,}485}
 \newcommand{\boundGapExactOracle}{405}
 \newcommand{\boundBetOverExactPair}{Djinni criteria change}
 \newcommand{\boundBetOverExactAlpha}{0.2}
 \newcommand{\boundBetOverExactSavings}{76.3\%}
-\newcommand{\boundBetOverExactExactSavings}{62.7\%}
+\newcommand{\boundBetOverExactExactSavings}{62.8\%}
 \newcommand{\boundBetBetter}{1}
 \newcommand{\boundBetWorse}{2}
 \newcommand{\boundCalTrials}{36{,}000}
@@ -391,32 +367,23 @@
 \newcommand{\famRunDate}{from 15 August 2026 to 29 September 2026}
 \newcommand{\totalCells}{100{,}683}
 \newcommand{\offLedgerCells}{146{,}753}
-\newcommand{\famGeminiFloor}{4.9\%}
-\newcommand{\famGeminiFmt}{25.4\%}
-\newcommand{\famGeminiFmtTrueStratum}{28.7\%}
-\newcommand{\famGeminiFmtFalseStratum}{24.6\%}
-\newcommand{\famGeminiFmtToFalseShare}{24.6\%}
+\newcommand{\famGeminiFloor}{4.85\%}
+\newcommand{\famGeminiFmt}{25.45\%}
+\newcommand{\famGeminiTrueShareOld}{21.8\%}
+\newcommand{\famGeminiTrueShareNew}{34.8\%}
 \newcommand{\famGeminiCaseOnlyFlip}{11.0\%}
 \newcommand{\famGeminiSpaceOnlyFlip}{23.2\%}
-\newcommand{\famGeminiThreeFloor}{0.4\%}
-\newcommand{\famGeminiThreeFmt}{4.5\%}
-\newcommand{\famGlmFloor}{10.3\%}
-\newcommand{\famGlmFmt}{25.0\%}
-\newcommand{\famGlmFmtTrueStratum}{27.0\%}
 \newcommand{\famGlmFmtFalseStratum}{17.0\%}
-\newcommand{\famGlmFmtToFalseShare}{86.4\%}
-\newcommand{\famQwenFloor}{5.5\%}
-\newcommand{\famQwenFmt}{14.3\%}
+\newcommand{\famGlmTrueShareOld}{80.0\%}
+\newcommand{\famGlmTrueShareNew}{61.8\%}
 \newcommand{\famNanoFloor}{34.8\%}
-\newcommand{\famNanoFmt}{39.6\%}
 \newcommand{\famCount}{6}
+\newcommand{\famRepCells}{54}
+\newcommand{\famRepUnsafeMax}{0.7\%}
+\newcommand{\famRepBestMin}{99.8\%}
 \newcommand{\famCertCount}{6}
-\newcommand{\famRefusedClause}{}
+\newcommand{\famGlmFmtRepSavings}{3.3\%}
 \newcommand{\priceFetchedAt}{29 September 2026}
-\newcommand{\famGeminiEightFmtCount}{17}
-\newcommand{\famGeminiEightFloorCount}{19}
-\newcommand{\famGeminiEightFmtFine}{0.85\%}
-\newcommand{\famGeminiEightFloorFine}{0.95\%}
 \newcommand{\famFloorLo}{0.4\%}
 \newcommand{\famFloorHi}{34.8\%}
 \newcommand{\famUsableMin}{1{,}966}
@@ -424,6 +391,7 @@
 \newcommand{\famNanoFmtTrueStratum}{24.3\%}
 \newcommand{\famNanoFloorTrueStratum}{44.9\%}
 \newcommand{\famProbeRow}{0}
+\newcommand{\routeScopeCap}{2{,}000}
 \newcommand{\indepAvailable}{1}
 \newcommand{\indepN}{300}
 \newcommand{\indepConcurrency}{32}
@@ -485,7 +453,6 @@
 \newcommand{\indepExtDate}{30 September 2026}
 \newcommand{\indepConcMedianLatency}{14.4}
 \newcommand{\indepExtMedianLatency}{3.7}
-\newcommand{\indepExtDispersionHi}{2.26}
 \newcommand{\indepPooledChi}{52.5}
 \newcommand{\indepPooledDf}{37}
 \newcommand{\indepPooledP}{0.048}
@@ -494,16 +461,26 @@
 \newcommand{\indepExtSlowFlips}{59}
 \newcommand{\indepExtFastFlips}{12}
 \newcommand{\indepExtHalfRows}{500}
+\newcommand{\indepPooledDispersion}{1.42}
+\newcommand{\indepPooledDispersionCi}{[0.94, 2.37]}
 \newcommand{\overdispIndep}{2.3\%}
-\newcommand{\overdispPlanned}{4.1\%}
-\newcommand{\overdispLaunch}{7.1\%}
-\newcommand{\overdispUpper}{12.2\%}
+\newcommand{\overdispPooled}{5.4\%}
+\newcommand{\overdispPooledUpper}{13.1\%}
+\newcommand{\overdispTrials}{100{,}000}
+\newcommand{\indepSeqFailRate}{11.7\%}
+\newcommand{\indepConcFailRate}{17.3\%}
+\newcommand{\indepSeqFailCount}{35}
+\newcommand{\indepConcFailCount}{52}
+\newcommand{\indepFailP}{0.049}
+\newcommand{\indepFailOnlySeq}{21}
+\newcommand{\indepFailOnlyConc}{38}
+\newcommand{\indepFailPairedP}{0.036}
+\newcommand{\indepPermGap}{0.02}
 \newcommand{\famPairsAvailable}{1}
-\newcommand{\famPairsSmallStrataNote}{ Gemini 2.5 Flash-Lite holds 5 cached-TRUE cells on the widening column, fewer than the first look; that stratum is drawn in full, so its 5 draws count toward the family's calls on that pair and, with nothing left to reuse, it is never certified.}
+\newcommand{\famZeroFloorModel}{Gemini 2.5 Flash-Lite}
+\newcommand{\famPairsSmallStrataNote}{ A stratum smaller than the first look is drawn in full and cannot be certified: Gemini 2.5 Flash-Lite holds 5 cached-TRUE cells on the widening column.}
 \newcommand{\famFivePairFamilies}{5}
-\newcommand{\famFivePairList}{Qwen3.7-Flash, Gemini 2.5 Flash-Lite, Gemini 3.8 Flash, GPT-5 nano, GLM-4.7-Flash}
 \newcommand{\famPairsFamilies}{5}
-\newcommand{\famPairsCertifying}{5}
 \newcommand{\pilotAvailable}{1}
 \newcommand{\pilotRows}{2{,}000}
 \newcommand{\pilotJudgeModel}{\texttt{deepseek/deepseek-v4-flash-0731}}
@@ -539,3 +516,9 @@
 \newcommand{\pilotImpliedFloor}{7.9\%}
 \newcommand{\pilotImpliedFloorBand}{[4.4, 14.5]\%}
 \newcommand{\pilotOutcomes}{both edits are refused on every stratum at both budgets, each run stopping after 360 oracle calls (every stratum at its first look)}
+\newcommand{\gradedFlipsDjFmt}{4}
+\newcommand{\gradedSavingsEdgeDjFmt}{66.3\%}
+\newcommand{\gradedCritExactFlips}{249}
+\newcommand{\gradedCritOneTier}{244}
+\newcommand{\deployHiddenLoose}{2{,}600}
+\newcommand{\sepHiddenLoose}{6{,}100}

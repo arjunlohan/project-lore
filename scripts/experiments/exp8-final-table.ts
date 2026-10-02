@@ -21,6 +21,12 @@
  *     pnpm tsx scripts/experiments/exp8-final-table.ts
  * reads the evaluation vectors and both sides' cell values from the artifact
  * that export-benchmark-labels.ts writes, and reproduces the same output.
+ *
+ * A graded relation on the ordinal select column (adjacent tiers taken as
+ * equivalent), from the same labels and under the same pinned procedure:
+ *   EXP_STRATIFIER=value-only EXP_LABELS=docs/research/experiments/benchmark-labels.json \
+ *     EXP_EQUIV=adjacent-tier EXP_OUT=docs/research/experiments/exp8-graded.json \
+ *     pnpm tsx scripts/experiments/exp8-final-table.ts
  */
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import mysql from "mysql2/promise";
@@ -63,10 +69,29 @@ const LABELS = process.env.EXP_LABELS;
 if (LABELS && STRATIFIER !== "value-only") {
   throw new Error("EXP_LABELS supports the pinned value-only stratifier only (the ablation needs prompts and embeddings)");
 }
-type ReleasedPair = { key: string; rowIds: string[]; cached: unknown[]; fresh: unknown[] };
+type ReleasedPair = {
+  key: string;
+  rowIds: string[];
+  cached: unknown[];
+  fresh: unknown[];
+  outputSpec?: { kind: string; options?: string[] };
+};
 const released: ReleasedPair[] | null = LABELS
   ? (JSON.parse(readFileSync(LABELS, "utf8")) as { pairs: ReleasedPair[] }).pairs
   : null;
+// The column's equivalence relation. "exact" is the relation every headline
+// result uses. "adjacent-tier" re-scores an ORDINAL select column with
+// neighbouring options taken as equivalent (a graded relation): a flip is a
+// fresh value more than one option away from the cached one. It reads the
+// option order from the released labels, runs on the select pairs only, and
+// must write to a path of its own.
+const EQUIV = process.env.EXP_EQUIV ?? "exact";
+if (EQUIV !== "exact" && EQUIV !== "adjacent-tier") {
+  throw new Error(`unknown EXP_EQUIV ${EQUIV}`);
+}
+if (EQUIV !== "exact" && (!LABELS || !process.env.EXP_OUT || process.env.EXP_WRITE_TEX === "1")) {
+  throw new Error("a graded relation runs from EXP_LABELS, writes to its own EXP_OUT, and never writes paper assets");
+}
 const DELTA = 0.1;
 const MAIN_SEED = 42;
 const B = Number(process.env.EXP_B ?? 1000);
@@ -170,9 +195,11 @@ async function main() {
   const texRows: string[] = [];
 
   for (const pair of PAIRS) {
+    if (EQUIV === "adjacent-tier" && pair.columnType !== "select") continue;
     let rows: Row[];
     let cache: Map<string, unknown>;
     let truth: Map<string, unknown>;
+    let options: string[] | null = null;
     let vFrom: { prompt_template: string } | null = null;
     let vTo: { prompt_template: string } | null = null;
     if (released) {
@@ -189,6 +216,7 @@ async function main() {
         );
       cache = side(entry.cached);
       truth = side(entry.fresh);
+      options = entry.outputSpec?.options ?? null;
     } else {
       const columns = await listColumns(pair.corpus);
       const column = columns.find((c) => pair.columnMatch(c.name));
@@ -221,8 +249,22 @@ async function main() {
       const id = String(r[pair.idField]);
       return cache.has(id) && truth.has(id);
     });
+    if (EQUIV === "adjacent-tier" && !options) {
+      throw new Error(`${pair.key}: the labels carry no option order for a graded relation`);
+    }
+    const tier = (v: unknown) => {
+      const i = options!.indexOf(String(v));
+      if (i < 0) throw new Error(`${pair.key}: value ${JSON.stringify(v)} is not one of the column's options`);
+      return i;
+    };
     const flipOf = (id: string) =>
-      JSON.stringify(cache.get(id)) !== JSON.stringify(truth.get(id)) ? 1 : 0;
+      EQUIV === "adjacent-tier"
+        ? Math.abs(tier(cache.get(id)) - tier(truth.get(id))) > 1
+          ? 1
+          : 0
+        : JSON.stringify(cache.get(id)) !== JSON.stringify(truth.get(id))
+          ? 1
+          : 0;
 
     // Embedding-interaction tertiles, only for the value-embed ablation: the
     // pinned value-only stratifier never reads them, and embedding 10,000
@@ -372,8 +414,9 @@ async function main() {
     JSON.stringify(
       {
         experiment: "exp8-final-table",
-        procedure: `strata=${STRATIFIER}; bound=${BOUND}; adaptive n0=45 maxLooks=6; delta=0.1; prng=mulberry32; seeds: main=42, bootstrap=1000..${1000 + B - 1}`,
+        procedure: `strata=${STRATIFIER}; bound=${BOUND}; adaptive n0=45 maxLooks=6; delta=0.1; prng=mulberry32; seeds: main=42, bootstrap=1000..${1000 + B - 1}${EQUIV === "exact" ? "" : `; equivalence=${EQUIV}`}`,
         bound: BOUND,
+        ...(EQUIV === "exact" ? {} : { equivalence: EQUIV }),
         results: allResults,
         wallMs: Date.now() - started,
       },

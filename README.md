@@ -11,8 +11,8 @@ lore is two tightly-coupled things:
    cached, cost-gated per-cell jobs with typed outputs and full provenance.
 2. **A research system, sIVM** (semantic incremental view maintenance):
    when a column's prompt is edited, statistically certify which cached
-   cells can be reused instead of recomputed, with the expected false-reuse
-   rate bounded by a user budget. Paper: ["Reuse, but Verify: Certified
+   cells can be reused instead of recomputed, with the false-reuse rate of
+   every certified group bounded by a user budget. Paper: ["Reuse, but Verify: Certified
    Maintenance of LLM-Computed Table Cells under Prompt
    Edits"](https://doi.org/10.5281/zenodo.21833641) (preprint), source in
    [`paper/`](paper/), measured results in
@@ -74,7 +74,8 @@ The packages are deliberately headless and app-independent:
 - `@lore/core`: the SPI (`FilterSpec`, `DataSourceAdapter`, `ColumnDef`,
   `CellRecord`, certificates) and the sIVM math
   (`packages/core/src/sivm.ts`: diffing, stratification, adaptive
-  empirical-Bernstein certification, both estimand modes).
+  certification under the exact finite-population bound, with the
+  earlier bounds kept as ablation arms, both estimand modes).
 - `@lore/adapter-elasticsearch`, `@lore/adapter-mysql`: reference
   adapters. To support your store, implement `DataSourceAdapter`
   (count/search/aggregate/hydrate over a `FilterSpec`) and run the
@@ -100,18 +101,22 @@ splitting the failure probability across looks), and reuses only strata
 that clear the user's error budget, with two guarantee targets (all
 presented cells, or the strict reuse set). Measured on two public corpora
 with five edit pairs and 28,000 labeled cells: a formatting-only edit
-certifies 88.4% call savings at an error budget of 0.2 (88.1% mean over
-1,000 sampling replications), and at deployment scale 90 fresh calls
-certify reuse of 81,424 of 89,184 cells. Across 396,000 calibration runs,
-certificates that exceed their budget occur in at most 1.00% of runs per
-configuration, and at the least favorable population the probability,
-computed exactly, is at most 2.6%, against a nominal 5%. Everything else is
-refused. These are
+certifies reuse of 82.6% of cells on average at an error budget of 0.1 and
+of 88.1% at 0.2 (failure probability 0.1; 1,000 sampling replications), and
+on the full 89,184-row corpus at budget 0.2, 90 fresh calls certify reuse
+of 81,424 cells. Across 396,000 calibration runs, certificates that exceed
+their budget occur in at most 1.00% of runs per configuration, and at the
+least favorable population the probability, computed exactly, is at most
+2.7%, against a nominal 5% per stratum. Everything else is refused. On each
+of 6 further models from four providers at least one edit certifies in
+nearly every sampling replication; which edits are benign varies by model.
+These are
 the figures of the IEEE Access resubmission (`paper/ieee/`), which pins the
 exact bound; the earlier preprint used an empirical-Bernstein bound, and
 its certification results reproduce with that arm selected. Every number
-regenerates from `scripts/experiments/`; the earlier HTML report is at
-`docs/research/lore-research-report.html`.
+regenerates from `scripts/experiments/`. The HTML report at
+`docs/research/lore-research-report.html` is a snapshot of the preprint's
+numbers and is not regenerated for the resubmission.
 
 ## Repository map
 
@@ -122,9 +127,9 @@ regenerates from `scripts/experiments/`; the earlier HTML report is at
 | `lib/lore/` | NL compiler, cell runner, certifier, stores |
 | `app/lore/`, `app/api/lore/` | table UI + API |
 | `scripts/ingest/` | corpus ingestion (reproducible) |
-| `scripts/experiments/` | exp0–exp19 (exp9b: the certifier's exact error probability at the least favorable population; exp9c: what block-scale dependence among draws would cost that probability; exp11b: the audit verifier, which recomputes every deployment audit without the certifier; exp14–exp19: bound ablation and null study, snapshot versions and drift, independence check, remaining pairs on further families, free-text judge pilot) + asset/report generation |
+| `scripts/experiments/` | exp0–exp19 (exp9b: the certifier's exact error probability at the least favorable population; exp9c: what block-scale dependence among draws would cost that probability; exp11b: the audit verifier, which recomputes every deployment audit without the certifier; exp14–exp19: bound ablation and null study, snapshot versions and drift, independence check, remaining pairs on further models, free-text judge pilot; exp18b: the replication analysis repeated on every further model's stored draws) + asset generation |
 | `docs/research/` | report, review memos, result JSONs |
-| `paper/` | manuscript body shared by the acmart shell (`main.tex`, tectonic) and the IEEE Access shell (`ieee/main.tex`, latexmk; `pnpm pack:paper:ieee` builds the submission package: `scripts/pack-ieee-submission.sh` with `scripts/resolve-tex-gates.py` for the prose gates, `scripts/mark-bbl-changes.py` for the highlighted copy's reference list, and `scripts/gen-resubmission-checklist.py` for the upload checklist) |
+| `paper/` | manuscript body shared by the acmart shell (`main.tex`, tectonic) and the IEEE Access shell (`ieee/main.tex`, latexmk; `pnpm pack:paper:ieee` builds the submission package: `scripts/pack-ieee-submission.sh` with `scripts/resolve-tex-gates.py` for the prose gates, `scripts/mark-bbl-changes.py` for the highlighted copy's reference list, `scripts/highlight-yellow.py` for the yellow highlight under the changed text, `scripts/resolve-response-refs.py` for the response and cover letters, whose table, section, and reference numbers and quoted figures are filled from the manuscript build, and `scripts/gen-resubmission-checklist.py` for the upload checklist) |
 | `patent/` | provisional draft (attorney review pending) |
 
 ## Reproducing the paper
@@ -132,17 +137,20 @@ regenerates from `scripts/experiments/`; the earlier HTML report is at
 Every quantitative claim in the paper and in the research report is emitted
 from the result artifacts by one generator and cited through a macro, never
 typed inline, so re-running an experiment regenerates the sentences that cite
-it. Four commands rebuild the whole thing:
+it. Three commands rebuild the IEEE Access manuscript (`pnpm build:paper`
+builds the preprint shell from the same body):
 
 ```bash
-pnpm gen:paper && pnpm gen:report && pnpm check:paper && pnpm build:paper
+pnpm gen:paper && pnpm check:paper && pnpm build:paper:ieee
 ```
 
-`gen:paper` writes `paper/{macros,table1,figdata}.tex` from
-`docs/research/experiments/*.json` plus the system's cost ledger, and dumps
-every database read it makes to `db-derived-inputs.json` so the numbers are
-recomputable without our instance. `gen:report` emits
-`docs/research/lore-research-report.html` from the same macros. `check:paper`
+`gen:paper` writes `paper/macros.tex`, `paper/figdata.tex`, and the generated
+tables (`paper/table*.tex`) from `docs/research/experiments/*.json` plus the
+system's cost ledger, and dumps every database read it makes to
+`db-derived-inputs.json` so the numbers are recomputable without our
+instance. `gen:paper` itself needs the populated database; without one,
+`pnpm check:paper && pnpm build:paper:ieee` rebuilds the manuscript from the
+committed macros and tables. `check:paper`
 is the enforcement pass and fails on ten conditions: a hand-typed quantity in
 the prose, a quantity hardcoded in the generator, a macro defined but never
 cited, a macro that swallows its trailing space, a sentence asserting two
@@ -150,7 +158,11 @@ quantities differ while citing two macros of equal value, a spelled-out
 multiplier the macro ratio does not support, a containment claim the cited
 macros do not support, an absolute claim in the abstract or contributions
 outside an allow-list, a "same column" claim whose macros come from different
-columns, and a prose sentence longer than 60 words. The generator adds its own
+columns, and a sentence of the prose, of a list item, of a caption, or of
+the abstract longer than 60 words. It also prints the
+readability statistics the response letter quotes (sentence lengths, and the
+density of numbers in the main text), and prints them for any other source
+given in `PROSE_STATS_BODY` and `PROSE_STATS_MACROS`. The generator adds its own
 assertions on the relations the prose states between figures. Each guard
 exists because the corresponding defect shipped at least once.
 
@@ -164,7 +176,10 @@ EXP_STRATIFIER=value-only EXP_LABELS=docs/research/experiments/benchmark-labels.
   pnpm tsx scripts/experiments/exp8-final-table.ts
 ```
 
-rebuilds the main results table from them. Recomputing the labels themselves
+rebuilds the main results table from them. Adding `EXP_EQUIV=adjacent-tier`
+and an `EXP_OUT` of its own re-scores the ordinal select column under a graded
+relation (adjacent tiers equivalent), the paper's graded result, from the same
+labels. Recomputing the labels themselves
 needs an endpoint, and costs about the ledgered spend reported in the paper.
 The corpora are not redistributed here: download them from their maintainers
 (the sources and licenses are in `docs/research/dataset-shortlist.md` and in

@@ -571,9 +571,13 @@ export interface AdaptiveLook {
  * peeking is valid); stop as soon as certified. `flipsPrefix(n)` returns the
  * flip indicators for the first n sampled rows (one fixed shuffled order).
  *
- * Validity: P(certify a stratum whose true flip rate > alpha) <= perStratumDelta,
- * because each look's test has level perStratumDelta/looks and certification
- * requires at least one look to pass.
+ * Validity (exact bound): P(certify a stratum whose REALIZED flip count
+ * exceeds alpha * stratumSize) <= perStratumDelta, because each look's test
+ * has level perStratumDelta/looks and certification requires at least one
+ * look to pass. The statement is about the realized count, not about the
+ * stratum's flip probability: a stratum whose probability sits just above
+ * alpha often realizes a count at or below alpha * stratumSize, and
+ * certifying it is then correct.
  */
 export async function adaptiveCertifyStratum(
   stratumSize: number,

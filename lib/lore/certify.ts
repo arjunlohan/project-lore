@@ -1,12 +1,16 @@
 /**
  * sIVM certification worker: given a column's v_from -> v_to edit, decide
- * which cached v_from cells can be reused as v_to values with expected
- * false-reuse <= alpha (w.p. >= 1-delta), sampling only what the bound needs.
+ * which cached v_from cells can be reused as v_to values such that, with
+ * probability >= 1-delta, the realized false-reuse of every certified
+ * stratum is <= alpha, sampling only what the bound needs.
  *
  * The oracle (fresh v_to computation for sampled rows) is injectable so
  * experiments can serve it from a precomputed ground-truth table while
  * production serves it from the live runner. Every oracle call is counted;
- * that count IS the verification cost.
+ * that count IS the verification cost. A sampled row for which the oracle
+ * returns no value (a failed or timed-out call) counts as a flip and is left
+ * for recomputation: dropping it would thin the sample on the slow rows that
+ * flip most, so a failure may only ever make the certifier refuse.
  */
 import { randomUUID } from "node:crypto";
 import {
@@ -38,7 +42,11 @@ export type Oracle = (rowIds: string[]) => Promise<Map<string, unknown>>;
 export interface CertifyOptions {
   alpha: number;
   delta: number;
-  /** Deterministic seed for the stratified sample (reproducibility). */
+  /**
+   * Seed of the stratified sample. Fixed before the first oracle call. When
+   * omitted it is derived from the column and the two versions (see
+   * `certificationSeed`), so each certification has a seed of its own.
+   */
   seed?: number;
   /** Persist certificate + apply reuse rows (off for experiments). */
   apply?: boolean;
@@ -75,6 +83,28 @@ export interface CertifyOutcome {
   oracleCalls: number;
   /** Sampled rows whose fresh value disagreed with cache (by stratum). */
   observedFlips: number;
+}
+
+/**
+ * Default sampling seed of a certification: a 32-bit FNV-1a hash of the
+ * column and the two versions. Successive certifications of one column then
+ * draw different samples. That matters because the rows one certification
+ * sampled hold oracle cells drawn at its time, which the rest of their
+ * stratum may not, so they must not be the sample of the next one as well.
+ * The seed is a function of what the certificate record already stores
+ * (column, from version, to version), so the sample stays reproducible.
+ */
+export function certificationSeed(
+  columnId: string,
+  fromVersion: number,
+  toVersion: number,
+): number {
+  let h = 0x811c9dc5;
+  for (const ch of `${columnId}:${fromVersion}:${toVersion}`) {
+    h ^= ch.codePointAt(0)!;
+    h = Math.imul(h, 0x01000193);
+  }
+  return h >>> 0;
 }
 
 function equivalent(a: unknown, b: unknown): boolean {
@@ -143,7 +173,8 @@ export async function certifyColumnEdit(
   );
 
   // Stratified deterministic sample order.
-  const seed = opts.seed ?? 42;
+  const seed =
+    opts.seed ?? certificationSeed(column.id, fromVersion, toVersion);
   const cacheByRow = new Map(usable.map((c) => [c.row_id, c.value]));
   const fresh = new Map<string, unknown>();
   const revealed = new Set<string>();
@@ -172,11 +203,11 @@ export async function certifyColumnEdit(
         async (n) => {
           const prefix = order.slice(0, n);
           await reveal(prefix);
-          return prefix
-            .filter((id) => fresh.has(id))
-            .map((id) =>
-              equivalent(cacheByRow.get(id), fresh.get(id)) ? 0 : 1,
-            );
+          return prefix.map((id) =>
+            fresh.has(id) && equivalent(cacheByRow.get(id), fresh.get(id))
+              ? 0
+              : 1,
+          );
         },
         45,
         opts.maxLooks ?? 4,
@@ -205,10 +236,12 @@ export async function certifyColumnEdit(
     const mathInput = strata.map((s) => ({
       id: s.id,
       size: s.rowIds.length,
-      flipSample: (sampledByStratum.get(s.id) ?? []).flatMap((rowId) => {
-        if (!fresh.has(rowId)) return [];
-        return [equivalent(cacheByRow.get(rowId), fresh.get(rowId)) ? 0 : 1];
-      }),
+      flipSample: (sampledByStratum.get(s.id) ?? []).map((rowId) =>
+        fresh.has(rowId) &&
+        equivalent(cacheByRow.get(rowId), fresh.get(rowId))
+          ? 0
+          : 1,
+      ),
     }));
     results = selectReuse({
       strata: mathInput,
@@ -227,8 +260,11 @@ export async function certifyColumnEdit(
   for (const s of strata) {
     for (const rowId of s.rowIds) {
       // Sampled rows are already freshly computed - they are neither reused
-      // nor recomputed again.
-      if (sampledSet.has(rowId)) continue;
+      // nor recomputed again, unless their oracle call failed.
+      if (sampledSet.has(rowId)) {
+        if (!fresh.has(rowId)) recomputeRowIds.push(rowId);
+        continue;
+      }
       if (certifiedIds.has(s.id)) reusedRowIds.push(rowId);
       else recomputeRowIds.push(rowId);
     }

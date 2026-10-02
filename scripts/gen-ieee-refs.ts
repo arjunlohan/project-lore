@@ -29,6 +29,22 @@ let out = src.replace(/@misc\{[^@]*?\n\}/g, (entry) => {
     `\n  howpublished = {arXiv preprint arXiv:${ep[1]}},$1`,
   );
 });
+// Web pages: IEEE reference style ends such an entry with "[Online].
+// Available: URL", which IEEEtran.bst prints from a url field. The source
+// bibliography carries the address inside howpublished (the other shell's
+// style prints it from there), so move it into url here and keep the site
+// name, where there is one, in howpublished.
+let urlsMoved = 0;
+out = out.replace(/@misc\{[^@]*?\n\}/g, (entry) => {
+  const hp = entry.match(/\n(\s*)howpublished\s*=\s*\{((?:[^{}]|\{[^{}]*\})*)\},?/);
+  if (!hp) return entry;
+  const url = hp[2]!.match(/\\url\{([^}]+)\}/);
+  if (!url) return entry;
+  urlsMoved++;
+  const site = hp[2]!.replace(/,?\s*\\url\{[^}]+\}/, "").replace(/\s+/g, " ").trim();
+  const fields = `${site ? `\n${hp[1]}howpublished = {${site}},` : ""}\n${hp[1]}url = {${url[1]}},`;
+  return entry.replace(hp[0], fields);
+});
 // IEEEtran.bst also has no doi field. IEEE reference style prints DOIs, so
 // carry each entry's DOI in its note (appended when a note exists). The note
 // value may contain one level of braces ("{SIGMOD} 2026"); the first
@@ -56,4 +72,4 @@ const header = `% GENERATED from paper/refs.bib by scripts/gen-ieee-refs.ts; do 
 `;
 writeFileSync("paper/ieee/refs.bib", header + out);
 const added = out.match(/howpublished = \{arXiv preprint arXiv:/g)?.length ?? 0;
-console.log(`paper/ieee/refs.bib written; arXiv locators added: ${added}; DOIs carried into notes: ${doisAdded}`);
+console.log(`paper/ieee/refs.bib written; arXiv locators added: ${added}; DOIs carried into notes: ${doisAdded}; web addresses moved into url: ${urlsMoved}`);

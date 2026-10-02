@@ -23,7 +23,10 @@ sed -e 's#\\input{\.\./#\\input{#g' \
 # 2. Shared prose and generated inputs.
 cp paper/body.tex paper/macros.tex paper/figdata.tex paper/table1.tex paper/tablefam.tex \
    paper/tablebounds.tex paper/tablerates.tex paper/tablemodels.tex paper/tabledeploy.tex \
-   paper/tablefampairs.tex paper/tableboundsgrid.tex "$OUT/src/"
+   paper/tabledeploymp.tex paper/tablefampairs.tex paper/tableboundsgrid.tex \
+   paper/tabledependence.tex paper/tablestrict.tex paper/tablebudgets.tex paper/tableboundary.tex \
+   paper/tablestrata.tex \
+   "$OUT/src/"
 # The prose gates optional studies on \ifnum<macro>=1\relax ... \else ... \fi;
 # the shipped source carries only the branch that prints, so nobody editing
 # it at the publisher meets dead text. Macros stay macros here.
@@ -33,6 +36,10 @@ cp paper/ieee/ieeeaccess.cls paper/ieee/IEEEtran.cls paper/ieee/IEEEtran.bst pap
    paper/ieee/t1-*.pfb paper/ieee/t1-*.tfm paper/ieee/t1-*.map paper/ieee/t1*.fd \
    paper/ieee/logo.png paper/ieee/notaglinelogo.png paper/ieee/bullet.png \
    paper/ieee/refs.bib "$OUT/src/"
+# The author photograph is optional in the source tree: the biography is set
+# with it when the file exists and without it otherwise (main.tex decides).
+PHOTO=paper/ieee/author-photo.jpg
+if [ -f "$PHOTO" ]; then cp "$PHOTO" "$OUT/src/"; echo "author photo: included"; else echo "author photo: NOT included ($PHOTO is missing; IEEE's resubmission checklist asks for one)"; fi
 
 # 4. Compile the flattened copy exactly as the portal's referees would.
 ( cd "$OUT/src" && latexmk -pdf -interaction=nonstopmode main.tex >/dev/null 2>&1 )
@@ -43,6 +50,15 @@ PAGES_TREE=$(/usr/bin/grep -o 'Output written on main.pdf ([0-9]* pages\?' paper
 [ "$PAGES_FLAT" = "$PAGES_TREE" ] || { echo "page count differs: flat=$PAGES_FLAT tree=$PAGES_TREE"; exit 1; }
 UNDEF=$(/usr/bin/grep -c 'Citation.*undefined\|Reference.*undefined' "$OUT/src/main.log" || true)
 [ "$UNDEF" = "0" ] || { echo "$UNDEF undefined citations/references"; exit 1; }
+
+# 4b. The response letter and the cover letter point at tables, sections and
+#     references by number and quote generated figures. Their placeholders are
+#     filled here from THIS build (its .aux, the generated macros, and the
+#     checker's readability statistics), so neither letter can describe an
+#     older manuscript. An unknown label or macro stops the pack.
+python3 scripts/resolve-response-refs.py paper/ieee/response.md "$OUT/response-resolved.md" --aux "$OUT/src/main.aux"
+mkdir -p "$OUT/cover"
+python3 scripts/resolve-response-refs.py paper/ieee/cover-letter.tex "$OUT/cover/cover-letter.tex" --tex --aux "$OUT/src/main.aux"
 
 # 5. Deliverables: the PDF, and a FLAT zip of the sources (the IEEE Author
 #    Portal compiles the archive itself: main.tex at the archive root, the
@@ -55,8 +71,7 @@ cp "$OUT/manuscript.pdf" "$OUT/src/main.pdf"
 ( cd "$OUT/src" && rm -f source.zip && zip -q source.zip * -x '*.DS_Store' && mv source.zip .. )
 # 6. Cover letter (source tracked at paper/ieee/cover-letter.tex; the
 #    portal's "Cover letter / Comments" slot takes a PDF).
-mkdir -p "$OUT/cover" && cp paper/ieee/cover-letter.tex "$OUT/cover/" \
-  && ( cd "$OUT/cover" && pdflatex -interaction=nonstopmode cover-letter.tex >/dev/null 2>&1 && pdflatex -interaction=nonstopmode cover-letter.tex >/dev/null 2>&1 ) \
+( cd "$OUT/cover" && pdflatex -interaction=nonstopmode cover-letter.tex >/dev/null 2>&1 && pdflatex -interaction=nonstopmode cover-letter.tex >/dev/null 2>&1 ) \
   && cp "$OUT/cover/cover-letter.pdf" "$OUT/cover-letter.pdf"
 echo "cover letter: $OUT/cover-letter.pdf ($(/usr/bin/grep -o 'Output written on cover-letter.pdf ([0-9]* pages\?' "$OUT/cover/cover-letter.log" | /usr/bin/grep -o '[0-9]* pages\?'))"
 # The letter is written to fit one page; an edit that spills the signature
@@ -70,8 +85,8 @@ echo "packed: $OUT/manuscript.pdf ($PAGES_FLAT), $OUT/source.zip ($(du -h "$OUT/
 #    and a "Highlighted PDF" with every change marked, built by latexdiff
 #    against the source submitted under the git tag DIFF_BASE_TAG.
 if [ -f paper/ieee/response.md ]; then
-  pandoc paper/ieee/response.md -o "$OUT/response-to-reviewers.docx"
-  pandoc paper/ieee/response.md -o "$OUT/response-to-reviewers.pdf" --pdf-engine=pdflatex \
+  pandoc "$OUT/response-resolved.md" -o "$OUT/response-to-reviewers.docx"
+  pandoc "$OUT/response-resolved.md" -o "$OUT/response-to-reviewers.pdf" --pdf-engine=pdflatex \
     -V geometry:margin=1in -V fontsize=11pt -V colorlinks=true
   echo "response: $OUT/response-to-reviewers.docx and .pdf"
 fi
@@ -123,6 +138,7 @@ elif [ -n "$LATEXDIFF" ] && git rev-parse -q --verify "$DIFF_BASE_TAG" >/dev/nul
   # sides then carry the same marked file.
   git show "$DIFF_BASE_TAG:paper/ieee/refs.bib" > "$OUT/diff/old/refs.bib" 2>/dev/null || cp "$OUT/src/refs.bib" "$OUT/diff/old/refs.bib"
   cp "$OUT"/src/*.cls "$OUT"/src/*.bst "$OUT"/src/*.sty "$OUT"/src/*.pfb "$OUT"/src/*.tfm "$OUT"/src/*.map "$OUT"/src/*.fd "$OUT"/src/*.png "$OUT/diff/old/"
+  [ -f "$OUT/src/author-photo.jpg" ] && cp "$OUT/src/author-photo.jpg" "$OUT/diff/" || true
   ( cd "$OUT/diff/old" && latexmk -pdf -interaction=nonstopmode -f main.tex >/dev/null 2>&1 ) || true
   [ -f "$OUT/diff/old/main.bbl" ] || { echo "old bibliography could not be rebuilt"; exit 1; }
   python3 scripts/mark-bbl-changes.py "$OUT/diff/old/main.bbl" "$OUT/src/main.bbl" "$OUT/diff/new/main.bbl"
@@ -256,6 +272,12 @@ for title in moved_headings:
         s = s.replace("\\" + level + "{\\DIFadd{" + title + "}}", "\\" + level + "{" + title + "}")
 if re.search(r"\\(section|subsection)\{\\DIFdel\{", s):
     sys.exit("a deleted heading survives in the highlighted source and would print a bare number")
+# A deleted run-in heading is kept the same way, as a \paragraph with an
+# empty title, and prints its bare letter. Remove it together with the
+# counter correction latexdiff writes after it.
+s = re.sub(r"\\paragraph\{\\DIFdel\{.*?\}\}\s*%DIFAUXCMD\s*\\addtocounter\{paragraph\}\{-1\}%DIFAUXCMD\n", "", s)
+if re.search(r"\\paragraph\{\\DIFdel\{", s):
+    sys.exit("a deleted run-in heading survives in the highlighted source and would print a bare letter")
 # A figure whose plot data comes from a macro of figdata.tex is textually
 # unchanged when only the data changed. If that macro's definition differs
 # between the two submissions the figure was replotted, so colour it.
@@ -296,7 +318,11 @@ PY
   ( cd "$OUT/diff" && latexmk -pdf -interaction=nonstopmode -f main.tex >/dev/null 2>&1 ) || true
   DIFF_ERRORS=$(/usr/bin/grep -c '^!' "$OUT/diff/main.log" 2>/dev/null || true)
   if [ -f "$OUT/diff/main.pdf" ] && [ "${DIFF_ERRORS:-1}" = "0" ]; then
-    cp "$OUT/diff/main.pdf" "$OUT/highlighted.pdf"
+    # The diff marks changes in blue text. IEEE asks for yellow highlighting,
+    # which no pdfTeX highlighter survives on this class, so the highlight is
+    # laid under the blue text on the finished pages (the page content is
+    # embedded unchanged; the checks below run on the result).
+    python3 scripts/highlight-yellow.py "$OUT/diff/main.pdf" "$OUT/highlighted.pdf"
     echo "highlighted: $OUT/highlighted.pdf ($(/usr/bin/grep -o 'Output written on main.pdf ([0-9]* pages\?' "$OUT/diff/main.log" | /usr/bin/grep -o '[0-9]* pages\?'); diff base $DIFF_BASE_TAG)"
   else
     echo "highlighted PDF FAILED: $DIFF_ERRORS TeX errors in $OUT/diff/main.log"; exit 1
@@ -321,6 +347,10 @@ if cites(clean) != cites(marked):
 bare = lambda t: sorted(re.findall(r"^[IVX]+\.$", t, flags=re.M))
 if bare(clean) != bare(marked):
     sys.exit(f"highlighted copy prints bare section numbers the clean copy does not: {bare(marked)} against {bare(clean)}")
+# The same for a run-in heading: its letter alone on a line.
+bare_letter = lambda t: sorted(re.findall(r"^[a-z]:$", t, flags=re.M))
+if bare_letter(clean) != bare_letter(marked):
+    sys.exit(f"highlighted copy prints bare run-in letters the clean copy does not: {bare_letter(marked)} against {bare_letter(clean)}")
 # An empty entry is a label followed directly by the next label (a label
 # alone on its line is normal when its text is set in another colour).
 lines = [l.strip() for l in marked.splitlines() if l.strip()]

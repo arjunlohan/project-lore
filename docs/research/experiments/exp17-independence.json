@@ -47,7 +47,8 @@
       "blockSize": 32,
       "blockVarianceRatio": 1.386939858490566,
       "dispersionChiSquare": 11.098584905660376,
-      "dispersionDf": 8
+      "dispersionDf": 8,
+      "dispersionPermutationP": 0.20893955302234887
     }
   },
   "concurrent": {
@@ -86,7 +87,8 @@
       "blockSize": 32,
       "blockVarianceRatio": 2.0809331797235022,
       "dispersionChiSquare": 14.583333333333332,
-      "dispersionDf": 7
+      "dispersionDf": 7,
+      "dispersionPermutationP": 0.04084795760211989
     },
     "unplanned": {
       "note": "not in the analysis plan; added after the planned tests were read",
@@ -95,7 +97,8 @@
         "blockSize": 32,
         "blockVarianceRatio": 1.8242847542242704,
         "dispersionChiSquare": 12.778225806451614,
-        "dispersionDf": 7
+        "dispersionDf": 7,
+        "dispersionPermutationP": 0.08209589520523974
       },
       "latencySplit": {
         "fasterHalf": {
@@ -5260,7 +5263,17 @@
     "ofWhichFlippedConcurrently": 2
   },
   "reanalysis": {
-    "at": "2026-10-02T06:04:46.345Z",
+    "at": "2026-10-02T17:35:54.232Z",
     "note": "serial statistics recomputed from the stored draws with exact ties in the permutation test (EXP_REANALYZE=1); no model calls"
+  },
+  "failureAsFlip": {
+    "note": "a request that errored or exceeded the time ceiling is counted as a flip, the released certifier's rule; not in the analysis plan",
+    "rows": 300,
+    "sequential": 35,
+    "concurrent": 52,
+    "z": 1.9710890154862344,
+    "twoSidedP": 0.04871355652555869,
+    "onlySequential": 21,
+    "onlyConcurrent": 38
   }
 }

@@ -74,6 +74,28 @@ state = f"commit `{head}`" + (" plus uncommitted changes (commit, then pack agai
 keywords = re.search(r"\\begin\{keywords\}(.*?)\\end\{keywords\}", open("paper/ieee/main.tex").read(), re.S).group(1)
 keywords = re.sub(r"\s+", " ", keywords).strip().rstrip(".")
 
+photo = os.path.exists("paper/ieee/author-photo.jpg")
+photo_line = (
+    "- The author biography carries the photograph `paper/ieee/author-photo.jpg`; confirm it is the one you want printed."
+    if photo
+    else "- **ACTION NEEDED: author photograph.** IEEE's resubmission checklist asks for the manuscript \"with all author biographies and photos included\". The biography is set without a photograph because `paper/ieee/author-photo.jpg` does not exist. Save a portrait JPEG there (1 in by 1.25 in when printed; 300 by 375 pixels or larger) and run `pnpm pack:paper:ieee` again before uploading."
+)
+resp_date = re.search(r'^date: "Resubmission, (.+)"', open("paper/ieee/response.md").read(), re.M)
+cover_date = re.search(r"\n(\d{1,2} [A-Z][a-z]+ \d{4})\\\\\[", open("paper/ieee/cover-letter.tex").read())
+if not resp_date or not cover_date:
+    sys.exit("could not read the dates of the response letter and the cover letter")
+# The line numbers are read from the files, so the instruction stays right
+# when either letter gains or loses a line above its date.
+def line_of(path, needle):
+    for i, line in enumerate(open(path).read().splitlines(), 1):
+        if needle in line:
+            return i
+    sys.exit(f"{path}: no line contains {needle!r}")
+
+
+date_line = (
+    f"- The response letter is dated {resp_date.group(1)} and the cover letter {cover_date.group(1)}. If you upload on a later day, change both dates (`paper/ieee/response.md`, line {line_of('paper/ieee/response.md', resp_date.group(1))}; `paper/ieee/cover-letter.tex`, line {line_of('paper/ieee/cover-letter.tex', cover_date.group(1))}) and run `pnpm pack:paper:ieee` again."
+)
 row = lambda slot, desc, name: f"| {slot} | {desc} | {size(files[name])} | `{sha256(files[name])}` |"
 lines = [
     "# IEEE Access resubmission checklist: Access-2026-41149",
@@ -86,7 +108,7 @@ lines = [
     "| --- | --- | ---: | --- |",
     row("Main Manuscript (clean): PDF", f"`manuscript.pdf` ({pages(files['manuscript.pdf'])} pages)", "manuscript.pdf"),
     row("Main Manuscript (clean): LaTeX source", "`source.zip` (flat: main.tex, body, tables, macros, refs.bib, main.bbl, main.pdf, class and fonts)", "source.zip"),
-    row("Highlighted PDF (all changes marked)", f"`highlighted.pdf` ({pages(files['highlighted.pdf'])} pages; blue = added or changed, deletions omitted, changed numbers marked, reference list compared entry by entry)", "highlighted.pdf"),
+    row("Highlighted PDF (all changes marked)", f"`highlighted.pdf` ({pages(files['highlighted.pdf'])} pages; yellow highlight over blue text = added or changed, deletions omitted, changed numbers marked, reference list compared entry by entry)", "highlighted.pdf"),
     row("Author's Response Files (point-by-point)", f"`response-to-reviewers.docx` ({pages(files['response-to-reviewers.pdf'])} pages as PDF; the `.pdf` twin is the same text if the portal prefers PDF)", "response-to-reviewers.docx"),
     row("Cover letter", f"`cover-letter.pdf` ({pages(files['cover-letter.pdf'])} page), or paste its text into the cover-letter field", "cover-letter.pdf"),
     "",
@@ -114,10 +136,11 @@ lines = [
     "",
     "## 3. Before you press submit",
     "",
-    "- Open `highlighted.pdf` once and confirm blue text appears on page 1 (the abstract) and in the reference list.",
+    "- Open `highlighted.pdf` once and confirm the yellow highlighting appears on page 1 (the abstract) and in the reference list.",
     "- The response document's opening letter names the three file designations; keep them consistent with the slots you use.",
     "- Do not upload the `.partial.json` checkpoints or anything from `paper/ieee/submission/diff/`.",
-    "- The author biography has no photograph (optional at every stage); add one only if you want it printed.",
+    photo_line,
+    date_line,
     "",
     "## 4. After submission",
     "",

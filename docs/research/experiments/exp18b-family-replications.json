@@ -1,0 +1,1141 @@
+{
+  "experiment": "exp18b-family-replications",
+  "procedure": "strata=value-only; bound=exact; adaptive n0=45 maxLooks=6; delta=0.1; prng=mulberry32; replication seeds 1000..1999; labels frozen (the stored draws of exp12 and exp18)",
+  "results": [
+    {
+      "model": "alibaba/qwen3.7-flash",
+      "file": "exp12-secondmodel-alibaba-qwen3.7-flash.json",
+      "pair": "so-formatting",
+      "alpha": 0.1,
+      "n": 2000,
+      "strata": 2,
+      "mainSeed": {
+        "sampled": 765,
+        "reused": 0,
+        "certified": false
+      },
+      "replications": {
+        "B": 1000,
+        "certificationRate": 0.014,
+        "savingsMean": 0.004655500000000001,
+        "savingsLo": 0,
+        "savingsHi": 0,
+        "unsafePresentedRate": 0.006
+      }
+    },
+    {
+      "model": "alibaba/qwen3.7-flash",
+      "file": "exp12-secondmodel-alibaba-qwen3.7-flash.json",
+      "pair": "so-formatting",
+      "alpha": 0.2,
+      "n": 2000,
+      "strata": 2,
+      "mainSeed": {
+        "sampled": 765,
+        "reused": 1235,
+        "certified": true
+      },
+      "replications": {
+        "B": 1000,
+        "certificationRate": 0.993,
+        "savingsMean": 0.5150405000000042,
+        "savingsLo": 0.2465,
+        "savingsHi": 0.865,
+        "unsafePresentedRate": 0
+      }
+    },
+    {
+      "model": "alibaba/qwen3.7-flash",
+      "file": "exp12-secondmodel-alibaba-qwen3.7-flash.json",
+      "pair": "so-synonym",
+      "alpha": 0.1,
+      "n": 2000,
+      "strata": 2,
+      "mainSeed": {
+        "sampled": 225,
+        "reused": 856,
+        "certified": true
+      },
+      "replications": {
+        "B": 1000,
+        "certificationRate": 0.945,
+        "savingsMean": 0.4004325000000007,
+        "savingsLo": 0,
+        "savingsHi": 0.4955,
+        "unsafePresentedRate": 0
+      }
+    },
+    {
+      "model": "alibaba/qwen3.7-flash",
+      "file": "exp12-secondmodel-alibaba-qwen3.7-flash.json",
+      "pair": "so-synonym",
+      "alpha": 0.2,
+      "n": 2000,
+      "strata": 2,
+      "mainSeed": {
+        "sampled": 90,
+        "reused": 991,
+        "certified": true
+      },
+      "replications": {
+        "B": 1000,
+        "certificationRate": 1,
+        "savingsMean": 0.4880749999999998,
+        "savingsLo": 0.473,
+        "savingsHi": 0.4955,
+        "unsafePresentedRate": 0
+      }
+    },
+    {
+      "model": "google/gemini-2.5-flash-lite",
+      "file": "exp12-secondmodel-google-gemini-2.5-flash-lite.json",
+      "pair": "so-formatting",
+      "alpha": 0.1,
+      "n": 2000,
+      "strata": 2,
+      "mainSeed": {
+        "sampled": 90,
+        "reused": 0,
+        "certified": false
+      },
+      "replications": {
+        "B": 1000,
+        "certificationRate": 0,
+        "savingsMean": 0,
+        "savingsLo": 0,
+        "savingsHi": 0,
+        "unsafePresentedRate": 0
+      }
+    },
+    {
+      "model": "google/gemini-2.5-flash-lite",
+      "file": "exp12-secondmodel-google-gemini-2.5-flash-lite.json",
+      "pair": "so-formatting",
+      "alpha": 0.2,
+      "n": 2000,
+      "strata": 2,
+      "mainSeed": {
+        "sampled": 90,
+        "reused": 0,
+        "certified": false
+      },
+      "replications": {
+        "B": 1000,
+        "certificationRate": 0.001,
+        "savingsMean": 0.0007595,
+        "savingsLo": 0,
+        "savingsHi": 0,
+        "unsafePresentedRate": 0.001
+      }
+    },
+    {
+      "model": "google/gemini-2.5-flash-lite",
+      "file": "exp12-secondmodel-google-gemini-2.5-flash-lite.json",
+      "pair": "so-synonym",
+      "alpha": 0.1,
+      "n": 2000,
+      "strata": 2,
+      "mainSeed": {
+        "sampled": 90,
+        "reused": 1260,
+        "certified": true
+      },
+      "replications": {
+        "B": 1000,
+        "certificationRate": 1,
+        "savingsMean": 0.6206849999999966,
+        "savingsLo": 0.5625,
+        "savingsHi": 0.63,
+        "unsafePresentedRate": 0
+      }
+    },
+    {
+      "model": "google/gemini-2.5-flash-lite",
+      "file": "exp12-secondmodel-google-gemini-2.5-flash-lite.json",
+      "pair": "so-synonym",
+      "alpha": 0.2,
+      "n": 2000,
+      "strata": 2,
+      "mainSeed": {
+        "sampled": 90,
+        "reused": 1260,
+        "certified": true
+      },
+      "replications": {
+        "B": 1000,
+        "certificationRate": 1,
+        "savingsMean": 0.6297974999999961,
+        "savingsLo": 0.63,
+        "savingsHi": 0.63,
+        "unsafePresentedRate": 0
+      }
+    },
+    {
+      "model": "google/gemini-3-flash",
+      "file": "exp12-secondmodel-google-gemini-3-flash.json",
+      "pair": "so-formatting",
+      "alpha": 0.1,
+      "n": 1999,
+      "strata": 2,
+      "mainSeed": {
+        "sampled": 225,
+        "reused": 1529,
+        "certified": true
+      },
+      "replications": {
+        "B": 1000,
+        "certificationRate": 1,
+        "savingsMean": 0.8207553776888523,
+        "savingsLo": 0.7648824412206103,
+        "savingsHi": 0.832416208104052,
+        "unsafePresentedRate": 0
+      }
+    },
+    {
+      "model": "google/gemini-3-flash",
+      "file": "exp12-secondmodel-google-gemini-3-flash.json",
+      "pair": "so-formatting",
+      "alpha": 0.2,
+      "n": 1999,
+      "strata": 2,
+      "mainSeed": {
+        "sampled": 90,
+        "reused": 1664,
+        "certified": true
+      },
+      "replications": {
+        "B": 1000,
+        "certificationRate": 1,
+        "savingsMean": 0.832201100550285,
+        "savingsLo": 0.832416208104052,
+        "savingsHi": 0.832416208104052,
+        "unsafePresentedRate": 0
+      }
+    },
+    {
+      "model": "google/gemini-3-flash",
+      "file": "exp12-secondmodel-google-gemini-3-flash.json",
+      "pair": "so-synonym",
+      "alpha": 0.1,
+      "n": 1966,
+      "strata": 2,
+      "mainSeed": {
+        "sampled": 405,
+        "reused": 1367,
+        "certified": true
+      },
+      "replications": {
+        "B": 1000,
+        "certificationRate": 0.992,
+        "savingsMean": 0.8073163784333701,
+        "savingsLo": 0.6953204476093591,
+        "savingsHi": 0.8555442522889115,
+        "unsafePresentedRate": 0
+      }
+    },
+    {
+      "model": "google/gemini-3-flash",
+      "file": "exp12-secondmodel-google-gemini-3-flash.json",
+      "pair": "so-synonym",
+      "alpha": 0.2,
+      "n": 1966,
+      "strata": 2,
+      "mainSeed": {
+        "sampled": 90,
+        "reused": 1682,
+        "certified": true
+      },
+      "replications": {
+        "B": 1000,
+        "certificationRate": 1,
+        "savingsMean": 0.8527060020345976,
+        "savingsLo": 0.8326551373346898,
+        "savingsHi": 0.8555442522889115,
+        "unsafePresentedRate": 0
+      }
+    },
+    {
+      "model": "google/gemini-3.8-flash",
+      "file": "exp12-secondmodel-google-gemini-3.8-flash.json",
+      "pair": "so-formatting",
+      "alpha": 0.1,
+      "n": 2000,
+      "strata": 2,
+      "mainSeed": {
+        "sampled": 135,
+        "reused": 1865,
+        "certified": true
+      },
+      "replications": {
+        "B": 1000,
+        "certificationRate": 1,
+        "savingsMean": 0.9263875000000024,
+        "savingsLo": 0.886,
+        "savingsHi": 0.955,
+        "unsafePresentedRate": 0
+      }
+    },
+    {
+      "model": "google/gemini-3.8-flash",
+      "file": "exp12-secondmodel-google-gemini-3.8-flash.json",
+      "pair": "so-formatting",
+      "alpha": 0.2,
+      "n": 2000,
+      "strata": 2,
+      "mainSeed": {
+        "sampled": 90,
+        "reused": 1910,
+        "certified": true
+      },
+      "replications": {
+        "B": 1000,
+        "certificationRate": 1,
+        "savingsMean": 0.9549775000000161,
+        "savingsLo": 0.955,
+        "savingsHi": 0.955,
+        "unsafePresentedRate": 0
+      }
+    },
+    {
+      "model": "google/gemini-3.8-flash",
+      "file": "exp12-secondmodel-google-gemini-3.8-flash.json",
+      "pair": "so-synonym",
+      "alpha": 0.1,
+      "n": 2000,
+      "strata": 2,
+      "mainSeed": {
+        "sampled": 90,
+        "reused": 1810,
+        "certified": true
+      },
+      "replications": {
+        "B": 1000,
+        "certificationRate": 1,
+        "savingsMean": 0.9026599999999841,
+        "savingsLo": 0.8825,
+        "savingsHi": 0.905,
+        "unsafePresentedRate": 0
+      }
+    },
+    {
+      "model": "google/gemini-3.8-flash",
+      "file": "exp12-secondmodel-google-gemini-3.8-flash.json",
+      "pair": "so-synonym",
+      "alpha": 0.2,
+      "n": 2000,
+      "strata": 2,
+      "mainSeed": {
+        "sampled": 90,
+        "reused": 1810,
+        "certified": true
+      },
+      "replications": {
+        "B": 1000,
+        "certificationRate": 1,
+        "savingsMean": 0.9049999999999808,
+        "savingsLo": 0.905,
+        "savingsHi": 0.905,
+        "unsafePresentedRate": 0
+      }
+    },
+    {
+      "model": "openai/gpt-5-nano",
+      "file": "exp12-secondmodel-openai-gpt-5-nano.json",
+      "pair": "so-formatting",
+      "alpha": 0.1,
+      "n": 1997,
+      "strata": 2,
+      "mainSeed": {
+        "sampled": 90,
+        "reused": 0,
+        "certified": false
+      },
+      "replications": {
+        "B": 1000,
+        "certificationRate": 0,
+        "savingsMean": 0,
+        "savingsLo": 0,
+        "savingsHi": 0,
+        "unsafePresentedRate": 0
+      }
+    },
+    {
+      "model": "openai/gpt-5-nano",
+      "file": "exp12-secondmodel-openai-gpt-5-nano.json",
+      "pair": "so-formatting",
+      "alpha": 0.2,
+      "n": 1997,
+      "strata": 2,
+      "mainSeed": {
+        "sampled": 90,
+        "reused": 0,
+        "certified": false
+      },
+      "replications": {
+        "B": 1000,
+        "certificationRate": 0.001,
+        "savingsMean": 0.0003400100150225338,
+        "savingsLo": 0,
+        "savingsHi": 0,
+        "unsafePresentedRate": 0.001
+      }
+    },
+    {
+      "model": "openai/gpt-5-nano",
+      "file": "exp12-secondmodel-openai-gpt-5-nano.json",
+      "pair": "so-synonym",
+      "alpha": 0.1,
+      "n": 2000,
+      "strata": 2,
+      "mainSeed": {
+        "sampled": 90,
+        "reused": 0,
+        "certified": false
+      },
+      "replications": {
+        "B": 1000,
+        "certificationRate": 0,
+        "savingsMean": 0,
+        "savingsLo": 0,
+        "savingsHi": 0,
+        "unsafePresentedRate": 0
+      }
+    },
+    {
+      "model": "openai/gpt-5-nano",
+      "file": "exp12-secondmodel-openai-gpt-5-nano.json",
+      "pair": "so-synonym",
+      "alpha": 0.2,
+      "n": 2000,
+      "strata": 2,
+      "mainSeed": {
+        "sampled": 405,
+        "reused": 827,
+        "certified": true
+      },
+      "replications": {
+        "B": 1000,
+        "certificationRate": 0.654,
+        "savingsMean": 0.2190164999999994,
+        "savingsLo": 0,
+        "savingsHi": 0.5485,
+        "unsafePresentedRate": 0
+      }
+    },
+    {
+      "model": "zai/glm-4.7-flash",
+      "file": "exp12-secondmodel-zai-glm-4.7-flash.json",
+      "pair": "so-formatting",
+      "alpha": 0.1,
+      "n": 1999,
+      "strata": 2,
+      "mainSeed": {
+        "sampled": 90,
+        "reused": 0,
+        "certified": false
+      },
+      "replications": {
+        "B": 1000,
+        "certificationRate": 0,
+        "savingsMean": 0,
+        "savingsLo": 0,
+        "savingsHi": 0,
+        "unsafePresentedRate": 0
+      }
+    },
+    {
+      "model": "zai/glm-4.7-flash",
+      "file": "exp12-secondmodel-zai-glm-4.7-flash.json",
+      "pair": "so-formatting",
+      "alpha": 0.2,
+      "n": 1999,
+      "strata": 2,
+      "mainSeed": {
+        "sampled": 90,
+        "reused": 0,
+        "certified": false
+      },
+      "replications": {
+        "B": 1000,
+        "certificationRate": 0.707,
+        "savingsMean": 0.032988994497248486,
+        "savingsLo": 0,
+        "savingsHi": 0.1775887943971986,
+        "unsafePresentedRate": 0
+      }
+    },
+    {
+      "model": "zai/glm-4.7-flash",
+      "file": "exp12-secondmodel-zai-glm-4.7-flash.json",
+      "pair": "so-synonym",
+      "alpha": 0.1,
+      "n": 1997,
+      "strata": 2,
+      "mainSeed": {
+        "sampled": 225,
+        "reused": 0,
+        "certified": false
+      },
+      "replications": {
+        "B": 1000,
+        "certificationRate": 0.013,
+        "savingsMean": 0.006771156735102654,
+        "savingsLo": 0,
+        "savingsHi": 0,
+        "unsafePresentedRate": 0.007
+      }
+    },
+    {
+      "model": "zai/glm-4.7-flash",
+      "file": "exp12-secondmodel-zai-glm-4.7-flash.json",
+      "pair": "so-synonym",
+      "alpha": 0.2,
+      "n": 1997,
+      "strata": 2,
+      "mainSeed": {
+        "sampled": 135,
+        "reused": 1144,
+        "certified": true
+      },
+      "replications": {
+        "B": 1000,
+        "certificationRate": 0.987,
+        "savingsMean": 0.5454471707561301,
+        "savingsLo": 0.4376564847270906,
+        "savingsHi": 0.5953930896344517,
+        "unsafePresentedRate": 0
+      }
+    },
+    {
+      "model": "alibaba/qwen3.7-flash",
+      "file": "exp18-families-djinni-alibaba-qwen3.7-flash.json",
+      "pair": "dj-formatting",
+      "alpha": 0.1,
+      "n": 2000,
+      "strata": 4,
+      "mainSeed": {
+        "sampled": 630,
+        "reused": 967,
+        "certified": true
+      },
+      "replications": {
+        "B": 1000,
+        "certificationRate": 0.999,
+        "savingsMean": 0.5471050000000017,
+        "savingsLo": 0.3935,
+        "savingsHi": 0.6635,
+        "unsafePresentedRate": 0
+      }
+    },
+    {
+      "model": "alibaba/qwen3.7-flash",
+      "file": "exp18-families-djinni-alibaba-qwen3.7-flash.json",
+      "pair": "dj-formatting",
+      "alpha": 0.2,
+      "n": 2000,
+      "strata": 4,
+      "mainSeed": {
+        "sampled": 315,
+        "reused": 1658,
+        "certified": true
+      },
+      "replications": {
+        "B": 1000,
+        "certificationRate": 1,
+        "savingsMean": 0.8348490000000001,
+        "savingsLo": 0.739,
+        "savingsHi": 0.8965,
+        "unsafePresentedRate": 0
+      }
+    },
+    {
+      "model": "alibaba/qwen3.7-flash",
+      "file": "exp18-families-djinni-alibaba-qwen3.7-flash.json",
+      "pair": "dj-criteria",
+      "alpha": 0.1,
+      "n": 2000,
+      "strata": 4,
+      "mainSeed": {
+        "sampled": 753,
+        "reused": 872,
+        "certified": true
+      },
+      "replications": {
+        "B": 1000,
+        "certificationRate": 0.982,
+        "savingsMean": 0.39852350000000003,
+        "savingsLo": 0.301,
+        "savingsHi": 0.5425,
+        "unsafePresentedRate": 0
+      }
+    },
+    {
+      "model": "alibaba/qwen3.7-flash",
+      "file": "exp18-families-djinni-alibaba-qwen3.7-flash.json",
+      "pair": "dj-criteria",
+      "alpha": 0.2,
+      "n": 2000,
+      "strata": 4,
+      "mainSeed": {
+        "sampled": 286,
+        "reused": 1714,
+        "certified": true
+      },
+      "replications": {
+        "B": 1000,
+        "certificationRate": 1,
+        "savingsMean": 0.8320555000000053,
+        "savingsLo": 0.73,
+        "savingsHi": 0.8875,
+        "unsafePresentedRate": 0
+      }
+    },
+    {
+      "model": "google/gemini-2.5-flash-lite",
+      "file": "exp18-families-djinni-google-gemini-2.5-flash-lite.json",
+      "pair": "dj-formatting",
+      "alpha": 0.1,
+      "n": 1994,
+      "strata": 4,
+      "mainSeed": {
+        "sampled": 1530,
+        "reused": 464,
+        "certified": true
+      },
+      "replications": {
+        "B": 1000,
+        "certificationRate": 0.999,
+        "savingsMean": 0.30455516549648987,
+        "savingsLo": 0.09177532597793381,
+        "savingsHi": 0.5937813440320963,
+        "unsafePresentedRate": 0
+      }
+    },
+    {
+      "model": "google/gemini-2.5-flash-lite",
+      "file": "exp18-families-djinni-google-gemini-2.5-flash-lite.json",
+      "pair": "dj-formatting",
+      "alpha": 0.2,
+      "n": 1994,
+      "strata": 4,
+      "mainSeed": {
+        "sampled": 270,
+        "reused": 1724,
+        "certified": true
+      },
+      "replications": {
+        "B": 1000,
+        "certificationRate": 1,
+        "savingsMean": 0.8530330992978931,
+        "savingsLo": 0.7743229689067201,
+        "savingsHi": 0.9097291875626881,
+        "unsafePresentedRate": 0
+      }
+    },
+    {
+      "model": "google/gemini-2.5-flash-lite",
+      "file": "exp18-families-djinni-google-gemini-2.5-flash-lite.json",
+      "pair": "dj-criteria",
+      "alpha": 0.1,
+      "n": 1993,
+      "strata": 4,
+      "mainSeed": {
+        "sampled": 863,
+        "reused": 1130,
+        "certified": true
+      },
+      "replications": {
+        "B": 1000,
+        "certificationRate": 1,
+        "savingsMean": 0.5345915704967391,
+        "savingsLo": 0.2684395383843452,
+        "savingsHi": 0.7024586051179127,
+        "unsafePresentedRate": 0
+      }
+    },
+    {
+      "model": "google/gemini-2.5-flash-lite",
+      "file": "exp18-families-djinni-google-gemini-2.5-flash-lite.json",
+      "pair": "dj-criteria",
+      "alpha": 0.2,
+      "n": 1993,
+      "strata": 4,
+      "mainSeed": {
+        "sampled": 225,
+        "reused": 1768,
+        "certified": true
+      },
+      "replications": {
+        "B": 1000,
+        "certificationRate": 1,
+        "savingsMean": 0.8610592072252868,
+        "savingsLo": 0.7967887606623181,
+        "savingsHi": 0.909683893627697,
+        "unsafePresentedRate": 0
+      }
+    },
+    {
+      "model": "google/gemini-3.8-flash",
+      "file": "exp18-families-djinni-google-gemini-3.8-flash.json",
+      "pair": "dj-formatting",
+      "alpha": 0.1,
+      "n": 2000,
+      "strata": 4,
+      "mainSeed": {
+        "sampled": 585,
+        "reused": 1114,
+        "certified": true
+      },
+      "replications": {
+        "B": 1000,
+        "certificationRate": 1,
+        "savingsMean": 0.5759599999999971,
+        "savingsLo": 0.41,
+        "savingsHi": 0.7075,
+        "unsafePresentedRate": 0
+      }
+    },
+    {
+      "model": "google/gemini-3.8-flash",
+      "file": "exp18-families-djinni-google-gemini-3.8-flash.json",
+      "pair": "dj-formatting",
+      "alpha": 0.2,
+      "n": 2000,
+      "strata": 4,
+      "mainSeed": {
+        "sampled": 315,
+        "reused": 1685,
+        "certified": true
+      },
+      "replications": {
+        "B": 1000,
+        "certificationRate": 1,
+        "savingsMean": 0.8636415000000055,
+        "savingsLo": 0.7975,
+        "savingsHi": 0.91,
+        "unsafePresentedRate": 0
+      }
+    },
+    {
+      "model": "google/gemini-3.8-flash",
+      "file": "exp18-families-djinni-google-gemini-3.8-flash.json",
+      "pair": "dj-criteria",
+      "alpha": 0.1,
+      "n": 2000,
+      "strata": 4,
+      "mainSeed": {
+        "sampled": 630,
+        "reused": 481,
+        "certified": true
+      },
+      "replications": {
+        "B": 1000,
+        "certificationRate": 0.916,
+        "savingsMean": 0.2494129999999982,
+        "savingsLo": 0,
+        "savingsHi": 0.3755,
+        "unsafePresentedRate": 0
+      }
+    },
+    {
+      "model": "google/gemini-3.8-flash",
+      "file": "exp18-families-djinni-google-gemini-3.8-flash.json",
+      "pair": "dj-criteria",
+      "alpha": 0.2,
+      "n": 2000,
+      "strata": 4,
+      "mainSeed": {
+        "sampled": 225,
+        "reused": 1271,
+        "certified": true
+      },
+      "replications": {
+        "B": 1000,
+        "certificationRate": 1,
+        "savingsMean": 0.5640499999999997,
+        "savingsLo": 0.3755,
+        "savingsHi": 0.7355,
+        "unsafePresentedRate": 0
+      }
+    },
+    {
+      "model": "openai/gpt-5-nano",
+      "file": "exp18-families-djinni-openai-gpt-5-nano.json",
+      "pair": "dj-formatting",
+      "alpha": 0.1,
+      "n": 2000,
+      "strata": 4,
+      "mainSeed": {
+        "sampled": 225,
+        "reused": 0,
+        "certified": false
+      },
+      "replications": {
+        "B": 1000,
+        "certificationRate": 0.001,
+        "savingsMean": 0.0001,
+        "savingsLo": 0,
+        "savingsHi": 0,
+        "unsafePresentedRate": 0.001
+      }
+    },
+    {
+      "model": "openai/gpt-5-nano",
+      "file": "exp18-families-djinni-openai-gpt-5-nano.json",
+      "pair": "dj-formatting",
+      "alpha": 0.2,
+      "n": 2000,
+      "strata": 4,
+      "mainSeed": {
+        "sampled": 1399,
+        "reused": 601,
+        "certified": true
+      },
+      "replications": {
+        "B": 1000,
+        "certificationRate": 0.998,
+        "savingsMean": 0.29289049999999944,
+        "savingsLo": 0.0955,
+        "savingsHi": 0.55,
+        "unsafePresentedRate": 0
+      }
+    },
+    {
+      "model": "openai/gpt-5-nano",
+      "file": "exp18-families-djinni-openai-gpt-5-nano.json",
+      "pair": "dj-criteria",
+      "alpha": 0.1,
+      "n": 2000,
+      "strata": 4,
+      "mainSeed": {
+        "sampled": 180,
+        "reused": 0,
+        "certified": false
+      },
+      "replications": {
+        "B": 1000,
+        "certificationRate": 0,
+        "savingsMean": 0,
+        "savingsLo": 0,
+        "savingsHi": 0,
+        "unsafePresentedRate": 0
+      }
+    },
+    {
+      "model": "openai/gpt-5-nano",
+      "file": "exp18-families-djinni-openai-gpt-5-nano.json",
+      "pair": "dj-criteria",
+      "alpha": 0.2,
+      "n": 2000,
+      "strata": 4,
+      "mainSeed": {
+        "sampled": 1055,
+        "reused": 420,
+        "certified": true
+      },
+      "replications": {
+        "B": 1000,
+        "certificationRate": 0.982,
+        "savingsMean": 0.18650549999999974,
+        "savingsLo": 0.075,
+        "savingsHi": 0.3255,
+        "unsafePresentedRate": 0
+      }
+    },
+    {
+      "model": "zai/glm-4.7-flash",
+      "file": "exp18-families-djinni-zai-glm-4.7-flash.json",
+      "pair": "dj-formatting",
+      "alpha": 0.1,
+      "n": 1997,
+      "strata": 4,
+      "mainSeed": {
+        "sampled": 315,
+        "reused": 728,
+        "certified": true
+      },
+      "replications": {
+        "B": 1000,
+        "certificationRate": 0.827,
+        "savingsMean": 0.20064396594892078,
+        "savingsLo": 0,
+        "savingsHi": 0.40961442163244866,
+        "unsafePresentedRate": 0
+      }
+    },
+    {
+      "model": "zai/glm-4.7-flash",
+      "file": "exp18-families-djinni-zai-glm-4.7-flash.json",
+      "pair": "dj-formatting",
+      "alpha": 0.2,
+      "n": 1997,
+      "strata": 4,
+      "mainSeed": {
+        "sampled": 315,
+        "reused": 1307,
+        "certified": true
+      },
+      "replications": {
+        "B": 1000,
+        "certificationRate": 1,
+        "savingsMean": 0.8043395092638967,
+        "savingsLo": 0.6619929894842264,
+        "savingsHi": 0.8873309964947421,
+        "unsafePresentedRate": 0
+      }
+    },
+    {
+      "model": "zai/glm-4.7-flash",
+      "file": "exp18-families-djinni-zai-glm-4.7-flash.json",
+      "pair": "dj-criteria",
+      "alpha": 0.1,
+      "n": 1998,
+      "strata": 4,
+      "mainSeed": {
+        "sampled": 225,
+        "reused": 783,
+        "certified": true
+      },
+      "replications": {
+        "B": 1000,
+        "certificationRate": 0.999,
+        "savingsMean": 0.3874189189189168,
+        "savingsLo": 0.34684684684684686,
+        "savingsHi": 0.3918918918918919,
+        "unsafePresentedRate": 0
+      }
+    },
+    {
+      "model": "zai/glm-4.7-flash",
+      "file": "exp18-families-djinni-zai-glm-4.7-flash.json",
+      "pair": "dj-criteria",
+      "alpha": 0.2,
+      "n": 1998,
+      "strata": 4,
+      "mainSeed": {
+        "sampled": 360,
+        "reused": 1296,
+        "certified": true
+      },
+      "replications": {
+        "B": 1000,
+        "certificationRate": 1,
+        "savingsMean": 0.6692017017017035,
+        "savingsLo": 0.5585585585585585,
+        "savingsHi": 0.7232232232232232,
+        "unsafePresentedRate": 0
+      }
+    },
+    {
+      "model": "alibaba/qwen3.7-flash",
+      "file": "exp18-families-widening-alibaba-qwen3.7-flash.json",
+      "pair": "so-widening",
+      "alpha": 0.1,
+      "n": 2000,
+      "strata": 2,
+      "mainSeed": {
+        "sampled": 135,
+        "reused": 0,
+        "certified": false
+      },
+      "replications": {
+        "B": 1000,
+        "certificationRate": 0.015,
+        "savingsMean": 0.0014925000000000001,
+        "savingsLo": 0,
+        "savingsHi": 0,
+        "unsafePresentedRate": 0.005
+      }
+    },
+    {
+      "model": "alibaba/qwen3.7-flash",
+      "file": "exp18-families-widening-alibaba-qwen3.7-flash.json",
+      "pair": "so-widening",
+      "alpha": 0.2,
+      "n": 2000,
+      "strata": 2,
+      "mainSeed": {
+        "sampled": 405,
+        "reused": 1595,
+        "certified": true
+      },
+      "replications": {
+        "B": 1000,
+        "certificationRate": 0.993,
+        "savingsMean": 0.24299000000000084,
+        "savingsLo": 0.065,
+        "savingsHi": 0.8875,
+        "unsafePresentedRate": 0
+      }
+    },
+    {
+      "model": "google/gemini-2.5-flash-lite",
+      "file": "exp18-families-widening-google-gemini-2.5-flash-lite.json",
+      "pair": "so-widening",
+      "alpha": 0.1,
+      "n": 2000,
+      "strata": 2,
+      "mainSeed": {
+        "sampled": 50,
+        "reused": 0,
+        "certified": false
+      },
+      "replications": {
+        "B": 1000,
+        "certificationRate": 0.458,
+        "savingsMean": 0.21138000000000018,
+        "savingsLo": 0,
+        "savingsHi": 0.9075,
+        "unsafePresentedRate": 0
+      }
+    },
+    {
+      "model": "google/gemini-2.5-flash-lite",
+      "file": "exp18-families-widening-google-gemini-2.5-flash-lite.json",
+      "pair": "so-widening",
+      "alpha": 0.2,
+      "n": 2000,
+      "strata": 2,
+      "mainSeed": {
+        "sampled": 95,
+        "reused": 1905,
+        "certified": true
+      },
+      "replications": {
+        "B": 1000,
+        "certificationRate": 0.995,
+        "savingsMean": 0.9418200000000012,
+        "savingsLo": 0.9075,
+        "savingsHi": 0.975,
+        "unsafePresentedRate": 0
+      }
+    },
+    {
+      "model": "google/gemini-3.8-flash",
+      "file": "exp18-families-widening-google-gemini-3.8-flash.json",
+      "pair": "so-widening",
+      "alpha": 0.1,
+      "n": 2000,
+      "strata": 2,
+      "mainSeed": {
+        "sampled": 90,
+        "reused": 1886,
+        "certified": true
+      },
+      "replications": {
+        "B": 1000,
+        "certificationRate": 0.959,
+        "savingsMean": 0.8244169999999896,
+        "savingsLo": 0,
+        "savingsHi": 0.943,
+        "unsafePresentedRate": 0
+      }
+    },
+    {
+      "model": "google/gemini-3.8-flash",
+      "file": "exp18-families-widening-google-gemini-3.8-flash.json",
+      "pair": "so-widening",
+      "alpha": 0.2,
+      "n": 2000,
+      "strata": 2,
+      "mainSeed": {
+        "sampled": 90,
+        "reused": 1910,
+        "certified": true
+      },
+      "replications": {
+        "B": 1000,
+        "certificationRate": 1,
+        "savingsMean": 0.9428365000000006,
+        "savingsLo": 0.9205,
+        "savingsHi": 0.955,
+        "unsafePresentedRate": 0
+      }
+    },
+    {
+      "model": "openai/gpt-5-nano",
+      "file": "exp18-families-widening-openai-gpt-5-nano.json",
+      "pair": "so-widening",
+      "alpha": 0.1,
+      "n": 2000,
+      "strata": 2,
+      "mainSeed": {
+        "sampled": 90,
+        "reused": 0,
+        "certified": false
+      },
+      "replications": {
+        "B": 1000,
+        "certificationRate": 0,
+        "savingsMean": 0,
+        "savingsLo": 0,
+        "savingsHi": 0,
+        "unsafePresentedRate": 0
+      }
+    },
+    {
+      "model": "openai/gpt-5-nano",
+      "file": "exp18-families-widening-openai-gpt-5-nano.json",
+      "pair": "so-widening",
+      "alpha": 0.2,
+      "n": 2000,
+      "strata": 2,
+      "mainSeed": {
+        "sampled": 90,
+        "reused": 0,
+        "certified": false
+      },
+      "replications": {
+        "B": 1000,
+        "certificationRate": 0,
+        "savingsMean": 0,
+        "savingsLo": 0,
+        "savingsHi": 0,
+        "unsafePresentedRate": 0
+      }
+    },
+    {
+      "model": "zai/glm-4.7-flash",
+      "file": "exp18-families-widening-zai-glm-4.7-flash.json",
+      "pair": "so-widening",
+      "alpha": 0.1,
+      "n": 2000,
+      "strata": 2,
+      "mainSeed": {
+        "sampled": 225,
+        "reused": 1346,
+        "certified": true
+      },
+      "replications": {
+        "B": 1000,
+        "certificationRate": 0.813,
+        "savingsMean": 0.4663965000000057,
+        "savingsLo": 0,
+        "savingsHi": 0.7405,
+        "unsafePresentedRate": 0
+      }
+    },
+    {
+      "model": "zai/glm-4.7-flash",
+      "file": "exp18-families-widening-zai-glm-4.7-flash.json",
+      "pair": "so-widening",
+      "alpha": 0.2,
+      "n": 2000,
+      "strata": 2,
+      "mainSeed": {
+        "sampled": 90,
+        "reused": 1481,
+        "certified": true
+      },
+      "replications": {
+        "B": 1000,
+        "certificationRate": 1,
+        "savingsMean": 0.7255149999999955,
+        "savingsLo": 0.673,
+        "savingsHi": 0.7405,
+        "unsafePresentedRate": 0
+      }
+    }
+  ],
+  "wallMs": 2224
+}

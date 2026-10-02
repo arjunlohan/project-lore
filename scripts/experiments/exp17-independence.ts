@@ -45,7 +45,13 @@
  * concurrent arms, the exclusion check in both directions, and two UNPLANNED
  * looks, marked as such in the artifact (flips by response latency, and the
  * block test with blocks formed in launch order instead of completion
- * order).
+ * order). It also gives every block-dispersion statistic a permutation
+ * p-value beside its chi-square one: a block of 32 holds about three
+ * expected flips, where the chi-square reference is only approximate, and
+ * shuffling the arm's own flip sequence gives the statistic's reference
+ * distribution without that approximation. And it records the flip counts
+ * with a failed request counted as a flip, the rule the released certifier
+ * applies to a sampled cell whose oracle call fails.
  */
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { generateObject } from "ai";
@@ -149,6 +155,28 @@ function blockDispersion(flips: number[], block = 32) {
     dispersionDf: Math.max(1, blocks.length - 1),
   };
 }
+/**
+ * Permutation p-value of the block-dispersion statistic: the share of
+ * shuffles of the arm's own flip sequence whose statistic is at least the
+ * observed one. With several sequences (the pooled test) each is shuffled on
+ * its own and the statistics are added, as the pooled chi-square adds them.
+ */
+function dispersionPermutationP(sequences: number[][], rand: () => number, perms = 20000, block = 32): number {
+  const stat = (xs: number[][]) => xs.reduce((a, x) => a + blockDispersion(x, block).dispersionChiSquare, 0);
+  const observed = stat(sequences);
+  const arrs = sequences.map((x) => [...x]);
+  let atLeast = 0;
+  for (let p = 0; p < perms; p++) {
+    for (const arr of arrs) {
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(rand() * (i + 1));
+        [arr[i], arr[j]] = [arr[j]!, arr[i]!];
+      }
+    }
+    if (stat(arrs) >= observed - 1e-9) atLeast++;
+  }
+  return (atLeast + 1) / (perms + 1);
+}
 function serialTests(flips: number[], rand: () => number, perms = 2000, block = 32) {
   const observed = Math.abs(lag1Integer(flips));
   let atLeast = 0;
@@ -241,6 +269,37 @@ function reanalyze() {
     dispersionDf: main.concurrent.serial.dispersionDf + ext.concurrent.serial.dispersionDf,
     blocks: main.concurrent.serial.blocks + ext.concurrent.serial.blocks,
   };
+  // Permutation reference for every block-dispersion statistic, from a
+  // generator of its own so the lag-one p-values above keep their values.
+  const randDisp = mulberry32(20261002);
+  main.sequential.serial.dispersionPermutationP = dispersionPermutationP([seq.map((x) => x.flip)], randDisp);
+  main.concurrent.serial.dispersionPermutationP = dispersionPermutationP([conc.map((x) => x.flip)], randDisp);
+  main.concurrent.unplanned.launchOrderBlocks.dispersionPermutationP = dispersionPermutationP([concLaunch.map((x) => x.flip)], randDisp);
+  ext.concurrent.serial.dispersionPermutationP = dispersionPermutationP([extSeq.map((x) => x.flip)], randDisp);
+  ext.concurrent.unplanned.launchOrderBlocks.dispersionPermutationP = dispersionPermutationP([extLaunch.map((x) => x.flip)], randDisp);
+  ext.pooledWithMainConcurrent.dispersionPermutationP = dispersionPermutationP([conc.map((x) => x.flip), extSeq.map((x) => x.flip)], randDisp);
+  // The released certifier counts a sampled cell whose oracle call failed as
+  // a flip. The planned comparison above drops such requests; this is the
+  // same comparison under the certifier's rule, over every requested row.
+  {
+    const failedOrFlipped = (d: Draw, arm: "sequential" | "concurrent") => d[arm] === null || d[arm] === undefined || (d.cached !== null && d[arm] !== d.cached);
+    const usableRows = draws.filter((d) => d.cached !== null);
+    const sF = usableRows.filter((d) => failedOrFlipped(d, "sequential")).length;
+    const cF = usableRows.filter((d) => failedOrFlipped(d, "concurrent")).length;
+    const n = usableRows.length;
+    const pooledRate = (sF + cF) / (2 * n);
+    const z = (cF / n - sF / n) / Math.sqrt(pooledRate * (1 - pooledRate) * (2 / n));
+    main.failureAsFlip = {
+      note: "a request that errored or exceeded the time ceiling is counted as a flip, the released certifier's rule; not in the analysis plan",
+      rows: n,
+      sequential: sF,
+      concurrent: cF,
+      z,
+      twoSidedP: normalTwoSided(z),
+      onlySequential: usableRows.filter((d) => failedOrFlipped(d, "sequential") && !failedOrFlipped(d, "concurrent")).length,
+      onlyConcurrent: usableRows.filter((d) => failedOrFlipped(d, "concurrent") && !failedOrFlipped(d, "sequential")).length,
+    };
+  }
   const stamp = { at: new Date().toISOString(), note: "serial statistics recomputed from the stored draws with exact ties in the permutation test (EXP_REANALYZE=1); no model calls" };
   main.reanalysis = stamp;
   ext.reanalysis = stamp;

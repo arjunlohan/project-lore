@@ -21,6 +21,22 @@
     {
       "label": "upper end of the planned test's 95% interval",
       "phi": 2.255510721653054
+    },
+    {
+      "label": "pooled estimate (both concurrent arms)",
+      "phi": 1.417782497699567
+    },
+    {
+      "label": "upper end of the pooled 95% interval",
+      "phi": 2.3730587706184543
+    },
+    {
+      "label": "planned estimate (first concurrent arm)",
+      "phi": 2.0809331797235022
+    },
+    {
+      "label": "upper end of the first arm's 95% interval",
+      "phi": 8.619917106379665
     }
   ],
   "results": [
@@ -87,7 +103,71 @@
       "ratioLabel": "upper end of the planned test's 95% interval",
       "rate": 0.10000122746075195,
       "errorProbability": 0.10826
+    },
+    {
+      "alpha": 0.2,
+      "size": 81469,
+      "ratio": 1.417782497699567,
+      "ratioLabel": "pooled estimate (both concurrent arms)",
+      "rate": 0.2000024549215039,
+      "errorProbability": 0.054
+    },
+    {
+      "alpha": 0.2,
+      "size": 81469,
+      "ratio": 2.3730587706184543,
+      "ratioLabel": "upper end of the pooled 95% interval",
+      "rate": 0.2000024549215039,
+      "errorProbability": 0.13059
+    },
+    {
+      "alpha": 0.2,
+      "size": 81469,
+      "ratio": 2.0809331797235022,
+      "ratioLabel": "planned estimate (first concurrent arm)",
+      "rate": 0.2000024549215039,
+      "errorProbability": 0.10838
+    },
+    {
+      "alpha": 0.2,
+      "size": 81469,
+      "ratio": 8.619917106379665,
+      "ratioLabel": "upper end of the first arm's 95% interval",
+      "rate": 0.2000024549215039,
+      "errorProbability": 0.37924
+    },
+    {
+      "alpha": 0.1,
+      "size": 81469,
+      "ratio": 1.417782497699567,
+      "ratioLabel": "pooled estimate (both concurrent arms)",
+      "rate": 0.10000122746075195,
+      "errorProbability": 0.0471
+    },
+    {
+      "alpha": 0.1,
+      "size": 81469,
+      "ratio": 2.3730587706184543,
+      "ratioLabel": "upper end of the pooled 95% interval",
+      "rate": 0.10000122746075195,
+      "errorProbability": 0.11731
+    },
+    {
+      "alpha": 0.1,
+      "size": 81469,
+      "ratio": 2.0809331797235022,
+      "ratioLabel": "planned estimate (first concurrent arm)",
+      "rate": 0.10000122746075195,
+      "errorProbability": 0.09612
+    },
+    {
+      "alpha": 0.1,
+      "size": 81469,
+      "ratio": 8.619917106379665,
+      "ratioLabel": "upper end of the first arm's 95% interval",
+      "rate": 0.10000122746075195,
+      "errorProbability": 0.38813
     }
   ],
-  "wallMs": 21956
+  "wallMs": 40098
 }
