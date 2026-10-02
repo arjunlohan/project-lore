@@ -3262,6 +3262,22 @@ ${lines.join("\n")}
   const hidden = (w: W11c) => Math.round(((w.realizedOnOverlap ?? 0) * w.reused) / 100) * 100;
   def("deployHiddenLoose", num(hidden(dx2)));
   def("sepHiddenLoose", num(hidden(sx2)));
+  // An audit is a sample of the reused cells, so the extrapolation carries
+  // its sampling error: the Wilson interval of the audited rate, carried to
+  // the reuse set in the same way.
+  const hiddenRange = (w: W11c) => {
+    const rows = w.gtOverlapReused;
+    const [lo, hi] = wilsonInterval(Math.round((w.realizedOnOverlap ?? 0) * rows), rows);
+    const hundreds = (x: number) => Math.round((x * w.reused) / 100) * 100;
+    return [hundreds(lo), hundreds(hi)] as const;
+  };
+  const [dLo, dHi] = hiddenRange(dx2);
+  const [sLo, sHi] = hiddenRange(sx2);
+  if (!(dHi < sLo)) throw new Error("the August and September hidden-positive intervals now overlap; rewrite the limitations paragraph, which sets them apart");
+  def("deployHiddenLooseLo", num(dLo));
+  def("deployHiddenLooseHi", num(dHi));
+  def("sepHiddenLooseLo", num(sLo));
+  def("sepHiddenLooseHi", num(sHi));
   // The reading the limitations paragraph gives of this table.
   const b = (pair: string, alpha: number, estimand: string) => all.find((r) => r.pair === pair && r.estimand === estimand && Math.abs(r.alpha - alpha) < 1e-9)!.bootstrap;
   const reading: Array<[string, boolean]> = [
