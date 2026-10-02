@@ -1,9 +1,10 @@
 /**
- * Export the benchmark's per-cell labels: for each of the five edit pairs,
- * the seeded evaluation vector's row identifiers in sampling order, the
- * cached value of each row under the pair's old version, and the fresh
- * oracle value under its new version (16,000 distinct version cells over
- * the eight column versions the pairs use).
+ * Export the benchmark: for each of the five edit pairs, the two prompt
+ * templates as stored (with the model and the output contract), the seeded
+ * evaluation vector's row identifiers in sampling order, the cached value of
+ * each row under the pair's old version, and the fresh oracle value under
+ * its new version (16,000 distinct version cells over the eight column
+ * versions the pairs use).
  *
  * The labels live in the running system's database. This writes them to a
  * tracked artifact so that the benchmark is usable, and Table 1 of the paper
@@ -23,7 +24,11 @@
 import { mkdirSync, writeFileSync } from "node:fs";
 import mysql from "mysql2/promise";
 import { PAIRS, type PairDef } from "./pairs";
-import { getCellsForVersion, listColumns } from "../../lib/lore/column-store";
+import {
+  getCellsForVersion,
+  getColumnVersion,
+  listColumns,
+} from "../../lib/lore/column-store";
 
 const OUT = "docs/research/experiments/benchmark-labels.json";
 const MYSQL_URL =
@@ -67,6 +72,16 @@ async function main() {
       );
     const from = await oracle(pair.fromV);
     const to = await oracle(pair.toV);
+    // The pair itself: both prompt templates as stored, so the edit is in the
+    // release and not only in the database the labels were drawn from.
+    const fromVersion = await getColumnVersion(column.id, pair.fromV);
+    const toVersion = await getColumnVersion(column.id, pair.toV);
+    if (!fromVersion || !toVersion) {
+      throw new Error(`prompt versions for ${pair.key} not found`);
+    }
+    if (fromVersion.model !== toVersion.model) {
+      throw new Error(`${pair.key}: the two versions name different models`);
+    }
     const aligned = (m: Map<string, unknown>) =>
       rowIds.map((id) => (m.has(id) ? m.get(id) : null));
     const usable = rowIds.filter((id) => from.has(id) && to.has(id));
@@ -81,8 +96,12 @@ async function main() {
       corpus: pair.corpus,
       column: pair.column,
       columnType: pair.columnType,
+      outputSpec: column.output_spec,
+      model: fromVersion.model,
       fromVersion: pair.fromV,
       toVersion: pair.toV,
+      fromPrompt: fromVersion.prompt_template,
+      toPrompt: toVersion.prompt_template,
       rowSeed: pair.rowSeed,
       idField: pair.idField,
       usable: usable.length,
@@ -100,7 +119,7 @@ async function main() {
     OUT,
     JSON.stringify({
       artifact: "benchmark-labels",
-      note: "per-cell labels of the five versioned edit pairs: rowIds is the seeded evaluation vector in sampling order; cached[i] is row i's value under the old version and fresh[i] its oracle value under the new version (one draw each, temperature 0); a flip is cached[i] != fresh[i]",
+      note: "the five versioned edit pairs with their per-cell labels: fromPrompt and toPrompt are the two prompt templates as stored ({{field}} interpolates a row attribute), model the gateway identifier both versions ran on, outputSpec the column's output contract; rowIds is the seeded evaluation vector in sampling order; cached[i] is row i's value under the old version and fresh[i] its oracle value under the new version (one draw each, temperature 0); a flip is cached[i] != fresh[i]",
       columnVersions: [...versions].sort(),
       pairs,
     }),

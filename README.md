@@ -155,7 +155,8 @@ assertions on the relations the prose states between figures. Each guard
 exists because the corresponding defect shipped at least once.
 
 Reproducing the statistical results needs no model endpoint and no database:
-the per-cell labels of the five edit pairs are released as
+the five edit pairs (both prompt templates of each, with the model and the
+output contract) and their per-cell labels are released as
 `docs/research/experiments/benchmark-labels.json`, and
 
 ```bash
