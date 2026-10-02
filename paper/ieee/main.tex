@@ -24,6 +24,8 @@
 \usepackage{amsthm}
 \usepackage{booktabs}
 \usepackage{needspace}% a heading must not be stranded at the foot of a column
+\newcommand{\keepheading}{\needspace{6\baselineskip}}% before a section heading
+\newcommand{\keeprunin}{\needspace{4\baselineskip}}% before a run-in heading
 \usepackage{array}% ragged-right paragraph columns in the prose tables
 \usepackage{algorithm}
 \usepackage{algorithmic}
@@ -67,9 +69,18 @@
 %% \url. Loaded last per hyperref's own rule; hidelinks keeps the IEEE
 %% house look (no colored link boxes).
 \usepackage[hidelinks]{hyperref}
-%% Long documentation URLs in the bibliography (product citations) need
-%% break points hyperref's url does not offer.
-\usepackage{xurl}
+\hypersetup{
+  pdftitle={Reuse, but Verify: Certified Maintenance of Table Cells Computed by Large Language Models under Prompt Edits},
+  pdfauthor={Arjun Lohan}}
+%% Long documentation URLs in the bibliography (product citations) must
+%% break, but not inside a word and not after the scheme's colon: allow a
+%% break after a slash only (a colon is otherwise a relation in url's math
+%% mode and breaks), and no stretch between characters
+%% (the default lets a tight line letter-space the URL).
+\def\UrlBreaks{\do\/}
+\def\UrlBigBreaks{}
+\makeatletter\g@addto@macro{\UrlOrds}{\do\:\do\=}\makeatother
+\Urlmuskip=0mu
 %% IEEEtran's starred sections (References, Acknowledgment) step hyperref's
 %% anchor counter without writing the anchor, so their bookmarks pointed at
 %% page 1; write the anchor after each starred heading.
@@ -94,7 +105,7 @@
 follows. \secref{sec:problem} formalizes certified reuse and its two
 guarantee targets. \secref{sec:system} presents the \sivm{} procedure and
 its validity theorem. \secref{sec:impl} describes the production system it
-maintains. \secref{sec:experiments} reports the evaluation.
+runs in. \secref{sec:experiments} reports the evaluation.
 \secref{sec:benchmark} describes the released benchmark of versioned
 prompt-edit pairs. \secref{sec:related} positions the work against prior
 art. \secref{sec:limits} states limitations, and \secref{sec:conclusion}
@@ -131,31 +142,32 @@ by Large Language Models under Prompt Edits}
 %% material. Differs from the acmart abstract only where those rules bind
 %% (symbols worded out; "CVs" expanded); every quantity is still macro-cited.
 \begin{abstract}
-Modern tables let users define columns in natural language: a language model computes each cell from a versioned
-prompt over its row. When the prompt is edited, systems either recompute
-every cell or reuse stale ones, with unbounded error. We present semantic incremental
-view maintenance (\sivm{}), which certifies the cached cells that may
-be reused after a prompt edit, bounding each certified stratum's
-false-reuse rate by a user-chosen error budget with stated confidence.
-\sivm{} freezes cached-value strata, samples adaptively on a doubling
-schedule, and bounds each stratum's flip rate with an exact
-finite-population confidence bound; a strict mode bounds the error of
-the reused cells alone. An impossibility floor follows for this
-estimand: a model's rate of disagreement with itself under the unedited
-prompt limits the certifiable budget. On two public corpora with
-\labeledCells\ labeled cells, a formatting-only edit certifies
-\benchSavingsMain\ call savings (\benchSavings\ mean over \bootB\
-sampling replications) at an error budget of 0.2 with
-\benchRealized\ realized false-reuse; at deployment scale,
+Modern tables let users define columns in natural language: a language
+model computes each cell from a versioned prompt over its row. When the
+prompt is edited, systems either recompute every cell or reuse stale
+ones, with unbounded error. We present semantic incremental view
+maintenance (\sivm{}), which certifies the cached cells that may be
+reused after a prompt edit. It groups cells by cached value into strata
+and bounds each certified stratum's false-reuse rate by a user-chosen
+error budget with stated confidence. It samples each stratum on a
+doubling schedule and bounds its flip rate with an exact
+finite-population bound; a strict mode bounds the error of the reused
+cells alone. An impossibility floor follows: with the prompt unedited,
+no budget below the model's rate of self-disagreement is certifiable.
+On two public corpora (\labeledCells\ labeled cells), a
+formatting-only edit certifies \benchSavingsMain\ call savings
+(\benchSavings\ mean over \bootB\ replications) at an error budget of
+0.2 with \benchRealized\ realized false-reuse; at deployment scale,
 \deployOracle\ fresh calls certify reuse of \deployReused\ of \deployN\
-cells. Across \calTrials\ calibration runs with planted flip rates,
-unsafe certificates occur in at most \calUnsafeWorst\ of runs in any
+cells. Across \calTrials\ calibration runs, certificates that exceed
+their budget occur in at most \calUnsafeWorst\ of runs per
 configuration, against a nominal \calNominalDelta. A second
-certification \driftDaysLater\ days later, against the same cache,
-measured provider-side model drift and re-certified the same budgets.
-Certification reproduces on \famCertCount\ of \famCount\ further model
-families, while which edits are benign varies by family. The system is released under a source-available noncommercial license,
-with labels and a benchmark of versioned prompt-edit pairs.
+certification \driftDaysLater\ days later measured drift of the served
+model and re-certified the same budgets. At least one edit certifies on
+\famCertCount\ of \famCount\ further model families; which edits
+are benign varies by family. The system is released under a
+source-available noncommercial license, with labels and a benchmark of
+versioned prompt-edit pairs.
 \end{abstract}
 
 \begin{keywords}

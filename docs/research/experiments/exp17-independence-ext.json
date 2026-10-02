@@ -21,12 +21,32 @@
     "medianLatencyMs": 3666,
     "serial": {
       "lag1": -0.03101989114449992,
-      "lag1PermutationP": 0.2288855572213893,
+      "lag1PermutationP": 0.34382808595702147,
       "blocks": 31,
       "blockSize": 32,
       "blockVarianceRatio": 1.2623922289946485,
       "dispersionChiSquare": 37.87461908155065,
       "dispersionDf": 30
+    },
+    "unplanned": {
+      "note": "not in the analysis plan; added after the planned tests were read",
+      "launchOrderBlocks": {
+        "blocks": 31,
+        "blockSize": 32,
+        "blockVarianceRatio": 1.609830283947978,
+        "dispersionChiSquare": 48.29776073015053,
+        "dispersionDf": 30
+      },
+      "latencySplit": {
+        "fasterHalf": {
+          "n": 500,
+          "flips": 12
+        },
+        "slowerHalf": {
+          "n": 500,
+          "flips": 59
+        }
+      }
     }
   },
   "againstMainSequential": {
@@ -11038,5 +11058,14 @@
       "latencyMs": 34094
     }
   ],
-  "totalWallMs": 158091
+  "totalWallMs": 158091,
+  "pooledWithMainConcurrent": {
+    "dispersionChiSquare": 52.45795241488398,
+    "dispersionDf": 37,
+    "blocks": 39
+  },
+  "reanalysis": {
+    "at": "2026-10-02T06:04:46.345Z",
+    "note": "serial statistics recomputed from the stored draws with exact ties in the permutation test (EXP_REANALYZE=1); no model calls"
+  }
 }

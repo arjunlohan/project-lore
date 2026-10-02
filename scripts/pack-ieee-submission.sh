@@ -227,7 +227,60 @@ s = re.sub(r"(\\DIFdelend )(\d[\d.,{}]*(?:\\%)?)(\\DIFaddbegin )", r"\1\\DIFadd{
 # added text spans is itself added, so colour it.
 s = re.sub(
     r"(\}\s*)(\\begin\{equation\}.*?\\end\{equation\})(\s*\\DIFadd\{)",
-    lambda m: m.group(1) + r"{\color{blue}" + m.group(2) + "}" + m.group(3),
+    # \ignorespaces: TeX skips one space after a display, but the closing
+    # brace of the colour group hides the line end from that rule.
+    lambda m: m.group(1) + r"{\color{blue}" + m.group(2) + r"}\ignorespaces" + m.group(3),
+    s,
+    flags=re.S,
+)
+# A heading that latexdiff reports as deleted and then added again has only
+# moved relative to a float. latexdiff keeps a deleted heading as a command
+# with an empty title, which prints a bare section number; with deletions
+# omitted it must print nothing, and the unchanged title must not be marked.
+moved_headings = set()
+def drop_deleted_heading(m):
+    moved_headings.add(m.group(2))
+    return r"\DIFdelbegin "
+s = re.sub(
+    r"\\DIFdelbegin \\(section|subsection)\{\\DIFdel\{(.*?)\}\}\s*%DIFAUXCMD\s*\\addtocounter\{\1\}\{-1\}%DIFAUXCMD\n",
+    drop_deleted_heading,
+    s,
+)
+for title in moved_headings:
+    for level in ("section", "subsection"):
+        s = s.replace("\\" + level + "{\\DIFadd{" + title + "}}", "\\" + level + "{" + title + "}")
+if re.search(r"\\(section|subsection)\{\\DIFdel\{", s):
+    sys.exit("a deleted heading survives in the highlighted source and would print a bare number")
+# A figure whose plot data comes from a macro of figdata.tex is textually
+# unchanged when only the data changed. If that macro's definition differs
+# between the two submissions the figure was replotted, so colour it.
+import os
+def plot_macros(path):
+    out = {}
+    if os.path.exists(path):
+        for line in open(path):
+            k = re.match(r"\\newcommand\{\\(\w+)\}\{(.*)\}\s*$", line)
+            if k:
+                out[k.group(1)] = k.group(2)
+    return out
+old_plots = plot_macros(os.path.join(os.path.dirname(sys.argv[2]), "figdata.tex"))
+new_plots = plot_macros(os.path.join(os.path.dirname(sys.argv[3]), "figdata.tex"))
+replotted = [n for n in new_plots if old_plots.get(n) != new_plots[n]]
+def colour_replotted(m):
+    body = m.group("body")
+    if "%DIFDELCMD" in body or r"\color{blue}" in body or not any(("\\" + n) in body for n in replotted):
+        return m.group(0)
+    body = re.sub(
+        r"(\\begin\{tikzpicture\}.*?\\end\{tikzpicture\})",
+        lambda k: r"{\color{blue}" + k.group(1) + "}",
+        body,
+        count=1,
+        flags=re.S,
+    )
+    return m.group(1) + body + m.group(5)
+s = re.sub(
+    r"(\\begin\{(figure\*?)\}(\[[^\]]*\])?)(?P<body>.*?)(\\end\{\2\})",
+    colour_replotted,
     s,
     flags=re.S,
 )
@@ -259,6 +312,10 @@ if pages(clean) != pages(marked):
 cites = lambda t: sorted(re.findall(r"\[(\d+)\]", t))
 if cites(clean) != cites(marked):
     sys.exit("highlighted copy's citation numbers differ from the clean copy's")
+# A section number alone on a line is a heading whose title was dropped.
+bare = lambda t: sorted(re.findall(r"^[IVX]+\.$", t, flags=re.M))
+if bare(clean) != bare(marked):
+    sys.exit(f"highlighted copy prints bare section numbers the clean copy does not: {bare(marked)} against {bare(clean)}")
 # An empty entry is a label followed directly by the next label (a label
 # alone on its line is normal when its text is set in another colour).
 lines = [l.strip() for l in marked.splitlines() if l.strip()]
@@ -270,3 +327,6 @@ PY
 else
   echo "highlighted PDF skipped (latexdiff or tag $DIFF_BASE_TAG missing)"
 fi
+# 8. The upload checklist, regenerated from this build (sizes, digests, page
+#    counts, and the abstract to paste) so that it cannot describe an older one.
+python3 scripts/gen-resubmission-checklist.py "$OUT"

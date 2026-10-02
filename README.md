@@ -114,9 +114,9 @@ benign edits, and honest refusals everywhere else. Full report:
 | `lib/lore/` | NL compiler, cell runner, certifier, stores |
 | `app/lore/`, `app/api/lore/` | table UI + API |
 | `scripts/ingest/` | corpus ingestion (reproducible) |
-| `scripts/experiments/` | exp0–exp19 (exp14–exp19: bound ablation and null study, snapshot versions and drift, independence check, remaining pairs on further families, free-text judge pilot) + asset/report generation |
+| `scripts/experiments/` | exp0–exp19 (exp9b: the certifier's exact error probability at the least favourable population; exp11b: the audit verifier, which recomputes every deployment audit without the certifier; exp14–exp19: bound ablation and null study, snapshot versions and drift, independence check, remaining pairs on further families, free-text judge pilot) + asset/report generation |
 | `docs/research/` | report, review memos, result JSONs |
-| `paper/` | manuscript body shared by the acmart shell (`main.tex`, tectonic) and the IEEE Access shell (`ieee/main.tex`, latexmk; `pnpm pack:paper:ieee` builds the submission package: `scripts/pack-ieee-submission.sh` with `scripts/resolve-tex-gates.py` for the prose gates and `scripts/mark-bbl-changes.py` for the highlighted copy's reference list) |
+| `paper/` | manuscript body shared by the acmart shell (`main.tex`, tectonic) and the IEEE Access shell (`ieee/main.tex`, latexmk; `pnpm pack:paper:ieee` builds the submission package: `scripts/pack-ieee-submission.sh` with `scripts/resolve-tex-gates.py` for the prose gates, `scripts/mark-bbl-changes.py` for the highlighted copy's reference list, and `scripts/gen-resubmission-checklist.py` for the upload checklist) |
 | `patent/` | provisional draft (attorney review pending) |
 
 ## Reproducing the paper

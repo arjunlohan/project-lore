@@ -252,6 +252,9 @@ async function main() {
     const overlapFlips = overlap.filter(flipOf).length;
     const fromReleased = overlap.filter((id) => releasedVector.has(id));
     const releasedFlips = fromReleased.filter(flipOf).length;
+    // Persisted so exp11b-verify.ts can recompute this audit from the row
+    // identifiers and the stored cells alone, without the certifier.
+    rec.auditedRowIds = overlap;
     rec.gtOverlapReused = overlap.length;
     rec.gtOverlapFlips = overlapFlips;
     rec.realizedOnOverlap = overlap.length > 0 ? overlapFlips / overlap.length : null;

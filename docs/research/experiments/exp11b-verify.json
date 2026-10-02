@@ -1,10 +1,16 @@
 {
   "experiment": "exp11b-verify",
-  "note": "reproducible audit of deployment realized error; labels restricted to the released n=2000 vector and to oracle-computed v2 cells (status done/cached), excluding certificate copies",
+  "note": "audit of deployment realized error recomputed from each run's persisted row identifiers and the stored cells, without the certifier; labels restricted to oracle-computed cells (status done/cached), excluding certificate copies; the released-vector figures restrict further to the released n=2000 sample",
   "labelVectorSize": 2000,
-  "excludedCertificateCopies": 78603,
-  "sweeps": [
+  "excludedCertificateCopies": {
+    "v2": 78603,
+    "v4": 0
+  },
+  "audits": [
     {
+      "source": "exp11-fullscale.json",
+      "toVersion": 2,
+      "bound": "eb",
       "alpha": 0.2,
       "auditedRowsAll": 2159,
       "flipsAll": 65,
@@ -17,6 +23,9 @@
       ]
     },
     {
+      "source": "exp11-fullscale.json",
+      "toVersion": 2,
+      "bound": "eb",
       "alpha": 0.1,
       "auditedRowsAll": 2146,
       "flipsAll": 65,
@@ -24,6 +33,216 @@
       "auditedRows": 1794,
       "flips": 58,
       "realizedError": 0.032329988851727984,
+      "certifiedStrata": [
+        "v=false|o=0"
+      ]
+    },
+    {
+      "source": "exp11c-deployment-bounds.json",
+      "toVersion": 2,
+      "bound": "eb",
+      "alpha": 0.2,
+      "auditedRowsAll": 2686,
+      "flipsAll": 85,
+      "realizedErrorAll": 0.03164556962025317,
+      "auditedRows": 1807,
+      "flips": 58,
+      "realizedError": 0.032097399003873824,
+      "certifiedStrata": [
+        "v=false|o=0"
+      ]
+    },
+    {
+      "source": "exp11c-deployment-bounds.json",
+      "toVersion": 2,
+      "bound": "eb",
+      "alpha": 0.1,
+      "auditedRowsAll": 2146,
+      "flipsAll": 65,
+      "realizedErrorAll": 0.030288909599254427,
+      "auditedRows": 1794,
+      "flips": 58,
+      "realizedError": 0.032329988851727984,
+      "certifiedStrata": [
+        "v=false|o=0"
+      ]
+    },
+    {
+      "source": "exp11c-deployment-bounds.json",
+      "toVersion": 2,
+      "bound": "wor",
+      "alpha": 0.2,
+      "auditedRowsAll": 2506,
+      "flipsAll": 78,
+      "realizedErrorAll": 0.03112529928172386,
+      "auditedRows": 1803,
+      "flips": 58,
+      "realizedError": 0.03216860787576262,
+      "certifiedStrata": [
+        "v=false|o=0"
+      ]
+    },
+    {
+      "source": "exp11c-deployment-bounds.json",
+      "toVersion": 2,
+      "bound": "wor",
+      "alpha": 0.1,
+      "auditedRowsAll": 2146,
+      "flipsAll": 65,
+      "realizedErrorAll": 0.030288909599254427,
+      "auditedRows": 1794,
+      "flips": 58,
+      "realizedError": 0.032329988851727984,
+      "certifiedStrata": [
+        "v=false|o=0"
+      ]
+    },
+    {
+      "source": "exp11c-deployment-bounds.json",
+      "toVersion": 2,
+      "bound": "exact",
+      "alpha": 0.2,
+      "auditedRowsAll": 2821,
+      "flipsAll": 89,
+      "realizedErrorAll": 0.031549096065225095,
+      "auditedRows": 1812,
+      "flips": 58,
+      "realizedError": 0.03200883002207505,
+      "certifiedStrata": [
+        "v=false|o=0"
+      ]
+    },
+    {
+      "source": "exp11c-deployment-bounds.json",
+      "toVersion": 2,
+      "bound": "exact",
+      "alpha": 0.1,
+      "auditedRowsAll": 2686,
+      "flipsAll": 85,
+      "realizedErrorAll": 0.03164556962025317,
+      "auditedRows": 1807,
+      "flips": 58,
+      "realizedError": 0.032097399003873824,
+      "certifiedStrata": [
+        "v=false|o=0"
+      ]
+    },
+    {
+      "source": "exp11c-deployment-bounds.json",
+      "toVersion": 2,
+      "bound": "cp",
+      "alpha": 0.2,
+      "auditedRowsAll": 2821,
+      "flipsAll": 89,
+      "realizedErrorAll": 0.031549096065225095,
+      "auditedRows": 1812,
+      "flips": 58,
+      "realizedError": 0.03200883002207505,
+      "certifiedStrata": [
+        "v=false|o=0"
+      ]
+    },
+    {
+      "source": "exp11c-deployment-bounds.json",
+      "toVersion": 2,
+      "bound": "cp",
+      "alpha": 0.1,
+      "auditedRowsAll": 2686,
+      "flipsAll": 85,
+      "realizedErrorAll": 0.03164556962025317,
+      "auditedRows": 1807,
+      "flips": 58,
+      "realizedError": 0.032097399003873824,
+      "certifiedStrata": [
+        "v=false|o=0"
+      ]
+    },
+    {
+      "source": "exp11c-deployment-bounds-v4.json",
+      "toVersion": 4,
+      "bound": "exact",
+      "alpha": 0.2,
+      "auditedRowsAll": 1395,
+      "flipsAll": 104,
+      "realizedErrorAll": 0.07455197132616488,
+      "auditedRows": 36,
+      "flips": 5,
+      "realizedError": 0.1388888888888889,
+      "certifiedStrata": [
+        "v=false|o=0"
+      ]
+    },
+    {
+      "source": "exp11c-deployment-bounds-v4.json",
+      "toVersion": 4,
+      "bound": "exact",
+      "alpha": 0.1,
+      "auditedRowsAll": 1080,
+      "flipsAll": 86,
+      "realizedErrorAll": 0.07962962962962963,
+      "auditedRows": 27,
+      "flips": 4,
+      "realizedError": 0.14814814814814814,
+      "certifiedStrata": [
+        "v=false|o=0"
+      ]
+    },
+    {
+      "source": "exp11c-deployment-bounds-v4.json",
+      "toVersion": 4,
+      "bound": "eb",
+      "alpha": 0.2,
+      "auditedRowsAll": 1260,
+      "flipsAll": 95,
+      "realizedErrorAll": 0.07539682539682539,
+      "auditedRows": 31,
+      "flips": 4,
+      "realizedError": 0.12903225806451613,
+      "certifiedStrata": [
+        "v=false|o=0"
+      ]
+    },
+    {
+      "source": "exp11c-deployment-bounds-v4.json",
+      "toVersion": 4,
+      "bound": "wor",
+      "alpha": 0.2,
+      "auditedRowsAll": 1080,
+      "flipsAll": 86,
+      "realizedErrorAll": 0.07962962962962963,
+      "auditedRows": 27,
+      "flips": 4,
+      "realizedError": 0.14814814814814814,
+      "certifiedStrata": [
+        "v=false|o=0"
+      ]
+    },
+    {
+      "source": "exp11c-deployment-bounds-v4.json",
+      "toVersion": 4,
+      "bound": "cp",
+      "alpha": 0.2,
+      "auditedRowsAll": 1395,
+      "flipsAll": 104,
+      "realizedErrorAll": 0.07455197132616488,
+      "auditedRows": 36,
+      "flips": 5,
+      "realizedError": 0.1388888888888889,
+      "certifiedStrata": [
+        "v=false|o=0"
+      ]
+    },
+    {
+      "source": "exp11c-deployment-bounds-v4.json",
+      "toVersion": 4,
+      "bound": "cp",
+      "alpha": 0.1,
+      "auditedRowsAll": 1080,
+      "flipsAll": 86,
+      "realizedErrorAll": 0.07962962962962963,
+      "auditedRows": 27,
+      "flips": 4,
+      "realizedError": 0.14814814814814814,
       "certifiedStrata": [
         "v=false|o=0"
       ]

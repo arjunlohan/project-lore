@@ -33,8 +33,21 @@
  * rows, so the block-dispersion test has enough blocks to resolve modest
  * overdispersion; written to exp17-independence-ext.json and compared
  * against the main run's sequential arm.
+ *
+ * Re-analysis (EXP_REANALYZE=1): no model calls. Recomputes the serial
+ * statistics of both artifacts from the draws and completion times they
+ * store, and writes them back. It exists because the first permutation test
+ * compared floating-point autocorrelations: a 0/1 sequence takes few
+ * distinct values of the statistic, a tenth to a quarter of the shuffles
+ * tied the observed one exactly, and rounding noise split those ties. The
+ * comparison is now made on an integer statistic. The re-analysis also adds
+ * what the planned tests left out: the block test pooled over both
+ * concurrent arms, the exclusion check in both directions, and two UNPLANNED
+ * looks, marked as such in the artifact (flips by response latency, and the
+ * block test with blocks formed in launch order instead of completion
+ * order).
  */
-import { mkdirSync, writeFileSync } from "node:fs";
+import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { generateObject } from "ai";
 import mysql from "mysql2/promise";
 import { z } from "zod";
@@ -99,18 +112,25 @@ function lag1(x: number[]): number {
   }
   return den > 0 ? num / den : 0;
 }
-function serialTests(flips: number[], rand: () => number, perms = 2000, block = 32) {
-  const observed = lag1(flips);
-  let atLeast = 0;
-  const arr = [...flips];
-  for (let p = 0; p < perms; p++) {
-    for (let i = arr.length - 1; i > 0; i--) {
-      const j = Math.floor(rand() * (i + 1));
-      [arr[i], arr[j]] = [arr[j]!, arr[i]!];
-    }
-    if (Math.abs(lag1(arr)) >= Math.abs(observed)) atLeast++;
+/**
+ * n^2 times the numerator of the lag-one autocorrelation of a 0/1 sequence,
+ * which is an integer. The denominator depends only on the number of ones,
+ * so it is the same for every permutation, and comparing this integer is
+ * comparing the autocorrelation with exact ties.
+ */
+function lag1Integer(x: number[]): number {
+  const n = x.length;
+  let ones = 0;
+  let adjacent = 0;
+  for (let i = 0; i < n; i++) {
+    ones += x[i]!;
+    if (i > 0 && x[i] === 1 && x[i - 1] === 1) adjacent++;
   }
-  // Block dispersion: counts per consecutive block against Binomial(block, p).
+  const ends = x[0]! + x[n - 1]!;
+  return n * n * adjacent - n * ones * (2 * ones - ends) + (n - 1) * ones * ones;
+}
+/** Block dispersion: counts per consecutive block against Binomial(block, p). */
+function blockDispersion(flips: number[], block = 32) {
   const p = flips.reduce((a, b) => a + b, 0) / flips.length;
   const blocks: number[] = [];
   for (let i = 0; i + block <= flips.length; i += block) {
@@ -122,8 +142,6 @@ function serialTests(flips: number[], rand: () => number, perms = 2000, block = 
   // Dispersion statistic: sum (x - np)^2 / (np(1-p)) ~ chi-square(blocks - 1) under independence.
   const chi = expectedVar > 0 ? blocks.reduce((a, b) => a + (b - block * p) ** 2, 0) / expectedVar : 0;
   return {
-    lag1: observed,
-    lag1PermutationP: (atLeast + 1) / (perms + 1),
     blocks: blocks.length,
     blockSize: block,
     blockVarianceRatio: expectedVar > 0 ? variance / expectedVar : null,
@@ -131,8 +149,112 @@ function serialTests(flips: number[], rand: () => number, perms = 2000, block = 
     dispersionDf: Math.max(1, blocks.length - 1),
   };
 }
+function serialTests(flips: number[], rand: () => number, perms = 2000, block = 32) {
+  const observed = Math.abs(lag1Integer(flips));
+  let atLeast = 0;
+  const arr = [...flips];
+  for (let p = 0; p < perms; p++) {
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(rand() * (i + 1));
+      [arr[i], arr[j]] = [arr[j]!, arr[i]!];
+    }
+    if (Math.abs(lag1Integer(arr)) >= observed) atLeast++;
+  }
+  return {
+    lag1: lag1(flips),
+    lag1PermutationP: (atLeast + 1) / (perms + 1),
+    ...blockDispersion(flips, block),
+  };
+}
+
+/**
+ * EXP_REANALYZE=1: recompute the serial statistics from the stored draws.
+ * The flip sequences are rebuilt exactly as the live run built them (usable
+ * calls in completion order), and every statistic the artifacts already
+ * hold except the permutation p-values must come out unchanged.
+ */
+function reanalyze() {
+  type Timed = { id: string; startedAt?: number; endedAt: number; latencyMs: number };
+  type Draw = { id: string; cached: boolean | null; sequential?: boolean | null; concurrent: boolean | null };
+  const EXT_OUT = "docs/research/experiments/exp17-independence-ext.json";
+  const main = JSON.parse(readFileSync(MAIN_OUT, "utf8"));
+  const ext = JSON.parse(readFileSync(EXT_OUT, "utf8"));
+  const sequence = (draws: Draw[], order: Timed[], arm: "sequential" | "concurrent", by: "endedAt" | "startedAt") => {
+    const byId = new Map(draws.map((d) => [d.id, d]));
+    return [...order]
+      .sort((a, b) => (a[by] ?? 0) - (b[by] ?? 0))
+      .map((c) => ({ c, d: byId.get(c.id)! }))
+      .filter(({ d }) => d[arm] !== null && d[arm] !== undefined && d.cached !== null)
+      .map(({ c, d }) => ({ flip: d[arm] !== d.cached ? 1 : 0, latencyMs: c.latencyMs }));
+  };
+  const same = (a: number | null, b: number | null) => a !== null && b !== null && Math.abs(a - b) < 1e-9;
+  const refresh = (stored: Record<string, number | null>, flips: number[], rand: () => number, label: string) => {
+    const fresh = serialTests(flips, rand);
+    for (const k of ["lag1", "blockVarianceRatio", "dispersionChiSquare"] as const) {
+      if (!same(stored[k] ?? null, fresh[k])) throw new Error(`${label}: recomputed ${k} ${fresh[k]} differs from the stored ${stored[k]}`);
+    }
+    if (stored.blocks !== fresh.blocks) throw new Error(`${label}: block count changed`);
+    return fresh;
+  };
+  const latencySplit = (seq: Array<{ flip: number; latencyMs: number }>) => {
+    const sorted = [...seq].sort((a, b) => a.latencyMs - b.latencyMs);
+    const half = Math.floor(sorted.length / 2);
+    const count = (xs: typeof sorted) => ({ n: xs.length, flips: xs.reduce((a, x) => a + x.flip, 0) });
+    return { fasterHalf: count(sorted.slice(0, half)), slowerHalf: count(sorted.slice(half)) };
+  };
+  // The live runs seeded one generator per artifact and consumed it in this order.
+  const randMain = mulberry32(20260929);
+  const seq = sequence(main.draws, main.completionOrder.sequential, "sequential", "endedAt");
+  const conc = sequence(main.draws, main.completionOrder.concurrent, "concurrent", "endedAt");
+  main.sequential.serial = refresh(main.sequential.serial, seq.map((x) => x.flip), randMain, "sequential");
+  main.concurrent.serial = refresh(main.concurrent.serial, conc.map((x) => x.flip), randMain, "concurrent");
+  const concLaunch = sequence(main.draws, main.completionOrder.concurrent, "concurrent", "startedAt");
+  main.concurrent.unplanned = {
+    note: "not in the analysis plan; added after the planned tests were read",
+    launchOrderBlocks: blockDispersion(concLaunch.map((x) => x.flip)),
+    latencySplit: latencySplit(conc),
+  };
+  // The exclusion check, in both directions.
+  const draws = main.draws as Draw[];
+  const flipped = (d: Draw, arm: "sequential" | "concurrent") => d[arm] !== null && d[arm] !== undefined && d.cached !== null && d[arm] !== d.cached;
+  const concDropped = draws.filter((d) => d.concurrent === null && d.sequential !== null && d.sequential !== undefined);
+  const seqDropped = draws.filter((d) => (d.sequential === null || d.sequential === undefined) && d.concurrent !== null);
+  main.exclusions = {
+    concurrentDroppedRows: concDropped.length,
+    ofWhichFlippedSequentially: concDropped.filter((d) => flipped(d, "sequential")).length,
+    sequentialDroppedRows: seqDropped.length,
+    ofWhichFlippedConcurrently: seqDropped.filter((d) => flipped(d, "concurrent")).length,
+  };
+  const randExt = mulberry32(20260929);
+  const extSeq = sequence(ext.draws, ext.completionOrder, "concurrent", "endedAt");
+  ext.concurrent.serial = refresh(ext.concurrent.serial, extSeq.map((x) => x.flip), randExt, "concurrent-ext");
+  const extLaunch = sequence(ext.draws, ext.completionOrder, "concurrent", "startedAt");
+  ext.concurrent.unplanned = {
+    note: "not in the analysis plan; added after the planned tests were read",
+    launchOrderBlocks: blockDispersion(extLaunch.map((x) => x.flip)),
+    latencySplit: latencySplit(extSeq),
+  };
+  // The planned block test over both concurrent arms: independent arms, so
+  // the chi-square statistics and their degrees of freedom add.
+  ext.pooledWithMainConcurrent = {
+    dispersionChiSquare: main.concurrent.serial.dispersionChiSquare + ext.concurrent.serial.dispersionChiSquare,
+    dispersionDf: main.concurrent.serial.dispersionDf + ext.concurrent.serial.dispersionDf,
+    blocks: main.concurrent.serial.blocks + ext.concurrent.serial.blocks,
+  };
+  const stamp = { at: new Date().toISOString(), note: "serial statistics recomputed from the stored draws with exact ties in the permutation test (EXP_REANALYZE=1); no model calls" };
+  main.reanalysis = stamp;
+  ext.reanalysis = stamp;
+  writeFileSync(MAIN_OUT, JSON.stringify(main, null, 2));
+  writeFileSync(EXT_OUT, JSON.stringify(ext, null, 2));
+  console.log(JSON.stringify({ sequential: main.sequential.serial, concurrent: main.concurrent.serial, concurrentUnplanned: main.concurrent.unplanned, exclusions: main.exclusions, ext: ext.concurrent.serial, extUnplanned: ext.concurrent.unplanned, pooled: ext.pooledWithMainConcurrent }, null, 1));
+  console.log("EXP17_REANALYZED");
+}
 
 async function main() {
+  if (process.env.EXP_REANALYZE === "1") {
+    reanalyze();
+    process.exit(0);
+  }
   if (!process.env.AI_GATEWAY_API_KEY) throw new Error("AI_GATEWAY_API_KEY missing");
   const started = Date.now();
   const lab = (await listColumns("profiles")).find((c) => c.name.includes("(lab)"))!;

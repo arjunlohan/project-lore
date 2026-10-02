@@ -1,0 +1,222 @@
+{
+  "experiment": "exp9b-boundary",
+  "note": "exact probability of an unsafe certificate at the least favourable fixed population (one flip past the budget), pinned schedule, exact bound; thresholds from the released certifier's bound and schedule; cross-checked by running the released certifier on shuffled populations",
+  "perStratumDelta": 0.05,
+  "n0": 45,
+  "maxLooks": 6,
+  "cells": [
+    {
+      "alpha": 0.05,
+      "size": 600,
+      "looks": [
+        45,
+        90,
+        180,
+        360,
+        600
+      ],
+      "perLookDelta": 0.01,
+      "presented": {
+        "leastFavourableCount": 31,
+        "unsafeProbability": 0.013391505038395066
+      },
+      "reuseSet": {
+        "worstCount": 22,
+        "unsafeProbability": 0.003607173489645812
+      }
+    },
+    {
+      "alpha": 0.05,
+      "size": 1800,
+      "looks": [
+        45,
+        90,
+        180,
+        360,
+        720,
+        1440
+      ],
+      "perLookDelta": 0.008333333333333333,
+      "presented": {
+        "leastFavourableCount": 91,
+        "unsafeProbability": 0.02267650998851728
+      },
+      "reuseSet": {
+        "worstCount": 82,
+        "unsafeProbability": 0.008622866944063416
+      }
+    },
+    {
+      "alpha": 0.05,
+      "size": 5000,
+      "looks": [
+        45,
+        90,
+        180,
+        360,
+        720,
+        1440
+      ],
+      "perLookDelta": 0.008333333333333333,
+      "presented": {
+        "leastFavourableCount": 251,
+        "unsafeProbability": 0.01576287857046197
+      },
+      "reuseSet": {
+        "worstCount": 242,
+        "unsafeProbability": 0.008293858158623303
+      }
+    },
+    {
+      "alpha": 0.1,
+      "size": 600,
+      "looks": [
+        45,
+        90,
+        180,
+        360,
+        600
+      ],
+      "perLookDelta": 0.01,
+      "presented": {
+        "leastFavourableCount": 61,
+        "unsafeProbability": 0.018993736962868955
+      },
+      "reuseSet": {
+        "worstCount": 52,
+        "unsafeProbability": 0.0087887353547091
+      }
+    },
+    {
+      "alpha": 0.1,
+      "size": 1800,
+      "looks": [
+        45,
+        90,
+        180,
+        360,
+        720,
+        1440
+      ],
+      "perLookDelta": 0.008333333333333333,
+      "presented": {
+        "leastFavourableCount": 181,
+        "unsafeProbability": 0.025942482236438195
+      },
+      "reuseSet": {
+        "worstCount": 172,
+        "unsafeProbability": 0.007415896047636189
+      }
+    },
+    {
+      "alpha": 0.1,
+      "size": 5000,
+      "looks": [
+        45,
+        90,
+        180,
+        360,
+        720,
+        1440
+      ],
+      "perLookDelta": 0.008333333333333333,
+      "presented": {
+        "leastFavourableCount": 501,
+        "unsafeProbability": 0.020465506273824863
+      },
+      "reuseSet": {
+        "worstCount": 492,
+        "unsafeProbability": 0.01039624639675199
+      }
+    },
+    {
+      "alpha": 0.2,
+      "size": 600,
+      "looks": [
+        45,
+        90,
+        180,
+        360,
+        600
+      ],
+      "perLookDelta": 0.01,
+      "presented": {
+        "leastFavourableCount": 121,
+        "unsafeProbability": 0.022240370658748853
+      },
+      "reuseSet": {
+        "worstCount": 112,
+        "unsafeProbability": 0.005843099715492624
+      }
+    },
+    {
+      "alpha": 0.2,
+      "size": 1800,
+      "looks": [
+        45,
+        90,
+        180,
+        360,
+        720,
+        1440
+      ],
+      "perLookDelta": 0.008333333333333333,
+      "presented": {
+        "leastFavourableCount": 361,
+        "unsafeProbability": 0.023046893847244943
+      },
+      "reuseSet": {
+        "worstCount": 352,
+        "unsafeProbability": 0.007552028321433398
+      }
+    },
+    {
+      "alpha": 0.2,
+      "size": 5000,
+      "looks": [
+        45,
+        90,
+        180,
+        360,
+        720,
+        1440
+      ],
+      "perLookDelta": 0.008333333333333333,
+      "presented": {
+        "leastFavourableCount": 1001,
+        "unsafeProbability": 0.026103355164902413
+      },
+      "reuseSet": {
+        "worstCount": 992,
+        "unsafeProbability": 0.01012535051355353
+      }
+    }
+  ],
+  "checks": [
+    {
+      "alpha": 0.05,
+      "size": 1800,
+      "count": 91,
+      "exact": 0.02267650998851728,
+      "simulated": 0.021875,
+      "trials": 40000
+    },
+    {
+      "alpha": 0.1,
+      "size": 1800,
+      "count": 181,
+      "exact": 0.025942482236438195,
+      "simulated": 0.027575,
+      "trials": 40000
+    },
+    {
+      "alpha": 0.2,
+      "size": 1800,
+      "count": 361,
+      "exact": 0.023046893847244943,
+      "simulated": 0.0236,
+      "trials": 40000
+    }
+  ],
+  "wallMs": 7914
+}
