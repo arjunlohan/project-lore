@@ -74,11 +74,11 @@ state = f"commit `{head}`" + (" plus uncommitted changes (commit, then pack agai
 keywords = re.search(r"\\begin\{keywords\}(.*?)\\end\{keywords\}", open("paper/ieee/main.tex").read(), re.S).group(1)
 keywords = re.sub(r"\s+", " ", keywords).strip().rstrip(".")
 
-photo = os.path.exists("paper/ieee/author-photo.jpg")
+photo = os.path.exists("paper/ieee/private/author-photo.jpg")
 photo_line = (
-    "- The author biography carries the photograph `paper/ieee/author-photo.jpg`; confirm it is the one you want printed. The file is gitignored (the repository is public), so rebuilding this package from the commit above needs it copied back into `paper/ieee/`."
+    "- The author biography carries the photograph `paper/ieee/private/author-photo.jpg`; confirm it is the one you want printed. The directory is gitignored (the repository is public, and the in-tree `paper/ieee/main.pdf` is built without the photograph), so rebuilding this package from the commit above needs the file put back there."
     if photo
-    else "- **ACTION NEEDED: author photograph.** IEEE's resubmission checklist asks for the manuscript \"with all author biographies and photos included\". The biography is set without a photograph because `paper/ieee/author-photo.jpg` does not exist. Save a portrait JPEG there (1 in by 1.25 in when printed; 300 by 375 pixels or larger) and run `pnpm pack:paper:ieee` again before uploading."
+    else "- **ACTION NEEDED: author photograph.** IEEE's resubmission checklist asks for the manuscript \"with all author biographies and photos included\". The biography is set without a photograph because `paper/ieee/private/author-photo.jpg` does not exist. Save a portrait JPEG there (1 in by 1.25 in when printed; 300 by 375 pixels or larger) and run `pnpm pack:paper:ieee` again before uploading."
 )
 resp_date = re.search(r'^date: "Resubmission, (.+)"', open("paper/ieee/response.md").read(), re.M)
 cover_date = re.search(r"\n(\d{1,2} [A-Z][a-z]+ \d{4})\\\\\[", open("paper/ieee/cover-letter.tex").read())

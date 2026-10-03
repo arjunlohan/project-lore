@@ -36,8 +36,10 @@ paper/ieee/*.out
 paper/ieee/*.fls
 paper/ieee/*.fdb_latexmk
 paper/ieee/submission/
-# The author photograph goes into the submission package (the packager copies
-# it), not into this public repository.
-paper/ieee/author-photo.jpg
+# Private inputs to the submission package (the author photograph). The
+# packager copies them into the package; the in-tree build never sees them,
+# so the tracked paper/ieee/main.pdf cannot carry them into this public
+# repository.
+paper/ieee/private/
 # transient checkpoints written by scripts/experiments/exp12-secondmodel.ts
 docs/research/experiments/*.partial.json

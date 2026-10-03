@@ -36,9 +36,11 @@ cp paper/ieee/ieeeaccess.cls paper/ieee/IEEEtran.cls paper/ieee/IEEEtran.bst pap
    paper/ieee/t1-*.pfb paper/ieee/t1-*.tfm paper/ieee/t1-*.map paper/ieee/t1*.fd \
    paper/ieee/logo.png paper/ieee/notaglinelogo.png paper/ieee/bullet.png \
    paper/ieee/refs.bib "$OUT/src/"
-# The author photograph is optional in the source tree: the biography is set
-# with it when the file exists and without it otherwise (main.tex decides).
-PHOTO=paper/ieee/author-photo.jpg
+# The author photograph is optional and private. It lives in the gitignored
+# paper/ieee/private/, outside the in-tree build's search path, so the
+# tracked paper/ieee/main.pdf never carries it; copied next to the flattened
+# main.tex, it sets the biography with the photograph (main.tex decides).
+PHOTO=paper/ieee/private/author-photo.jpg
 if [ -f "$PHOTO" ]; then cp "$PHOTO" "$OUT/src/"; echo "author photo: included"; else echo "author photo: NOT included ($PHOTO is missing; IEEE's resubmission checklist asks for one)"; fi
 
 # 4. Compile the flattened copy exactly as the portal's referees would.
