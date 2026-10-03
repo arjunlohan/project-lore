@@ -235,8 +235,11 @@ def colour_float(m):
         flags=re.S,
     )
     return head + body + tail
+# A float's begin and end lines that latexdiff kept as comments of deleted
+# text (%DIFDELCMD < ...) are not floats: matching them pairs a deleted
+# figure's begin with its end and swallows the new float between them.
 s = re.sub(
-    r"(\\begin\{(table\*?|figure\*?|algorithm)\}(\[[^\]]*\])?)(?P<body>.*?)(\\end\{\2\})",
+    r"((?<!%DIFDELCMD < )\\begin\{(table\*?|figure\*?|algorithm)\}(\[[^\]]*\])?)(?P<body>.*?)((?<!%DIFDELCMD < )\\end\{\2\})",
     colour_float,
     s,
     flags=re.S,
@@ -309,7 +312,7 @@ def colour_replotted(m):
     )
     return m.group(1) + body + m.group(5)
 s = re.sub(
-    r"(\\begin\{(figure\*?)\}(\[[^\]]*\])?)(?P<body>.*?)(\\end\{\2\})",
+    r"((?<!%DIFDELCMD < )\\begin\{(figure\*?)\}(\[[^\]]*\])?)(?P<body>.*?)((?<!%DIFDELCMD < )\\end\{\2\})",
     colour_replotted,
     s,
     flags=re.S,
@@ -318,7 +321,8 @@ s = re.sub(
 # outside every blue scope: neither its float is coloured from the start nor
 # an open {\color{blue} group contains it.
 uncovered = []
-for m in re.finditer(r"^(?!%).*?\\begin\{tabular\}", s, flags=re.M):
+# (a tabular after a % on its line is deleted text, kept as a comment)
+for m in re.finditer(r"^[^%\n]*?\\begin\{tabular\}", s, flags=re.M):
     pos = m.end()
     start = max(s.rfind("\\begin{table}", 0, pos), s.rfind("\\begin{table*}", 0, pos))
     if start < 0:
