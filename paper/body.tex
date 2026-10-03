@@ -19,10 +19,11 @@ cell is one draw from the model's output distribution
 category now ships in commercial products.
 Google Sheets evaluates an \texttt{AI()} formula per row and offers AI
 columns in tables~\cite{sheetsai}, Airtable computes AI fields per
-record~\cite{airtableai}, Notion autofills database properties with a
-model~\cite{notionautofill}, and Snowflake Cortex applies
+record~\cite{airtableai}, and Notion autofills database properties with
+a model~\cite{notionautofill}. Snowflake Cortex applies
 \texttt{AI\_COMPLETE} and \texttt{AI\_CLASSIFY} to table columns in
-SQL~\cite{snowflakecortex}. Microsoft's Excel \texttt{COPILOT} function
+Structured Query Language (SQL)~\cite{snowflakecortex}. Microsoft's
+Excel \texttt{COPILOT} function
 shipped as a preview and was withdrawn in September 2026, a measure of
 how quickly this surface is moving~\cite{excelcopilot}. These views are
 edited constantly: users iterate on prompts the way they iterate on
@@ -53,10 +54,11 @@ and lowercase one word, changing no content word (the
 computing all \corpusSO\ cells again. Keeping every cached value
 silently carries the edit's flip rate, the share of cells a recompute
 would change, into the table (\flipSoFormatting\ on this pair).
-\sivm{} instead groups the cached cells by their cached value (the two
-\emph{strata}, cached-TRUE and cached-FALSE), recomputes a small seeded
-sample from each, and reuses a stratum only when a statistical bound on
-its flip rate clears the user's error budget $\alpha$. The procedure
+Semantic incremental view maintenance (\sivm{}) instead groups the
+cached cells by their cached value into two \emph{strata}, cached-TRUE
+and cached-FALSE. It recomputes a small seeded sample from each and
+reuses a stratum only when a statistical bound on its flip rate clears
+the user's error budget $\alpha$. The procedure
 errs with probability at most $\delta$. On this column, at $\alpha{=}0.2$ and
 $\delta{=}0.1$, \deployOracle\ fresh calls certify reuse of
 \deployReused\ of the \deployN\ cells. A live run did so
@@ -110,8 +112,7 @@ certifies at a correspondingly lower threshold. An impossibility floor
 follows: with the prompt unedited, a budget $\alpha$ well below a
 large stratum's self-flip rate is rarely certifiable, and
 \secref{sec:problem} bounds how rarely.
-\item \textbf{The \sivm{} procedure} (\emph{semantic incremental view
-maintenance}; \secref{sec:system}): a stratification by cached value,
+\item \textbf{The \sivm{} procedure} (\secref{sec:system}): a stratification by cached value,
 frozen before sampling, and an adaptive sample on a doubling schedule of
 \emph{looks} (points at which the sample is inspected). A futility rule
 gives up on a stratum whose sample already exceeds the budget.
@@ -919,7 +920,7 @@ provider's defaults, and no decode seed is sent. The seeds of this article
 govern row sampling only: one main seed gives the single run reported
 per configuration, and \bootB\ further seeds give the sampling
 replications. Cells are requested as typed structured outputs against a
-JSON schema, and the client retries a call whose output fails the schema
+JavaScript Object Notation (JSON) schema, and the client retries a call whose output fails the schema
 or whose request errors. A cell that still fails is stored with an error
 status and excluded from labels and from every rate; none exists among
 the cells written through the column runner, and the probe scripts that
