@@ -1407,8 +1407,9 @@ concurrency of \indepConcurrency. A further concurrent arm of
 \indepExtRows\ rows was drawn a day later. Appendix~\ref{app:indep}
 gives every test; three findings matter here. First, among completed
 requests the flip rates agree,
-\indepSeqRate\ sequential against \indepConcRate\ concurrent, and no
-lag-one test of serial dependence rejects. Second, failed requests
+\indepSeqRate\ sequential against \indepConcRate\ concurrent, a
+comparison that could detect a difference of \indepMdd\ percentage
+points, not a smaller one. No lag-one test of serial dependence rejects. Second, failed requests
 tracked the serving conditions more than the concurrency: the first concurrent arm
 had \indepConcErrors\ against the sequential arm's \indepSeqErrors\ of
 \indepN, and the larger arm, under faster serving, had none. Counted as
@@ -1653,8 +1654,8 @@ assertion synthesis~\cite{spade} anticipates our edit taxonomy but
 targets pipeline quality checks, not reuse certification, and
 interactive LLM regression tools frame migration pain without
 guarantees~\cite{retain}. Our finding that surface edit class can fail
-to predict flip rate shows why measurement, not taxonomy, must carry the
-decision. Formatting changes that preserve meaning are known to move
+to predict flip rate (not how often it does) shows why measurement, not
+taxonomy, must carry the decision. Formatting changes that preserve meaning are known to move
 task accuracy widely, and differently across models~\cite{sclar}; our
 per-cell flip rates, and their variation across models, are that
 sensitivity seen at the level of individual outputs. A served model can
