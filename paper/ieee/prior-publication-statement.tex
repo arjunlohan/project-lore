@@ -1,0 +1,34 @@
+%% "Previously Published - Statement" for the IEEE Author Portal: how this
+%% submission differs from the one earlier public version of the work, the
+%% Zenodo preprint (paper/lohan-2026-reuse-but-verify-sivm-preprint.pdf,
+%% uploaded under "Previously Published - Files"). The packager builds it
+%% into paper/ieee/submission/. Facts as in the cover letter and the
+%% manuscript's Availability section.
+\documentclass[10.5pt]{article}
+\usepackage[letterpaper,top=0.8in,bottom=0.8in,left=1in,right=1in]{geometry}
+\usepackage{times}
+\usepackage[hidelinks]{hyperref}
+\setlength{\parskip}{0.6em}\setlength{\parindent}{0pt}
+\pagestyle{empty}
+\sloppy
+\begin{document}
+Arjun Lohan\\
+University of Southern California, Los Angeles, CA, USA\\
+lohan@usc.edu \quad ORCID 0009-0003-3605-1221\\[0.4em]
+3 October 2026\\[0.8em]
+\textbf{Statement on prior dissemination: resubmission of Access-2026-41149, ``Reuse, but Verify: Certified Maintenance of Table Cells Computed by Large Language Models under Prompt Edits''}
+
+\textbf{The earlier version.} The only earlier public version of this work is a preprint, ``Reuse, but Verify: Certified Maintenance of LLM-Computed Table Cells under Prompt Edits'', which I deposited on Zenodo on 7 August 2026 (\url{https://doi.org/10.5281/zenodo.21833641}; 10 pages, uploaded under ``Previously Published - Files''). It is a preprint only: it has not been submitted to, reviewed by, or published in any journal or conference. The manuscript names it, with its DOI, in its Availability section.
+
+\textbf{How this submission differs.}
+\begin{itemize}
+\item \textbf{The certifier's bound.} The preprint certified reuse with the Maurer--Pontil empirical-Bernstein bound. This manuscript certifies with the exact finite-population (hypergeometric) bound, for which Theorem~1 is proven in full, and every number was regenerated from the same stored labels and oracle draws. The preprint's certification results remain reproducible from the released code with the Maurer--Pontil arm selected.
+\item \textbf{Added studies.} The remaining edit pairs were run on further models, so that five further models carry all five pairs; the cross-row independence assumption was tested directly; a free-text pilot uses a judge whose error is calibrated into the budget; the select column was re-scored under a graded relation; and the deployment column was re-certified live 55 days after the original run.
+\item \textbf{Presentation.} The text was revised throughout for IEEE Access: a problem statement with terminology, a notation table, and the assumptions stated together; the procedure in pseudocode; a seven-part evaluation section; narrower claims where the reviewers asked; and the appendices in a Supplementary Material.
+\end{itemize}
+
+\textbf{Similarity report.} The CrossCheck/iThenticate report will show overlap with this preprint and with the first submission of this manuscript (Access-2026-41149). Both are my own earlier drafts of the same work, not duplicate publication.
+
+Sincerely,\\[0.3em]
+Arjun Lohan
+\end{document}

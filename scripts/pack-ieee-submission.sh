@@ -119,6 +119,15 @@ echo "cover letter: $OUT/cover-letter.pdf ($(/usr/bin/grep -o 'Output written on
 # onto a second page should stop the build, not ship.
 COVER_PAGES=$(pdfinfo "$OUT/cover-letter.pdf" | /usr/bin/awk '/^Pages:/ {print $2}')
 [ "$COVER_PAGES" = "1" ] || { echo "cover letter runs to $COVER_PAGES pages; trim it to one"; exit 1; }
+# 6b. The portal's "Previously Published" slots: the statement on prior
+#     dissemination (source tracked at paper/ieee/prior-publication-statement.tex)
+#     and the Zenodo preprint it describes.
+mkdir -p "$OUT/prior"
+cp paper/ieee/prior-publication-statement.tex "$OUT/prior/"
+( cd "$OUT/prior" && pdflatex -interaction=nonstopmode prior-publication-statement.tex >/dev/null 2>&1 && pdflatex -interaction=nonstopmode prior-publication-statement.tex >/dev/null 2>&1 ) \
+  && cp "$OUT/prior/prior-publication-statement.pdf" "$OUT/prior-publication-statement.pdf"
+[ "$(pdfinfo "$OUT/prior-publication-statement.pdf" | /usr/bin/awk '/^Pages:/ {print $2}')" = "1" ] || { echo "the prior-publication statement runs past one page"; exit 1; }
+cp paper/lohan-2026-reuse-but-verify-sivm-preprint.pdf "$OUT/"
 echo "packed: $OUT/manuscript.pdf ($PAGES_FLAT), $OUT/source.zip ($(du -h "$OUT/source.zip" | cut -f1); flat, with main.bbl and main.pdf)"
 
 # 7. Resubmission deliverables (IEEE Access reject-with-resubmission): the
