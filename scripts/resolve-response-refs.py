@@ -12,14 +12,17 @@ that produced the manuscript:
 
   {{ref:LABEL}}    the number LaTeX assigned to \\label{LABEL} (a table,
                    figure, section, appendix, assumption, or theorem), read
-                   from the build's .aux file
-  {{page:LABEL}}   the page that label falls on (.aux)
+                   from the build's .aux file, or from the Supplementary
+                   Material's (--supp-aux) for a label defined there
+  {{page:LABEL}}   the page that label falls on (.aux); a page of the
+                   Supplementary Material carries the prefix S ("S3")
   {{cite:KEY}}     the reference number of bibliography key KEY (.aux)
   {{m:NAME}}       the value of the generated macro \\NAME (paper/macros.tex)
   {{stat:KEY}}     a readability statistic printed by the manuscript's own
                    checker, for this manuscript (now.*, main.*) or for the
                    first submission (v1.*), which is read from its git tag;
-                   {{stat:pages}} is the build's page count (.aux) and
+                   {{stat:pages}} is the build's page count (.aux),
+                   {{stat:supp.pages}} the Supplementary Material's, and
                    {{stat:refs}} its number of references (.aux)
   {{assert:stat:KEY=VALUE}}  prints nothing; stops the run if the statistic
                    no longer has that value
@@ -31,8 +34,8 @@ An unknown label, key, macro, or statistic stops the run, so a letter cannot
 ship pointing at something the manuscript no longer has.
 
 Usage:
-  resolve-response-refs.py IN OUT [--tex] [--aux FILE] [--macros FILE]
-                                  [--base-tag TAG]
+  resolve-response-refs.py IN OUT [--tex] [--aux FILE] [--supp-aux FILE]
+                                  [--macros FILE] [--base-tag TAG]
 --tex keeps macro values as TeX (for the cover letter); the default strips
 TeX for Markdown.
 """
@@ -48,6 +51,7 @@ ap.add_argument("src")
 ap.add_argument("out")
 ap.add_argument("--tex", action="store_true")
 ap.add_argument("--aux", default="paper/ieee/main.aux")
+ap.add_argument("--supp-aux", default=None)
 ap.add_argument("--macros", default="paper/macros.tex")
 ap.add_argument("--base-tag", default="ieee-access-submission-v1")
 args = ap.parse_args()
@@ -63,11 +67,26 @@ for m in re.finditer(r"\\newlabel\{([^}]+)\}\{\{((?:[^{}]|\{[^{}]*\})*)\}\{((?:[
     labels[m.group(1)] = value
     pages[m.group(1)] = m.group(3).strip()
 cites = dict(re.findall(r"\\bibcite\{([^}]+)\}\{(\d+)\}", aux))
+# The Supplementary Material's labels (its appendices keep their letters, its
+# tables and figures are numbered S1, S2, ...). A label both documents define
+# would make "Table 3" ambiguous, so that stops the run.
+if args.supp_aux:
+    supp = open(args.supp_aux).read()
+    for m in re.finditer(r"\\newlabel\{([^}]+)\}\{\{((?:[^{}]|\{[^{}]*\})*)\}\{((?:[^{}]|\{[^{}]*\})*)\}", supp):
+        name = m.group(1)
+        if name in labels:
+            sys.exit(f"label {name} is defined in both the article and the Supplementary Material")
+        labels[name] = re.sub(r"\\mbox\s*\{([^}]*)\}", r"\1", m.group(2)).strip()
+        pages[name] = "S" + m.group(3).strip()
 last_page = re.search(r"\\@abspage@last\{(\d+)\}", aux)
 # Read from the build itself, with no checker run.
 build_stats = {"refs": str(len(cites))}
 if last_page:
     build_stats["pages"] = last_page.group(1)
+if args.supp_aux:
+    supp_last = re.search(r"\\@abspage@last\{(\d+)\}", supp)
+    if supp_last:
+        build_stats["supp.pages"] = supp_last.group(1)
 macros = dict(re.findall(r"\\newcommand\{\\(\w+)\}\{(.*)\}", macro_tex))
 
 

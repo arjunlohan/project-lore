@@ -11,11 +11,12 @@
  */
 import { readFileSync } from "node:fs";
 
-// The prose is single-sourced in paper/body.tex and included by two venue
-// shells (acmart for arXiv/PVLDB; ieeeaccess for IEEE Access). Scan all
-// three so every guard covers every manuscript that can be built, not just
-// the one at the historical path.
-const tex = ["paper/main.tex", "paper/body.tex", "paper/ieee/main.tex"]
+// The prose is single-sourced in paper/body.tex (main text) and
+// paper/appendix.tex (appendices), included by two venue shells (acmart for
+// arXiv/PVLDB; ieeeaccess for IEEE Access, whose Supplementary Material
+// prints the appendices). Scan them all so every guard covers every
+// manuscript that can be built, not just the one at the historical path.
+const tex = ["paper/main.tex", "paper/body.tex", "paper/appendix.tex", "paper/ieee/main.tex", "paper/ieee/supplement.tex"]
   .map((f) => readFileSync(f, "utf8"))
   .join("\n");
 const macroSrc = readFileSync("paper/macros.tex", "utf8");
@@ -511,7 +512,9 @@ function captionsOf(src: string): string[] {
   }
   return out;
 }
-const bodySrc = readFileSync("paper/body.tex", "utf8");
+// Main text then appendices, as the preprint prints them; the main-text
+// statistics below cut at \venueappendix, where appendix.tex begins.
+const bodySrc = readFileSync("paper/body.tex", "utf8") + "\n" + readFileSync("paper/appendix.tex", "utf8");
 const proseSentences = proseSentencesOf(bodySrc, macroSrc);
 const captionSentences = captionsOf(bodySrc).flatMap((c) => proseSentencesOf(c, macroSrc));
 // The abstract lives in the venue shell, outside body.tex, and is held to the

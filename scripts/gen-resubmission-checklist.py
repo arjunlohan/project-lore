@@ -59,7 +59,7 @@ def git(*args):
     return subprocess.run(["git", *args], capture_output=True, text=True).stdout.strip()
 
 
-files = {name: os.path.join(SUB, name) for name in ["manuscript.pdf", "source.zip", "highlighted.pdf", "response-to-reviewers.docx", "response-to-reviewers.pdf", "cover-letter.pdf"]}
+files = {name: os.path.join(SUB, name) for name in ["manuscript.pdf", "source.zip", "supplement.pdf", "highlighted.pdf", "response-to-reviewers.docx", "response-to-reviewers.pdf", "cover-letter.pdf"]}
 for name, path in files.items():
     if not os.path.exists(path):
         sys.exit(f"{path} is missing; run pnpm pack:paper:ieee first")
@@ -108,6 +108,7 @@ lines = [
     "| --- | --- | ---: | --- |",
     row("Main Manuscript (clean): PDF", f"`manuscript.pdf` ({pages(files['manuscript.pdf'])} pages)", "manuscript.pdf"),
     row("Main Manuscript (clean): LaTeX source", "`source.zip` (flat: main.tex, body, tables, macros, refs.bib, main.bbl, main.pdf, class and fonts)", "source.zip"),
+    row("Supplementary Material (for review)", f"`supplement.pdf` ({pages(files['supplement.pdf'])} pages: the appendices the article cites by letter, with Tables and Figures S1, S2, ...)", "supplement.pdf"),
     row("Highlighted PDF (all changes marked)", f"`highlighted.pdf` ({pages(files['highlighted.pdf'])} pages; yellow highlight over blue text = added or changed, deletions omitted, changed numbers marked, reference list compared entry by entry)", "highlighted.pdf"),
     row("Author's Response Files (point-by-point)", f"`response-to-reviewers.docx` ({pages(files['response-to-reviewers.pdf'])} pages as PDF; the `.pdf` twin is the same text if the portal prefers PDF)", "response-to-reviewers.docx"),
     row("Cover letter", f"`cover-letter.pdf` ({pages(files['cover-letter.pdf'])} page), or paste its text into the cover-letter field", "cover-letter.pdf"),
@@ -127,7 +128,7 @@ lines = [
     "| Funding / conflicts | None / None |",
     "| Preprint | Yes: Zenodo, doi:10.5281/zenodo.21833641 (declared in the cover letter and named in the manuscript's Availability section; expect high iThenticate similarity to it and to the first submission) |",
     "| Under review elsewhere | No |",
-    "| Supplementary files | None (code, labels, artifacts are public in the repository named in the Availability section) |",
+    "| Supplementary files | Yes: `supplement.pdf`, for review (the appendices; IEEE Access checklist item 17 recommends under 20 pages and suggests supplementary material for additional content). Code, labels, and artifacts are public in the repository named in the Availability section |",
     "| License at acceptance | CC BY; APC personal |",
     "",
     "### Abstract text to paste",
@@ -137,7 +138,7 @@ lines = [
     "## 3. Before you press submit",
     "",
     "- Open `highlighted.pdf` once and confirm the yellow highlighting appears on page 1 (the abstract) and in the reference list.",
-    "- The response document's opening letter names the three file designations; keep them consistent with the slots you use.",
+    "- The response document's opening letter names the file designations; keep them consistent with the slots you use.",
     "- Do not upload the `.partial.json` checkpoints or anything from `paper/ieee/submission/diff/`.",
     photo_line,
     date_line,

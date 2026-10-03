@@ -12,21 +12,23 @@ set -euo pipefail
 cd "$(dirname "$0")/.."
 export PATH="/opt/homebrew/bin:$PATH"
 
-pnpm gen:ieee-refs >/dev/null
+# The in-tree article and Supplementary Material first (pnpm build:paper:ieee
+# builds the pair, each reading the other's .aux): the flattened copies below
+# are checked against them page for page, and the article's references to the
+# supplement are resolved from the supplement's .aux.
+pnpm -s build:paper:ieee >/dev/null 2>&1 || { echo "in-tree build failed (run pnpm build:paper:ieee)"; exit 1; }
 OUT=paper/ieee/submission
-rm -rf "$OUT" && mkdir -p "$OUT/src"
+rm -rf "$OUT" && mkdir -p "$OUT/src" "$OUT/supp"
+# Generated tables a source \input's through \paperroot, so each copy carries
+# exactly the tables it prints.
+tables_of() { /usr/bin/grep -o '\\input{\\paperroot/[A-Za-z0-9]*}' "$1" | sed -E 's#.*/([A-Za-z0-9]+)\}#paper/\1.tex#' | sort -u; }
 
 # 1. Shell with flattened input paths and macro root.
 sed -e 's#\\input{\.\./#\\input{#g' \
     -e 's#\\newcommand{\\paperroot}{\.\.}#\\newcommand{\\paperroot}{.}#' \
     paper/ieee/main.tex > "$OUT/src/main.tex"
 # 2. Shared prose and generated inputs.
-cp paper/body.tex paper/macros.tex paper/figdata.tex paper/table1.tex paper/tablefam.tex \
-   paper/tablebounds.tex paper/tablerates.tex paper/tablemodels.tex paper/tabledeploy.tex \
-   paper/tabledeploymp.tex paper/tablefampairs.tex paper/tableboundsgrid.tex \
-   paper/tabledependence.tex paper/tablestrict.tex paper/tablebudgets.tex paper/tableboundary.tex \
-   paper/tablestrata.tex \
-   "$OUT/src/"
+cp paper/body.tex paper/macros.tex paper/figdata.tex $(tables_of paper/body.tex) "$OUT/src/"
 # The prose gates optional studies on \ifnum<macro>=1\relax ... \else ... \fi;
 # the shipped source carries only the branch that prints, so nobody editing
 # it at the publisher meets dead text. Macros stay macros here.
@@ -43,6 +45,23 @@ cp paper/ieee/ieeeaccess.cls paper/ieee/IEEEtran.cls paper/ieee/IEEEtran.bst pap
 PHOTO=paper/ieee/private/author-photo.jpg
 if [ -f "$PHOTO" ]; then cp "$PHOTO" "$OUT/src/"; echo "author photo: included"; else echo "author photo: NOT included ($PHOTO is missing; IEEE's resubmission checklist asks for one)"; fi
 
+# The article cites the appendices and the supplement's tables by number
+# ("Appendix D", "Table S3") through xr; the shipped source carries that text
+# instead, so it compiles without the supplement.
+python3 scripts/resolve-supp-refs.py paper/ieee/supplement.aux "$OUT/src/main.tex" "$OUT/src/body.tex"
+
+# 3b. The Supplementary Material: the shared appendices under the same
+#     template, flattened the same way, reading the article's labels and
+#     reference numbers from the flattened article's .aux (step 4).
+sed -e 's#\\input{\.\./#\\input{#g' \
+    -e 's#\\newcommand{\\paperroot}{\.\.}#\\newcommand{\\paperroot}{.}#' \
+    paper/ieee/supplement.tex > "$OUT/supp/supplement.tex"
+cp paper/appendix.tex paper/macros.tex paper/figdata.tex $(tables_of paper/appendix.tex) "$OUT/supp/"
+python3 scripts/resolve-tex-gates.py "$OUT/supp/appendix.tex" "$OUT/supp/macros.tex"
+cp paper/ieee/ieeeaccess.cls paper/ieee/IEEEtran.cls paper/ieee/spotcolor.sty \
+   paper/ieee/t1-*.pfb paper/ieee/t1-*.tfm paper/ieee/t1-*.map paper/ieee/t1*.fd \
+   paper/ieee/logo.png paper/ieee/notaglinelogo.png paper/ieee/bullet.png "$OUT/supp/"
+
 # 4. Compile the flattened copy exactly as the portal's referees would.
 ( cd "$OUT/src" && latexmk -pdf -interaction=nonstopmode main.tex >/dev/null 2>&1 )
 ERRORS=$(/usr/bin/grep -c '^!' "$OUT/src/main.log" || true)
@@ -52,15 +71,31 @@ PAGES_TREE=$(/usr/bin/grep -o 'Output written on main.pdf ([0-9]* pages\?' paper
 [ "$PAGES_FLAT" = "$PAGES_TREE" ] || { echo "page count differs: flat=$PAGES_FLAT tree=$PAGES_TREE"; exit 1; }
 UNDEF=$(/usr/bin/grep -c 'Citation.*undefined\|Reference.*undefined' "$OUT/src/main.log" || true)
 [ "$UNDEF" = "0" ] || { echo "$UNDEF undefined citations/references"; exit 1; }
+# The supplement against the flattened article: no error, nothing undefined,
+# the in-tree page count, and the same labels the article's text was
+# resolved from.
+cp "$OUT/src/main.aux" "$OUT/supp/main.aux"
+( cd "$OUT/supp" && latexmk -pdf -interaction=nonstopmode supplement.tex >/dev/null 2>&1 )
+[ "$(/usr/bin/grep -c '^!' "$OUT/supp/supplement.log" || true)" = "0" ] || { echo "supplement build has TeX errors"; exit 1; }
+SUPP_UNDEF=$(/usr/bin/grep -c 'Citation.*undefined\|Reference.*undefined' "$OUT/supp/supplement.log" || true)
+[ "$SUPP_UNDEF" = "0" ] || { echo "supplement: $SUPP_UNDEF undefined citations/references (a key cited only in the appendices must be cited in the article)"; exit 1; }
+SUPP_FLAT=$(/usr/bin/grep -o 'Output written on supplement.pdf ([0-9]* pages\?' "$OUT/supp/supplement.log" | /usr/bin/grep -o '[0-9]* pages')
+SUPP_TREE=$(/usr/bin/grep -o 'Output written on supplement.pdf ([0-9]* pages\?' paper/ieee/supplement.log | /usr/bin/grep -o '[0-9]* pages')
+[ "$SUPP_FLAT" = "$SUPP_TREE" ] || { echo "supplement page count differs: flat=$SUPP_FLAT tree=$SUPP_TREE"; exit 1; }
+labels_of() { /usr/bin/grep -o '^\\newlabel{[^}]*}{{[^}]*}' "$1" | sort; }
+[ "$(labels_of "$OUT/supp/supplement.aux")" = "$(labels_of paper/ieee/supplement.aux)" ] \
+  || { echo "the packaged supplement numbers its labels differently from the in-tree build"; exit 1; }
+cp "$OUT/supp/supplement.pdf" "$OUT/supplement.pdf"
+echo "supplement: $OUT/supplement.pdf ($SUPP_FLAT)"
 
 # 4b. The response letter and the cover letter point at tables, sections and
 #     references by number and quote generated figures. Their placeholders are
 #     filled here from THIS build (its .aux, the generated macros, and the
 #     checker's readability statistics), so neither letter can describe an
 #     older manuscript. An unknown label or macro stops the pack.
-python3 scripts/resolve-response-refs.py paper/ieee/response.md "$OUT/response-resolved.md" --aux "$OUT/src/main.aux"
+python3 scripts/resolve-response-refs.py paper/ieee/response.md "$OUT/response-resolved.md" --aux "$OUT/src/main.aux" --supp-aux "$OUT/supp/supplement.aux"
 mkdir -p "$OUT/cover"
-python3 scripts/resolve-response-refs.py paper/ieee/cover-letter.tex "$OUT/cover/cover-letter.tex" --tex --aux "$OUT/src/main.aux"
+python3 scripts/resolve-response-refs.py paper/ieee/cover-letter.tex "$OUT/cover/cover-letter.tex" --tex --aux "$OUT/src/main.aux" --supp-aux "$OUT/supp/supplement.aux"
 
 # 5. Deliverables: the PDF, and a FLAT zip of the sources (the IEEE Author
 #    Portal compiles the archive itself: main.tex at the archive root, the

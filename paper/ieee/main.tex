@@ -65,6 +65,13 @@
 \newtheorem{theorem}{Theorem}
 \newtheorem{assumption}{Assumption}
 
+%% The appendices print in the Supplementary Material (supplement.tex), so
+%% that the article stays under the 20 pages IEEE Access recommends; xr reads
+%% the supplement's labels, so "Appendix D" and "Table S2" resolve here.
+%% The packager replaces these references by their text in the shipped
+%% source, which therefore compiles without the supplement.
+\usepackage{xr-hyper}
+\externaldocument{supplement}
 %% acmart loads hyperref itself; IEEEtran does not, and the body carries
 %% \url. Loaded last per hyperref's own rule; hidelinks keeps the IEEE
 %% house look (no colored link boxes).
@@ -113,11 +120,9 @@ runs in. \secref{sec:experiments} reports the evaluation.
 prompt-edit pairs. \secref{sec:related} positions the work against prior
 art. \secref{sec:limits} discusses which budgets are usable and
 states the limitations, and \secref{sec:conclusion}
-concludes. Appendix~\ref{app:guards} lists the mechanical guards on the
-manuscript's numbers. Appendices~\ref{app:grid} to~\ref{app:baselines}
-give the detail of the bound ablation, the deployment runs, the
-independence check, the free-text pilot, the calibration study, the
-strict mode, and the baselines.}
+concludes. The Supplementary Material holds
+Appendices~\ref{app:guards} to~\ref{app:tables}, with the detail of
+each study and the tables and figures numbered S1, S2, and so on.}
 %% Author biography. IEEE's resubmission checklist asks for "all author
 %% biographies and photos": the biography is set with the photograph when
 %% author-photo.jpg (portrait, about 1 in by 1.25 in) is in this directory,

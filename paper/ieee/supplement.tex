@@ -1,0 +1,95 @@
+%% IEEE Access Supplementary Material for the article in main.tex. It prints
+%% the shared appendices (../appendix.tex), which the article leaves out so
+%% that it stays under the 20 pages IEEE Access recommends (submission
+%% checklist, item 17: "Additional content can be added as supplementary
+%% material"). Same template and preamble as the article (main.tex; keep the
+%% two in step). Appendices keep their letters, tables and figures are
+%% numbered S1, S2, ..., and xr-hyper reads main.aux, so labels of the article
+%% resolve here ("Section V-B" or "Table 2" means the article's) and citations
+%% carry the article's reference numbers.
+%%
+%% Build: pnpm build:paper:ieee (the article and this supplement read each
+%% other's .aux, so the target builds them in turn until both settle).
+\documentclass{ieeeaccess}
+\usepackage{cite}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{textcomp}
+\usepackage{amsthm}
+\usepackage{booktabs}
+\usepackage{needspace}
+\usepackage{placeins}
+\newcommand{\keepheading}{\needspace{6\baselineskip}}
+\newcommand{\keeprunin}{\needspace{4\baselineskip}}
+\usepackage{array}
+\usepackage{algorithm}
+\usepackage{algorithmic}
+%% The two class/pgf clashes main.tex documents, handled the same way.
+\let\ieeeaccessclassyear\year
+\def\year{2026}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta, positioning, calc}
+\let\year\ieeeaccessclassyear
+\makeatletter
+\pgfutil@addpdfresource@colorspaces{\the\PANTONE}
+\makeatother
+\input{../figdata}
+\input{../macros}
+\setlength{\emergencystretch}{2em}
+\theoremstyle{definition}
+\newtheorem{theorem}{Theorem}
+\newtheorem{assumption}{Assumption}
+%% xr-hyper imports the article's labels and its \bibcite entries, so a
+%% citation carries the article's number; every key cited here must be cited
+%% there too (the packager stops on an undefined citation).
+\usepackage{xr-hyper}
+\externaldocument{main}
+\usepackage[hidelinks]{hyperref}
+\hypersetup{
+  pdftitle={Supplementary Material: Reuse, but Verify: Certified Maintenance of Table Cells Computed by Large Language Models under Prompt Edits},
+  pdfauthor={Arjun Lohan}}
+\def\UrlBreaks{\do\/}
+\def\UrlBigBreaks{\do\:}
+\makeatletter\mathchardef\UrlBigBreakPenalty=\@M\makeatother
+\Urlmuskip=0mu
+
+\newcommand{\sivm}{\textsc{sIVM}}
+\newcommand{\secref}[1]{Section~\ref{#1}}
+\newcommand{\figref}[1]{Fig.~\ref{#1}}
+\newcommand{\paperroot}{..}
+\newcommand{\venueappendix}{\appendices}
+\newcommand{\Description}[2][]{}
+\renewcommand{\thetable}{S\arabic{table}}
+\renewcommand{\thefigure}{S\arabic{figure}}
+\renewcommand{\theHtable}{S\arabic{table}}
+\renewcommand{\theHfigure}{S\arabic{figure}}
+
+\begin{document}
+\vol{14}
+\year{2026}
+\markboth
+{Lohan: Reuse, but Verify: Supplementary Material}
+{Lohan: Reuse, but Verify: Supplementary Material}
+\twocolumn[{%
+\raggedright
+{\color{accessblue}\titlefont Supplementary Material for ``Reuse, but
+Verify: Certified Maintenance of Table Cells Computed by Large Language
+Models under Prompt Edits''\par}
+\vspace*{4mm}
+{\authorfont\uppercase{Arjun Lohan}\par}
+\vspace*{1mm}
+{\addressfont University of Southern California, Los Angeles, CA, USA
+(e-mail: lohan@usc.edu)\par}
+\vspace*{8mm}}]
+
+This supplement holds the appendices that the article cites by letter.
+Its tables and figures are numbered S1, S2, and so on. A section,
+table, figure, equation, assumption, or theorem number without the
+prefix S is the article's, and citations refer to the article's
+reference list.
+
+\input{../appendix}
+
+\EOD
+
+\end{document}
