@@ -2,7 +2,7 @@
 title: "Response to Reviewers"
 subtitle: "Original Manuscript ID: Access-2026-41149"
 author: "Arjun Lohan (University of Southern California), corresponding author"
-date: "Resubmission, 2 October 2026"
+date: "Resubmission, 3 October 2026"
 ---
 
 **Original Article Title:** "Reuse, but Verify: Certified Maintenance of Table Cells Computed by Large Language Models under Prompt Edits"
