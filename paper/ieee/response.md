@@ -121,7 +121,7 @@ The reviewer's answers to the assessment questions raised points beyond the numb
 
 **Author response:** That is accurate, and the manuscript now says it in as many words.
 
-**Author action:** Section {{ref:sec:limits}}, "Economics", states that the cost figures come from one ledgered materialization and one priced maintenance replay at the gateway's list rates, and that they show the scale of the saving, not a cost model. The September run adds one measured wall clock for the certification decision itself.
+**Author action:** Section {{ref:sec:limits}}, "Economics", states that the cost figures come from one ledgered materialization and one priced maintenance replay at the gateway's list rates, and that they therefore show only the scale of the saving. The September run adds one measured wall clock for the certification decision itself.
 
 ### Further remark 4: no user study of the certificate surface
 
