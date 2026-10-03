@@ -36,5 +36,8 @@ paper/ieee/*.out
 paper/ieee/*.fls
 paper/ieee/*.fdb_latexmk
 paper/ieee/submission/
+# The author photograph goes into the submission package (the packager copies
+# it), not into this public repository.
+paper/ieee/author-photo.jpg
 # transient checkpoints written by scripts/experiments/exp12-secondmodel.ts
 docs/research/experiments/*.partial.json
