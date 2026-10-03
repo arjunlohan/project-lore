@@ -17,6 +17,10 @@ export PATH="/opt/homebrew/bin:$PATH"
 # are checked against them page for page, and the article's references to the
 # supplement are resolved from the supplement's .aux.
 pnpm -s build:paper:ieee >/dev/null 2>&1 || { echo "in-tree build failed (run pnpm build:paper:ieee)"; exit 1; }
+# The same fixed timestamp for the packaged builds (see scripts/build-ieee.sh),
+# so a repack of an unchanged source reproduces its PDFs byte for byte.
+SOURCE_DATE_EPOCH="$(git log -1 --format=%ct -- paper ':(exclude)paper/*.pdf' ':(exclude)paper/ieee/*.pdf' ':(exclude)paper/ieee/response.md' ':(exclude)paper/ieee/cover-letter.tex' ':(exclude)paper/ieee/resubmission-checklist.md')"
+export SOURCE_DATE_EPOCH
 OUT=paper/ieee/submission
 rm -rf "$OUT" && mkdir -p "$OUT/src" "$OUT/supp"
 # Generated tables a source \input's through \paperroot, so each copy carries

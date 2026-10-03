@@ -24,7 +24,7 @@
     "start:eve": "eve start",
     "check:paper": "tsx scripts/check-paper-numbers.ts",
     "gen:ieee-refs": "tsx scripts/gen-ieee-refs.ts",
-    "build:paper:ieee": "pnpm gen:ieee-refs && cd paper/ieee && latexmk -pdf -interaction=nonstopmode main.tex && latexmk -g -pdf -interaction=nonstopmode supplement.tex && latexmk -g -pdf -interaction=nonstopmode main.tex",
+    "build:paper:ieee": "bash scripts/build-ieee.sh",
     "gen:paper": "tsx scripts/experiments/gen-paper-assets.ts",
     "gen:report": "tsx scripts/experiments/gen-report-html.ts",
     "exp:bounds": "tsx scripts/experiments/exp14-bounds.ts",
