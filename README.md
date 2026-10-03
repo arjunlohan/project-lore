@@ -129,7 +129,7 @@ numbers and is not regenerated for the resubmission.
 | `scripts/ingest/` | corpus ingestion (reproducible) |
 | `scripts/experiments/` | exp0–exp19 (exp9b: the certifier's exact error probability at the least favorable population; exp9c: what block-scale dependence among draws would cost that probability; exp11b: the audit verifier, which recomputes every deployment audit without the certifier; exp14–exp19: bound ablation and null study, snapshot versions and drift, independence check, remaining pairs on further models, free-text judge pilot; exp18b: the replication analysis repeated on every further model's stored draws) + asset generation |
 | `docs/research/` | report, review memos, result JSONs |
-| `paper/` | manuscript body shared by the acmart shell (`main.tex`, tectonic) and the IEEE Access shell (`ieee/main.tex`, latexmk; `pnpm pack:paper:ieee` builds the submission package: `scripts/pack-ieee-submission.sh` with `scripts/resolve-tex-gates.py` for the prose gates, `scripts/mark-bbl-changes.py` for the highlighted copy's reference list, `scripts/highlight-yellow.py` for the yellow highlight under the changed text, `scripts/resolve-response-refs.py` for the response and cover letters, whose table, section, and reference numbers and quoted figures are filled from the manuscript build, and `scripts/gen-resubmission-checklist.py` for the upload checklist) |
+| `paper/` | manuscript body (`body.tex`) and appendices (`appendix.tex`) shared by the acmart shell (`main.tex`, tectonic, appendices inline) and the IEEE Access shell (`ieee/main.tex`, latexmk; the appendices print in its Supplementary Material, `ieee/supplement.tex`, so the article stays under the 20 pages IEEE Access recommends; `pnpm pack:paper:ieee` builds the submission package: `scripts/pack-ieee-submission.sh` with `scripts/resolve-tex-gates.py` for the prose gates, `scripts/mark-bbl-changes.py` for the highlighted copy's reference list, `scripts/highlight-yellow.py` for the yellow highlight under the changed text, `scripts/resolve-response-refs.py` for the response and cover letters, whose table, section, and reference numbers and quoted figures are filled from the manuscript build, and `scripts/gen-resubmission-checklist.py` for the upload checklist) |
 | `patent/` | provisional draft (attorney review pending) |
 
 ## Reproducing the paper
@@ -137,8 +137,8 @@ numbers and is not regenerated for the resubmission.
 Every quantitative claim in the paper and in the research report is emitted
 from the result artifacts by one generator and cited through a macro, never
 typed inline, so re-running an experiment regenerates the sentences that cite
-it. Three commands rebuild the IEEE Access manuscript (`pnpm build:paper`
-builds the preprint shell from the same body):
+it. Three commands rebuild the IEEE Access manuscript and its Supplementary
+Material (`pnpm build:paper` builds the preprint shell from the same body):
 
 ```bash
 pnpm gen:paper && pnpm check:paper && pnpm build:paper:ieee

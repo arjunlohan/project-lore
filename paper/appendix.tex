@@ -58,6 +58,12 @@ quantities themselves.
 \keepheading
 \section{The bound ablation in detail}
 \label{app:grid}
+\keeprunin
+\paragraph{The bound on the deployment stratum.} In the
+\deployFalseStratum-cell deployment stratum, a clean sample of $90$ at
+the pinned per-look level gives an exact bound of \boundExactAtNLarge,
+which coincides with the binomial limit to three digits.
+
 \begin{table*}[t]
 \caption{Five upper confidence bounds inside the same pinned procedure
 on the same stored labels. The first two columns give each bound on a
@@ -523,6 +529,25 @@ per-stratum level \calNominalDelta).}
 \section{The free-text pilot}
 \label{app:pilot}
 \keeprunin
+\paragraph{The recipe.} In a stratum, let $q$ be the share of pairs the
+judge calls equivalent although a reader would not (missed flips). The
+flip rate the judge reports for the stratum is then at least the true
+rate minus $q$, and $q$ is at most the judge's miss rate among the pairs
+it calls equivalent. Let $\hat{m}$ be an upper confidence bound on that
+conditional miss rate at level $\delta_{\mathrm{cal}}$, from
+human-labeled pairs of the same column, and certify at
+$\alpha - \hat{m}$. A certified stratum's true rate is at most $\alpha$
+whenever the calibration bound and the certificate both hold, provided
+the judge's conditional miss rate in the certified stratum is no higher
+than in the calibration pool. They both hold with probability at least
+$1 - \delta - \delta_{\mathrm{cal}}$. Errors in the other direction
+(calling equivalent cells different) only raise the reported rate and
+cost power. The calibration belongs to the (edit, column) pair it was
+drawn from, or to a pool of comparisons on one column if their
+conditional miss rates are taken as equal, since a judge's miss rate is
+a property of the outputs it compares.
+
+\keeprunin
 \paragraph{Setup.} The pilot column of \secref{sec:limits} has three
 prompt versions: a baseline, a formatting-only edit of it, and a synonym
 rewording. The judge (\pilotJudgeModel) is asked in both orders
@@ -571,7 +596,7 @@ Stratification is by the cached phrase's category
 model). In that configuration,
 \pilotOutcomes. The composed guarantee holds with
 probability $1-\delta-\delta_{\mathrm{cal}}$ under the assumption
-stated in \secref{sec:limits}; the judge's price is the deflation plus the labels. The
+stated in the recipe above; the judge's price is the deflation plus the labels. The
 floor the certifier met is the judge's, not the model's. Under the
 author's labels, \pilotFalseFlips\ of the \pilotLabeledDiff\ pairs the
 judge called different name the same specialty, across the three
@@ -599,6 +624,14 @@ equivalence matches a reader's, calibrated in both directions.
 \keepheading
 \section{The calibration study in detail}
 \label{app:cal}
+\keeprunin
+\paragraph{What a clean stratum pays.} Because the doubling schedule
+takes the first look at or above $n^{*}$, a clean stratum of
+$n_j{=}5{,}000$ pays \minZeroFlipRealizedLarge\ draws in calibration. A
+clean stratum of $n_j{=}600$ pays \minZeroFlipRealizedSmall, because its
+finite-population correction and its shorter schedule's larger per-look
+level bring the earlier look under $\alpha$.
+
 \begin{figure}[t]
 \centering
 \begin{tikzpicture}
@@ -827,9 +860,35 @@ no per-cell flip signal (B1).
 
 \FloatBarrier
 \keepheading
+\section{The graded relation in detail}
+\label{app:graded}
+\keeprunin
+\paragraph{The re-scoring.} Exact match is the
+strictest relation a select column can use, and the relation is the
+user's to state (\secref{sec:limits}). Every self-flip observed on the
+seniority column was between adjacent tiers. After the exact-match
+results were in, we re-scored the stored labels of that
+column's formatting edit under a tolerance: a cell flips only when the
+fresh tier is more than one step from the cached one. Under the
+tolerance the edit flips \gradedFlipsDjFmt\ of \benchN\ cells, where
+exact match flips \flipDjFormatting. The pinned procedure then
+certifies it in every replication at $\alpha{=}0.05$, a budget that
+exact match refuses, for \gradedSavingsEdgeDjFmt\ mean savings. This is
+a weaker guarantee, not a tighter one. It bounds moves of two tiers or
+more and says nothing about moves of one tier. The certifier is
+unchanged: Theorem~\ref{thm:valid} needs only a fixed binary flip
+indicator, which need not come from a transitive relation. The
+tolerance would be the wrong relation for the column's criteria edit,
+whose stated purpose is to move some candidates up one tier. Of that
+edit's \gradedCritExactFlips\ exact-match flips,
+\gradedCritOneTier\ are one-tier moves, and a tolerance would certify
+away the change the user asked for.
+
+\FloatBarrier
+\keepheading
 \section{Further tables}
 \label{app:tables}
-Five tables the article cites are printed here.
+Five tables the article cites are printed here, with one further analysis of the model study.
 
 \keeprunin
 \paragraph{Models and the headline pair's flip rates.}
@@ -843,6 +902,18 @@ cached-TRUE stratum (\secref{sec:exp-setup}).
 Table~\ref{tab:fampairs} extends the model study of
 \secref{sec:exp-families} to the three edit pairs that
 Table~\ref{tab:fam} does not cover.
+
+\keeprunin
+\paragraph{The formatting edit on two further models.} On
+Gemini~2.5 Flash-Lite the formatting edit flips \famGeminiFmt\ of cells
+against a floor of \famGeminiFloor. Decomposed, its two paragraph breaks
+alone flip \famGeminiSpaceOnlyFlip\ and its one-word case change alone
+\famGeminiCaseOnlyFlip. The edit also moves the share of TRUE answers on
+that model, from \famGeminiTrueShareOld\ to \famGeminiTrueShareNew. On
+GLM-4.7-Flash it moves that share the other way, from
+\famGlmTrueShareOld\ to \famGlmTrueShareNew. Self-disagreement alone
+flips cells both ways and leaves the share where it was, so on these two
+models the edit shifts the model's decision.
 
 \keeprunin
 \paragraph{The benchmark's edit pairs.}
