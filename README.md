@@ -176,7 +176,16 @@ EXP_STRATIFIER=value-only EXP_LABELS=docs/research/experiments/benchmark-labels.
   pnpm tsx scripts/experiments/exp8-final-table.ts
 ```
 
-rebuilds the main results table from them. Adding `EXP_EQUIV=adjacent-tier`
+rebuilds the main results table from them. The deployment audits recompute
+the same way, from `docs/research/experiments/deployment-audit-cells.json`
+(every row an audit reads, with its cached and oracle values):
+
+```bash
+EXP_CELLS=docs/research/experiments/deployment-audit-cells.json \
+  pnpm tsx scripts/experiments/exp11b-verify.ts
+```
+
+Adding `EXP_EQUIV=adjacent-tier`
 and an `EXP_OUT` of its own re-scores the ordinal select column under a graded
 relation (adjacent tiers equivalent), the paper's graded result, from the same
 labels. Recomputing the labels themselves

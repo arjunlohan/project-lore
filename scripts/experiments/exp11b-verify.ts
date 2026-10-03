@@ -23,6 +23,11 @@
  * Zero API cost (reads stored cells only).
  *
  * Run: pnpm tsx scripts/experiments/exp11b-verify.ts
+ *
+ * Without a database: EXP_CELLS=docs/research/experiments/deployment-audit-cells.json
+ * recomputes every audit from the released cells (written by
+ * export-deployment-audit-cells.ts) and checks it against exp11b-verify.json,
+ * writing nothing.
  */
 import { readFileSync, writeFileSync } from "node:fs";
 import mysql from "mysql2/promise";
@@ -31,6 +36,7 @@ import {
   listColumns,
 } from "../../lib/lore/column-store";
 import { PROFILE_ID_FIELD } from "../../lib/lore/fields";
+import { recomputeAudits, type AuditCells } from "./deployment-audit";
 
 const MYSQL_URL =
   process.env.LORE_MYSQL_URL ?? "mysql://root@localhost:3306/lore";
@@ -56,6 +62,14 @@ type Sweep = {
 };
 
 async function main() {
+  if (process.env.EXP_CELLS) {
+    const cells = JSON.parse(readFileSync(process.env.EXP_CELLS, "utf8")) as AuditCells;
+    const recorded = JSON.parse(readFileSync(`${DIR}/exp11b-verify.json`, "utf8"));
+    const n = recomputeAudits(cells, recorded, DIR);
+    console.log(`reproduced all ${n} audits of exp11b-verify.json from ${process.env.EXP_CELLS}, without a database`);
+    console.log("EXP11B_OFFLINE_OK");
+    process.exit(0);
+  }
   const lab = (await listColumns("profiles")).find((c) =>
     c.name.includes("(lab)"),
   )!;

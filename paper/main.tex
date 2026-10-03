@@ -38,6 +38,7 @@
 \usepackage{amsmath,amssymb}
 \usepackage{booktabs}
 \usepackage{needspace}% a heading must not be stranded at the foot of a column
+\usepackage{placeins}% \FloatBarrier: an appendix's floats print before the next appendix
 \newcommand{\keepheading}{\needspace{6\baselineskip}}% before a section heading
 \newcommand{\keeprunin}{\needspace{4\baselineskip}}% before a run-in heading
 \usepackage{array}% ragged-right paragraph columns in the prose tables
@@ -105,9 +106,10 @@ replications). On the full corpus at $\alpha{=}0.2$,
 \deployN\ cells, in a live run \driftDaysLater\ days after the column
 was built that also measured drift of the served model, as a higher
 flip rate against the same cache. Across
-the calibration grid, a certificate exceeding its budget is issued with
-probability at most \calBoundaryHi\ per stratum at the least favorable
-population, against a nominal \calNominalDelta. At least one edit certifies
+the calibration grid, with independent draws, a certificate exceeding
+its budget is issued with probability at most \calBoundaryHi\ per
+stratum at the least favorable population, against a nominal
+\calNominalDelta. At least one edit certifies
 on \famCertCount\ of \famCount\ further models from four providers, while
 which edits are benign varies by model. We release the system, the
 labels, and five versioned prompt-edit pairs under a

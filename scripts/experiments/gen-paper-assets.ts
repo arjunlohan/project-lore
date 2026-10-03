@@ -21,6 +21,7 @@ import {
 } from "@lore/core/sivm";
 import mysql from "mysql2/promise";
 import { PAIRS } from "./pairs";
+import { recomputeAudits, type AuditCells } from "./deployment-audit";
 
 const J = (f: string) =>
   JSON.parse(readFileSync(`docs/research/experiments/${f}`, "utf8"));
@@ -1232,6 +1233,13 @@ def("sepRealizedTight", pct(sx1.realizedOnOverlap ?? 0, 2));
   check("exp11c-deployment-bounds-v4.json", sx2, false);
   check("exp11c-deployment-bounds-v4.json", sx1, false);
   check("exp11c-deployment-bounds-v4.json", arm(exp11cSep, "eb", 0.2), false);
+  // The Availability section says nothing in the evaluation path is withheld.
+  // The cells the audits read are released in deployment-audit-cells.json;
+  // hold the release to it: every recorded audit recomputes from that file
+  // and the persisted row identifiers alone, with no database.
+  const reproduced = recomputeAudits(J("deployment-audit-cells.json") as AuditCells, { audits: verified }, "docs/research/experiments");
+  def("auditCellRows", num((J("deployment-audit-cells.json") as AuditCells).rows.length));
+  if (reproduced !== verified.length) throw new Error("deployment-audit-cells.json does not reproduce every recorded audit");
 }
 // Snapshot drift (exp16): the same rows under both snapshots.
 {

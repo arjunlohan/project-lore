@@ -23,6 +23,7 @@
 \usepackage{amsthm}
 \usepackage{booktabs}
 \usepackage{needspace}% a heading must not be stranded at the foot of a column
+\usepackage{placeins}% \FloatBarrier: an appendix's floats print before the next appendix
 \newcommand{\keepheading}{\needspace{6\baselineskip}}% before a section heading
 \newcommand{\keeprunin}{\needspace{4\baselineskip}}% before a run-in heading
 \usepackage{array}% ragged-right paragraph columns in the prose tables
@@ -160,13 +161,13 @@ by Large Language Models under Prompt Edits}
 \begin{abstract}
 Modern tables let users define columns in natural language: a language
 model computes each cell from a versioned prompt. After a prompt edit,
-systems either recompute every cell or reuse stale ones, with unbounded
+systems recompute every cell or reuse stale ones, with unbounded
 error. Semantic incremental view maintenance (\sivm{}) certifies which
 cached cells may be reused. It groups cells into strata by cached
 value, recomputes a growing sample of each, and bounds each stratum's
-flip rate (the share of its cells the edit would change) with an exact
+flip rate (the share of its cells a recompute would change) with an exact
 finite-population bound. A stratum is reused when that bound clears
-a user-chosen error budget; a strict mode bounds the error of the
+the user's error budget; a strict mode bounds the error of the
 reused cells alone. An impossibility floor follows: with the prompt
 unedited, no stratum reliably certifies below its own self-disagreement
 rate.
@@ -176,9 +177,10 @@ on average at budget 0.1 and \benchSavings\ at 0.2 (failure
 probability 0.1; \bootB\ replications). On the full \deployN-row corpus
 at budget 0.2, \deployOracle\ fresh calls certify reuse of
 \deployReused\ cells, in a live run that measured the served
-model's drift over \driftDaysLater\ days. On the calibration grid, a
-certificate exceeding its budget is issued with probability at most
-\calBoundaryHi\ per stratum, against a nominal \calNominalDelta. At
+model's drift over \driftDaysLater\ days. On the calibration grid, with
+independent draws, a certificate exceeding its budget is issued with
+probability at most \calBoundaryHi\ per stratum, against a nominal
+\calNominalDelta. At
 least one edit certifies on \famCertCount\ of \famCount\ further models
 from four providers; which edits are benign varies by model. The
 system, labels, and five versioned prompt-edit pairs are released under

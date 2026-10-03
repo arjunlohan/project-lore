@@ -225,9 +225,12 @@ def colour_float(m):
     if re.search(r"\\caption\{\\DIFaddFL\{", body) and not re.search(r"\\DIFdel", body):
         return head + r"\color{blue}" + body + tail
     body = re.sub(
-        # A row-spacing command may sit between the marker and the tabular.
-        r"\\DIFaddbeginFL ((?:\\renewcommand\{\\arraystretch\}\{[^}]*\}\s*)?(?:\\begin\{tabular\}|\\begin\{tikzpicture\}|\\resizebox))(.*?)\\DIFaddendFL",
-        lambda k: r"\DIFaddbeginFL {\color{blue}" + k.group(1) + k.group(2) + r"}\DIFaddendFL",
+        # Size, column-spacing, and row-spacing commands, and the generator's
+        # comment lines, may sit between the marker and the tabular. The
+        # marker is \DIFaddbeginFL inside a float, or the plain \DIFaddbegin
+        # when latexdiff aligned the new block with a deleted float.
+        r"\\DIFaddbegin(FL)? ((?:(?:\\(?:scriptsize|footnotesize|small|tiny|centering)\b|\\setlength\{\\tabcolsep\}\{[^}]*\}|\\renewcommand\{\\arraystretch\}\{[^}]*\})\s*|%[^\n]*\n\s*)*(?:\\begin\{tabular\}|\\begin\{tikzpicture\}|\\resizebox))(.*?)\\DIFaddend(FL)?",
+        lambda k: "\\DIFaddbegin" + (k.group(1) or "") + " {\\color{blue}" + k.group(2) + k.group(3) + "}\\DIFaddend" + (k.group(4) or ""),
         body,
         flags=re.S,
     )
@@ -247,7 +250,7 @@ s = re.sub(r"(\\DIFdelend )(\d[\d.,{}]*(?:\\%)?)(\\DIFaddbegin )", r"\1\\DIFadd{
 # Displayed math is excluded from markup; a display sitting between two
 # added text spans is itself added, so colour it.
 s = re.sub(
-    r"(\}\s*)(\\begin\{equation\}.*?\\end\{equation\})(\s*\\DIFadd\{)",
+    r"(\}\s*)(\\begin\{equation\}.*?\\end\{equation\}|\\\[.*?\\\])(\s*\\DIFadd\{)",
     # \ignorespaces: TeX skips one space after a display, but the closing
     # brace of the colour group hides the line end from that rule.
     lambda m: m.group(1) + r"{\color{blue}" + m.group(2) + r"}\ignorespaces" + m.group(3),
@@ -311,6 +314,29 @@ s = re.sub(
     s,
     flags=re.S,
 )
+# The letters say every table body is highlighted. Stop if a tabular is
+# outside every blue scope: neither its float is coloured from the start nor
+# an open {\color{blue} group contains it.
+uncovered = []
+for m in re.finditer(r"^(?!%).*?\\begin\{tabular\}", s, flags=re.M):
+    pos = m.end()
+    start = max(s.rfind("\\begin{table}", 0, pos), s.rfind("\\begin{table*}", 0, pos))
+    if start < 0:
+        continue
+    head = s[start:pos]
+    if re.match(r"\\begin\{table\*?\}(\[[^\]]*\])?\\color\{blue\}", head):
+        continue
+    covered = False
+    for g in re.finditer(r"\{\\color\{blue\}", head):
+        rest = re.sub(r"\\[{}]", "", head[g.start():])
+        rest = "\n".join(l.split("%")[0] for l in rest.split("\n"))
+        if rest.count("{") - rest.count("}") > 0:
+            covered = True
+    if not covered:
+        label = re.search(r"\\label\{([^}]+)\}", s[start:start + 4000])
+        uncovered.append(label.group(1) if label else s[start:start + 60])
+if uncovered:
+    sys.exit("highlighted copy: table bodies outside every blue scope: " + ", ".join(uncovered))
 open(p, "w").write(s)
 PY
   # Compile the diff beside the vendored template files.
