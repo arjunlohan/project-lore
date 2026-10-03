@@ -301,16 +301,19 @@ s = re.sub(
     s,
     flags=re.S,
 )
-# A heading that latexdiff reports as deleted and then added again has only
-# moved relative to a float. latexdiff keeps a deleted heading as a command
-# with an empty title, which prints a bare section number; with deletions
-# omitted it must print nothing, and the unchanged title must not be marked.
+# latexdiff keeps a deleted heading as a command with an empty title, which
+# prints a bare section number; with deletions omitted it must print nothing.
+# Drop it wherever it sits (at the start of a deletion block or inside one,
+# as when a renamed heading's old title is deleted with the text after it).
+# A heading deleted and then added again under the same title has only moved
+# relative to a float, so that title is not marked; a renamed heading's new
+# title stays marked as added.
 moved_headings = set()
 def drop_deleted_heading(m):
-    moved_headings.add(m.group(2))
-    return r"\DIFdelbegin "
+    moved_headings.add(m.group(3))
+    return m.group(1) or ""
 s = re.sub(
-    r"\\DIFdelbegin \\(section|subsection)\{\\DIFdel\{(.*?)\}\}\s*%DIFAUXCMD\s*\\addtocounter\{\1\}\{-1\}%DIFAUXCMD\n",
+    r"(\\DIFdelbegin )?\\(section|subsection)\{\\DIFdel\{(.*?)\}\}\s*%DIFAUXCMD\s*\\addtocounter\{\2\}\{-1\}%DIFAUXCMD\n",
     drop_deleted_heading,
     s,
 )
