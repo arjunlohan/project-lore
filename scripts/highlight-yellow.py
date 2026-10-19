@@ -69,12 +69,22 @@ def main(src: str, out: str) -> None:
             pages.append((width / ZOOM, height / ZOOM, stripes))
         if not pages:
             sys.exit("no pages read from the highlighted PDF")
+        # pdftohtml rounds the page size to whole units of its zoom; take the
+        # exact size from pdfinfo, so the overlay's pages match the source's.
+        info = subprocess.run(
+            ["pdfinfo", "-f", "1", "-l", str(len(pages)), "blue.pdf"],
+            cwd=tmp, check=True, capture_output=True, text=True,
+        ).stdout
+        sizes = {int(m.group(1)): (float(m.group(2)), float(m.group(3)))
+                 for m in re.finditer(r"Page\s+(\d+) size:\s+([\d.]+) x ([\d.]+) pts", info)}
+        if len(sizes) == len(pages):
+            pages = [(sizes[i][0], sizes[i][1], st) for i, (_, _, st) in enumerate(pages, start=1)]
         if not any(s for _, _, s in pages):
             sys.exit("no blue text found: nothing to highlight")
         w_pt, h_pt = pages[0][0], pages[0][1]
         tex = [
             r"\documentclass{article}",
-            rf"\usepackage[paperwidth={w_pt:.2f}bp,paperheight={h_pt:.2f}bp,margin=0pt]{{geometry}}",
+            rf"\usepackage[paperwidth={w_pt:.3f}bp,paperheight={h_pt:.3f}bp,margin=0pt]{{geometry}}",
             r"\usepackage{xcolor}",
             r"\usepackage{graphicx}",
             r"\definecolor{changed}{rgb}{1,0.95,0.42}",
@@ -107,7 +117,7 @@ def main(src: str, out: str) -> None:
             # A picture paints its items in order: the stripes first, then the
             # original page over them, so the text is never covered.
             tex.append(
-                rf"\noindent\begin{{picture}}({pw:.2f},{ph:.2f})%" + "\n"
+                rf"\noindent\begin{{picture}}({pw:.3f},{ph:.3f})%" + "\n"
                 + "%\n".join(cmds) + "%\n"
                 + rf"\put(0,0){{\usepage{{{i}}}}}%" + "\n"
                 + r"\end{picture}\newpage"

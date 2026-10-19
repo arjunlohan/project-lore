@@ -20,7 +20,8 @@ that produced the manuscript:
   {{m:NAME}}       the value of the generated macro \\NAME (paper/macros.tex)
   {{stat:KEY}}     a readability statistic printed by the manuscript's own
                    checker, for this manuscript (now.*, main.*) or for the
-                   first submission (v1.*), which is read from its git tag;
+                   version the reviewers last saw (base.*), which is read
+                   from its git tag (--base-tag);
                    {{stat:pages}} is the build's page count (.aux),
                    {{stat:supp.pages}} the Supplementary Material's, and
                    {{stat:refs}} its number of references (.aux)
@@ -53,7 +54,7 @@ ap.add_argument("--tex", action="store_true")
 ap.add_argument("--aux", default="paper/ieee/main.aux")
 ap.add_argument("--supp-aux", default=None)
 ap.add_argument("--macros", default="paper/macros.tex")
-ap.add_argument("--base-tag", default="ieee-access-submission-v1")
+ap.add_argument("--base-tag", default="ieee-access-resubmission-v10")
 args = ap.parse_args()
 
 text = open(args.src).read()
@@ -119,7 +120,7 @@ stats = None
 
 
 def load_stats():
-    """Run the manuscript's checker on this tree and on the first submission."""
+    """Run the manuscript's checker on this tree and on the base version."""
     out = {}
     with tempfile.TemporaryDirectory() as tmp:
         env = dict(os.environ)
@@ -139,12 +140,12 @@ def load_stats():
         elif line.startswith("main text only:"):
             stat_block("main", line, out)
         elif line.startswith("compared source"):
-            stat_block("v1", line, out)
+            stat_block("base", line, out)
         elif line.startswith("abstract:"):
             m = re.search(r"abstract: (\d+) sentences, longest: (\d+) words", line)
             if m:
                 out["abstract.sentences"], out["abstract.longest"] = m.groups()
-    for need in ("now.mean", "main.numbers", "v1.mean"):
+    for need in ("now.mean", "main.numbers", "base.mean"):
         if need not in out:
             sys.exit(f"the checker did not print the statistic {need}")
     # Thousands separators, as the letters print counts.

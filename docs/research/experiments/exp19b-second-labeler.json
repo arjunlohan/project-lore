@@ -1,0 +1,33 @@
+{
+  "experiment": "exp19b-second-labeler",
+  "note": "the free-text pilot's 201 calibration pairs labeled by a second person on the page this script writes; agreement with the author and the model labeler, and the judge's miss bound under the second labeler's reading and under a conservative reading (different if either human says so)",
+  "labeler": "a second labeler",
+  "labeledAt": "2026-10-16T23:10:00.000Z",
+  "deltaCal": 0.05,
+  "n": 201,
+  "agreementWithAuthor": {
+    "agree": 175,
+    "rate": 0.8706467661691543,
+    "kappa": 0.3870513722730471
+  },
+  "agreementWithModelLabeler": {
+    "agree": 163,
+    "rate": 0.8109452736318408
+  },
+  "authorModelSplits": {
+    "pairs": 52,
+    "secondSidesWithModel": 20
+  },
+  "judgeSame": {
+    "pairs": 150,
+    "missesSecond": 10,
+    "missUcbSecond": 0.11045753184423941,
+    "missesEitherHuman": 10,
+    "missUcbEitherHuman": 0.11045753184423941,
+    "humansDisagree": 10
+  },
+  "judgeDifferent": {
+    "pairs": 51,
+    "falseFlipsSecond": 25
+  }
+}

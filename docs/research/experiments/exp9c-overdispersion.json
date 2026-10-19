@@ -169,5 +169,127 @@
       "errorProbability": 0.38813
     }
   ],
-  "wallMs": 40098
+  "adjusted": [
+    {
+      "alpha": 0.2,
+      "size": 81469,
+      "ratio": 1,
+      "ratioLabel": "independent",
+      "widenedFor": 1.417782497699567,
+      "widenedForLabel": "pooled estimate (both concurrent arms)",
+      "rate": 0.2000024549215039,
+      "errorProbability": 0.00585
+    },
+    {
+      "alpha": 0.2,
+      "size": 81469,
+      "ratio": 1.417782497699567,
+      "ratioLabel": "pooled estimate (both concurrent arms)",
+      "widenedFor": 1.417782497699567,
+      "widenedForLabel": "pooled estimate (both concurrent arms)",
+      "rate": 0.2000024549215039,
+      "errorProbability": 0.01992
+    },
+    {
+      "alpha": 0.2,
+      "size": 81469,
+      "ratio": 2.3730587706184543,
+      "ratioLabel": "upper end of the pooled 95% interval",
+      "widenedFor": 1.417782497699567,
+      "widenedForLabel": "pooled estimate (both concurrent arms)",
+      "rate": 0.2000024549215039,
+      "errorProbability": 0.07173
+    },
+    {
+      "alpha": 0.2,
+      "size": 81469,
+      "ratio": 1,
+      "ratioLabel": "independent",
+      "widenedFor": 2.3730587706184543,
+      "widenedForLabel": "upper end of the pooled 95% interval",
+      "rate": 0.2000024549215039,
+      "errorProbability": 0.00021
+    },
+    {
+      "alpha": 0.2,
+      "size": 81469,
+      "ratio": 1.417782497699567,
+      "ratioLabel": "pooled estimate (both concurrent arms)",
+      "widenedFor": 2.3730587706184543,
+      "widenedForLabel": "upper end of the pooled 95% interval",
+      "rate": 0.2000024549215039,
+      "errorProbability": 0.00186
+    },
+    {
+      "alpha": 0.2,
+      "size": 81469,
+      "ratio": 2.3730587706184543,
+      "ratioLabel": "upper end of the pooled 95% interval",
+      "widenedFor": 2.3730587706184543,
+      "widenedForLabel": "upper end of the pooled 95% interval",
+      "rate": 0.2000024549215039,
+      "errorProbability": 0.01602
+    },
+    {
+      "alpha": 0.1,
+      "size": 81469,
+      "ratio": 1,
+      "ratioLabel": "independent",
+      "widenedFor": 1.417782497699567,
+      "widenedForLabel": "pooled estimate (both concurrent arms)",
+      "rate": 0.10000122746075195,
+      "errorProbability": 0.00498
+    },
+    {
+      "alpha": 0.1,
+      "size": 81469,
+      "ratio": 1.417782497699567,
+      "ratioLabel": "pooled estimate (both concurrent arms)",
+      "widenedFor": 1.417782497699567,
+      "widenedForLabel": "pooled estimate (both concurrent arms)",
+      "rate": 0.10000122746075195,
+      "errorProbability": 0.0162
+    },
+    {
+      "alpha": 0.1,
+      "size": 81469,
+      "ratio": 2.3730587706184543,
+      "ratioLabel": "upper end of the pooled 95% interval",
+      "widenedFor": 1.417782497699567,
+      "widenedForLabel": "pooled estimate (both concurrent arms)",
+      "rate": 0.10000122746075195,
+      "errorProbability": 0.05977
+    },
+    {
+      "alpha": 0.1,
+      "size": 81469,
+      "ratio": 1,
+      "ratioLabel": "independent",
+      "widenedFor": 2.3730587706184543,
+      "widenedForLabel": "upper end of the pooled 95% interval",
+      "rate": 0.10000122746075195,
+      "errorProbability": 0.00012
+    },
+    {
+      "alpha": 0.1,
+      "size": 81469,
+      "ratio": 1.417782497699567,
+      "ratioLabel": "pooled estimate (both concurrent arms)",
+      "widenedFor": 2.3730587706184543,
+      "widenedForLabel": "upper end of the pooled 95% interval",
+      "rate": 0.10000122746075195,
+      "errorProbability": 0.00108
+    },
+    {
+      "alpha": 0.1,
+      "size": 81469,
+      "ratio": 2.3730587706184543,
+      "ratioLabel": "upper end of the pooled 95% interval",
+      "widenedFor": 2.3730587706184543,
+      "widenedForLabel": "upper end of the pooled 95% interval",
+      "rate": 0.10000122746075195,
+      "errorProbability": 0.00976
+    }
+  ],
+  "wallMs": 106245
 }

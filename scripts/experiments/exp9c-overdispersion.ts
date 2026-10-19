@@ -76,7 +76,7 @@ const beta = (a: number, b: number, rand: () => number): number => {
   return x / (x + gamma(b, rand));
 };
 
-async function errorProbability(alpha: number, size: number, phi: number, seed: number) {
+async function errorProbability(alpha: number, size: number, phi: number, seed: number, widenFor = 1) {
   const rand = mulberry32(seed);
   const p = (Math.floor(alpha * size + 1e-9) + 1) / size;
   const rho = (phi - 1) / (BLOCK - 1);
@@ -93,7 +93,7 @@ async function errorProbability(alpha: number, size: number, phi: number, seed: 
       }
       return draws.slice(0, n);
     };
-    const o = await adaptiveCertifyStratum(size, alpha, PER_STRATUM_DELTA, prefix, N0, MAX_LOOKS, "presented");
+    const o = await adaptiveCertifyStratum(size, alpha, PER_STRATUM_DELTA, prefix, N0, MAX_LOOKS, "presented", "exact", widenFor);
     if (o.certified) certified++;
   }
   return { rate: p, errorProbability: certified / TRIALS };
@@ -181,6 +181,25 @@ async function main() {
       console.log(`alpha=${cell.alpha} N=${cell.size} phi=${r.phi.toFixed(2)} (${r.label}): error probability ${(out.errorProbability * 100).toFixed(2)}% at rate ${out.rate.toFixed(5)}`);
     }
   }
+  // Added in the second review round: the same model, with the certifier's
+  // bound widened for an assumed ratio (dispersionAdjustedUpperBound, the
+  // Clopper-Pearson limit at n/phi effective draws), at the pooled estimate
+  // and at the upper end of its interval, against draws generated
+  // independently, at the estimate, and at the upper end. Seeds of their
+  // own, after every cell above, so those keep the values first reported.
+  const pooled = extraRatios.slice(0, 2);
+  const truths = [{ label: "independent", phi: 1 }, ...pooled];
+  const adjusted: Record<string, unknown>[] = [];
+  seed = 20261201;
+  for (const cell of CELLS) {
+    for (const widen of pooled) {
+      for (const truth of truths) {
+        const out = await errorProbability(cell.alpha, cell.size, truth.phi, seed++, widen.phi);
+        adjusted.push({ ...cell, ratio: truth.phi, ratioLabel: truth.label, widenedFor: widen.phi, widenedForLabel: widen.label, ...out });
+        console.log(`alpha=${cell.alpha} draws at phi=${truth.phi.toFixed(2)}, bound widened for phi=${widen.phi.toFixed(2)}: error probability ${(out.errorProbability * 100).toFixed(2)}%`);
+      }
+    }
+  }
   mkdirSync("docs/research/experiments", { recursive: true });
   writeFileSync(
     "docs/research/experiments/exp9c-overdispersion.json",
@@ -194,6 +213,7 @@ async function main() {
         trials: TRIALS,
         ratios: [...ratios, ...extraRatios],
         results,
+        adjusted,
         wallMs: Date.now() - started,
       },
       null,

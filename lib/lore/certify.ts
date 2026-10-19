@@ -39,6 +39,17 @@ type Row = Record<string, unknown>;
 /** Returns fresh v_to values for the requested rows. */
 export type Oracle = (rowIds: string[]) => Promise<Map<string, unknown>>;
 
+/**
+ * Requests a live certification keeps in flight at once: one. Theorem 1
+ * needs oracle draws that do not interfere across rows (Assumption 1), and
+ * concurrent requests can be batched together on the provider's side. The
+ * independence check (exp17) could not rule out dependence among draws
+ * issued together, and a certification needs only tens to hundreds of
+ * calls, so it issues them one at a time and pays in wall clock, not calls.
+ * A caller that raises it should record what it used (`oracleConcurrency`).
+ */
+export const CERTIFICATION_CONCURRENCY = 1;
+
 export interface CertifyOptions {
   alpha: number;
   delta: number;
@@ -71,6 +82,12 @@ export interface CertifyOptions {
   estimand?: "presented" | "reuse-set";
   /** Upper confidence bound the adaptive certifier spends the budget on. */
   bound?: BoundKind;
+  /**
+   * The most oracle requests the caller kept in flight at once, recorded in
+   * the certificate's per-stratum evidence (the oracle, not the certifier,
+   * issues the calls). Live callers use `CERTIFICATION_CONCURRENCY`.
+   */
+  oracleConcurrency?: number;
 }
 
 export interface CertifyOutcome {
@@ -228,6 +245,9 @@ export async function certifyColumnEdit(
         perStratumDelta,
         estimand: opts.estimand ?? "presented",
         bound: opts.bound ?? "exact",
+        ...(opts.oracleConcurrency !== undefined
+          ? { oracleConcurrency: opts.oracleConcurrency }
+          : {}),
       });
     }
   } else {
@@ -255,6 +275,9 @@ export async function certifyColumnEdit(
       perStratumDelta: opts.delta / Math.max(1, mathInput.length),
       estimand: "presented" as const,
       bound: "exact" as const,
+      ...(opts.oracleConcurrency !== undefined
+        ? { oracleConcurrency: opts.oracleConcurrency }
+        : {}),
     }));
   }
   const sampledRowIds = [...sampledByStratum.values()].flat();

@@ -92,6 +92,13 @@ if (EQUIV !== "exact" && EQUIV !== "adjacent-tier") {
 if (EQUIV !== "exact" && (!LABELS || !process.env.EXP_OUT || process.env.EXP_WRITE_TEX === "1")) {
   throw new Error("a graded relation runs from EXP_LABELS, writes to its own EXP_OUT, and never writes paper assets");
 }
+// Restrict the run to some pairs (comma-separated keys), for analyses that
+// replay one pair under other labels (exp21). A restricted run never writes
+// paper assets.
+const ONLY_PAIRS = process.env.EXP_PAIRS ? new Set(process.env.EXP_PAIRS.split(",")) : null;
+if (ONLY_PAIRS && (!process.env.EXP_OUT || process.env.EXP_WRITE_TEX === "1")) {
+  throw new Error("a run restricted with EXP_PAIRS writes to its own EXP_OUT and never writes paper assets");
+}
 const DELTA = 0.1;
 const MAIN_SEED = 42;
 const B = Number(process.env.EXP_B ?? 1000);
@@ -216,6 +223,7 @@ async function main() {
   const texRows: string[] = [];
 
   for (const pair of PAIRS) {
+    if (ONLY_PAIRS && !ONLY_PAIRS.has(pair.key)) continue;
     if (EQUIV === "adjacent-tier" && pair.columnType !== "select") continue;
     let rows: Row[];
     let cache: Map<string, unknown>;

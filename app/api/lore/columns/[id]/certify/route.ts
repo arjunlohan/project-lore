@@ -3,7 +3,10 @@ import { z } from "zod";
 import type { FilterSpec } from "@lore/core";
 import { assignStrataWith } from "@lore/core/sivm";
 import { adapterFor, type BackendId } from "@/lib/lore/adapters";
-import { certifyColumnEdit } from "@/lib/lore/certify";
+import {
+  CERTIFICATION_CONCURRENCY,
+  certifyColumnEdit,
+} from "@/lib/lore/certify";
 import {
   getCellsForVersion,
   getColumn,
@@ -33,7 +36,9 @@ const BodySchema = z.object({
  * the exact finite-population bound, and the doubling look schedule (45
  * draws, at most six looks) with the futility rule. One request covers at
  * most `limit` rows of the current filter; a full-corpus certification calls
- * `certifyColumnEdit` from a script (scripts/experiments/exp11c-*.ts).
+ * `certifyColumnEdit` from a script (scripts/experiments/exp11c-*.ts). The
+ * oracle calls go out one at a time (`CERTIFICATION_CONCURRENCY`), so that
+ * no two draws of a certification can be batched together upstream.
  */
 export async function POST(
   req: Request,
@@ -85,7 +90,7 @@ export async function POST(
           .map((rid) => rowById.get(rid))
           .filter((r): r is NonNullable<typeof r> => r !== undefined);
         await runColumn(column, sampleRows, PROFILE_ID_FIELD, {
-          concurrency: 8,
+          concurrency: CERTIFICATION_CONCURRENCY,
           versionOverride: {
             promptTemplate: vTo.prompt_template,
             promptVersion: toVersion,
@@ -104,6 +109,7 @@ export async function POST(
         maxLooks: 6,
         bound: "exact",
         stratifier: (cells) => assignStrataWith(cells, () => "all"),
+        oracleConcurrency: CERTIFICATION_CONCURRENCY,
       },
     );
 

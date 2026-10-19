@@ -156,6 +156,15 @@ const pctCeil = (x: number, d = 1) => `${(Math.ceil(x * 100 * 10 ** d - 1e-9) / 
 // 0.5235000000000001, another as 0.5235).
 const ratioPct = (k: number, n: number, d = 1) => pct(k / n, d);
 const num = (x: number) => x.toLocaleString("en-US").replace(/,/g, "{,}");
+/** A small count spelled out for prose ("six"), as IEEE style sets counts
+ * below ten; a larger one is printed as digits. */
+const countWord = (n: number) => {
+  const words = ["no", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten"];
+  return n <= 10 ? words[n]! : num(n);
+};
+/** The same with its noun ("one configuration", "two configurations"), so a
+ * count of one never reads "1 configurations". */
+const countPhrase = (n: number, noun: string) => `${countWord(n)} ${noun}${n === 1 ? "" : "s"}`;
 // Run dates: a stamp that carries a time of day is printed in the paper's
 // own time zone (an evening run must not read as the next day), while a
 // date-only stamp (midnight UTC, or a bare YYYY-MM-DD) is a calendar date
@@ -450,6 +459,80 @@ def("floorIdentityPooled", pct(pairRate([...byVal.t!, ...byVal.f!]), 1));
 def("floorBoolVote", pct(exp10.vote3FlipRate, 2));
 def("floorBoolStored", pct(exp10.singleDrawFlipRate, 1));
 def("labelChurn", pct(exp10.labelDisagreementRate, 1));
+// Label noise in the replications (exp21, second review round): the
+// replication analysis of the headline pair rerun with each fresh draw of
+// the edited prompt from the three-draw relabeling as the label.
+{
+  type Rep = { alpha: number; n: number; trueFlipRate: number; bootstrap: { savingsMean: number; certificationRate: number } };
+  type Run21 = { key: string; label: string; strata: { cachedFalse: { rate: number }; cachedTrue: { rate: number } }; results: Rep[] };
+  const e21 = J("exp21-label-noise.json") as { pair: string; runs: Run21[] };
+  const stored = e21.runs.find((r) => r.key === "stored");
+  const redraws = e21.runs.filter((r) => r.key !== "stored");
+  if (!stored || redraws.length !== 3) throw new Error("exp21-label-noise.json must hold the stored labels and three redraws; re-run scripts/experiments/exp21-label-noise.ts");
+  const r8 = (exp8.results as Array<Rep & { pair: string; estimand: string }>).filter((r) => r.pair === e21.pair && r.estimand === "presented");
+  const atA = (run: Run21, alpha: number) => {
+    const r = run.results.find((x) => Math.abs(x.alpha - alpha) < 1e-9);
+    if (!r) throw new Error(`exp21 has no alpha=${alpha} for ${run.key}`);
+    return r;
+  };
+  for (const t of r8) {
+    const r = atA(stored, t.alpha);
+    if (r.bootstrap.savingsMean !== t.bootstrap.savingsMean || r.bootstrap.certificationRate !== t.bootstrap.certificationRate) {
+      throw new Error(`exp21's stored-label run no longer reproduces Table 2 at alpha=${t.alpha}; re-run scripts/experiments/exp21-label-noise.ts`);
+    }
+  }
+  const shift = Math.max(...[0.1, 0.2].flatMap((a) => redraws.map((run) => Math.abs(atA(run, a).bootstrap.savingsMean - atA(stored, a).bootstrap.savingsMean))));
+  const edge = e21.runs.map((run) => atA(run, 0.05).bootstrap.savingsMean);
+  const edgeCert = e21.runs.map((run) => atA(run, 0.05).bootstrap.certificationRate);
+  const flips = e21.runs.map((run) => run.results[0]!.trueFlipRate);
+  const noiseReading: Array<[string, boolean]> = [
+    ["at the loose and tight budgets the labels move mean savings by less than two points", shift < 0.02],
+    ["at alpha=0.05 the labels move mean savings by more than ten points", Math.max(...edge) - Math.min(...edge) > 0.1],
+    ["no labeling certifies at alpha=0.02", e21.runs.every((run) => atA(run, 0.02).bootstrap.certificationRate === 0)],
+  ];
+  for (const [name, ok] of noiseReading) {
+    if (!ok) throw new Error(`label noise: "${name}" no longer holds; rewrite the labels paragraph in body.tex and Appendix K`);
+  }
+  // "Move by less than X points": the next half point above the largest
+  // shift of the replication means (the means are themselves estimates, so
+  // the text states a bound with room, not the observed maximum).
+  def("labelNoiseShiftBound", (Math.floor(shift * 100 * 2) / 2 + 0.5).toFixed(1));
+  // A fresh draw can be missing for a row (an output that failed its
+  // schema); Table S14's caption names the one labeling that is short.
+  const rowsOf = (run: Run21) => run.results[0]!.n;
+  const short = e21.runs.filter((run) => rowsOf(run) < rowsOf(stored));
+  if (short.length !== 1 || short[0]!.key !== "redraw3" || rowsOf(stored) - rowsOf(short[0]!) !== 1) {
+    throw new Error("exp21: the caption of Table S14 says fresh draw 3 alone is one row short; rewrite it");
+  }
+  def("labelNoiseRowsShort", num(rowsOf(short[0]!)));
+  def("labelNoiseEdgeLo", pct(Math.min(...edge), 1));
+  def("labelNoiseEdgeHi", pct(Math.max(...edge), 1));
+  def("labelNoiseEdgeCertLo", pct(Math.min(...edgeCert), 1));
+  def("labelNoiseEdgeCertHi", pct(Math.max(...edgeCert), 1));
+  def("labelNoiseFlipLo", pct(Math.min(...flips), 2));
+  def("labelNoiseFlipHi", pct(Math.max(...flips), 2));
+  const cellN = (run: Run21, alpha: number) => {
+    const r = atA(run, alpha);
+    return `${(r.bootstrap.savingsMean * 100).toFixed(1)} (${(r.bootstrap.certificationRate * 100).toFixed(1)})`;
+  };
+  // Short row names keep Table S14 inside one column; its caption says
+  // that "stored" is the labeling of Table 2.
+  const NAMES: Record<string, string> = { stored: "stored", redraw1: "draw 1", redraw2: "draw 2", redraw3: "draw 3" };
+  writeFileSync(
+    "paper/tablelabelnoise.tex",
+    `% GENERATED by scripts/experiments/gen-paper-assets.ts from exp21-label-noise.json. Do not edit by hand.
+\\begin{tabular}{@{}lrrrlll@{}}
+\\toprule
+ & \\multicolumn{3}{c}{flip rate} & \\multicolumn{3}{c}{mean savings (certification rate)} \\\\
+\\cmidrule(lr){2-4}\\cmidrule(lr){5-7}
+Labels & all & FALSE & TRUE & $\\alpha{=}0.05$ & $\\alpha{=}0.1$ & $\\alpha{=}0.2$ \\\\
+\\midrule
+${e21.runs.map((run) => `${NAMES[run.key] ?? run.key} & ${pct(run.results[0]!.trueFlipRate, 2)} & ${pct(run.strata.cachedFalse.rate, 1)} & ${pct(run.strata.cachedTrue.rate, 1)} & ${cellN(run, 0.05)} & ${cellN(run, 0.1)} & ${cellN(run, 0.2)} \\\\`).join("\n")}
+\\bottomrule
+\\end{tabular}
+`,
+  );
+}
 // r8/M10: the paper reports 6.0% and 6.3% for what a reader takes to be one
 // measurement and never reconciles them. They are two DRAWS of the same
 // quantity on the same 2,000 rows: exp10 draws v2 fresh, Table 1 uses the
@@ -505,12 +588,9 @@ if (pick("so-formatting", 0.1).main.realizedPresented !== bench.main.realizedPre
 def("benchRealizedReuse", pct(bench.main.realizedReuse, 2));
 def("synTightCertRate", pct(pick("so-synonym", 0.1).bootstrap.certificationRate, 1));
 def("benchOracleMain", String(pick("so-formatting", 0.2).main.sampled));
-const frontier = [0.2, 0.1, 0.05, 0.02].map(
-  (a) => `${(pick("so-formatting", a).bootstrap.savingsMean * 100).toFixed(1)}\\%`,
-);
-def("frontierA", frontier[0]!);
-def("frontierB", frontier[1]!);
-def("frontierC", frontier[2]!);
+// The tight budget's mean savings, which the abstract and Table 7 quote; the
+// other budgets' are \benchSavings and \edgeSavingsMean.
+def("frontierB", `${(pick("so-formatting", 0.1).bootstrap.savingsMean * 100).toFixed(1)}\\%`);
 const edge = pick("so-formatting", 0.05);
 // One decimal: this rate is 0.8%, and toFixed(0) printed it as "1%", a
 // 25% overstatement of the paper's single nonzero exceedance cell.
@@ -550,6 +630,16 @@ def("edgeSavingsMean", pct(edge.bootstrap.savingsMean, 1));
     (r) => r.bootstrap.certificationRate > 0 && r.bootstrap.violationRateReuseSet > 0,
   );
   def("tableExceedConfigs", String(exceed.length));
+  // The largest such share outside the configuration whose certified stratum
+  // is itself a null (there every certificate is unsafe, so its reuse-set
+  // rate exceeds the budget too): the figure Section II quotes when it says
+  // the reuse-set guarantee holds only in the strict mode.
+  const exceedSafe = exceed.filter((r) => r !== worst.r);
+  if (exceedSafe.length === 0) throw new Error("no default-mode configuration outside the null one exceeds the budget on the reuse set; rewrite Section II's sentence on the strict mode");
+  const exceedTop = exceedSafe.reduce((a, b) => (b.bootstrap.violationRateReuseSet > a.bootstrap.violationRateReuseSet ? b : a));
+  def("tableExceedMaxSafe", pct(exceedTop.bootstrap.violationRateReuseSet, 1));
+  def("tableExceedMaxSafePair", LABELS[exceedTop.pair] ?? exceedTop.pair);
+  def("tableExceedMaxSafeAlpha", exceedTop.alpha.toString());
   // The strict mode's unsafe certificates, by the same per-stratum count.
   // The appendix names how many configurations have any, the largest rate,
   // and where it occurs, and says each sits inside its per-stratum level.
@@ -1759,6 +1849,8 @@ await db.end();
     const gaps = rows14.filter((r) => r.bound === "betting").map((b) => b.savings - exactBy.get(key(b))!.savings);
     def("boundBetBetter", String(gaps.filter((g) => g > 1e-12).length));
     def("boundBetWorse", String(gaps.filter((g) => g < -1e-12).length));
+    def("boundBetBetterText", countPhrase(gaps.filter((g) => g > 1e-12).length, "configuration"));
+    def("boundBetWorseText", countPhrase(gaps.filter((g) => g < -1e-12).length, "configuration"));
     if (!(gaps.filter((g) => Math.abs(g) <= 1e-12).length > gaps.length / 2)) {
       throw new Error("the betting sequence no longer matches the exact bound on most configurations; rewrite the sentence in body.tex");
     }
@@ -2022,7 +2114,7 @@ const requireRep = (model: string, pair: string, sweeps: Array<{ alpha: number; 
   const fmtFlip = r8.find((x) => x.pair === "so-formatting")!.trueFlipRate;
   const synFlip = r8.find((x) => x.pair === "so-synonym")!.trueFlipRate;
   famRows.push(
-    `DeepSeek V4 Flash (primary) & ${num(r8[0]!.n)} & ${pct(floorBoolValue, 1)} & ${pct(fmtFlip, 2)} & ${cell("so-formatting", 0.1)} & ${cell("so-formatting", 0.2)} & ${pct(synFlip, 2)} & ${cell("so-synonym", 0.1)} & ${cell("so-synonym", 0.2)} \\\\`,
+    `DeepSeek V4 Flash (primary) & ${num(r8[0]!.n)} & ${pct(floorBoolValue, 2)} & ${pct(fmtFlip, 2)} & ${cell("so-formatting", 0.1)} & ${cell("so-formatting", 0.2)} & ${pct(synFlip, 2)} & ${cell("so-synonym", 0.1)} & ${cell("so-synonym", 0.2)} \\\\`,
   );
 }
 if (!nanoPromoted) {
@@ -2049,21 +2141,20 @@ for (const f of FAMILIES) {
   // and the table must not silently mix sample sizes.
   const syn = d.synonym && d.synonym.usableEdit >= 0.95 * d.n ? d.synonym : undefined;
   if (d.synonym && !syn) console.log(`NOTE: ${f.file} synonym pair partial (${d.synonym.usableEdit}/${d.n}); reported as --`);
-  // A family whose floor and flip differ only in the second decimal is
-  // printed to two, so the table shows the relation the prose states.
-  // The caption gives one rule for a two-decimal entry (a rate on a half);
-  // two rates that print alike at one decimal would need another.
-  if (d.selfFlipFloor !== d.formattingEditFlip && pctRate(d.selfFlipFloor, 1) === pctRate(d.formattingEditFlip, 1)) {
-    throw new Error(`${f.label}: floor and flip differ but print alike; give the caption of the model table a rule for it`);
+  // Every rate in the model tables is printed to two decimals, the
+  // precision of a count over 2,000 rows (Reviewer 2 asked for one
+  // precision throughout). Two rates that differ must not print alike.
+  if (d.selfFlipFloor !== d.formattingEditFlip && pct(d.selfFlipFloor, 2) === pct(d.formattingEditFlip, 2)) {
+    throw new Error(`${f.label}: floor and flip differ but print alike at two decimals`);
   }
   famRows.push(
-    `${f.label} & ${num(d.n)} & ${pctRate(d.selfFlipFloor, 1)} & ${pctRate(d.formattingEditFlip, 1)} & ${repCell(d.model, "so-formatting", 0.1)} & ${repCell(d.model, "so-formatting", 0.2)} & ${syn ? pctRate(syn.synonymEditFlip, 1) : "--"} & ${syn ? repCell(d.model, "so-synonym", 0.1) : "--"} & ${syn ? repCell(d.model, "so-synonym", 0.2) : "--"} \\\\`,
+    `${f.label} & ${num(d.n)} & ${pct(d.selfFlipFloor, 2)} & ${pct(d.formattingEditFlip, 2)} & ${repCell(d.model, "so-formatting", 0.1)} & ${repCell(d.model, "so-formatting", 0.2)} & ${syn ? pct(syn.synonymEditFlip, 2) : "--"} & ${syn ? repCell(d.model, "so-synonym", 0.1) : "--"} & ${syn ? repCell(d.model, "so-synonym", 0.2) : "--"} \\\\`,
   );
   requireRep(d.model, "so-formatting", d.sweeps);
   if (syn) requireRep(d.model, "so-synonym", syn.sweeps);
   // The prose cites a few of these figures; the rest are in the table.
-  defCited(`fam${f.key}Floor`, pctRate(d.selfFlipFloor, 1));
-  defCited(`fam${f.key}Fmt`, pctRate(d.formattingEditFlip, 1));
+  defCited(`fam${f.key}Floor`, pct(d.selfFlipFloor, 2));
+  defCited(`fam${f.key}Fmt`, pct(d.formattingEditFlip, 2));
   famUsable.push(...[(d as unknown as { usableFloor?: number }).usableFloor, (d as unknown as { usableEdit?: number }).usableEdit, syn?.usableEdit].filter((x): x is number => typeof x === "number"));
   famFloors.push(d.selfFlipFloor);
   const anyCert = d.sweeps.some((x) => x.certifiedStrata.length > 0) ||
@@ -2100,6 +2191,8 @@ for (const f of FAMILIES) {
   }
 }
 def("famCount", String(FAMILIES.length));
+def("famCountWord", countWord(FAMILIES.length));
+def("famCountWordCap", countWord(FAMILIES.length).replace(/^./, (c) => c.toUpperCase()));
 void famCertifying;
 // The reading of the replication tables that the model study states.
 {
@@ -2131,10 +2224,12 @@ void famCertifying;
   );
   def("famRepBestMin", pctFloor(Math.min(...best), 1));
   reading("every further model has an edit that certifies in nearly every replication", Math.min(...best) > 0.99);
-  // "At least one edit certifies on X of Y further models": a model counts
+  // "On all six further models at least one edit certifies": a model counts
   // when its best cell at the loose budget certifies in nearly every
   // replication, not when one seeded run happened to certify.
-  def("famCertCount", String(best.filter((b) => b > 0.99).length));
+  if (best.filter((b) => b > 0.99).length !== best.length) {
+    throw new Error("not every further model certifies at the loose budget any more; rewrite 'On all six further models' in body.tex");
+  }
   for (const m of ["google/gemini-3-flash", "google/gemini-3.8-flash"]) {
     for (const a of [0.1, 0.2]) reading(`${m} certifies the formatting edit in every replication at ${a}`, cert(m, "so-formatting", a).certificationRate === 1);
   }
@@ -2157,8 +2252,9 @@ if (gemini38Present) {
   // behind them are cited so the relation stays visible.
   const d38 = J(GEMINI38_FULL) as { n: number; usableFloor?: number; selfFlipFloor: number; formattingEditFlip: number };
 }
-def("famFloorLo", pct(Math.min(...famFloors), 1));
-def("famFloorHi", pct(Math.max(...famFloors), 1));
+// Two decimals, as the model tables print every floor.
+def("famFloorLo", pct(Math.min(...famFloors), 2));
+def("famFloorHi", pct(Math.max(...famFloors), 2));
 def("famUsableMin", num(Math.min(...famUsable)));
 // The floor is a bound for the identity edit only. Two strata of the family
 // study flip LESS under an edit than under no edit at all, and one family
@@ -2217,6 +2313,12 @@ def("famProbeRow", nanoPromoted ? "0" : "1");
   if (!cap) throw new Error("could not read the scope cap from the certify route");
   if (!/adaptive:\s*true/.test(route) || !/maxLooks:\s*6/.test(route) || !/bound:\s*"exact"/.test(route) || !/assignStrataWith\(cells, \(\) => "all"\)/.test(route)) {
     throw new Error("the certify route no longer runs the pinned procedure (adaptive, six looks, exact bound, value strata); rewrite the implementation section or fix the route");
+  }
+  // The article says a live certification issues its oracle calls one at a
+  // time: the released constant must be 1, and the route's oracle must use it.
+  const certifyLib = readFileSync("lib/lore/certify.ts", "utf8");
+  if (!/export const CERTIFICATION_CONCURRENCY = 1;/.test(certifyLib) || !/concurrency:\s*CERTIFICATION_CONCURRENCY/.test(route) || /concurrency:\s*\d/.test(route)) {
+    throw new Error("the certify route no longer issues its oracle calls one at a time; rewrite Sections IV and V-F or fix the route");
   }
   def("routeScopeCap", num(Number(cap[1])));
 }
@@ -2309,7 +2411,26 @@ if (exp17) {
   def("indepConcDispersion", (e.concurrent.serial.blockVarianceRatio ?? 0).toFixed(2));
   def("indepBlocks", String(e.concurrent.serial.blocks));
   const minutesOf = (ms: number, d: number) => (ms / 6e4).toFixed(d);
-  def("indepSeqMinutes", minutesOf(e.wallMs.sequential, 0));
+  // One decimal, so that minutes over calls gives the per-call rate printed
+  // beside it (seqSecondsPerCall).
+  def("indepSeqMinutes", minutesOf(e.wallMs.sequential, 1));
+  // What one-at-a-time oracle calls cost in wall clock, at the rate the
+  // sequential arm measured in the September snapshot (its requests went
+  // out one at a time, as the released certifier now issues them): the
+  // loose and tight September certificates, and the longest September run
+  // (its cached-FALSE stratum sampled to the deepest look). Computed from
+  // the rate as printed, so that a reader's products match.
+  {
+    const perCall = Number((e.wallMs.sequential / 1000 / e.n).toFixed(1));
+    const sepSweeps = (exp11cSep as { sweeps: Array<{ bound: string; alpha: number; oracleCalls?: number }> }).sweeps;
+    const callsOf = (bound: string, alpha: number) => sepSweeps.find((x) => x.bound === bound && Math.abs(x.alpha - alpha) < 1e-9)!.oracleCalls!;
+    const maxCalls = Math.max(...sepSweeps.map((x) => x.oracleCalls ?? 0));
+    def("seqSecondsPerCall", perCall.toFixed(1));
+    def("seqWallLooseMinutes", String(Math.round((callsOf("exact", 0.2) * perCall) / 60)));
+    def("seqWallTightHours", ((callsOf("exact", 0.1) * perCall) / 60 / 60).toFixed(1));
+    def("seqWallMaxCalls", num(maxCalls));
+    def("seqWallMaxHours", ((maxCalls * perCall) / 60 / 60).toFixed(1));
+  }
   def("indepConcMinutes", minutesOf(e.wallMs.concurrent, 1));
   // Resolution of the tests, stated beside the results: the minimum
   // detectable difference of the two-proportion test at 80% power and the
@@ -2380,7 +2501,6 @@ if (exp17) {
   def("indepOnlyConcFlips", String(onlyConc));
   def("indepPairedP", mcnemar < 0.001 ? "<0.001" : mcnemar.toFixed(2));
   // The concurrent-only extension: enough blocks for the dispersion test.
-  def("indepExtAvailable", exp17ext ? "1" : "0");
   if (exp17ext) {
     const x = exp17ext.concurrent;
     const dfx = x.serial.dispersionDf;
@@ -2577,6 +2697,202 @@ ${ordered.map((src) => `${src.row} & ${phiOf(src.label).toFixed(2)} & ${pct(at(s
 \\end{tabular}
 `,
       );
+      def("indepPooledDispersionHi", pooledHi.toFixed(2));
+      // Second review round: the same simulation with the certifier's bound
+      // widened for an assumed ratio (dispersionAdjustedUpperBound, the
+      // Clopper-Pearson limit at n/phi effective draws), at the pooled
+      // estimate and at the upper end of its interval (exp9c "adjusted").
+      {
+        type RAdj = R9c & { widenedFor: number; widenedForLabel: string };
+        const adj = (c as unknown as { adjusted?: RAdj[] }).adjusted;
+        if (!adj || adj.length === 0) throw new Error("exp9c-overdispersion.json has no adjusted block; re-run scripts/experiments/exp9c-overdispersion.ts");
+        const EST = "pooled estimate (both concurrent arms)";
+        const HI = "upper end of the pooled 95% interval";
+        for (const r of adj) {
+          if (!same(r.widenedFor, phiOf(r.widenedForLabel)) || (r.ratioLabel !== "independent" && !same(r.ratio, phiOf(r.ratioLabel)))) {
+            throw new Error("exp9c's adjusted block was simulated at other ratios than the check reports; re-run scripts/experiments/exp9c-overdispersion.ts");
+          }
+        }
+        const widened = (truth: string, widenedFor: string, alpha: number) => {
+          const r = adj.find((y) => y.ratioLabel === truth && y.widenedForLabel === widenedFor && Math.abs(y.alpha - alpha) < 1e-9);
+          if (!r) throw new Error(`exp9c's adjusted block has no cell for draws "${truth}" widened for "${widenedFor}" at alpha=${alpha}`);
+          return r.errorProbability;
+        };
+        const matched = [0.2, 0.1].flatMap((a) => [widened(EST, EST, a), widened(HI, HI, a)]);
+        const mismatched = [0.2, 0.1].map((a) => widened(HI, EST, a));
+        const widenReading: Array<[string, boolean]> = [
+          ["widened for the ratio that generates the draws, the certifier stays inside the per-stratum level", Math.max(...matched) < c.perStratumDelta],
+          ["widened for the pooled estimate only, draws at the interval's upper end still exceed the per-stratum level", Math.min(...mismatched) > c.perStratumDelta],
+        ];
+        for (const [name, ok] of widenReading) {
+          if (!ok) throw new Error(`widened bound: "${name}" no longer holds; rewrite the paragraphs on dependence in body.tex and appendix.tex`);
+        }
+        def("widenMatchedMax", pctCeil(Math.max(...matched), 1));
+        def("widenMismatchMax", pctCeil(Math.max(...mismatched), 1));
+        const simRow = (name: string, value: (truth: string, alpha: number) => number) =>
+          `${name} & ${[0.2, 0.1].flatMap((a) => ["independent", EST, HI].map((t) => pct(value(t, a), 1))).join(" & ")} \\\\`;
+        writeFileSync(
+          "paper/tablewidensim.tex",
+          `% GENERATED by scripts/experiments/gen-paper-assets.ts from exp9c-overdispersion.json
+% (results and adjusted blocks). Do not edit by hand.
+\\begin{tabular}{@{}lrrrrrr@{}}
+\\toprule
+ & \\multicolumn{3}{c}{$\\alpha{=}0.2$, draws at ratio} & \\multicolumn{3}{c}{$\\alpha{=}0.1$, draws at ratio} \\\\
+\\cmidrule(lr){2-4}\\cmidrule(lr){5-7}
+Bound & 1.00 & ${phiOf(EST).toFixed(2)} & ${phiOf(HI).toFixed(2)} & 1.00 & ${phiOf(EST).toFixed(2)} & ${phiOf(HI).toFixed(2)} \\\\
+\\midrule
+${simRow("as pinned (Table~\\ref{tab:dependence})", (t, a) => at(t, a))}
+${simRow(`widened for ${phiOf(EST).toFixed(2)}`, (t, a) => widened(t, EST, a))}
+${simRow(`widened for ${phiOf(HI).toFixed(2)}`, (t, a) => widened(t, HI, a))}
+\\bottomrule
+\\end{tabular}
+`,
+        );
+        // The deployment certificates replayed under the widened bound
+        // (exp20), at the same two ratios.
+        type R20 = { snapshotKey: string; alpha: number; ratioKey: string; phi: number; reachable: boolean; oracleCalls?: number; reused?: number; strata: Array<{ stratumId: string; certified?: boolean }> };
+        const e20 = J("exp20-dispersion-adjusted.json") as { ratios: Array<{ key: string; phi: number }>; results: R20[]; appliedAugustCertificate: { look: number; flips: number; bounds: Array<{ ratioKey: string; phi: number; upperBound: number }> } };
+        const ratioKeys: Array<[string, string]> = [["independent", "independent"], ["pooledEstimate", EST], ["pooledUpper", HI]];
+        for (const [k, label] of ratioKeys.slice(1)) {
+          const r = e20.ratios.find((y) => y.key === k);
+          if (!r || !same(r.phi, phiOf(label))) throw new Error("exp20 was replayed at other ratios than exp9c simulated; re-run scripts/experiments/exp20-dispersion-adjusted.ts");
+        }
+        const cert20 = (snap: string, alpha: number, ratioKey: string) => {
+          const r = e20.results.find((y) => y.snapshotKey === snap && Math.abs(y.alpha - alpha) < 1e-9 && y.ratioKey === ratioKey);
+          if (!r) throw new Error(`exp20 has no ${snap} alpha=${alpha} ${ratioKey}`);
+          return { ...r, certified: r.reachable && (r.reused ?? 0) > 0 };
+        };
+        // The replay at ratio 1 is the certificate Table 6 prints.
+        for (const alpha of [0.2, 0.1, 0.05]) {
+          const r = cert20("september", alpha, "independent");
+          const t = (exp11cSep as { sweeps: Array<{ bound: string; alpha: number; oracleCalls: number; reused: number }> }).sweeps.find((y) => y.bound === "exact" && Math.abs(y.alpha - alpha) < 1e-9);
+          if (!t || r.oracleCalls !== t.oracleCalls || r.reused !== t.reused) throw new Error(`exp20's September replay at ratio 1 differs from Table 6 at alpha=${alpha}`);
+        }
+        const sepLooseEst = cert20("september", 0.2, "pooledEstimate");
+        const sepLooseHi = cert20("september", 0.2, "pooledUpper");
+        const sepTightEst = cert20("september", 0.1, "pooledEstimate");
+        const sepTightHi = cert20("september", 0.1, "pooledUpper");
+        const applied = (k: string) => e20.appliedAugustCertificate.bounds.find((b) => b.ratioKey === k)!.upperBound;
+        const deployReading: Array<[string, boolean]> = [
+          ["the loose September certificate survives both ratios, at a deeper look", sepLooseEst.certified && sepLooseHi.certified && sepLooseEst.oracleCalls! > 90 && sepLooseHi.oracleCalls! > sepLooseEst.oracleCalls!],
+          ["the tight September certificate survives the pooled estimate at the same cost and is refused at the upper end", sepTightEst.certified && !sepTightHi.certified && sepTightEst.oracleCalls === cert20("september", 0.1, "independent").oracleCalls],
+          ["the August certificates survive both ratios", ["pooledEstimate", "pooledUpper"].every((k) => cert20("august", 0.2, k).certified && cert20("august", 0.1, k).certified)],
+          ["the applied August certificate's evidence clears its budget at both ratios", applied("pooledEstimate") <= 0.2 && applied("pooledUpper") <= 0.2],
+        ];
+        for (const [name, ok] of deployReading) {
+          if (!ok) throw new Error(`widened bound on the deployment certificates: "${name}" no longer holds; rewrite Section V-F and Appendix D`);
+        }
+        def("widenSepLooseCallsEst", num(sepLooseEst.oracleCalls!));
+        def("widenSepLooseCallsHi", num(sepLooseHi.oracleCalls!));
+        def("widenSepLooseReusedHi", num(sepLooseHi.reused!));
+        def("widenSepTightCallsHi", num(sepTightHi.oracleCalls!));
+        def("widenAppliedEst", applied("pooledEstimate").toFixed(3));
+        def("widenAppliedHi", applied("pooledUpper").toFixed(3));
+        def("widenSepLooseReusedEst", num(sepLooseEst.reused!));
+        // The tight September certificate survives the pooled estimate by a
+        // thin margin: print its bound, and how much dispersion each
+        // certificate tolerates (largest ratio at which it still clears).
+        type Tol = { snapshotKey: string; alpha: number; issuedLook: number; phiAtIssuedLook: number; bestLook: number; phiAtBestLook: number };
+        const tol = (e20 as unknown as { tolerance: Tol[]; appliedAugustCertificate: { phiTolerated: number } });
+        const tolOf = (snap: string, alpha: number) => {
+          const t = tol.tolerance.find((x) => x.snapshotKey === snap && Math.abs(x.alpha - alpha) < 1e-9);
+          if (!t) throw new Error(`exp20 has no tolerance for ${snap} alpha=${alpha}; re-run scripts/experiments/exp20-dispersion-adjusted.ts`);
+          return t;
+        };
+        const tightBoundEst = (sepTightEst as unknown as { strata: Array<{ stratumId: string; looks?: Array<{ n: number; upperBound: number }> }> }).strata
+          .find((x) => x.stratumId.startsWith("v=false"))!.looks!.slice(-1)[0]!.upperBound;
+        const marginReading: Array<[string, boolean]> = [
+          ["the tight September certificate clears the pooled estimate by less than a thousandth", tightBoundEst <= 0.1 && 0.1 - tightBoundEst < 0.001],
+          ["the tight September certificate tolerates less dispersion than the interval's upper end", tolOf("september", 0.1).phiAtBestLook < phiOf(HI)],
+          ["the applied August certificate tolerates more than the interval's upper end", tol.appliedAugustCertificate.phiTolerated > phiOf(HI)],
+        ];
+        for (const [name, ok] of marginReading) {
+          if (!ok) throw new Error(`widened bound: "${name}" no longer holds; rewrite Section V-F and Appendix L`);
+        }
+        def("widenSepTightBoundEst", tightBoundEst.toFixed(4));
+        // A tolerated ratio is printed rounded down: rounded up, the printed
+        // ratio would already fail the budget.
+        const floor2 = (x: number) => (Math.floor(x * 100) / 100).toFixed(2);
+        def("widenSepTightPhiIssued", floor2(tolOf("september", 0.1).phiAtIssuedLook));
+        def("widenSepTightPhiBest", floor2(tolOf("september", 0.1).phiAtBestLook));
+        def("widenSepTightPhiBestLook", num(tolOf("september", 0.1).bestLook));
+        def("widenAppliedPhi", floor2(tol.appliedAugustCertificate.phiTolerated));
+        // Korn and Graubard's degrees-of-freedom factor, folded into the
+        // pooled estimate at the schedule's deepest look (exp20
+        // "pooledEstimateDf"): Appendix L says it changes the tight September
+        // certificate alone, which then certifies at the deepest look.
+        {
+          const dfRatio = e20.ratios.find((y) => y.key === "pooledEstimateDf");
+          const dfInfo = (e20 as unknown as { degreesOfFreedom?: { d: number; look: number } }).degreesOfFreedom;
+          if (!dfRatio || !dfInfo) throw new Error("exp20 has no degrees-of-freedom replay; re-run scripts/experiments/exp20-dispersion-adjusted.ts");
+          const indepDf = (exp17ext as unknown as { pooledWithMainConcurrent: { dispersionDf: number } }).pooledWithMainConcurrent.dispersionDf;
+          const changed: string[] = [];
+          for (const snap of ["august", "september"]) {
+            for (const alpha of [0.2, 0.1, 0.05]) {
+              const a = cert20(snap, alpha, "pooledEstimate");
+              const b = cert20(snap, alpha, "pooledEstimateDf");
+              if (a.reachable !== b.reachable || a.certified !== b.certified || a.oracleCalls !== b.oracleCalls) changed.push(`${snap} ${alpha}`);
+            }
+          }
+          const tightDf = cert20("september", 0.1, "pooledEstimateDf");
+          const dfReading: Array<[string, boolean]> = [
+            ["the factor uses the pooled estimate's degrees of freedom", dfInfo.d === indepDf],
+            ["the factor raises the pooled estimate past what the tight September certificate tolerates at its look, and not past its deepest look", dfRatio.phi > tolOf("september", 0.1).phiAtIssuedLook && dfRatio.phi < tolOf("september", 0.1).phiAtBestLook],
+            ["with the factor, only the tight September certificate changes, and it still certifies", changed.length === 1 && changed[0] === "september 0.1" && tightDf.certified],
+          ];
+          for (const [name, ok] of dfReading) {
+            if (!ok) throw new Error(`degrees-of-freedom factor: "${name}" no longer holds; rewrite the widened-bound paragraph of Appendix L`);
+          }
+          def("widenDfPhi", dfRatio.phi.toFixed(2));
+          def("widenDfTightCalls", num(tightDf.oracleCalls!));
+        }
+        // A widened certificate is one Theorem 1 covers when, at the look it
+        // is issued, the widened bound sits at or above the exact bound: on
+        // the theorem's event the exact bound covers the stratum's flips at
+        // every look, so the widened one does too.
+        for (const r of e20.results.filter((y) => y.phi > 1)) {
+          const strata = r.strata as Array<{ stratumId: string; size: number; certified?: boolean; looks?: Array<{ n: number; flips: number; upperBound: number; certified: boolean }> }>;
+          for (const st of strata) {
+            const last = st.looks?.slice(-1)[0];
+            if (!st.certified || !last) continue;
+            const exact = exactUpperBound(last.flips, last.n, st.size, 0.1 / strata.length / 6);
+            if (last.upperBound < exact - 1e-12) throw new Error(`exp20 ${r.snapshotKey} alpha=${r.alpha} phi=${r.phi}: the widened bound ${last.upperBound} sits below the exact bound ${exact} at look ${last.n}; Section V-F's coverage sentence no longer holds`);
+          }
+        }
+        const cell = (snap: string, alpha: number, k: string) => {
+          const r = cert20(snap, alpha, k);
+          if (!r.reachable) return "--";
+          // "ref. (n)": refused after n calls (the caption says so); the
+          // short form keeps Table S15 inside one column.
+          return r.certified ? num(r.oracleCalls!) : `ref.\\ (${num(r.oracleCalls!)})`;
+        };
+        const deployRows: string[] = [];
+        const tolCell = (snap: string, alpha: number) => {
+          const t = (e20 as unknown as { tolerance: Array<{ snapshotKey: string; alpha: number; bestLook: number; phiAtBestLook: number }> }).tolerance
+            .find((x) => x.snapshotKey === snap && Math.abs(x.alpha - alpha) < 1e-9);
+          return t ? `${floor2(t.phiAtBestLook)} (${num(t.bestLook)})` : "--";
+        };
+        for (const [snap, name] of [["august", "Aug."], ["september", "Sep."]] as const) {
+          for (const alpha of [0.2, 0.1, 0.05]) {
+            if (ratioKeys.every(([k]) => !cert20(snap, alpha, k).reachable)) continue;
+            deployRows.push(`${name} & $\\alpha{=}${alpha}$ & ${ratioKeys.map(([k]) => cell(snap, alpha, k)).join(" & ")} & ${tolCell(snap, alpha)} \\\\`);
+          }
+        }
+        writeFileSync(
+          "paper/tablewiden.tex",
+          `% GENERATED by scripts/experiments/gen-paper-assets.ts from exp20-dispersion-adjusted.json. Do not edit by hand.
+\\begin{tabular}{@{}llrrrr@{}}
+\\toprule
+ & & \\multicolumn{3}{c}{dispersion ratio} & largest \\\\
+\\cmidrule(lr){3-5}
+Snapshot & Budget & 1.00 & ${phiOf(EST).toFixed(2)} & ${phiOf(HI).toFixed(2)} & ratio (look) \\\\
+\\midrule
+${deployRows.join("\n")}
+\\bottomrule
+\\end{tabular}
+`,
+        );
+      }
     }
     // The planned comparison drops requests that failed or timed out; the
     // released certifier counts a failed call as a flip. The same comparison
@@ -2699,7 +3015,7 @@ ${lines.join("\n")}
   const flipOf = (pair: string) => pct(r8.find((x) => x.pair === pair)!.trueFlipRate, 2);
   const rows18: string[] = [];
   rows18.push(
-    `DeepSeek V4 Flash (primary) & -- & ${flipOf("so-widening")} & ${primaryCell("so-widening", 0.1)} & ${primaryCell("so-widening", 0.2)} & ${pct(exp0b.selfFlipRate, 1)} & ${flipOf("dj-formatting")} & ${primaryCell("dj-formatting", 0.1)} & ${primaryCell("dj-formatting", 0.2)} & ${flipOf("dj-criteria")} & ${primaryCell("dj-criteria", 0.1)} & ${primaryCell("dj-criteria", 0.2)} \\\\`,
+    `DeepSeek V4 Flash (primary) & -- & ${flipOf("so-widening")} & ${primaryCell("so-widening", 0.1)} & ${primaryCell("so-widening", 0.2)} & ${pct(exp0b.selfFlipRate, 2)} & ${flipOf("dj-formatting")} & ${primaryCell("dj-formatting", 0.1)} & ${primaryCell("dj-formatting", 0.2)} & ${flipOf("dj-criteria")} & ${primaryCell("dj-criteria", 0.1)} & ${primaryCell("dj-criteria", 0.2)} \\\\`,
   );
   let complete = 0;
   const completeLabels: string[] = [];
@@ -2707,7 +3023,7 @@ ${lines.join("\n")}
     const w = sets.widening;
     const d = sets.djinni;
     const label = LABEL[model] ?? `\\texttt{${model.replace(/_/g, "\\_")}}`;
-    const fl = (v: number | null | undefined) => (v === null || v === undefined ? "--" : pctRate(v, 1));
+    const fl = (v: number | null | undefined) => (v === null || v === undefined ? "--" : pct(v, 2));
     rows18.push(
       `${label} & ${fl(w?.selfFlipFloor)} & ${fl(w?.pairs["so-widening"]?.flip)} & ${cell18(model, "so-widening", w?.pairs["so-widening"], 0.1)} & ${cell18(model, "so-widening", w?.pairs["so-widening"], 0.2)} & ${fl(d?.selfFlipFloor)} & ${fl(d?.pairs["dj-formatting"]?.flip)} & ${cell18(model, "dj-formatting", d?.pairs["dj-formatting"], 0.1)} & ${cell18(model, "dj-formatting", d?.pairs["dj-formatting"], 0.2)} & ${fl(d?.pairs["dj-criteria"]?.flip)} & ${cell18(model, "dj-criteria", d?.pairs["dj-criteria"], 0.1)} & ${cell18(model, "dj-criteria", d?.pairs["dj-criteria"], 0.2)} \\\\`,
     );
@@ -2750,7 +3066,9 @@ ${lines.join("\n")}
     }
     def("famPairsSmallStrataNote", notes.length ? ` A stratum smaller than the first look is drawn in full and cannot be certified: ${notes.join("; ")}.` : "");
   }
-  def("famFivePairFamilies", String(complete));
+  def("famFivePairFamiliesWord", countWord(complete));
+  // The prose says the remaining model ran two pairs (the lab column's).
+  if (FAMILIES.length - complete !== 1) throw new Error("the model study no longer has exactly one model on two pairs; rewrite the scope sentences of the abstract, Contribution 4, Table 4, and the Conclusion");
   // Certification outcomes across the remaining pairs, for the prose.
   {
     let certAny = 0;
@@ -2760,7 +3078,9 @@ ${lines.join("\n")}
       const ps = [sets.widening?.pairs["so-widening"], sets.djinni?.pairs["dj-formatting"], sets.djinni?.pairs["dj-criteria"]];
       if (ps.some((p) => p?.sweeps.some((s) => s.certifiedStrata.length > 0))) certAny++;
     }
-    def("famPairsFamilies", String(families));
+    // Section V-D says the remaining three pairs ran on the models that ran
+    // all five (famFivePairFamiliesWord).
+    if (families !== complete) throw new Error("the models that ran the remaining three pairs are not the five-pair models any more; rewrite the first paragraph of Section V-D");
   }
   writeFileSync(
     "paper/tablefampairs.tex",
@@ -2926,6 +3246,63 @@ if (pilotReady && exp19) {
     const F = res("floor").judgeFlipRate;
     def("pilotImpliedFloor", pct(F * pD + (1 - F) * pS, 1));
     def("pilotImpliedFloorBand", `[${(F * pDlo * 100).toFixed(1)}, ${((F * pDhi + (1 - F) * pShi) * 100).toFixed(1)}]\\%`);
+  }
+  // The second human labeler (exp19b, second review round): the same pairs
+  // labeled blind, in a fresh order, on the page exp19b writes. Agreement
+  // with the author and with the model labeler, the judge's miss bound under
+  // the second reading, and the label-weighted floor as the second labeler
+  // reads it. Every reading the prose states is checked here.
+  {
+    type E19b = {
+      n: number;
+      deltaCal: number;
+      agreementWithAuthor: { agree: number; rate: number; kappa: number };
+      agreementWithModelLabeler: { agree: number; rate: number };
+      authorModelSplits: { pairs: number; secondSidesWithModel: number };
+      judgeSame: { pairs: number; missesSecond: number; missUcbSecond: number; missesEitherHuman: number };
+      judgeDifferent: { pairs: number; falseFlipsSecond: number };
+    };
+    const e = JOpt("exp19b-second-labeler.json") as E19b | null;
+    if (!e) throw new Error("exp19b-second-labeler.json is missing; run EXP_LABELS2=docs/research/experiments/exp19-freetext-labels-second.json pnpm tsx scripts/experiments/exp19b-second-labeler.ts");
+    if (e.n !== cs.humanLabeled || e.deltaCal !== exp19.deltaCal || e.judgeSame.pairs !== cs.labeledJudgeSame || e.judgeDifferent.pairs !== cs.labeledJudgeDifferent) {
+      throw new Error("exp19b covers other pairs or another calibration level than exp19; re-run scripts/experiments/exp19b-second-labeler.ts");
+    }
+    const ucb = cpUpper(e.judgeSame.missesSecond, e.judgeSame.pairs, exp19.deltaCal);
+    if (Math.abs(ucb - e.judgeSame.missUcbSecond) > 1e-6) throw new Error("exp19b's miss bound differs from the generator's Clopper-Pearson bound");
+    const isLabeled = (x: { human?: string | null }) => x.human === "SAME" || x.human === "DIFFERENT";
+    const modelMisses = exp19.calibration.filter((x) => x.judge === true && isLabeled(x) && x.adjudicator === false).length;
+    const modelUcb = cpUpper(modelMisses, cs.labeledJudgeSame, exp19.deltaCal);
+    const confirmed2 = e.judgeDifferent.pairs - e.judgeDifferent.falseFlipsSecond;
+    const pD2 = confirmed2 / e.judgeDifferent.pairs;
+    const pS2 = e.judgeSame.missesSecond / e.judgeSame.pairs;
+    const F2 = res("floor").judgeFlipRate;
+    const floor2 = F2 * pD2 + (1 - F2) * pS2;
+    const secondReading: Array<[string, boolean]> = [
+      ["the second labeler's miss bound lies between the author's and the model labeler's", ucb > (cs.missUcbConditional ?? 0) && ucb < modelUcb],
+      ["the second labeler's miss bound exceeds the tight budget, leaving none of it", ucb > 0.1 && ucb < 0.2],
+      ["counting a pair as different when either human does gives the same bound", e.judgeSame.missesEitherHuman === e.judgeSame.missesSecond],
+      ["the two humans agree only fairly (Cohen's kappa between 0.2 and 0.6)", e.agreementWithAuthor.kappa > 0.2 && e.agreementWithAuthor.kappa < 0.6],
+      ["on the judge-different pairs the second labeler sits between the author and the model labeler", e.judgeDifferent.falseFlipsSecond < cs.falseFlipsAmongJudgeDifferent && confirmed2 < exp19.calibration.filter((x) => x.judge === false && isLabeled(x) && x.adjudicator === false).length],
+      ["as the second labeler reads them, two same-prompt draws disagree more often than the loose budget", floor2 > 0.2],
+    ];
+    for (const [name, ok] of secondReading) {
+      if (!ok) throw new Error(`second labeler: "${name}" no longer holds; rewrite the pilot paragraphs of Section VIII and Appendix E`);
+    }
+    def("pilotSecondAgree", pct(e.agreementWithAuthor.rate, 1));
+    def("pilotSecondKappa", e.agreementWithAuthor.kappa.toFixed(2));
+    def("pilotSecondSplits", String(e.authorModelSplits.pairs));
+    def("pilotSecondSidesModel", String(e.authorModelSplits.secondSidesWithModel));
+    def("pilotSecondMisses", String(e.judgeSame.missesSecond));
+    def("pilotSecondMissUcb", pct(ucb, 1));
+    def("pilotSecondMissUcbPts", (ucb * 100).toFixed(1));
+    // A deflated budget is printed rounded down, never up.
+    const floor3 = (x: number) => (Math.floor(x * 1000) / 1000).toFixed(3);
+    def("pilotSecondAlphaLooseEff", floor3(0.2 - ucb));
+    def("pilotSecondFalseFlips", String(e.judgeDifferent.falseFlipsSecond));
+    const [d2lo, d2hi] = wilsonInterval(confirmed2, e.judgeDifferent.pairs);
+    const [s2lo, s2hi] = wilsonInterval(e.judgeSame.missesSecond, e.judgeSame.pairs);
+    def("pilotSecondImpliedFloor", pct(floor2, 1));
+    def("pilotSecondImpliedFloorBand", `[${((F2 * d2lo + (1 - F2) * s2lo) * 100).toFixed(1)}, ${((F2 * d2hi + (1 - F2) * s2hi) * 100).toFixed(1)}]\\%`);
   }
   const outcome = (name: string, key: string) => {
     const s = res(name).sweeps[key];

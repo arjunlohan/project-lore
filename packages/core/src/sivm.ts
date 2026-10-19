@@ -447,6 +447,111 @@ export function binomialUpperBound(k: number, n: number, delta: number): number 
   return hi;
 }
 
+/** log Gamma(z) for z > 0 (Lanczos), for the non-integer beta tails below. */
+function logGamma(z: number): number {
+  const g = [
+    76.18009172947146, -86.50532032941677, 24.01409824083091,
+    -1.231739572450155, 0.1208650973866179e-2, -0.5395239384953e-5,
+  ];
+  let y = z;
+  let tmp = z + 5.5;
+  tmp -= (z + 0.5) * Math.log(tmp);
+  let ser = 1.000000000190015;
+  for (const c of g) ser += c / ++y;
+  return -tmp + Math.log((2.5066282746310005 * ser) / z);
+}
+
+/** Continued fraction of the incomplete beta function (modified Lentz). */
+function betaContinuedFraction(a: number, b: number, x: number): number {
+  const TINY = 1e-300;
+  let c = 1;
+  let d = 1 - ((a + b) * x) / (a + 1);
+  if (Math.abs(d) < TINY) d = TINY;
+  d = 1 / d;
+  let h = d;
+  for (let m = 1; m <= 1000; m++) {
+    const m2 = 2 * m;
+    let aa = (m * (b - m) * x) / ((a - 1 + m2) * (a + m2));
+    d = 1 + aa * d;
+    if (Math.abs(d) < TINY) d = TINY;
+    c = 1 + aa / c;
+    if (Math.abs(c) < TINY) c = TINY;
+    d = 1 / d;
+    h *= d * c;
+    aa = (-(a + m) * (a + b + m) * x) / ((a + m2) * (a + 1 + m2));
+    d = 1 + aa * d;
+    if (Math.abs(d) < TINY) d = TINY;
+    c = 1 + aa / c;
+    if (Math.abs(c) < TINY) c = TINY;
+    d = 1 / d;
+    const step = d * c;
+    h *= step;
+    if (Math.abs(step - 1) < 3e-16) break;
+  }
+  return h;
+}
+
+/** Regularized incomplete beta I_x(a, b), for real a, b > 0. */
+export function regularizedBeta(x: number, a: number, b: number): number {
+  if (x <= 0) return 0;
+  if (x >= 1) return 1;
+  const front = Math.exp(
+    logGamma(a + b) - logGamma(a) - logGamma(b) +
+      a * Math.log(x) + b * Math.log(1 - x),
+  );
+  return x < (a + 1) / (a + b + 2)
+    ? (front * betaContinuedFraction(a, b, x)) / a
+    : 1 - (front * betaContinuedFraction(b, a, 1 - x)) / b;
+}
+
+/**
+ * Dispersion-adjusted upper confidence bound, for a sensitivity analysis of
+ * Assumption 1 (not part of the pinned procedure).
+ *
+ * If oracle draws issued together are positively correlated, the variance
+ * of a sample's flip count exceeds its binomial value by some ratio phi
+ * (the design effect). Following Korn and Graubard's interval for survey
+ * proportions (Survey Methodology 24(2), 1998), k flips in n draws are then
+ * worth k/phi flips in n/phi independent draws (the effective sample size,
+ * with the observed rate held fixed), and the bound is the Clopper-Pearson
+ * upper limit at those counts: the p at which
+ * I_p(k/phi + 1, (n - k)/phi) = 1 - delta. The beta form is defined for
+ * non-integer counts. Their degrees-of-freedom factor, which charges for the
+ * noise in an estimated design effect, is left out; exp20 replays the
+ * deployment paths with it as well. At phi = 1 this is `binomialUpperBound`,
+ * the infinite-population limit of `exactUpperBound`; the two agree to three
+ * decimal places at the deployment stratum's size, where the sampled
+ * fraction is under 2%.
+ *
+ * It is a bound on a flip probability, with no finite-population term, and
+ * it corrects for dependence under a model of it (the block model of exp9c),
+ * not for dependence in general: exp9c measures how the certifier behaves
+ * with this bound when draws arrive in correlated blocks. It grows with phi,
+ * and where it sits at or above the exact bound a certificate it issues is
+ * one Theorem 1 covers under its assumptions; what the theorem does not
+ * cover is the protection it adds under dependence.
+ */
+export function dispersionAdjustedUpperBound(
+  k: number,
+  n: number,
+  delta: number,
+  phi: number,
+): number {
+  if (!(phi >= 1)) throw new Error(`dispersion ratio must be >= 1, got ${phi}`);
+  if (n <= 0) return 1;
+  if (k >= n) return 1;
+  const a = k / phi + 1;
+  const b = (n - k) / phi;
+  let lo = k / n;
+  let hi = 1;
+  for (let i = 0; i < 60; i++) {
+    const mid = (lo + hi) / 2;
+    if (regularizedBeta(mid, a, b) < 1 - delta) lo = mid;
+    else hi = mid;
+  }
+  return hi;
+}
+
 export type BoundKind = "exact" | "cp" | "eb" | "betting" | "wor";
 
 /** Upper confidence bound on a stratum's flip rate under the named bound. */
@@ -490,6 +595,11 @@ export interface StratumResult {
   perStratumDelta?: number;
   estimand?: "presented" | "reuse-set";
   bound?: BoundKind;
+  /**
+   * How the stratum's oracle draws were issued: the most requests in
+   * flight at once (1 = one at a time), when the caller recorded it.
+   */
+  oracleConcurrency?: number;
 }
 
 export interface CertifyMathInput {
@@ -617,7 +727,18 @@ export async function adaptiveCertifyStratum(
    * per-stratum level rather than split across looks.
    */
   bound: BoundKind = "exact",
+  /**
+   * Dispersion ratio phi of the oracle draws' flip counts against the
+   * binomial, for a sensitivity analysis of Assumption 1. At the default of
+   * 1 the bound above is used unchanged. Above 1 every look is tested with
+   * `dispersionAdjustedUpperBound` at that ratio instead, which replaces the
+   * exact or Clopper-Pearson bound (the other arms do not take it).
+   */
+  dispersion = 1,
 ): Promise<{ certified: boolean; looks: AdaptiveLook[]; sampled: number }> {
+  if (dispersion !== 1 && bound !== "exact" && bound !== "cp") {
+    throw new Error(`a dispersion ratio applies to the exact and Clopper-Pearson arms only, not ${bound}`);
+  }
   const schedule = lookSchedule(stratumSize, alpha, perStratumDelta, n0, maxLooks);
   const perLookDelta =
     bound === "betting" ? perStratumDelta : perStratumDelta / schedule.length;
@@ -625,7 +746,15 @@ export async function adaptiveCertifyStratum(
   for (let j = 0; j < schedule.length; j++) {
     const n = schedule[j]!;
     const flips = await flipsPrefix(n);
-    const upper = upperBoundFor(bound, flips, perLookDelta, stratumSize);
+    const upper =
+      dispersion === 1
+        ? upperBoundFor(bound, flips, perLookDelta, stratumSize)
+        : dispersionAdjustedUpperBound(
+            flips.reduce((a, b) => a + b, 0),
+            flips.length,
+            perLookDelta,
+            dispersion,
+          );
     const threshold =
       estimand === "reuse-set"
         ? alpha * Math.max(0, stratumSize - n) / stratumSize

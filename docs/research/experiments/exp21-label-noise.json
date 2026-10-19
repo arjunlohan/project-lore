@@ -1,0 +1,721 @@
+{
+  "experiment": "exp21-label-noise",
+  "note": "the replication analysis of Table 2 (exp8: pinned procedure, value strata, exact bound, 1,000 sampling seeds) rerun on the headline pair with each fresh draw of the edited prompt from the three-draw relabeling (exp10) as the label, against the same cache; the spread across labelings is the label noise the frozen-label replications leave out",
+  "pair": "so-formatting",
+  "runs": [
+    {
+      "key": "stored",
+      "label": "the stored labels (Table 2)",
+      "strata": {
+        "cachedFalse": {
+          "n": 1814,
+          "flips": 58,
+          "rate": 0.03197353914002205
+        },
+        "cachedTrue": {
+          "n": 186,
+          "flips": 69,
+          "rate": 0.3709677419354839
+        }
+      },
+      "results": [
+        {
+          "pair": "so-formatting",
+          "alpha": 0.02,
+          "estimand": "presented",
+          "n": 2000,
+          "trueFlipRate": 0.0635,
+          "main": {
+            "certifiedStrata": 0,
+            "sampled": 225,
+            "reused": 0,
+            "reusedFlips": 0,
+            "certTotal": 0,
+            "recompute": 1775,
+            "unsafeStrata": 0,
+            "reuseExceedStrata": 0,
+            "realizedPresented": 0,
+            "realizedReuse": 0,
+            "savings": 0
+          },
+          "bootstrap": {
+            "B": 1000,
+            "oracleMean": 130.77,
+            "oracleMin": 90,
+            "oracleMax": 1485,
+            "oracleP50": 90,
+            "certificationRate": 0,
+            "violationRatePresented": 0,
+            "violationRateReuseSet": 0,
+            "unsafeCertificateRate": 0,
+            "stratumReuseExceedRate": 0,
+            "savingsMean": 0,
+            "savingsSd": 0,
+            "savingsLo": 0,
+            "savingsHi": 0,
+            "realizedReuseCiLo": 0,
+            "realizedReuseCiHi": 0.7934567085261071
+          }
+        },
+        {
+          "pair": "so-formatting",
+          "alpha": 0.05,
+          "estimand": "presented",
+          "n": 2000,
+          "trueFlipRate": 0.0635,
+          "main": {
+            "certifiedStrata": 1,
+            "sampled": 1485,
+            "reused": 374,
+            "reusedFlips": 10,
+            "certTotal": 1814,
+            "recompute": 141,
+            "unsafeStrata": 0,
+            "reuseExceedStrata": 0,
+            "realizedPresented": 0.005512679162072767,
+            "realizedReuse": 0.026737967914438502,
+            "savings": 0.18700000000000006
+          },
+          "bootstrap": {
+            "B": 1000,
+            "oracleMean": 640.395,
+            "oracleMin": 90,
+            "oracleMax": 1485,
+            "oracleP50": 405,
+            "certificationRate": 0.744,
+            "violationRatePresented": 0,
+            "violationRateReuseSet": 0,
+            "unsafeCertificateRate": 0,
+            "stratumReuseExceedRate": 0,
+            "savingsMean": 0.38644800000000223,
+            "savingsSd": 0.2950043377579316,
+            "savingsLo": 0,
+            "savingsHi": 0.817,
+            "realizedReuseCiLo": 0.014586969620709107,
+            "realizedReuseCiHi": 0.04851248792975649
+          }
+        },
+        {
+          "pair": "so-formatting",
+          "alpha": 0.1,
+          "estimand": "presented",
+          "n": 2000,
+          "trueFlipRate": 0.0635,
+          "main": {
+            "certifiedStrata": 1,
+            "sampled": 90,
+            "reused": 1769,
+            "reusedFlips": 58,
+            "certTotal": 1814,
+            "recompute": 141,
+            "unsafeStrata": 0,
+            "reuseExceedStrata": 0,
+            "realizedPresented": 0.03197353914002205,
+            "realizedReuse": 0.03278688524590164,
+            "savings": 0.8845
+          },
+          "bootstrap": {
+            "B": 1000,
+            "oracleMean": 188.325,
+            "oracleMin": 90,
+            "oracleMax": 405,
+            "oracleP50": 225,
+            "certificationRate": 0.989,
+            "violationRatePresented": 0,
+            "violationRateReuseSet": 0,
+            "unsafeCertificateRate": 0,
+            "stratumReuseExceedRate": 0,
+            "savingsMean": 0.8256079999999995,
+            "savingsSd": 0.09791791887088426,
+            "savingsLo": 0.727,
+            "savingsHi": 0.8845,
+            "realizedReuseCiLo": 0.02544812751088211,
+            "realizedReuseCiHi": 0.04215046674593136
+          }
+        },
+        {
+          "pair": "so-formatting",
+          "alpha": 0.2,
+          "estimand": "presented",
+          "n": 2000,
+          "trueFlipRate": 0.0635,
+          "main": {
+            "certifiedStrata": 1,
+            "sampled": 90,
+            "reused": 1769,
+            "reusedFlips": 58,
+            "certTotal": 1814,
+            "recompute": 141,
+            "unsafeStrata": 0,
+            "reuseExceedStrata": 0,
+            "realizedPresented": 0.03197353914002205,
+            "realizedReuse": 0.03278688524590164,
+            "savings": 0.8845
+          },
+          "bootstrap": {
+            "B": 1000,
+            "oracleMean": 97.425,
+            "oracleMin": 90,
+            "oracleMax": 180,
+            "oracleP50": 90,
+            "certificationRate": 1,
+            "violationRatePresented": 0,
+            "violationRateReuseSet": 0,
+            "unsafeCertificateRate": 0,
+            "stratumReuseExceedRate": 0,
+            "savingsMean": 0.8809225000000007,
+            "savingsSd": 0.008227711938203963,
+            "savingsLo": 0.862,
+            "savingsHi": 0.8845,
+            "realizedReuseCiLo": 0.02544812751088211,
+            "realizedReuseCiHi": 0.04215046674593136
+          }
+        }
+      ]
+    },
+    {
+      "key": "redraw1",
+      "label": "fresh draw 1 of the three-draw relabeling",
+      "strata": {
+        "cachedFalse": {
+          "n": 1814,
+          "flips": 55,
+          "rate": 0.03031973539140022
+        },
+        "cachedTrue": {
+          "n": 186,
+          "flips": 75,
+          "rate": 0.4032258064516129
+        }
+      },
+      "results": [
+        {
+          "pair": "so-formatting",
+          "alpha": 0.02,
+          "estimand": "presented",
+          "n": 2000,
+          "trueFlipRate": 0.065,
+          "main": {
+            "certifiedStrata": 0,
+            "sampled": 90,
+            "reused": 0,
+            "reusedFlips": 0,
+            "certTotal": 0,
+            "recompute": 1910,
+            "unsafeStrata": 0,
+            "reuseExceedStrata": 0,
+            "realizedPresented": 0,
+            "realizedReuse": 0,
+            "savings": 0
+          },
+          "bootstrap": {
+            "B": 1000,
+            "oracleMean": 143.1,
+            "oracleMin": 90,
+            "oracleMax": 1485,
+            "oracleP50": 90,
+            "certificationRate": 0,
+            "violationRatePresented": 0,
+            "violationRateReuseSet": 0,
+            "unsafeCertificateRate": 0,
+            "stratumReuseExceedRate": 0,
+            "savingsMean": 0,
+            "savingsSd": 0,
+            "savingsLo": 0,
+            "savingsHi": 0,
+            "realizedReuseCiLo": 0,
+            "realizedReuseCiHi": 0.7934567085261071
+          }
+        },
+        {
+          "pair": "so-formatting",
+          "alpha": 0.05,
+          "estimand": "presented",
+          "n": 2000,
+          "trueFlipRate": 0.065,
+          "main": {
+            "certifiedStrata": 1,
+            "sampled": 1485,
+            "reused": 374,
+            "reusedFlips": 9,
+            "certTotal": 1814,
+            "recompute": 141,
+            "unsafeStrata": 0,
+            "reuseExceedStrata": 0,
+            "realizedPresented": 0.004961411245865491,
+            "realizedReuse": 0.02406417112299465,
+            "savings": 0.18700000000000006
+          },
+          "bootstrap": {
+            "B": 1000,
+            "oracleMean": 571.275,
+            "oracleMin": 90,
+            "oracleMax": 1485,
+            "oracleP50": 405,
+            "certificationRate": 0.786,
+            "violationRatePresented": 0,
+            "violationRateReuseSet": 0,
+            "unsafeCertificateRate": 0,
+            "stratumReuseExceedRate": 0,
+            "savingsMean": 0.45667200000000185,
+            "savingsSd": 0.28938500033000336,
+            "savingsLo": 0,
+            "savingsHi": 0.817,
+            "realizedReuseCiLo": 0.012710726127126785,
+            "realizedReuseCiHi": 0.04509550801966911
+          }
+        },
+        {
+          "pair": "so-formatting",
+          "alpha": 0.1,
+          "estimand": "presented",
+          "n": 2000,
+          "trueFlipRate": 0.065,
+          "main": {
+            "certifiedStrata": 1,
+            "sampled": 135,
+            "reused": 1724,
+            "reusedFlips": 53,
+            "certTotal": 1814,
+            "recompute": 141,
+            "unsafeStrata": 0,
+            "reuseExceedStrata": 0,
+            "realizedPresented": 0.029217199558985666,
+            "realizedReuse": 0.03074245939675174,
+            "savings": 0.862
+          },
+          "bootstrap": {
+            "B": 1000,
+            "oracleMean": 179.91,
+            "oracleMin": 90,
+            "oracleMax": 405,
+            "oracleP50": 135,
+            "certificationRate": 0.988,
+            "violationRatePresented": 0,
+            "violationRateReuseSet": 0,
+            "unsafeCertificateRate": 0,
+            "stratumReuseExceedRate": 0,
+            "savingsMean": 0.8289310000000001,
+            "savingsSd": 0.10068034435282444,
+            "savingsLo": 0.727,
+            "savingsHi": 0.8845,
+            "realizedReuseCiLo": 0.023579777346844983,
+            "realizedReuseCiHi": 0.03999179078764142
+          }
+        },
+        {
+          "pair": "so-formatting",
+          "alpha": 0.2,
+          "estimand": "presented",
+          "n": 2000,
+          "trueFlipRate": 0.065,
+          "main": {
+            "certifiedStrata": 1,
+            "sampled": 90,
+            "reused": 1769,
+            "reusedFlips": 54,
+            "certTotal": 1814,
+            "recompute": 141,
+            "unsafeStrata": 0,
+            "reuseExceedStrata": 0,
+            "realizedPresented": 0.029768467475192944,
+            "realizedReuse": 0.030525720746184284,
+            "savings": 0.8845
+          },
+          "bootstrap": {
+            "B": 1000,
+            "oracleMean": 96.57,
+            "oracleMin": 90,
+            "oracleMax": 135,
+            "oracleP50": 90,
+            "certificationRate": 1,
+            "violationRatePresented": 0,
+            "violationRateReuseSet": 0,
+            "unsafeCertificateRate": 0,
+            "stratumReuseExceedRate": 0,
+            "savingsMean": 0.8812375000000008,
+            "savingsSd": 0.007922268850372848,
+            "savingsLo": 0.862,
+            "savingsHi": 0.8845,
+            "realizedReuseCiLo": 0.023470706798054356,
+            "realizedReuseCiHi": 0.039615357969378893
+          }
+        }
+      ]
+    },
+    {
+      "key": "redraw2",
+      "label": "fresh draw 2 of the three-draw relabeling",
+      "strata": {
+        "cachedFalse": {
+          "n": 1814,
+          "flips": 64,
+          "rate": 0.03528114663726571
+        },
+        "cachedTrue": {
+          "n": 186,
+          "flips": 67,
+          "rate": 0.3602150537634409
+        }
+      },
+      "results": [
+        {
+          "pair": "so-formatting",
+          "alpha": 0.02,
+          "estimand": "presented",
+          "n": 2000,
+          "trueFlipRate": 0.0655,
+          "main": {
+            "certifiedStrata": 0,
+            "sampled": 90,
+            "reused": 0,
+            "reusedFlips": 0,
+            "certTotal": 0,
+            "recompute": 1910,
+            "unsafeStrata": 0,
+            "reuseExceedStrata": 0,
+            "realizedPresented": 0,
+            "realizedReuse": 0,
+            "savings": 0
+          },
+          "bootstrap": {
+            "B": 1000,
+            "oracleMean": 117.18,
+            "oracleMin": 90,
+            "oracleMax": 765,
+            "oracleP50": 90,
+            "certificationRate": 0,
+            "violationRatePresented": 0,
+            "violationRateReuseSet": 0,
+            "unsafeCertificateRate": 0,
+            "stratumReuseExceedRate": 0,
+            "savingsMean": 0,
+            "savingsSd": 0,
+            "savingsLo": 0,
+            "savingsHi": 0,
+            "realizedReuseCiLo": 0,
+            "realizedReuseCiHi": 0.7934567085261071
+          }
+        },
+        {
+          "pair": "so-formatting",
+          "alpha": 0.05,
+          "estimand": "presented",
+          "n": 2000,
+          "trueFlipRate": 0.0655,
+          "main": {
+            "certifiedStrata": 1,
+            "sampled": 1485,
+            "reused": 374,
+            "reusedFlips": 10,
+            "certTotal": 1814,
+            "recompute": 141,
+            "unsafeStrata": 0,
+            "reuseExceedStrata": 0,
+            "realizedPresented": 0.005512679162072767,
+            "realizedReuse": 0.026737967914438502,
+            "savings": 0.18700000000000006
+          },
+          "bootstrap": {
+            "B": 1000,
+            "oracleMean": 707.715,
+            "oracleMin": 90,
+            "oracleMax": 1485,
+            "oracleP50": 765,
+            "certificationRate": 0.666,
+            "violationRatePresented": 0,
+            "violationRateReuseSet": 0.013513513513513514,
+            "unsafeCertificateRate": 0,
+            "stratumReuseExceedRate": 0.009,
+            "savingsMean": 0.285732000000002,
+            "savingsSd": 0.2773909482589483,
+            "savingsLo": 0,
+            "savingsHi": 0.817,
+            "realizedReuseCiLo": 0.014586969620709107,
+            "realizedReuseCiHi": 0.04851248792975649
+          }
+        },
+        {
+          "pair": "so-formatting",
+          "alpha": 0.1,
+          "estimand": "presented",
+          "n": 2000,
+          "trueFlipRate": 0.0655,
+          "main": {
+            "certifiedStrata": 1,
+            "sampled": 135,
+            "reused": 1724,
+            "reusedFlips": 63,
+            "certTotal": 1814,
+            "recompute": 141,
+            "unsafeStrata": 0,
+            "reuseExceedStrata": 0,
+            "realizedPresented": 0.034729878721058434,
+            "realizedReuse": 0.03654292343387471,
+            "savings": 0.862
+          },
+          "bootstrap": {
+            "B": 1000,
+            "oracleMean": 209.43,
+            "oracleMin": 90,
+            "oracleMax": 405,
+            "oracleP50": 225,
+            "certificationRate": 0.987,
+            "violationRatePresented": 0,
+            "violationRateReuseSet": 0,
+            "unsafeCertificateRate": 0,
+            "stratumReuseExceedRate": 0,
+            "savingsMean": 0.8133089999999992,
+            "savingsSd": 0.10569624411021122,
+            "savingsLo": 0.727,
+            "savingsHi": 0.8845,
+            "realizedReuseCiLo": 0.02866602144041921,
+            "realizedReuseCiHi": 0.046480681822194676
+          }
+        },
+        {
+          "pair": "so-formatting",
+          "alpha": 0.2,
+          "estimand": "presented",
+          "n": 2000,
+          "trueFlipRate": 0.0655,
+          "main": {
+            "certifiedStrata": 1,
+            "sampled": 90,
+            "reused": 1769,
+            "reusedFlips": 63,
+            "certTotal": 1814,
+            "recompute": 141,
+            "unsafeStrata": 0,
+            "reuseExceedStrata": 0,
+            "realizedPresented": 0.034729878721058434,
+            "realizedReuse": 0.035613340870548335,
+            "savings": 0.8845
+          },
+          "bootstrap": {
+            "B": 1000,
+            "oracleMean": 99.81,
+            "oracleMin": 90,
+            "oracleMax": 225,
+            "oracleP50": 90,
+            "certificationRate": 1,
+            "violationRatePresented": 0,
+            "violationRateReuseSet": 0,
+            "unsafeCertificateRate": 0,
+            "stratumReuseExceedRate": 0,
+            "savingsMean": 0.8796175000000003,
+            "savingsSd": 0.009436892695238787,
+            "savingsLo": 0.862,
+            "savingsHi": 0.8845,
+            "realizedReuseCiLo": 0.0279342706451298,
+            "realizedReuseCiHi": 0.045304985473408936
+          }
+        }
+      ]
+    },
+    {
+      "key": "redraw3",
+      "label": "fresh draw 3 of the three-draw relabeling",
+      "strata": {
+        "cachedFalse": {
+          "n": 1813,
+          "flips": 51,
+          "rate": 0.028130170987313845
+        },
+        "cachedTrue": {
+          "n": 186,
+          "flips": 72,
+          "rate": 0.3870967741935484
+        }
+      },
+      "results": [
+        {
+          "pair": "so-formatting",
+          "alpha": 0.02,
+          "estimand": "presented",
+          "n": 1999,
+          "trueFlipRate": 0.061530765382691345,
+          "main": {
+            "certifiedStrata": 0,
+            "sampled": 90,
+            "reused": 0,
+            "reusedFlips": 0,
+            "certTotal": 0,
+            "recompute": 1909,
+            "unsafeStrata": 0,
+            "reuseExceedStrata": 0,
+            "realizedPresented": 0,
+            "realizedReuse": 0,
+            "savings": 0
+          },
+          "bootstrap": {
+            "B": 1000,
+            "oracleMean": 164.88,
+            "oracleMin": 90,
+            "oracleMax": 1485,
+            "oracleP50": 90,
+            "certificationRate": 0,
+            "violationRatePresented": 0,
+            "violationRateReuseSet": 0,
+            "unsafeCertificateRate": 0,
+            "stratumReuseExceedRate": 0,
+            "savingsMean": 0,
+            "savingsSd": 0,
+            "savingsLo": 0,
+            "savingsHi": 0,
+            "realizedReuseCiLo": 0,
+            "realizedReuseCiHi": 0.7934567085261071
+          }
+        },
+        {
+          "pair": "so-formatting",
+          "alpha": 0.05,
+          "estimand": "presented",
+          "n": 1999,
+          "trueFlipRate": 0.061530765382691345,
+          "main": {
+            "certifiedStrata": 1,
+            "sampled": 765,
+            "reused": 1093,
+            "reusedFlips": 33,
+            "certTotal": 1813,
+            "recompute": 141,
+            "unsafeStrata": 0,
+            "reuseExceedStrata": 0,
+            "realizedPresented": 0.01820187534473249,
+            "realizedReuse": 0.03019213174748399,
+            "savings": 0.5467733866933466
+          },
+          "bootstrap": {
+            "B": 1000,
+            "oracleMean": 517.05,
+            "oracleMin": 90,
+            "oracleMax": 1485,
+            "oracleP50": 405,
+            "certificationRate": 0.82,
+            "violationRatePresented": 0,
+            "violationRateReuseSet": 0,
+            "unsafeCertificateRate": 0,
+            "stratumReuseExceedRate": 0,
+            "savingsMean": 0.5133666833416732,
+            "savingsSd": 0.2787224060927084,
+            "savingsLo": 0,
+            "savingsHi": 0.8169084542271136,
+            "realizedReuseCiLo": 0.02157794723170519,
+            "realizedReuseCiHi": 0.04209724524822992
+          }
+        },
+        {
+          "pair": "so-formatting",
+          "alpha": 0.1,
+          "estimand": "presented",
+          "n": 1999,
+          "trueFlipRate": 0.061530765382691345,
+          "main": {
+            "certifiedStrata": 1,
+            "sampled": 225,
+            "reused": 1633,
+            "reusedFlips": 46,
+            "certTotal": 1813,
+            "recompute": 141,
+            "unsafeStrata": 0,
+            "reuseExceedStrata": 0,
+            "realizedPresented": 0.0253723110865968,
+            "realizedReuse": 0.028169014084507043,
+            "savings": 0.8169084542271136
+          },
+          "bootstrap": {
+            "B": 1000,
+            "oracleMean": 169.695,
+            "oracleMin": 90,
+            "oracleMax": 405,
+            "oracleP50": 135,
+            "certificationRate": 0.991,
+            "violationRatePresented": 0,
+            "violationRateReuseSet": 0,
+            "unsafeCertificateRate": 0,
+            "stratumReuseExceedRate": 0,
+            "savingsMean": 0.8366148074037094,
+            "savingsSd": 0.08888276722180076,
+            "savingsLo": 0.726863431715858,
+            "savingsHi": 0.8844422211105553,
+            "realizedReuseCiLo": 0.02118468959429496,
+            "realizedReuseCiHi": 0.03736807446057754
+          }
+        },
+        {
+          "pair": "so-formatting",
+          "alpha": 0.2,
+          "estimand": "presented",
+          "n": 1999,
+          "trueFlipRate": 0.061530765382691345,
+          "main": {
+            "certifiedStrata": 1,
+            "sampled": 90,
+            "reused": 1768,
+            "reusedFlips": 49,
+            "certTotal": 1813,
+            "recompute": 141,
+            "unsafeStrata": 0,
+            "reuseExceedStrata": 0,
+            "realizedPresented": 0.02702702702702703,
+            "realizedReuse": 0.02771493212669683,
+            "savings": 0.8844422211105553
+          },
+          "bootstrap": {
+            "B": 1000,
+            "oracleMean": 95.76,
+            "oracleMin": 90,
+            "oracleMax": 135,
+            "oracleP50": 90,
+            "certificationRate": 1,
+            "violationRatePresented": 0,
+            "violationRateReuseSet": 0,
+            "unsafeCertificateRate": 0,
+            "stratumReuseExceedRate": 0,
+            "savingsMean": 0.8816058029014591,
+            "savingsSd": 0.00747034584809926,
+            "savingsLo": 0.8619309654827414,
+            "savingsHi": 0.8844422211105553,
+            "realizedReuseCiLo": 0.021027038664942595,
+            "realizedReuseCiHi": 0.036450785537852956
+          }
+        }
+      ]
+    }
+  ],
+  "spread": [
+    {
+      "alpha": 0.02,
+      "savingsMeanMin": 0,
+      "savingsMeanMax": 0,
+      "certificationRateMin": 0,
+      "certificationRateMax": 0,
+      "unsafeCertificateRateMax": 0
+    },
+    {
+      "alpha": 0.05,
+      "savingsMeanMin": 0.285732000000002,
+      "savingsMeanMax": 0.5133666833416732,
+      "certificationRateMin": 0.666,
+      "certificationRateMax": 0.82,
+      "unsafeCertificateRateMax": 0
+    },
+    {
+      "alpha": 0.1,
+      "savingsMeanMin": 0.8133089999999992,
+      "savingsMeanMax": 0.8366148074037094,
+      "certificationRateMin": 0.987,
+      "certificationRateMax": 0.991,
+      "unsafeCertificateRateMax": 0
+    },
+    {
+      "alpha": 0.2,
+      "savingsMeanMin": 0.8796175000000003,
+      "savingsMeanMax": 0.8816058029014591,
+      "certificationRateMin": 1,
+      "certificationRateMax": 1,
+      "unsafeCertificateRateMax": 0
+    }
+  ]
+}

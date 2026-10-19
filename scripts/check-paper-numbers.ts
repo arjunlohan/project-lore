@@ -103,6 +103,9 @@ const genFiles = [
   "paper/tablebudgets.tex",
   "paper/tableboundary.tex",
   "paper/tablestrata.tex",
+  "paper/tablewiden.tex",
+  "paper/tablewidensim.tex",
+  "paper/tablelabelnoise.tex",
 ];
 // A generated table may cite macros (the reconciliation table is built
 // from them), and a macro cited there is rendered in the article.

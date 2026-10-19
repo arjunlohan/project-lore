@@ -14,7 +14,7 @@
  */
 import { mkdirSync, writeFileSync } from "node:fs";
 import mysql from "mysql2/promise";
-import { certifyColumnEdit } from "../../lib/lore/certify";
+import { CERTIFICATION_CONCURRENCY, certifyColumnEdit } from "../../lib/lore/certify";
 import {
   getCellsForVersion,
   getColumnVersion,
@@ -24,7 +24,15 @@ import {
 import { PROFILE_ID_FIELD } from "../../lib/lore/fields";
 import { runColumn } from "../../lib/lore/run-column";
 
+// Requests in flight: the materialization runs 32 at a time; the
+// certification's oracle draws go out one at a time, as the released
+// certifier issues them (CERTIFICATION_CONCURRENCY). The August 2026 run
+// reported in the article drew its oracle cells 32 at a time, before that
+// default existed; EXP_ORACLE_CONCURRENCY overrides it.
 const CONCURRENCY = Number(process.env.EXP_CONCURRENCY ?? 32);
+const ORACLE_CONCURRENCY = Number(
+  process.env.EXP_ORACLE_CONCURRENCY ?? CERTIFICATION_CONCURRENCY,
+);
 const MYSQL_URL =
   process.env.LORE_MYSQL_URL ?? "mysql://root@localhost:3306/lore";
 
@@ -129,7 +137,7 @@ async function main() {
           rowIds.includes(String(r[PROFILE_ID_FIELD])),
         );
         await runColumn(lab, sampleRows, PROFILE_ID_FIELD, {
-          concurrency: CONCURRENCY,
+          concurrency: ORACLE_CONCURRENCY,
           versionOverride: {
             promptTemplate: v2.prompt_template,
             promptVersion: 2,
@@ -150,6 +158,7 @@ async function main() {
         apply: process.env.EXP_APPLY === "1" && alpha === 0.2,
         adaptive: true,
         maxLooks: 6,
+        oracleConcurrency: ORACLE_CONCURRENCY,
       },
     );
     const certifyMs = Date.now() - t0;

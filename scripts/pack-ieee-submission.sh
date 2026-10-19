@@ -22,6 +22,9 @@ pnpm -s build:paper:ieee >/dev/null 2>&1 || { echo "in-tree build failed (run pn
 SOURCE_DATE_EPOCH="$(git log -1 --format=%ct -- paper ':(exclude)paper/*.pdf' ':(exclude)paper/ieee/*.pdf' ':(exclude)paper/ieee/response.md' ':(exclude)paper/ieee/cover-letter.tex' ':(exclude)paper/ieee/resubmission-checklist.md')"
 export SOURCE_DATE_EPOCH
 OUT=paper/ieee/submission
+# The version the reviewers last saw: the highlighted copy is compared with
+# it, and the letters' readability figures are measured against it.
+DIFF_BASE_TAG="${DIFF_BASE_TAG:-ieee-access-resubmission-v10}"
 rm -rf "$OUT" && mkdir -p "$OUT/src" "$OUT/supp"
 # Generated tables a source \input's through \paperroot, so each copy carries
 # exactly the tables it prints.
@@ -90,16 +93,19 @@ labels_of() { /usr/bin/grep -o '^\\newlabel{[^}]*}{{[^}]*}' "$1" | sort; }
 [ "$(labels_of "$OUT/supp/supplement.aux")" = "$(labels_of paper/ieee/supplement.aux)" ] \
   || { echo "the packaged supplement numbers its labels differently from the in-tree build"; exit 1; }
 cp "$OUT/supp/supplement.pdf" "$OUT/supplement.pdf"
-echo "supplement: $OUT/supplement.pdf ($SUPP_FLAT)"
+# IEEE's resubmission checklist asks for supplementary material "uploaded as
+# a .zip file"; the same PDF, zipped, for the portal slot that wants one.
+( cd "$OUT" && rm -f supplement.zip && zip -q -X supplement.zip supplement.pdf )
+echo "supplement: $OUT/supplement.pdf ($SUPP_FLAT) and $OUT/supplement.zip"
 
 # 4b. The response letter and the cover letter point at tables, sections and
 #     references by number and quote generated figures. Their placeholders are
 #     filled here from THIS build (its .aux, the generated macros, and the
 #     checker's readability statistics), so neither letter can describe an
 #     older manuscript. An unknown label or macro stops the pack.
-python3 scripts/resolve-response-refs.py paper/ieee/response.md "$OUT/response-resolved.md" --aux "$OUT/src/main.aux" --supp-aux "$OUT/supp/supplement.aux"
+python3 scripts/resolve-response-refs.py paper/ieee/response.md "$OUT/response-resolved.md" --aux "$OUT/src/main.aux" --supp-aux "$OUT/supp/supplement.aux" --base-tag "$DIFF_BASE_TAG"
 mkdir -p "$OUT/cover"
-python3 scripts/resolve-response-refs.py paper/ieee/cover-letter.tex "$OUT/cover/cover-letter.tex" --tex --aux "$OUT/src/main.aux" --supp-aux "$OUT/supp/supplement.aux"
+python3 scripts/resolve-response-refs.py paper/ieee/cover-letter.tex "$OUT/cover/cover-letter.tex" --tex --aux "$OUT/src/main.aux" --supp-aux "$OUT/supp/supplement.aux" --base-tag "$DIFF_BASE_TAG"
 
 # 5. Deliverables: the PDF, and a FLAT zip of the sources (the IEEE Author
 #    Portal compiles the archive itself: main.tex at the archive root, the
@@ -124,14 +130,17 @@ echo "packed: $OUT/manuscript.pdf ($PAGES_FLAT), $OUT/source.zip ($(du -h "$OUT/
 # 7. Resubmission deliverables (IEEE Access reject-with-resubmission): the
 #    point-by-point response to reviewers rendered from paper/ieee/response.md,
 #    and a "Highlighted PDF" with every change marked, built by latexdiff
-#    against the source submitted under the git tag DIFF_BASE_TAG.
+#    against the source submitted under the git tag DIFF_BASE_TAG: the version
+#    the reviewers last saw. The article and the Supplementary Material are
+#    compared separately, and the uploaded file is the one followed by the
+#    other.
 if [ -f paper/ieee/response.md ]; then
   pandoc "$OUT/response-resolved.md" -o "$OUT/response-to-reviewers.docx"
+  # xurl lets a long URL break at any character, so none runs into the margin.
   pandoc "$OUT/response-resolved.md" -o "$OUT/response-to-reviewers.pdf" --pdf-engine=pdflatex \
-    -V geometry:margin=1in -V fontsize=11pt -V colorlinks=true
+    -V geometry:margin=1in -V fontsize=11pt -V colorlinks=true -V header-includes='\usepackage{xurl}'
   echo "response: $OUT/response-to-reviewers.docx and .pdf"
 fi
-DIFF_BASE_TAG="${DIFF_BASE_TAG:-ieee-access-submission-v1}"
 LATEXDIFF=$(kpsewhich latexdiff.pl 2>/dev/null || find "$(kpsewhich -var-value TEXMFDIST)/scripts/latexdiff" -name latexdiff.pl 2>/dev/null | head -1)
 # latexdiff needs Encode::Locale; Homebrew's perl ships without it, the
 # system perl may have it. Pick whichever can load the module.
@@ -144,11 +153,27 @@ if [ -z "$PERL" ]; then
 elif [ -n "$LATEXDIFF" ] && git rev-parse -q --verify "$DIFF_BASE_TAG" >/dev/null; then
   rm -rf "$OUT/diff" && mkdir -p "$OUT/diff/old" "$OUT/diff/new"
   # Old: the tagged sources, flattened the same way step 1 flattens the shell.
-  git show "$DIFF_BASE_TAG:paper/ieee/main.tex" \
-    | sed -e 's#\\input{\.\./#\\input{#g' -e 's#\\newcommand{\\paperroot}{\.\.}#\\newcommand{\\paperroot}{.}#' > "$OUT/diff/old/main.tex"
-  for f in body.tex macros.tex figdata.tex table1.tex tablefam.tex; do
-    git show "$DIFF_BASE_TAG:paper/$f" > "$OUT/diff/old/$f"
-  done
+  # The tag's article and supplement are built once, so that its references
+  # to the supplement resolve to the text the reviewers read, exactly as the
+  # new side's do (step 3); otherwise every "Appendix D" would compare as a
+  # change against an unresolved reference.
+  OLDROOT="$OUT/diff-base"
+  rm -rf "$OLDROOT" && mkdir -p "$OLDROOT"
+  git archive "$DIFF_BASE_TAG" paper | tar -x -C "$OLDROOT"
+  if [ -f "$OLDROOT/paper/ieee/supplement.tex" ]; then
+    ( cd "$OLDROOT/paper/ieee" && latexmk -pdf -interaction=nonstopmode -f main.tex >/dev/null 2>&1; \
+      latexmk -g -pdf -interaction=nonstopmode -f supplement.tex >/dev/null 2>&1; \
+      latexmk -g -pdf -interaction=nonstopmode -f main.tex >/dev/null 2>&1 ) || true
+    [ -f "$OLDROOT/paper/ieee/supplement.aux" ] && [ -f "$OLDROOT/paper/ieee/main.aux" ] \
+      || { echo "the base tag's article and supplement could not be built"; exit 1; }
+  fi
+  sed -e 's#\\input{\.\./#\\input{#g' -e 's#\\newcommand{\\paperroot}{\.\.}#\\newcommand{\\paperroot}{.}#' \
+    "$OLDROOT/paper/ieee/main.tex" > "$OUT/diff/old/main.tex"
+  cp "$OLDROOT/paper/body.tex" "$OLDROOT/paper/macros.tex" "$OLDROOT/paper/figdata.tex" \
+    $(tables_of "$OLDROOT/paper/body.tex" | sed "s#^paper/#$OLDROOT/paper/#") "$OUT/diff/old/"
+  if [ -f "$OLDROOT/paper/ieee/supplement.aux" ]; then
+    python3 scripts/resolve-supp-refs.py "$OLDROOT/paper/ieee/supplement.aux" "$OUT/diff/old/main.tex" "$OUT/diff/old/body.tex"
+  fi
   # New: the flattened sources of this package.
   cp "$OUT"/src/*.tex "$OUT/diff/new/"
   # latexdiff --flatten cannot resolve \input{\paperroot/...}; inline the
@@ -197,196 +222,7 @@ elif [ -n "$LATEXDIFF" ] && git rev-parse -q --verify "$DIFF_BASE_TAG" >/dev/nul
   # latexdiff wraps \DIFadd/\DIFdel in \texorpdfstring when it sees hyperref,
   # for headings; headings are excluded from markup above, and the wrapper
   # cannot span a paragraph break, so restore the plain definitions.
-  python3 - "$OUT/diff/main.tex" "$OUT/diff/old/main.tex" "$OUT/diff/new/main.tex" <<'PY'
-import sys
-p = sys.argv[1]
-s = open(p).read()
-# The roadmap paragraph lives in a preamble macro of the shell, which latexdiff
-# does not compare. Diff the two definitions token by token here and wrap the
-# added tokens in \DIFadd, so the highlighted copy marks that paragraph too.
-import difflib
-def definition(src, name):
-    start = src.find("\\newcommand{\\" + name + "}{")
-    if start < 0:
-        return None
-    i = start + len("\\newcommand{\\" + name + "}{")
-    depth = 1
-    j = i
-    body = []
-    while j < len(src) and depth:
-        c = src[j]
-        if c == "%" and src[j - 1] != "\\":
-            # a TeX comment (latexdiff leaves %DIF markers here); skip it
-            j = src.find("\n", j)
-            if j < 0:
-                j = len(src)
-            continue
-        if c == "{":
-            depth += 1
-        elif c == "}":
-            depth -= 1
-        if depth:
-            body.append(c)
-        j += 1
-    return "".join(body), start, j
-old_def = definition(open(sys.argv[2]).read(), "venueroadmap")
-new_def = definition(open(sys.argv[3]).read(), "venueroadmap")
-if old_def and new_def:
-    a = old_def[0].split()
-    b = new_def[0].split()
-    out = []
-    for tag, i1, i2, j1, j2 in difflib.SequenceMatcher(None, a, b, autojunk=False).get_opcodes():
-        if tag == "equal":
-            out.extend(b[j1:j2])
-        elif tag in ("insert", "replace"):
-            out.append("\\DIFadd{" + " ".join(b[j1:j2]) + "}")
-    marked = " ".join(out)
-    cur = definition(s, "venueroadmap")
-    if cur:
-        s = s[: cur[1]] + "\\newcommand{\\venueroadmap}{" + marked + "}" + s[cur[2] :]
-s = s.replace(r"\providecommand{\DIFadd}[1]{\texorpdfstring{\DIFaddtex{#1}}{#1}}", r"\providecommand{\DIFadd}[1]{\DIFaddtex{#1}}")
-s = s.replace(r"\providecommand{\DIFdel}[1]{\texorpdfstring{\DIFdeltex{#1}}{}}", r"\providecommand{\DIFdel}[1]{\DIFdeltex{#1}}")
-import re
-# A word-internal edit leaves the source's own space after \DIFaddend, where
-# TeX swallows it (latexdiff always adds one separator space; two mean a
-# real one); keep the real space.
-s = re.sub(r"(\\DIF(?:add|del)end) {2,}(?=\S)", r"\1{} ", s)
-# In colour-only markup a deleted paragraph prints nothing, but the blank
-# line latexdiff keeps between its comment markers would still break the
-# paragraph the new text continues.
-s = re.sub(r"(%DIFDELCMD < [^\n]*\n)\n+(%DIFDELCMD < %%%\n)", r"\1\2", s)
-# Blocks latexdiff compares as wholes (table bodies, the figures, the
-# algorithm) carry only the empty \DIFaddbegin markers, so an added block
-# would print black. Colour them: a float whose caption is entirely new is
-# a new float and is set in blue throughout (the colour goes inside the
-# float, where the float box is built); a replaced block inside an existing
-# float is wrapped in a colour group of its own.
-def colour_float(m):
-    head, body, tail = m.group(1), m.group("body"), m.group(5)
-    if re.search(r"\\caption\{\\DIFaddFL\{", body) and not re.search(r"\\DIFdel", body):
-        return head + r"\color{blue}" + body + tail
-    body = re.sub(
-        # Size, column-spacing, and row-spacing commands, and the generator's
-        # comment lines, may sit between the marker and the tabular. The
-        # marker is \DIFaddbeginFL inside a float, or the plain \DIFaddbegin
-        # when latexdiff aligned the new block with a deleted float.
-        r"\\DIFaddbegin(FL)? ((?:(?:\\(?:scriptsize|footnotesize|small|tiny|centering)\b|\\setlength\{\\tabcolsep\}\{[^}]*\}|\\renewcommand\{\\arraystretch\}\{[^}]*\})\s*|%[^\n]*\n\s*)*(?:\\begin\{tabular\}|\\begin\{tikzpicture\}|\\resizebox))(.*?)\\DIFaddend(FL)?",
-        lambda k: "\\DIFaddbegin" + (k.group(1) or "") + " {\\color{blue}" + k.group(2) + k.group(3) + "}\\DIFaddend" + (k.group(4) or ""),
-        body,
-        flags=re.S,
-    )
-    return head + body + tail
-# A float's begin and end lines that latexdiff kept as comments of deleted
-# text (%DIFDELCMD < ...) are not floats: matching them pairs a deleted
-# figure's begin with its end and swallows the new float between them.
-s = re.sub(
-    r"((?<!%DIFDELCMD < )\\begin\{(table\*?|figure\*?|algorithm)\}(\[[^\]]*\])?)(?P<body>.*?)((?<!%DIFDELCMD < )\\end\{\2\})",
-    colour_float,
-    s,
-    flags=re.S,
-)
-# A lone number that latexdiff matched between a deletion and an addition
-# is the same digits meaning something else (a changed sentence whose old
-# and new values coincide); mark it as changed rather than let it print
-# black between blue neighbours.
-s = re.sub(r"(\\DIFaddend )(\d[\d.,{}]*(?:\\%)?)(\\DIFdelbegin )", r"\1\\DIFadd{\2}\3", s)
-s = re.sub(r"(\\DIFdelend )(\d[\d.,{}]*(?:\\%)?)(\\DIFaddbegin )", r"\1\\DIFadd{\2}\3", s)
-# Displayed math is excluded from markup; a display sitting between two
-# added text spans is itself added, so colour it.
-s = re.sub(
-    r"(\}\s*)(\\begin\{equation\}.*?\\end\{equation\}|\\\[.*?\\\])(\s*\\DIFadd\{)",
-    # \ignorespaces: TeX skips one space after a display, but the closing
-    # brace of the colour group hides the line end from that rule.
-    lambda m: m.group(1) + r"{\color{blue}" + m.group(2) + r"}\ignorespaces" + m.group(3),
-    s,
-    flags=re.S,
-)
-# latexdiff keeps a deleted heading as a command with an empty title, which
-# prints a bare section number; with deletions omitted it must print nothing.
-# Drop it wherever it sits (at the start of a deletion block or inside one,
-# as when a renamed heading's old title is deleted with the text after it).
-# A heading deleted and then added again under the same title has only moved
-# relative to a float, so that title is not marked; a renamed heading's new
-# title stays marked as added.
-moved_headings = set()
-def drop_deleted_heading(m):
-    moved_headings.add(m.group(3))
-    return m.group(1) or ""
-s = re.sub(
-    r"(\\DIFdelbegin )?\\(section|subsection)\{\\DIFdel\{(.*?)\}\}\s*%DIFAUXCMD\s*\\addtocounter\{\2\}\{-1\}%DIFAUXCMD\n",
-    drop_deleted_heading,
-    s,
-)
-for title in moved_headings:
-    for level in ("section", "subsection"):
-        s = s.replace("\\" + level + "{\\DIFadd{" + title + "}}", "\\" + level + "{" + title + "}")
-if re.search(r"\\(section|subsection)\{\\DIFdel\{", s):
-    sys.exit("a deleted heading survives in the highlighted source and would print a bare number")
-# A deleted run-in heading is kept the same way, as a \paragraph with an
-# empty title, and prints its bare letter. Remove it together with the
-# counter correction latexdiff writes after it.
-s = re.sub(r"\\paragraph\{\\DIFdel\{.*?\}\}\s*%DIFAUXCMD\s*\\addtocounter\{paragraph\}\{-1\}%DIFAUXCMD\n", "", s)
-if re.search(r"\\paragraph\{\\DIFdel\{", s):
-    sys.exit("a deleted run-in heading survives in the highlighted source and would print a bare letter")
-# A figure whose plot data comes from a macro of figdata.tex is textually
-# unchanged when only the data changed. If that macro's definition differs
-# between the two submissions the figure was replotted, so colour it.
-import os
-def plot_macros(path):
-    out = {}
-    if os.path.exists(path):
-        for line in open(path):
-            k = re.match(r"\\newcommand\{\\(\w+)\}\{(.*)\}\s*$", line)
-            if k:
-                out[k.group(1)] = k.group(2)
-    return out
-old_plots = plot_macros(os.path.join(os.path.dirname(sys.argv[2]), "figdata.tex"))
-new_plots = plot_macros(os.path.join(os.path.dirname(sys.argv[3]), "figdata.tex"))
-replotted = [n for n in new_plots if old_plots.get(n) != new_plots[n]]
-def colour_replotted(m):
-    body = m.group("body")
-    if "%DIFDELCMD" in body or r"\color{blue}" in body or not any(("\\" + n) in body for n in replotted):
-        return m.group(0)
-    body = re.sub(
-        r"(\\begin\{tikzpicture\}.*?\\end\{tikzpicture\})",
-        lambda k: r"{\color{blue}" + k.group(1) + "}",
-        body,
-        count=1,
-        flags=re.S,
-    )
-    return m.group(1) + body + m.group(5)
-s = re.sub(
-    r"((?<!%DIFDELCMD < )\\begin\{(figure\*?)\}(\[[^\]]*\])?)(?P<body>.*?)((?<!%DIFDELCMD < )\\end\{\2\})",
-    colour_replotted,
-    s,
-    flags=re.S,
-)
-# The letters say every table body is highlighted. Stop if a tabular is
-# outside every blue scope: neither its float is coloured from the start nor
-# an open {\color{blue} group contains it.
-uncovered = []
-# (a tabular after a % on its line is deleted text, kept as a comment)
-for m in re.finditer(r"^[^%\n]*?\\begin\{tabular\}", s, flags=re.M):
-    pos = m.end()
-    start = max(s.rfind("\\begin{table}", 0, pos), s.rfind("\\begin{table*}", 0, pos))
-    if start < 0:
-        continue
-    head = s[start:pos]
-    if re.match(r"\\begin\{table\*?\}(\[[^\]]*\])?\\color\{blue\}", head):
-        continue
-    covered = False
-    for g in re.finditer(r"\{\\color\{blue\}", head):
-        rest = re.sub(r"\\[{}]", "", head[g.start():])
-        rest = "\n".join(l.split("%")[0] for l in rest.split("\n"))
-        if rest.count("{") - rest.count("}") > 0:
-            covered = True
-    if not covered:
-        label = re.search(r"\\label\{([^}]+)\}", s[start:start + 4000])
-        uncovered.append(label.group(1) if label else s[start:start + 60])
-if uncovered:
-    sys.exit("highlighted copy: table bodies outside every blue scope: " + ", ".join(uncovered))
-open(p, "w").write(s)
-PY
+  python3 scripts/latexdiff-postprocess.py "$OUT/diff/main.tex" "$OUT/diff/old/main.tex" "$OUT/diff/new/main.tex"
   # Compile the diff beside the vendored template files.
   cp "$OUT"/src/*.cls "$OUT"/src/*.bst "$OUT"/src/*.sty "$OUT"/src/*.pfb "$OUT"/src/*.tfm "$OUT"/src/*.map "$OUT"/src/*.fd "$OUT"/src/*.png "$OUT/src/refs.bib" "$OUT/diff/"
   ( cd "$OUT/diff" && latexmk -pdf -interaction=nonstopmode -f main.tex >/dev/null 2>&1 ) || true
@@ -433,6 +269,65 @@ if blank:
     sys.exit(f"highlighted copy has {len(blank)} empty reference entries: {' '.join(blank)}")
 print("highlighted copy checked: pages, citation numbers, and reference entries match the clean copy")
 PY
+  # 7b. The Supplementary Material, compared with the base tag's in the same
+  #     way. It reads the article's labels and reference numbers through xr:
+  #     each side from its own article's .aux, the diff from this package's.
+  if [ -f "$OLDROOT/paper/ieee/supplement.tex" ]; then
+    D="$OUT/diff-supp"
+    rm -rf "$D" && mkdir -p "$D/old" "$D/new"
+    sed -e 's#\\input{\.\./#\\input{#g' -e 's#\\newcommand{\\paperroot}{\.\.}#\\newcommand{\\paperroot}{.}#' \
+      "$OLDROOT/paper/ieee/supplement.tex" > "$D/old/supplement.tex"
+    cp "$OLDROOT/paper/appendix.tex" "$OLDROOT/paper/macros.tex" "$OLDROOT/paper/figdata.tex" \
+      $(tables_of "$OLDROOT/paper/appendix.tex" | sed "s#^paper/#$OLDROOT/paper/#") "$D/old/"
+    cp "$OUT"/supp/*.tex "$D/new/"
+    rm -f "$D/new/main.aux"
+    for d in old new; do
+      sed -i '' -e 's#\\input{\\paperroot/#\\input{#g' "$D/$d/appendix.tex"
+      for f in appendix.tex supplement.tex; do
+        python3 scripts/resolve-tex-gates.py "$D/$d/$f" "$D/$d/macros.tex" --expand-macros
+      done
+    done
+    if ! "$PERL" "$LATEXDIFF" --flatten --math-markup=0 \
+        --preamble=paper/ieee/latexdiff-highlight.tex \
+        --config "PICTUREENV=(?:picture|DIFnomarkup|tikzpicture|axis|algorithmic|tabular)[\\w\\d*@]*" \
+        --config "FLOATENV=(?:figure|table|plate|algorithm)[\\w\\d*@]*" \
+        --exclude-safecmd=Description \
+        "$D/old/supplement.tex" "$D/new/supplement.tex" > "$D/supplement.tex" 2> "$D/latexdiff.log"; then
+      echo "latexdiff of the supplement FAILED (see $D/latexdiff.log)"; exit 1
+    fi
+    python3 scripts/latexdiff-postprocess.py "$D/supplement.tex" "$D/old/supplement.tex" "$D/new/supplement.tex"
+    cp "$OUT"/supp/*.cls "$OUT"/supp/*.sty "$OUT"/supp/*.pfb "$OUT"/supp/*.tfm "$OUT"/supp/*.map "$OUT"/supp/*.fd "$OUT"/supp/*.png "$D/"
+    # The flattened article's .aux, kept beside the supplement in step 4 (the
+    # article's own build directory is cleaned in step 5).
+    cp "$OUT/supp/main.aux" "$D/main.aux"
+    ( cd "$D" && latexmk -pdf -interaction=nonstopmode -f supplement.tex >/dev/null 2>&1 ) || true
+    SUPP_DIFF_ERRORS=$(/usr/bin/grep -c '^!' "$D/supplement.log" 2>/dev/null || true)
+    [ -f "$D/supplement.pdf" ] && [ "${SUPP_DIFF_ERRORS:-1}" = "0" ] \
+      || { echo "highlighted supplement FAILED: $SUPP_DIFF_ERRORS TeX errors in $D/supplement.log"; exit 1; }
+    [ "$(/usr/bin/grep -c 'multiply defined' "$D/supplement.log" || true)" = "0" ] \
+      || { echo "highlighted supplement has multiply-defined labels"; exit 1; }
+    [ "$(/usr/bin/grep -c 'Citation.*undefined\|Reference.*undefined' "$D/supplement.log" || true)" = "0" ] \
+      || { echo "highlighted supplement has undefined citations or references"; exit 1; }
+    python3 scripts/highlight-yellow.py "$D/supplement.pdf" "$OUT/highlighted-supplement.pdf"
+    python3 - "$OUT/supplement.pdf" "$OUT/highlighted-supplement.pdf" <<'PY'
+import re, subprocess, sys
+def text(pdf):
+    return subprocess.run(["pdftotext", pdf, "-"], check=True, capture_output=True, text=True).stdout
+clean, marked = text(sys.argv[1]), text(sys.argv[2])
+if clean.count("\f") != marked.count("\f"):
+    sys.exit(f"highlighted supplement has {marked.count(chr(12))} pages against {clean.count(chr(12))}")
+cites = lambda t: sorted(re.findall(r"\[(\d+)\]", t))
+if cites(clean) != cites(marked):
+    sys.exit("highlighted supplement's citation numbers differ from the clean supplement's")
+heads = lambda t: sorted(re.findall(r"^APPENDIX [A-Z]\b", t, flags=re.M))
+if heads(clean) != heads(marked):
+    sys.exit(f"highlighted supplement's appendix headings differ: {heads(marked)} against {heads(clean)}")
+print("highlighted supplement checked: pages, citation numbers, and appendix headings match the clean supplement")
+PY
+    mv "$OUT/highlighted.pdf" "$OUT/highlighted-article.pdf"
+    pdfunite "$OUT/highlighted-article.pdf" "$OUT/highlighted-supplement.pdf" "$OUT/highlighted.pdf"
+    echo "highlighted: $OUT/highlighted.pdf = the article ($(pdfinfo "$OUT/highlighted-article.pdf" | /usr/bin/awk '/^Pages:/ {print $2}') pages) followed by the Supplementary Material ($(pdfinfo "$OUT/highlighted-supplement.pdf" | /usr/bin/awk '/^Pages:/ {print $2}') pages)"
+  fi
 else
   echo "highlighted PDF skipped (latexdiff or tag $DIFF_BASE_TAG missing)"
 fi

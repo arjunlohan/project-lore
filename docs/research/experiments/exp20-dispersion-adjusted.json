@@ -1,0 +1,1357 @@
+{
+  "experiment": "exp20-dispersion-adjusted",
+  "note": "the deployment certificates of Section V-E replayed under the pinned procedure with each look's bound widened for a dispersion ratio phi of the oracle draws (Clopper-Pearson at the effective sample size n/phi, Korn-Graubard; pooledEstimateDf folds in their degrees-of-freedom factor); retrospective, a sensitivity analysis of Assumption 1. Where a widened certificate is issued the widened bound is at or above the exact bound, so Theorem 1 covers the certificate under its assumptions; the protection under dependence rests on the block model",
+  "degreesOfFreedom": {
+    "d": 37,
+    "look": 1440,
+    "perLookDelta": 0.008333333333333333,
+    "factor": 1.094728762818541
+  },
+  "delta": 0.1,
+  "schedule": {
+    "n0": 45,
+    "maxLooks": 6
+  },
+  "ratios": [
+    {
+      "key": "independent",
+      "label": "independent draws",
+      "phi": 1
+    },
+    {
+      "key": "pooledEstimate",
+      "label": "both concurrent arms pooled, estimate",
+      "phi": 1.417782497699567
+    },
+    {
+      "key": "pooledUpper",
+      "label": "both concurrent arms pooled, upper end of the 95% interval",
+      "phi": 2.3730587706184543
+    },
+    {
+      "key": "pooledEstimateDf",
+      "label": "both concurrent arms pooled, estimate, with the degrees-of-freedom factor (d = 37, look 1440)",
+      "phi": 1.5520872796524279
+    }
+  ],
+  "results": [
+    {
+      "snapshot": "2026-08-05",
+      "snapshotKey": "august",
+      "alpha": 0.2,
+      "ratioKey": "independent",
+      "ratioLabel": "independent draws",
+      "phi": 1,
+      "reachable": true,
+      "oracleCalls": 90,
+      "reused": 81424,
+      "savings": 0.9129888769285971,
+      "strata": [
+        {
+          "stratumId": "v=false|o=0",
+          "size": 81469,
+          "certified": true,
+          "decidedAtLook": 45,
+          "flips": 1,
+          "futility": false,
+          "looks": [
+            {
+              "n": 45,
+              "flips": 1,
+              "upperBound": 0.14261866476819404,
+              "certified": true
+            }
+          ]
+        },
+        {
+          "stratumId": "v=true|o=0",
+          "size": 7715,
+          "certified": false,
+          "decidedAtLook": 45,
+          "flips": 13,
+          "futility": true,
+          "looks": [
+            {
+              "n": 45,
+              "flips": 13,
+              "upperBound": 0.4751782242384964,
+              "certified": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "snapshot": "2026-08-05",
+      "snapshotKey": "august",
+      "alpha": 0.2,
+      "ratioKey": "pooledEstimate",
+      "ratioLabel": "both concurrent arms pooled, estimate",
+      "phi": 1.417782497699567,
+      "reachable": true,
+      "oracleCalls": 90,
+      "reused": 81424,
+      "savings": 0.9129888769285971,
+      "strata": [
+        {
+          "stratumId": "v=false|o=0",
+          "size": 81469,
+          "certified": true,
+          "decidedAtLook": 45,
+          "flips": 1,
+          "futility": false,
+          "looks": [
+            {
+              "n": 45,
+              "flips": 1,
+              "upperBound": 0.1813967757762524,
+              "certified": true
+            }
+          ]
+        },
+        {
+          "stratumId": "v=true|o=0",
+          "size": 7715,
+          "certified": false,
+          "decidedAtLook": 45,
+          "flips": 13,
+          "futility": true,
+          "looks": [
+            {
+              "n": 45,
+              "flips": 13,
+              "upperBound": 0.5150950946404608,
+              "certified": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "snapshot": "2026-08-05",
+      "snapshotKey": "august",
+      "alpha": 0.2,
+      "ratioKey": "pooledUpper",
+      "ratioLabel": "both concurrent arms pooled, upper end of the 95% interval",
+      "phi": 2.3730587706184543,
+      "reachable": true,
+      "oracleCalls": 135,
+      "reused": 81379,
+      "savings": 0.9124843021169716,
+      "strata": [
+        {
+          "stratumId": "v=false|o=0",
+          "size": 81469,
+          "certified": true,
+          "decidedAtLook": 90,
+          "flips": 3,
+          "futility": false,
+          "looks": [
+            {
+              "n": 45,
+              "flips": 1,
+              "upperBound": 0.26251135236321155,
+              "certified": false
+            },
+            {
+              "n": 90,
+              "flips": 3,
+              "upperBound": 0.17867552316981747,
+              "certified": true
+            }
+          ]
+        },
+        {
+          "stratumId": "v=true|o=0",
+          "size": 7715,
+          "certified": false,
+          "decidedAtLook": 45,
+          "flips": 13,
+          "futility": true,
+          "looks": [
+            {
+              "n": 45,
+              "flips": 13,
+              "upperBound": 0.5875189006557162,
+              "certified": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "snapshot": "2026-08-05",
+      "snapshotKey": "august",
+      "alpha": 0.2,
+      "ratioKey": "pooledEstimateDf",
+      "ratioLabel": "both concurrent arms pooled, estimate, with the degrees-of-freedom factor (d = 37, look 1440)",
+      "phi": 1.5520872796524279,
+      "reachable": true,
+      "oracleCalls": 90,
+      "reused": 81424,
+      "savings": 0.9129888769285971,
+      "strata": [
+        {
+          "stratumId": "v=false|o=0",
+          "size": 81469,
+          "certified": true,
+          "decidedAtLook": 45,
+          "flips": 1,
+          "futility": false,
+          "looks": [
+            {
+              "n": 45,
+              "flips": 1,
+              "upperBound": 0.19338606626032767,
+              "certified": true
+            }
+          ]
+        },
+        {
+          "stratumId": "v=true|o=0",
+          "size": 7715,
+          "certified": false,
+          "decidedAtLook": 45,
+          "flips": 13,
+          "futility": true,
+          "looks": [
+            {
+              "n": 45,
+              "flips": 13,
+              "upperBound": 0.5265235479145686,
+              "certified": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "snapshot": "2026-08-05",
+      "snapshotKey": "august",
+      "alpha": 0.1,
+      "ratioKey": "independent",
+      "ratioLabel": "independent draws",
+      "phi": 1,
+      "reachable": true,
+      "oracleCalls": 225,
+      "reused": 81289,
+      "savings": 0.9114751524937208,
+      "strata": [
+        {
+          "stratumId": "v=false|o=0",
+          "size": 81469,
+          "certified": true,
+          "decidedAtLook": 180,
+          "flips": 5,
+          "futility": false,
+          "looks": [
+            {
+              "n": 45,
+              "flips": 1,
+              "upperBound": 0.14261866476819404,
+              "certified": false
+            },
+            {
+              "n": 90,
+              "flips": 3,
+              "upperBound": 0.1097718150462139,
+              "certified": false
+            },
+            {
+              "n": 180,
+              "flips": 5,
+              "upperBound": 0.07259202886987688,
+              "certified": true
+            }
+          ]
+        },
+        {
+          "stratumId": "v=true|o=0",
+          "size": 7715,
+          "certified": false,
+          "decidedAtLook": 45,
+          "flips": 13,
+          "futility": true,
+          "looks": [
+            {
+              "n": 45,
+              "flips": 13,
+              "upperBound": 0.4751782242384964,
+              "certified": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "snapshot": "2026-08-05",
+      "snapshotKey": "august",
+      "alpha": 0.1,
+      "ratioKey": "pooledEstimate",
+      "ratioLabel": "both concurrent arms pooled, estimate",
+      "phi": 1.417782497699567,
+      "reachable": true,
+      "oracleCalls": 225,
+      "reused": 81289,
+      "savings": 0.9114751524937208,
+      "strata": [
+        {
+          "stratumId": "v=false|o=0",
+          "size": 81469,
+          "certified": true,
+          "decidedAtLook": 180,
+          "flips": 5,
+          "futility": false,
+          "looks": [
+            {
+              "n": 45,
+              "flips": 1,
+              "upperBound": 0.1813967757762524,
+              "certified": false
+            },
+            {
+              "n": 90,
+              "flips": 3,
+              "upperBound": 0.13199508071351945,
+              "certified": false
+            },
+            {
+              "n": 180,
+              "flips": 5,
+              "upperBound": 0.08508102584140194,
+              "certified": true
+            }
+          ]
+        },
+        {
+          "stratumId": "v=true|o=0",
+          "size": 7715,
+          "certified": false,
+          "decidedAtLook": 45,
+          "flips": 13,
+          "futility": true,
+          "looks": [
+            {
+              "n": 45,
+              "flips": 13,
+              "upperBound": 0.5150950946404608,
+              "certified": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "snapshot": "2026-08-05",
+      "snapshotKey": "august",
+      "alpha": 0.1,
+      "ratioKey": "pooledUpper",
+      "ratioLabel": "both concurrent arms pooled, upper end of the 95% interval",
+      "phi": 2.3730587706184543,
+      "reachable": true,
+      "oracleCalls": 405,
+      "reused": 81109,
+      "savings": 0.9094568532472193,
+      "strata": [
+        {
+          "stratumId": "v=false|o=0",
+          "size": 81469,
+          "certified": true,
+          "decidedAtLook": 360,
+          "flips": 12,
+          "futility": false,
+          "looks": [
+            {
+              "n": 45,
+              "flips": 1,
+              "upperBound": 0.26251135236321155,
+              "certified": false
+            },
+            {
+              "n": 90,
+              "flips": 3,
+              "upperBound": 0.17867552316981747,
+              "certified": false
+            },
+            {
+              "n": 180,
+              "flips": 5,
+              "upperBound": 0.11123288248691961,
+              "certified": false
+            },
+            {
+              "n": 360,
+              "flips": 12,
+              "upperBound": 0.08636014645910624,
+              "certified": true
+            }
+          ]
+        },
+        {
+          "stratumId": "v=true|o=0",
+          "size": 7715,
+          "certified": false,
+          "decidedAtLook": 45,
+          "flips": 13,
+          "futility": true,
+          "looks": [
+            {
+              "n": 45,
+              "flips": 13,
+              "upperBound": 0.5875189006557162,
+              "certified": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "snapshot": "2026-08-05",
+      "snapshotKey": "august",
+      "alpha": 0.1,
+      "ratioKey": "pooledEstimateDf",
+      "ratioLabel": "both concurrent arms pooled, estimate, with the degrees-of-freedom factor (d = 37, look 1440)",
+      "phi": 1.5520872796524279,
+      "reachable": true,
+      "oracleCalls": 225,
+      "reused": 81289,
+      "savings": 0.9114751524937208,
+      "strata": [
+        {
+          "stratumId": "v=false|o=0",
+          "size": 81469,
+          "certified": true,
+          "decidedAtLook": 180,
+          "flips": 5,
+          "futility": false,
+          "looks": [
+            {
+              "n": 45,
+              "flips": 1,
+              "upperBound": 0.19338606626032767,
+              "certified": false
+            },
+            {
+              "n": 90,
+              "flips": 3,
+              "upperBound": 0.13884832186894588,
+              "certified": false
+            },
+            {
+              "n": 180,
+              "flips": 5,
+              "upperBound": 0.08891545483092707,
+              "certified": true
+            }
+          ]
+        },
+        {
+          "stratumId": "v=true|o=0",
+          "size": 7715,
+          "certified": false,
+          "decidedAtLook": 45,
+          "flips": 13,
+          "futility": true,
+          "looks": [
+            {
+              "n": 45,
+              "flips": 13,
+              "upperBound": 0.5265235479145686,
+              "certified": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "snapshot": "2026-08-05",
+      "snapshotKey": "august",
+      "alpha": 0.05,
+      "ratioKey": "independent",
+      "ratioLabel": "independent draws",
+      "phi": 1,
+      "reachable": false,
+      "strata": [
+        {
+          "stratumId": "v=false|o=0",
+          "size": 81469,
+          "reachable": false,
+          "needsLook": 1440
+        },
+        {
+          "stratumId": "v=true|o=0",
+          "size": 7715,
+          "certified": false,
+          "decidedAtLook": 45,
+          "flips": 13,
+          "futility": true,
+          "looks": [
+            {
+              "n": 45,
+              "flips": 13,
+              "upperBound": 0.4751782242384964,
+              "certified": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "snapshot": "2026-08-05",
+      "snapshotKey": "august",
+      "alpha": 0.05,
+      "ratioKey": "pooledEstimate",
+      "ratioLabel": "both concurrent arms pooled, estimate",
+      "phi": 1.417782497699567,
+      "reachable": false,
+      "strata": [
+        {
+          "stratumId": "v=false|o=0",
+          "size": 81469,
+          "reachable": false,
+          "needsLook": 1440
+        },
+        {
+          "stratumId": "v=true|o=0",
+          "size": 7715,
+          "certified": false,
+          "decidedAtLook": 45,
+          "flips": 13,
+          "futility": true,
+          "looks": [
+            {
+              "n": 45,
+              "flips": 13,
+              "upperBound": 0.5150950946404608,
+              "certified": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "snapshot": "2026-08-05",
+      "snapshotKey": "august",
+      "alpha": 0.05,
+      "ratioKey": "pooledUpper",
+      "ratioLabel": "both concurrent arms pooled, upper end of the 95% interval",
+      "phi": 2.3730587706184543,
+      "reachable": false,
+      "strata": [
+        {
+          "stratumId": "v=false|o=0",
+          "size": 81469,
+          "reachable": false,
+          "needsLook": 1440
+        },
+        {
+          "stratumId": "v=true|o=0",
+          "size": 7715,
+          "certified": false,
+          "decidedAtLook": 45,
+          "flips": 13,
+          "futility": true,
+          "looks": [
+            {
+              "n": 45,
+              "flips": 13,
+              "upperBound": 0.5875189006557162,
+              "certified": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "snapshot": "2026-08-05",
+      "snapshotKey": "august",
+      "alpha": 0.05,
+      "ratioKey": "pooledEstimateDf",
+      "ratioLabel": "both concurrent arms pooled, estimate, with the degrees-of-freedom factor (d = 37, look 1440)",
+      "phi": 1.5520872796524279,
+      "reachable": false,
+      "strata": [
+        {
+          "stratumId": "v=false|o=0",
+          "size": 81469,
+          "reachable": false,
+          "needsLook": 1440
+        },
+        {
+          "stratumId": "v=true|o=0",
+          "size": 7715,
+          "certified": false,
+          "decidedAtLook": 45,
+          "flips": 13,
+          "futility": true,
+          "looks": [
+            {
+              "n": 45,
+              "flips": 13,
+              "upperBound": 0.5265235479145686,
+              "certified": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "snapshot": "2026-09-29",
+      "snapshotKey": "september",
+      "alpha": 0.2,
+      "ratioKey": "independent",
+      "ratioLabel": "independent draws",
+      "phi": 1,
+      "reachable": true,
+      "oracleCalls": 90,
+      "reused": 81424,
+      "savings": 0.9129888769285971,
+      "strata": [
+        {
+          "stratumId": "v=false|o=0",
+          "size": 81469,
+          "certified": true,
+          "decidedAtLook": 45,
+          "flips": 2,
+          "futility": false,
+          "looks": [
+            {
+              "n": 45,
+              "flips": 2,
+              "upperBound": 0.17826412500460298,
+              "certified": true
+            }
+          ]
+        },
+        {
+          "stratumId": "v=true|o=0",
+          "size": 7715,
+          "certified": false,
+          "decidedAtLook": 45,
+          "flips": 11,
+          "futility": true,
+          "looks": [
+            {
+              "n": 45,
+              "flips": 11,
+              "upperBound": 0.42734931950745303,
+              "certified": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "snapshot": "2026-09-29",
+      "snapshotKey": "september",
+      "alpha": 0.2,
+      "ratioKey": "pooledEstimate",
+      "ratioLabel": "both concurrent arms pooled, estimate",
+      "phi": 1.417782497699567,
+      "reachable": true,
+      "oracleCalls": 135,
+      "reused": 81379,
+      "savings": 0.9124843021169716,
+      "strata": [
+        {
+          "stratumId": "v=false|o=0",
+          "size": 81469,
+          "certified": true,
+          "decidedAtLook": 90,
+          "flips": 6,
+          "futility": false,
+          "looks": [
+            {
+              "n": 45,
+              "flips": 2,
+              "upperBound": 0.21742241673891888,
+              "certified": false
+            },
+            {
+              "n": 90,
+              "flips": 6,
+              "upperBound": 0.18076691395626385,
+              "certified": true
+            }
+          ]
+        },
+        {
+          "stratumId": "v=true|o=0",
+          "size": 7715,
+          "certified": false,
+          "decidedAtLook": 45,
+          "flips": 11,
+          "futility": true,
+          "looks": [
+            {
+              "n": 45,
+              "flips": 11,
+              "upperBound": 0.4678916381727504,
+              "certified": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "snapshot": "2026-09-29",
+      "snapshotKey": "september",
+      "alpha": 0.2,
+      "ratioKey": "pooledUpper",
+      "ratioLabel": "both concurrent arms pooled, upper end of the 95% interval",
+      "phi": 2.3730587706184543,
+      "reachable": true,
+      "oracleCalls": 225,
+      "reused": 81289,
+      "savings": 0.9114751524937208,
+      "strata": [
+        {
+          "stratumId": "v=false|o=0",
+          "size": 81469,
+          "certified": true,
+          "decidedAtLook": 180,
+          "flips": 11,
+          "futility": false,
+          "looks": [
+            {
+              "n": 45,
+              "flips": 2,
+              "upperBound": 0.2977762055271532,
+              "certified": false
+            },
+            {
+              "n": 90,
+              "flips": 6,
+              "upperBound": 0.2289973695518845,
+              "certified": false
+            },
+            {
+              "n": 180,
+              "flips": 11,
+              "upperBound": 0.16029716600205565,
+              "certified": true
+            }
+          ]
+        },
+        {
+          "stratumId": "v=true|o=0",
+          "size": 7715,
+          "certified": false,
+          "decidedAtLook": 45,
+          "flips": 11,
+          "futility": true,
+          "looks": [
+            {
+              "n": 45,
+              "flips": 11,
+              "upperBound": 0.5424874054118295,
+              "certified": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "snapshot": "2026-09-29",
+      "snapshotKey": "september",
+      "alpha": 0.2,
+      "ratioKey": "pooledEstimateDf",
+      "ratioLabel": "both concurrent arms pooled, estimate, with the degrees-of-freedom factor (d = 37, look 1440)",
+      "phi": 1.5520872796524279,
+      "reachable": true,
+      "oracleCalls": 135,
+      "reused": 81379,
+      "savings": 0.9124843021169716,
+      "strata": [
+        {
+          "stratumId": "v=false|o=0",
+          "size": 81469,
+          "certified": true,
+          "decidedAtLook": 90,
+          "flips": 6,
+          "futility": false,
+          "looks": [
+            {
+              "n": 45,
+              "flips": 2,
+              "upperBound": 0.22940741349819865,
+              "certified": false
+            },
+            {
+              "n": 90,
+              "flips": 6,
+              "upperBound": 0.1879602797661925,
+              "certified": true
+            }
+          ]
+        },
+        {
+          "stratumId": "v=true|o=0",
+          "size": 7715,
+          "certified": false,
+          "decidedAtLook": 45,
+          "flips": 11,
+          "futility": true,
+          "looks": [
+            {
+              "n": 45,
+              "flips": 11,
+              "upperBound": 0.4795760506668879,
+              "certified": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "snapshot": "2026-09-29",
+      "snapshotKey": "september",
+      "alpha": 0.1,
+      "ratioKey": "independent",
+      "ratioLabel": "independent draws",
+      "phi": 1,
+      "reachable": true,
+      "oracleCalls": 405,
+      "reused": 81109,
+      "savings": 0.9094568532472193,
+      "strata": [
+        {
+          "stratumId": "v=false|o=0",
+          "size": 81469,
+          "certified": true,
+          "decidedAtLook": 360,
+          "flips": 20,
+          "futility": false,
+          "looks": [
+            {
+              "n": 45,
+              "flips": 2,
+              "upperBound": 0.17826412500460298,
+              "certified": false
+            },
+            {
+              "n": 90,
+              "flips": 6,
+              "upperBound": 0.15707815242607617,
+              "certified": false
+            },
+            {
+              "n": 180,
+              "flips": 11,
+              "upperBound": 0.11760301464360677,
+              "certified": false
+            },
+            {
+              "n": 360,
+              "flips": 20,
+              "upperBound": 0.0912862561219605,
+              "certified": true
+            }
+          ]
+        },
+        {
+          "stratumId": "v=true|o=0",
+          "size": 7715,
+          "certified": false,
+          "decidedAtLook": 45,
+          "flips": 11,
+          "futility": true,
+          "looks": [
+            {
+              "n": 45,
+              "flips": 11,
+              "upperBound": 0.42734931950745303,
+              "certified": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "snapshot": "2026-09-29",
+      "snapshotKey": "september",
+      "alpha": 0.1,
+      "ratioKey": "pooledEstimate",
+      "ratioLabel": "both concurrent arms pooled, estimate",
+      "phi": 1.417782497699567,
+      "reachable": true,
+      "oracleCalls": 405,
+      "reused": 81109,
+      "savings": 0.9094568532472193,
+      "strata": [
+        {
+          "stratumId": "v=false|o=0",
+          "size": 81469,
+          "certified": true,
+          "decidedAtLook": 360,
+          "flips": 20,
+          "futility": false,
+          "looks": [
+            {
+              "n": 45,
+              "flips": 2,
+              "upperBound": 0.21742241673891888,
+              "certified": false
+            },
+            {
+              "n": 90,
+              "flips": 6,
+              "upperBound": 0.18076691395626385,
+              "certified": false
+            },
+            {
+              "n": 180,
+              "flips": 11,
+              "upperBound": 0.13174560466837043,
+              "certified": false
+            },
+            {
+              "n": 360,
+              "flips": 20,
+              "upperBound": 0.099848875964126,
+              "certified": true
+            }
+          ]
+        },
+        {
+          "stratumId": "v=true|o=0",
+          "size": 7715,
+          "certified": false,
+          "decidedAtLook": 45,
+          "flips": 11,
+          "futility": true,
+          "looks": [
+            {
+              "n": 45,
+              "flips": 11,
+              "upperBound": 0.4678916381727504,
+              "certified": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "snapshot": "2026-09-29",
+      "snapshotKey": "september",
+      "alpha": 0.1,
+      "ratioKey": "pooledUpper",
+      "ratioLabel": "both concurrent arms pooled, upper end of the 95% interval",
+      "phi": 2.3730587706184543,
+      "reachable": true,
+      "oracleCalls": 1485,
+      "reused": 0,
+      "savings": 0,
+      "strata": [
+        {
+          "stratumId": "v=false|o=0",
+          "size": 81469,
+          "certified": false,
+          "decidedAtLook": 1440,
+          "flips": 106,
+          "futility": false,
+          "looks": [
+            {
+              "n": 45,
+              "flips": 2,
+              "upperBound": 0.2977762055271532,
+              "certified": false
+            },
+            {
+              "n": 90,
+              "flips": 6,
+              "upperBound": 0.2289973695518845,
+              "certified": false
+            },
+            {
+              "n": 180,
+              "flips": 11,
+              "upperBound": 0.16029716600205565,
+              "certified": false
+            },
+            {
+              "n": 360,
+              "flips": 20,
+              "upperBound": 0.11682612205235493,
+              "certified": false
+            },
+            {
+              "n": 720,
+              "flips": 50,
+              "upperBound": 0.11230861745281889,
+              "certified": false
+            },
+            {
+              "n": 1440,
+              "flips": 106,
+              "upperBound": 0.10286698016341929,
+              "certified": false
+            }
+          ]
+        },
+        {
+          "stratumId": "v=true|o=0",
+          "size": 7715,
+          "certified": false,
+          "decidedAtLook": 45,
+          "flips": 11,
+          "futility": true,
+          "looks": [
+            {
+              "n": 45,
+              "flips": 11,
+              "upperBound": 0.5424874054118295,
+              "certified": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "snapshot": "2026-09-29",
+      "snapshotKey": "september",
+      "alpha": 0.1,
+      "ratioKey": "pooledEstimateDf",
+      "ratioLabel": "both concurrent arms pooled, estimate, with the degrees-of-freedom factor (d = 37, look 1440)",
+      "phi": 1.5520872796524279,
+      "reachable": true,
+      "oracleCalls": 1485,
+      "reused": 80029,
+      "savings": 0.8973470577682096,
+      "strata": [
+        {
+          "stratumId": "v=false|o=0",
+          "size": 81469,
+          "certified": true,
+          "decidedAtLook": 1440,
+          "flips": 106,
+          "futility": false,
+          "looks": [
+            {
+              "n": 45,
+              "flips": 2,
+              "upperBound": 0.22940741349819865,
+              "certified": false
+            },
+            {
+              "n": 90,
+              "flips": 6,
+              "upperBound": 0.1879602797661925,
+              "certified": false
+            },
+            {
+              "n": 180,
+              "flips": 11,
+              "upperBound": 0.13601115174109787,
+              "certified": false
+            },
+            {
+              "n": 360,
+              "flips": 20,
+              "upperBound": 0.10240185512784279,
+              "certified": false
+            },
+            {
+              "n": 720,
+              "flips": 50,
+              "upperBound": 0.10284577601938322,
+              "certified": false
+            },
+            {
+              "n": 1440,
+              "flips": 106,
+              "upperBound": 0.09665685280696928,
+              "certified": true
+            }
+          ]
+        },
+        {
+          "stratumId": "v=true|o=0",
+          "size": 7715,
+          "certified": false,
+          "decidedAtLook": 45,
+          "flips": 11,
+          "futility": true,
+          "looks": [
+            {
+              "n": 45,
+              "flips": 11,
+              "upperBound": 0.4795760506668879,
+              "certified": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "snapshot": "2026-09-29",
+      "snapshotKey": "september",
+      "alpha": 0.05,
+      "ratioKey": "independent",
+      "ratioLabel": "independent draws",
+      "phi": 1,
+      "reachable": true,
+      "oracleCalls": 135,
+      "reused": 0,
+      "savings": 0,
+      "strata": [
+        {
+          "stratumId": "v=false|o=0",
+          "size": 81469,
+          "certified": false,
+          "decidedAtLook": 90,
+          "flips": 6,
+          "futility": true,
+          "looks": [
+            {
+              "n": 45,
+              "flips": 2,
+              "upperBound": 0.17826412500460298,
+              "certified": false
+            },
+            {
+              "n": 90,
+              "flips": 6,
+              "upperBound": 0.15707815242607617,
+              "certified": false
+            }
+          ]
+        },
+        {
+          "stratumId": "v=true|o=0",
+          "size": 7715,
+          "certified": false,
+          "decidedAtLook": 45,
+          "flips": 11,
+          "futility": true,
+          "looks": [
+            {
+              "n": 45,
+              "flips": 11,
+              "upperBound": 0.42734931950745303,
+              "certified": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "snapshot": "2026-09-29",
+      "snapshotKey": "september",
+      "alpha": 0.05,
+      "ratioKey": "pooledEstimate",
+      "ratioLabel": "both concurrent arms pooled, estimate",
+      "phi": 1.417782497699567,
+      "reachable": true,
+      "oracleCalls": 135,
+      "reused": 0,
+      "savings": 0,
+      "strata": [
+        {
+          "stratumId": "v=false|o=0",
+          "size": 81469,
+          "certified": false,
+          "decidedAtLook": 90,
+          "flips": 6,
+          "futility": true,
+          "looks": [
+            {
+              "n": 45,
+              "flips": 2,
+              "upperBound": 0.21742241673891888,
+              "certified": false
+            },
+            {
+              "n": 90,
+              "flips": 6,
+              "upperBound": 0.18076691395626385,
+              "certified": false
+            }
+          ]
+        },
+        {
+          "stratumId": "v=true|o=0",
+          "size": 7715,
+          "certified": false,
+          "decidedAtLook": 45,
+          "flips": 11,
+          "futility": true,
+          "looks": [
+            {
+              "n": 45,
+              "flips": 11,
+              "upperBound": 0.4678916381727504,
+              "certified": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "snapshot": "2026-09-29",
+      "snapshotKey": "september",
+      "alpha": 0.05,
+      "ratioKey": "pooledUpper",
+      "ratioLabel": "both concurrent arms pooled, upper end of the 95% interval",
+      "phi": 2.3730587706184543,
+      "reachable": true,
+      "oracleCalls": 135,
+      "reused": 0,
+      "savings": 0,
+      "strata": [
+        {
+          "stratumId": "v=false|o=0",
+          "size": 81469,
+          "certified": false,
+          "decidedAtLook": 90,
+          "flips": 6,
+          "futility": true,
+          "looks": [
+            {
+              "n": 45,
+              "flips": 2,
+              "upperBound": 0.2977762055271532,
+              "certified": false
+            },
+            {
+              "n": 90,
+              "flips": 6,
+              "upperBound": 0.2289973695518845,
+              "certified": false
+            }
+          ]
+        },
+        {
+          "stratumId": "v=true|o=0",
+          "size": 7715,
+          "certified": false,
+          "decidedAtLook": 45,
+          "flips": 11,
+          "futility": true,
+          "looks": [
+            {
+              "n": 45,
+              "flips": 11,
+              "upperBound": 0.5424874054118295,
+              "certified": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "snapshot": "2026-09-29",
+      "snapshotKey": "september",
+      "alpha": 0.05,
+      "ratioKey": "pooledEstimateDf",
+      "ratioLabel": "both concurrent arms pooled, estimate, with the degrees-of-freedom factor (d = 37, look 1440)",
+      "phi": 1.5520872796524279,
+      "reachable": true,
+      "oracleCalls": 135,
+      "reused": 0,
+      "savings": 0,
+      "strata": [
+        {
+          "stratumId": "v=false|o=0",
+          "size": 81469,
+          "certified": false,
+          "decidedAtLook": 90,
+          "flips": 6,
+          "futility": true,
+          "looks": [
+            {
+              "n": 45,
+              "flips": 2,
+              "upperBound": 0.22940741349819865,
+              "certified": false
+            },
+            {
+              "n": 90,
+              "flips": 6,
+              "upperBound": 0.1879602797661925,
+              "certified": false
+            }
+          ]
+        },
+        {
+          "stratumId": "v=true|o=0",
+          "size": 7715,
+          "certified": false,
+          "decidedAtLook": 45,
+          "flips": 11,
+          "futility": true,
+          "looks": [
+            {
+              "n": 45,
+              "flips": 11,
+              "upperBound": 0.4795760506668879,
+              "certified": false
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "appliedAugustCertificate": {
+    "look": 180,
+    "flips": 5,
+    "perLookDelta": 0.008333333333333333,
+    "bounds": [
+      {
+        "ratioKey": "independent",
+        "phi": 1,
+        "upperBound": 0.07264936380131799
+      },
+      {
+        "ratioKey": "pooledEstimate",
+        "phi": 1.417782497699567,
+        "upperBound": 0.08508102584140194
+      },
+      {
+        "ratioKey": "pooledUpper",
+        "phi": 2.3730587706184543,
+        "upperBound": 0.11123288248691961
+      },
+      {
+        "ratioKey": "pooledEstimateDf",
+        "phi": 1.5520872796524279,
+        "upperBound": 0.08891545483092707
+      }
+    ],
+    "phiTolerated": 6.084012510489724
+  },
+  "tolerance": [
+    {
+      "snapshotKey": "august",
+      "alpha": 0.2,
+      "issuedLook": 45,
+      "phiAtIssuedLook": 1.62718239715723,
+      "bestLook": 720,
+      "phiAtBestLook": 22.308781342756237
+    },
+    {
+      "snapshotKey": "august",
+      "alpha": 0.1,
+      "issuedLook": 180,
+      "phiAtIssuedLook": 1.9521780117104757,
+      "bestLook": 720,
+      "phiAtBestLook": 6.311644195670877
+    },
+    {
+      "snapshotKey": "september",
+      "alpha": 0.2,
+      "issuedLook": 45,
+      "phiAtIssuedLook": 1.2277433376730338,
+      "bestLook": 1440,
+      "phiAtBestLook": 25.566369525702775
+    },
+    {
+      "snapshotKey": "september",
+      "alpha": 0.1,
+      "issuedLook": 360,
+      "phiAtIssuedLook": 1.425629706674351,
+      "bestLook": 1440,
+      "phiAtBestLook": 1.9773818386702102
+    }
+  ]
+}

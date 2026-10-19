@@ -28,7 +28,7 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import mysql from "mysql2/promise";
 import type { BoundKind } from "@lore/core/sivm";
-import { certifyColumnEdit } from "../../lib/lore/certify";
+import { CERTIFICATION_CONCURRENCY, certifyColumnEdit } from "../../lib/lore/certify";
 import {
   getCellsForVersion,
   getColumnVersion,
@@ -41,7 +41,11 @@ import { runColumn } from "../../lib/lore/run-column";
 const BOUNDS = (process.env.EXP_BOUNDS ?? "eb,wor,exact,cp").split(",") as BoundKind[];
 const ALPHAS = (process.env.EXP_ALPHAS ?? "0.2,0.1,0.05").split(",").map(Number);
 const LIVE = process.env.EXP_LIVE === "1";
-const CONCURRENCY = Number(process.env.EXP_CONCURRENCY ?? 32);
+// Requests in flight for live oracle draws. The September 2026 run that
+// Table 6 reports drew its cells 32 at a time (this variable's default then);
+// a certification now issues them one at a time, as the released certifier
+// does (CERTIFICATION_CONCURRENCY), and EXP_CONCURRENCY overrides it.
+const CONCURRENCY = Number(process.env.EXP_CONCURRENCY ?? CERTIFICATION_CONCURRENCY);
 // Target version = model snapshot. Version 2 holds the August 2026 oracle
 // draws of the v2 template (the live deployment run); version 4 holds the
 // same template re-issued on 2026-09-29 (scripts/experiments/
@@ -182,6 +186,7 @@ async function main() {
             adaptive: true,
             maxLooks: 6,
             bound,
+            ...(LIVE ? { oracleConcurrency: CONCURRENCY } : {}),
           },
         );
         const covered =

@@ -108,11 +108,11 @@ certificate. The betting sequence certifies
 the \boundConfigsTotal\ configurations, where the schedule's
 Bonferroni split bites hardest (\boundBetOverExactPair\ at
 $\alpha{=}\boundBetOverExactAlpha$: \boundBetOverExactSavings\ against
-\boundBetOverExactExactSavings). It loses to it on \boundBetWorse\ and
+\boundBetOverExactExactSavings). It loses to that bound on \boundBetWorse\ and
 matches it on the rest (certificates
 lost \boundBetLost, gained \boundBetExtra). Its validity here rests
-on a capital process built for draws whose conditional mean is
-constant, which without-replacement draws do not have. The
+on a capital process built for draws with a constant conditional mean,
+which without-replacement draws lack. The
 without-replacement variant given in~\cite{wsr}, which we did not
 implement, or a time-uniform boundary~\cite{howard} would remove
 the split without that caveat and is the remaining power lever we see.
@@ -204,9 +204,10 @@ concurrency, measured from its first cell write to its last. An
 estimate from stored latencies agrees: the column's
 \deployMatLatencyCells\ computed cells, this run's and those of earlier
 passes, average \deployMatMeanLatencyS\ seconds per call, and those latencies, summed and divided by the
-concurrency, give \deployMatHours\ hours. Rows with identical bound
-content share one stored cell, which is why the billed cells are fewer
-than the rows. The cells this article counts as sampled, reused, or
+concurrency, give \deployMatHours\ hours. The remaining
+\deployFreeRows\ rows cost nothing: rows with identical bound content
+share one stored cell, which is why the billed cells are fewer than the
+rows. The cells this article counts as sampled, reused, or
 recomputed are rows, and its savings are shares of rows.
 
 \keeprunin
@@ -226,7 +227,7 @@ had not already drawn fresh. At $\alpha{=}0.1$ it escalated to
 \deployMpLookTight) for \deployMpSavingsTight\ savings. The run applied
 the loose certificate, persisting a \texttt{reuse\_certificate}
 row and stamping its identifier on \deployStamped\ of the
-\deployMpReused\ reused cells, which is what the table then
+\deployMpReused\ reused cells, which are what the table then
 served. The \deployUnstamped\ it did not stamp already held a
 freshly computed cell when the certificate was applied, and the apply
 step refuses to write over one. Under the
@@ -258,9 +259,10 @@ the loose budget, reusing \deployReusedTight\ cells
 deepest look reaches \deployAugustFiveLook\ rows of the stratum,
 \deployAugustFiveMissing\ of which hold no August draw. Realized error
 was audited against oracle-computed cells of that snapshot only
-(status \texttt{done}/\texttt{cached}). Certificate copies are
-excluded by construction, as verbatim v1 values would register
-as non-flips. Of the \deployOverlap\ audited reused rows,
+(status \texttt{done}/\texttt{cached}): the reused rows flip at
+\deployRealized, \deployAuditFlips\ of \deployOverlap\ audited rows.
+Certificate copies are excluded by construction, as verbatim v1 values
+would register as non-flips. Of the \deployOverlap\ audited reused rows,
 \deployAuditReleased\ belong to the released $n{=}\benchN$
 evaluation vector and show \deployAuditReleasedErr\ on their own. The
 released subset is a consistency check with Table~\ref{tab:main}, and
@@ -317,7 +319,12 @@ reused \sepReusedTight\ cells
 (\sepSavingsTight). The \sepTightExtraDraws\ calls beyond the loose
 arm's \sepOracleLoose\ took a further \sepWallTight\ seconds. At
 $\alpha{=}0.05$ the futility rule refused the stratum at
-look \sepLookFive\ (\sepFlipsFive\ flips, \sepRateFive). Under
+look \sepLookFive\ (\sepFlipsFive\ flips, \sepRateFive), after
+\sepOracleFive\ calls in all, correctly: the stratum's flip rate against
+the aged cache exceeds that budget. The run issued its oracle calls
+\deployConcurrency\ at a time, the deployment script's setting before
+the released certifier issued them one at a time
+(Appendix~\ref{app:widen}). Under
 Maurer--Pontil the same September draws
 certify the loose budget after \sepMpOracleLoose\ calls and
 \sepMpTightOutcome\ (Table~\ref{tab:deploymp}). The audits cover
@@ -345,7 +352,7 @@ evaluation sample is defined by an exact query string, not by the seed
 alone. Second, a linear-congruential generator written with JavaScript number
 multiplication silently loses low bits, so all sampling uses exact
 32-bit arithmetic. Third, the certifier at the time of the August run shuffled each stratum
-in the order the cell query returned, which the query planner served
+in the order the cell query returned. The query planner served it
 through one index in August and another afterward. The August run
 walked the content-hash order, the certifier now sorts by content hash
 before shuffling, and the replay reproduces every count of the August run
@@ -438,7 +445,7 @@ the dispersion ratio's 95\% confidence interval (CI) is
 
 \keeprunin
 \paragraph{Reading the tests.} The rate and lag tests do not reject.
-The dispersion test rejects one-sided at the \indepLevel\ level in the
+The one-sided dispersion test rejects at the \indepLevel\ level in the
 concurrent arm, on \indepBlocks\ blocks.
 To add blocks we drew a concurrent arm alone on a further
 \indepExtRows\ rows of the vector. Its block
@@ -477,7 +484,7 @@ first concurrent arm comes from. Its flips concentrate late in its
 completion order: \indepConcFirstHalfFlips\ in the first
 \indepConcHalfN\ completions and \indepConcSecondHalfFlips\ in the last
 \indepConcHalfN\ (two-proportion $p\indepConcHalfP$). The sequential
-arm walks the same rows in the same order and leans the same way,
+arm walks the same rows in the same order and leans the same way:
 \indepSeqFirstHalfFlips\ flips in its first \indepSeqFirstHalfN\
 completions and \indepSeqSecondHalfFlips\ in its last
 \indepSeqSecondHalfN. Of the \indepBothRows\ rows both arms kept,
@@ -509,7 +516,11 @@ loose budget the deployment stratum is not one whose flip rate sits just
 above the budget: its audited error is \deployRealized\ in August and
 \sepRealizedLoose\ in September (Table~\ref{tab:deploy}). At the tight
 budget the September audit, \sepRealizedTight\ against $\alpha{=}0.1$,
-leaves less room.
+leaves less room. The check itself covers one model through one gateway
+at one concurrency, in the September snapshot. Appendix~\ref{app:widen}
+gives the change to the released certifier, and the deployment
+certificates under a bound widened for these ratios.
+
 
 \begin{table}[t]
 \caption{Simulated probability that the certifier errs on a stratum one
@@ -563,15 +574,15 @@ floor, two draws of the same prompt, is \pilotFloorRate\ (Wilson
 and the synonym edit \pilotSynRate\ (\pilotSynCi).
 
 \keeprunin
-\paragraph{Pilot calibration.} We hand-labeled
-\pilotLabeled\ calibration pairs (one labeler, the author), drawn evenly
-from the three comparisons and pooled: \pilotLabeledSame\ the judge had
+\paragraph{Pilot calibration.} The author hand-labeled
+\pilotLabeled\ calibration pairs, drawn evenly from the three
+comparisons and pooled: \pilotLabeledSame\ the judge had
 called equivalent and \pilotLabeledDiff\ it had called different. Each
 pair was shown in a shuffled order as two phrases with a Same/Different
 choice, without the judge's verdict or the comparison it came from. The
 judge missed \pilotMisses\ true differences among the \pilotLabeledSame,
-an upper confidence bound of \pilotMissUcb\ on its miss rate among the
-pairs it calls equivalent at $\delta_{\mathrm{cal}}{=}\pilotDeltaCal$.
+an upper confidence bound of \pilotMissUcb\ at $\delta_{\mathrm{cal}}{=}\pilotDeltaCal$ on its miss rate among the
+pairs it calls equivalent.
 The bound is pooled across the three comparisons; each comparison's
 \pilotLabeledSamePerComparison\ labels alone give
 \pilotMissUcbPerComparison. The judge also called
@@ -585,34 +596,58 @@ Under its labels the miss bound would be \pilotAdjMissUcb, so the clean
 side of this calibration rests on the author's reading.
 
 \keeprunin
+\paragraph{A second human labeler.} A second labeler, not an author,
+then labeled the same pairs on a page that showed them in a fresh order,
+with the same question and without the author's labels or any model's
+verdicts. The two human labelers agree on \pilotSecondAgree\ of the
+pairs (Cohen's $\kappa$ \pilotSecondKappa). Of the \pilotSecondSplits\
+pairs on which the author and the second model disagree, the second
+human labeler sides with the model on \pilotSecondSidesModel\ and with
+the author on the rest. Among the \pilotLabeledSame\ judge-equivalent
+pairs, the second human labeler calls \pilotSecondMisses\ different, a
+miss bound of \pilotSecondMissUcb. Counting a pair as different when
+either human does gives the same bound, since the author called none of
+those pairs different.
+
+\keeprunin
 \paragraph{Pilot outcome and reading.} Certifying at $\alpha - \hat{m}$
 takes \pilotMissUcbPts\ percentage points off each budget under the
 author's labels: $\alpha{=}0.2$ becomes
 \pilotAlphaLooseEff\ and $\alpha{=}0.1$ becomes \pilotAlphaTightEff.
-Under the second labeler's labels the deflation would be
-\pilotAdjMissUcbPts\ points, more than the tight budget itself.
+Under the model labeler's labels the deflation would be
+\pilotAdjMissUcbPts\ points, more than the tight budget itself, and
+under the second human labeler's it is \pilotSecondMissUcbPts\ points,
+which leaves \pilotSecondAlphaLooseEff\ of the loose budget and none of
+the tight one.
 Stratification is by the cached phrase's category
 (\pilotCategories\ categories, assigned once from the cache by the same
 model). In that configuration,
-\pilotOutcomes. The composed guarantee holds with
+\pilotOutcomes. A larger deflation cannot certify more on the same
+sample path, so under the second human labeler's bound every stratum
+stays refused. The composed guarantee holds with
 probability $1-\delta-\delta_{\mathrm{cal}}$ under the assumption
 stated in the recipe above; the judge's price is the deflation plus the labels. The
 floor the certifier met is the judge's, not the model's. Under the
-author's labels, \pilotFalseFlips\ of the \pilotLabeledDiff\ pairs the
-judge called different name the same specialty, across the three
+author's labels, \pilotFalseFlips\ of the \pilotLabeledDiff\
+judge-different pairs name the same specialty, across the three
 comparisons, and \pilotMisses\ of the \pilotLabeledSame\ pairs it
 called equivalent differ. Weighting the judge's verdicts by those
 label shares puts the disagreement of two same-prompt draws, as the
 author reads them, near \pilotImpliedFloor\ (band
 \pilotImpliedFloorBand\ from the Wilson intervals of the two shares),
-inside the loose budget. The two labelers read the judge differently.
-By the author's labels it is stricter than the author's reading and
-misses nothing. By the second labeler's labels it is mostly right when it
-calls a pair different (\pilotAdjDiffOnJudgeDiff\ of
-\pilotLabeledDiff) and misses \pilotAdjMissesOnJudgeSame\ of the
-\pilotLabeledSame\ pairs it calls equivalent. One human labeler and one
-model cannot say which reading is right; a second human labeler would
-separate a strict instruction from a lenient labeler. Either way the
+inside the loose budget. As the second human labeler reads them, it is
+near \pilotSecondImpliedFloor\ (band \pilotSecondImpliedFloorBand),
+above the loose budget at the estimate. The three labelings read the judge differently.
+By the author's labels it is stricter than the author and misses
+nothing. By the model labeler's labels it is mostly right when it calls a pair
+different (\pilotAdjDiffOnJudgeDiff\ of \pilotLabeledDiff) and misses
+\pilotAdjMissesOnJudgeSame\ of the \pilotLabeledSame\ pairs it calls
+equivalent. The second human labeler sits between them on both sides,
+calling \pilotSecondFalseFlips\ of the \pilotLabeledDiff\
+judge-different pairs the same and \pilotSecondMisses\ of the
+\pilotLabeledSame\ judge-equivalent pairs different. With the two humans
+at $\kappa$ \pilotSecondKappa, the instruction is loose as well as the
+judge: readers do not agree on which specialties are the same. Either way the
 certifier, which sees only the judge, refused every stratum. The
 composed guarantee holds for any judge whose miss rate the calibration
 bounds correctly. What the pilot does not deliver is a judge whose
@@ -647,7 +682,7 @@ level bring the earlier look under $\alpha$.
 \end{tikzpicture}
 \caption{Calibration power at $\alpha{=}0.05$ (presented-cells estimand,
 $2{,}000$ trials per point). Certification rises smoothly as $p$ falls
-below $\alpha$ and is small but nonzero just above it. There the
+below $\alpha$. Certification is small but nonzero just above it. There the
 realized population rate of a planted stratum often falls below
 $\alpha$, and certifying it is correct. The unconditional rate of
 certificates whose realized error exceeds $\alpha$ stays at or below
@@ -656,7 +691,7 @@ certificates whose realized error exceeds $\alpha$ stays at or below
 intermediate $p$, because the exact bound's finite-population correction
 tightens as the sampled fraction grows. The six-look schedule reaches
 most of an $n_j{=}1{,}800$ stratum but a minority of an $n_j{=}5{,}000$
-one. The $n_j{=}600$ stratum's final look is the whole stratum, which
+one. The $n_j{=}600$ stratum's final look is the whole stratum and
 cannot certify, so its deepest certifying look is its fourth.}
 \Description{Line plot of certification rate against the planted flip
 rate for three stratum sizes. Every curve certifies always when the
@@ -750,12 +785,21 @@ Appendix~\ref{app:strict}).}
 \setlength{\tabcolsep}{4pt}
 \input{\paperroot/tablebudgets}
 \end{table*}
+The audits of \secref{sec:exp-deploy} put the hidden positives of
+\secref{sec:limits} well under what the loose budget tolerates. Carried
+to all the reused cells, the error rates audited under the loose
+certificates come to about \deployHiddenLoose\ hidden positives on the
+August draws and about \sepHiddenLoose\ in September. The audits are
+samples, and their 95\% confidence intervals carry to
+\deployHiddenLooseLo--\deployHiddenLooseHi\ and
+\sepHiddenLooseLo--\sepHiddenLooseHi.
+
 Table~\ref{tab:strict} sets the strict mode beside the default mode on
 the configurations of Table~\ref{tab:main}, at the three budgets where
 either certifies. The pattern of \secref{sec:exp-main} holds
-throughout. Where a stratum's flip rate is well below the budget the
+throughout. Where a stratum's flip rate is well below the budget, the
 two modes agree, as on the three SO edits at $\alpha{=}0.2$. One budget
-step before the default mode's own frontier the strict mode's savings
+step before the default mode's own frontier, the strict mode's savings
 fall away: on the synonym and scope-widening edits at $\alpha{=}0.1$,
 and on both Djinni edits at $\alpha{=}0.2$. The strict mode
 issues unsafe certificates too, at a rate the theorem allows. Counted
@@ -790,7 +834,7 @@ procedure. On the formatting edit it \aggTightCertF\ at $\alpha{=}0.1$
 (\aggFtSavings\ savings, \aggFtRealized\ aggregate error) while the
 reused cached-TRUE subgroup carries \aggFtSubgroup\ error. On the
 widening edit it \aggTightCertW\ at $\alpha{=}0.1$ and certifies
-\aggWsavings\ at $\alpha{=}0.2$ with \aggWsubgroup\ subgroup error. The
+\aggWsavings\ savings at $\alpha{=}0.2$ with \aggWsubgroup\ subgroup error. The
 effect is not an artifact of giving the baseline a shorter schedule.
 
 \keeprunin
@@ -817,7 +861,7 @@ volatile stratum, \hhSupgTrueRows\ cached-TRUE cells on the formatting
 edit and \hhSupgTrueRowsW\ on the widening edit. With the cached value
 as the proxy there are only three candidate thresholds, and at
 $\alpha{=}0.2$ the aggregate bound clears at the loosest one. The arm
-therefore selects \hhSupgSelFrac\ of the rows it was allowed to on the
+therefore selects \hhSupgSelFrac\ of its allowed rows on the
 formatting edit and \hhSupgSelFracW\ on the widening edit. Matched this
 way, the competitor reduces to B3, reuse everything, with a certificate
 attached. Its bound is satisfied, its aggregate error is real, and its
@@ -886,9 +930,10 @@ away the change the user asked for.
 
 \FloatBarrier
 \keepheading
-\section{Further tables}
+\section{Further tables and analyses}
 \label{app:tables}
-Five tables the article cites are printed here, with one further analysis of the model study.
+Five tables the article cites are printed here, with three further
+analyses: two of the model study and one of the minority stratum.
 
 \keeprunin
 \paragraph{Models and the headline pair's flip rates.}
@@ -914,6 +959,38 @@ GLM-4.7-Flash it moves that share the other way, from
 \famGlmTrueShareOld\ to \famGlmTrueShareNew. Self-disagreement alone
 flips cells both ways and leaves the share where it was, so on these two
 models the edit shifts the model's decision.
+
+\keeprunin
+\paragraph{Floors are per stratum.} The floor binds for the identity
+edit only (\secref{sec:problem}), and some strata of the model study
+(\secref{sec:exp-families}) flip
+less under an edit than under none. The two clearest are on the lab
+column. Under the formatting edit
+GLM-4.7-Flash's cached-FALSE stratum flips \famGlmFmtFalseStratum\
+against an identity floor of \famGlmFloorFalseStratum, and GPT-5 nano's
+cached-TRUE stratum flips \famNanoFmtTrueStratum\ against
+\famNanoFloorTrueStratum. GPT-5 nano's pooled floor, \famNanoFloor,
+sits above every budget in the grid. Its one certifying stratum on the
+lab column sits below that pooled figure for the same reason: a floor
+is a per-stratum quantity, measured under the first version's prompt.
+
+\keeprunin
+\paragraph{The minority stratum under majority voting.} The cached-TRUE stratum of the
+Boolean column flips \minoritySingle\ under a formatting edit. One
+candidate cause is cache noise, which a majority vote of three draws at
+write time would remove~\cite{selfconsistency}. The stored draws do not
+support it. Voting on both sides (vote-of-3) brought the stratum's flip
+rate to \minorityVote\ in a dedicated probe and to \minorityVoteRerun\
+on the three-draw labels, two separate runs over the same
+\votedStoredTrueN\ rows. The vote overturned \minorityNoise\ and
+\minorityNoiseRerun\ of the cached TRUE values, respectively. A cache
+built by the vote fares no better. Its TRUE stratum, the \votedTrueN\
+rows whose three-draw majority is TRUE, has a lower floor
+(\votedTrueFloor\ against \floorTrueStratum) but flips at
+\votedTrueEditFlip\ against fresh draws of the edited prompt
+(Table~\ref{tab:rates}). Voting at write time cleans the cache without
+making the minority stratum certifiable under this edit. Refusing and
+recomputing that stratum is the response the data support.
 
 \keeprunin
 \paragraph{The benchmark's edit pairs.}
@@ -1013,3 +1090,169 @@ Conformal and distribution-free risk control for model outputs: risk-controlling
 \bottomrule
 \end{tabular}
 \end{table*}
+
+\FloatBarrier
+\keepheading
+\section{Label noise in the replications}
+\label{app:labelnoise}
+The replications of Table~\ref{tab:main} rerun the certifier with
+\bootB\ sampling seeds over one frozen set of labels, so their intervals
+show sampling variability only. A label is itself one fresh draw of the
+edited prompt, and the three-draw relabeling of the headline pair
+(\secref{sec:exp-setup}) holds three further draws per row. Only that
+pair was relabeled.
+Table~\ref{tab:labelnoise} reruns the same replication analysis with
+each of them as the label, against the same cache. The pair's flip rate
+ranges from \labelNoiseFlipLo\ to \labelNoiseFlipHi\ across the four
+labelings. At $\alpha{=}0.1$ and $\alpha{=}0.2$ the mean savings move by
+less than \labelNoiseShiftBound\ points, because the cached-FALSE stratum's
+flip rate stays far below both budgets under every labeling. At
+$\alpha{=}0.05$ that rate sits close to the budget: the certification
+rate ranges from \labelNoiseEdgeCertLo\ to \labelNoiseEdgeCertHi\ and
+the mean savings from \labelNoiseEdgeLo\ to \labelNoiseEdgeHi. Near a
+stratum's own flip rate the frontier depends on the draws behind the
+labels; well above it, it does not. The select column's certified strata
+sit nearer their budgets, so its label noise is likely larger, and it is
+not measured here.
+
+\begin{table}[t]
+\caption{The replication analysis of the headline pair
+(Table~\ref{tab:main}, presented-cells estimand) uses the stored labels
+of Table~\ref{tab:main} and each fresh draw (draws 1 to 3) of the three-draw relabeling as the label. It reports flip
+rates overall and per cached-value stratum, and mean savings with the
+certification rate in parentheses, in percent over \bootB\
+replications. Draw 3 is missing for one row, so that labeling
+covers \labelNoiseRowsShort\ rows.}
+\label{tab:labelnoise}
+\centering\footnotesize
+\setlength{\tabcolsep}{3pt}
+\input{\paperroot/tablelabelnoise}
+\end{table}
+
+\FloatBarrier
+\keepheading
+\section{One call at a time, and a widened bound}
+\label{app:widen}
+The independence check of Appendix~\ref{app:indep} could not rule out
+dependence among oracle draws issued together. This appendix gives the
+two responses of \secref{sec:exp-validity}: a change to the released
+certifier, and the reported certificates under a bound widened for the
+measured dispersion.
+
+\keeprunin
+\paragraph{One call at a time.} The released certifier issues a
+certification's oracle calls one at a time (\secref{sec:impl}). This
+costs wall clock and no calls. The independence check's sequential arm
+took \seqSecondsPerCall\ seconds per call on the September snapshot. At
+that rate the loose certificate's \sepOracleLoose\ calls take about
+\seqWallLooseMinutes\ minutes, against \sepWallLoose\ seconds at
+\deployConcurrency\ at a time; the tight certificate's \sepOracleTight\
+take about \seqWallTightHours\ hours, and a run that exhausts the
+schedule, \seqWallMaxCalls\ calls, about \seqWallMaxHours\ hours. A
+longer window carries a risk of its own: a change of the served model
+during a certification shifts every later draw at once, a common shock
+that the sequential arm, on \indepSeqBlocks\ blocks, was too short to
+detect.
+That arm is also too short to show that one-at-a-time draws are free of
+dependence (its dispersion ratio was \indepSeqDispersion), so the change
+narrows the assumption's exposure without removing it.
+
+\keeprunin
+\paragraph{A bound widened for dispersion.} For certificates whose draws
+were issued together, the bound can be widened for a dispersion ratio
+$\phi$. Korn and Graubard's interval for survey
+proportions~\cite{korngraubard} puts an effective sample size (the
+sample size divided by the design effect) and the observed rate times it
+into the Clopper--Pearson limits. We take the design effect to be
+$\phi$, so $k$ flips in $n$ draws count as $k/\phi$ flips in $n/\phi$.
+Their interval also shrinks the effective sample size by a
+degrees-of-freedom factor, for the noise in an estimated design effect.
+We leave it out of the bound and charge for that noise instead by also
+evaluating the bound at the upper end of the ratio's
+95\% confidence interval; the factor's own effect is reported below. The beta
+form of the limit is defined for non-integer counts. At $\phi=1$
+it is the binomial Clopper--Pearson bound, which agrees with the exact
+bound to three decimal places at the deployment stratum's size
+(Appendix~\ref{app:grid}). Table~\ref{tab:widensim} runs the certifier
+with that bound through the simulation of Table~\ref{tab:dependence}.
+Widened for the ratio that generates the draws, its error probability is
+at most \widenMatchedMax\ at either budget, inside the nominal level.
+The simulation fixes one stratum size, a rate one flip past the budget,
+two budgets, blocks of \indepBlockSize, and two ratios, so this reading
+holds in those settings.
+Widened for the pooled estimate, \indepPooledDispersion, while the draws
+sit at the upper end of its interval, \indepPooledDispersionHi, it
+reaches \widenMismatchMax. The widening protects against the dependence
+it is told about, and not against more.
+
+Table~\ref{tab:widen} replays the deployment certificates of
+Table~\ref{tab:deploy} under the widened bound, over the same stored
+sample paths. At the pooled estimate the loose September certificate
+needs \widenSepLooseCallsEst\ calls instead of \sepOracleLoose\ and
+reuses \widenSepLooseReusedEst\ cells; at the upper end it needs
+\widenSepLooseCallsHi\ and reuses \widenSepLooseReusedHi. The tight
+September certificate holds at the pooled estimate at its original cost,
+by a margin of less than a thousandth (its bound is
+\widenSepTightBoundEst), and is refused at the upper end after
+\widenSepTightCallsHi\ calls. Both August certificates hold at both
+ratios. The last column of Table~\ref{tab:widen} gives the largest ratio
+at which each certificate is still issued on its stored path, and the
+look at which it then is. The tight September certificate tolerates
+\widenSepTightPhiIssued\ at the look it was issued and
+\widenSepTightPhiBest\ at look \widenSepTightPhiBestLook. With Korn and
+Graubard's degrees-of-freedom factor, at the \indepPooledDf\ degrees of
+freedom of the pooled estimate and the schedule's deepest look, where
+the factor is largest, the pooled estimate acts as a ratio of
+\widenDfPhi. Replayed at that ratio, the tight September certificate
+moves to that deepest look (\widenDfTightCalls\ calls) and no other
+certificate changes. The evidence of the certificate the system applied
+in August, \deployMpFlipsLoose\ flips in \deployMpLookLoose\ draws,
+gives widened bounds of \widenAppliedEst\ and \widenAppliedHi\ against
+$\alpha{=}0.2$, and clears that budget up to a ratio of
+\widenAppliedPhi.
+
+\keeprunin
+\paragraph{What a widened certificate asserts.} The widened bound is a
+binomial limit with no finite-population term. It bounds the probability
+that a recompute flips a cell of the stratum, under the block model, and
+not the realized count $M_j$ that Theorem~\ref{thm:valid} certifies;
+under interference the coupling that defines $M_j$ fails. At every look
+where a widened certificate is issued here, the widened bound sits at
+or above the exact bound, so on the event of Theorem~\ref{thm:valid}
+such a certificate clears only a stratum that meets its budget. The
+theorem says nothing about the protection the widening adds under
+dependence. Three limits apply to that protection. The replay is
+retrospective, since the ratios come from a check run after the draws.
+The ratio was measured on the September snapshot and is applied to the
+August draws as well, which were served at \driftLatencyAug\ seconds per
+call against \driftLatencySep\ in September. And the uncertainty in
+$\phi$ is not charged to $\delta$: a statement at the upper end of the
+ratio's 95\% confidence interval holds, approximately and in the
+simulated settings, at level $\delta + 0.05$.
+
+\begin{table}[t]
+\caption{The deployment certificates of Table~\ref{tab:deploy} replayed
+under a bound widened for a dispersion ratio of flip counts: the oracle
+calls of each certificate, or the calls spent before a refusal (ref.). Ratio
+1.00 is the exact bound of Table~\ref{tab:deploy}; the others are the
+independence check's pooled estimate and the upper end of its 95\%
+confidence interval. The August draws do not reach $\alpha{=}0.05$. The
+last column is the largest ratio at which the certificate is still
+issued on its stored path, and the look at which it then is.}
+\label{tab:widen}
+\centering\footnotesize
+\setlength{\tabcolsep}{3pt}
+\input{\paperroot/tablewiden}
+\end{table}
+
+\begin{table}[t]
+\caption{Simulated probability that the certifier errs on a stratum one
+flip past its budget (deployment stratum; draws in blocks of
+\indepBlockSize\ at the given dispersion ratio), with the bound as
+pinned and widened for an assumed ratio (nominal per-stratum level
+\calNominalDelta).}
+\label{tab:widensim}
+\centering\footnotesize
+\setlength{\tabcolsep}{3pt}
+\input{\paperroot/tablewidensim}
+\end{table}
